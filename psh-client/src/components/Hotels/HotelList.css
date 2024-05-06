@@ -1,0 +1,65 @@
+.hotel_img {
+  width: 16px;
+  height: 14px;
+  margin: 5px 2px 0px 10px;
+}
+
+.hotel_icon {
+  color: rgba(255, 184, 0, 1);
+}
+
+.price-part p {
+  font-size: 12px !important;
+}
+
+.month {
+  background: rgba(39, 179, 177, 1);
+  color: white;
+  padding: 3px 8px !important;
+  font-size: 20px !important;
+  border-radius: 5px;
+}
+
+.month span {
+  font-size: 12px !important;
+}
+
+.book {
+  background: rgba(39, 179, 177, 1);
+  color: white;
+  padding: 3px 8px;
+}
+
+.seatNumer {
+  background: rgba(192, 223, 223, 0.5);
+  padding: 6px 8px;
+  color: black;
+  font-size: 18px;
+}
+
+.wish {
+  margin-top: 10px;
+  background: rgba(0, 160, 255, 1);
+  color: white;
+  padding: 3px 8px;
+}
+
+.request {
+  margin-top: 10px;
+  background: rgba(0, 187, 180, 1);
+  color: white;
+  padding: 3px 8px;
+}
+
+.list_facility {
+  background-color: rgba(0, 187, 180, 0.2);
+  border-radius: 2px;
+}
+
+.list_facility li {
+  list-style: disc;
+}
+
+.list_facility li:first-child {
+  list-style: none;
+}

@@ -1,0 +1,62 @@
+.banner-slider .splide__arrow--prev::before {
+  content: url("../../assets/img/arrow2.png");
+  /* Add your custom icon or image here */
+  border-radius: 5px 0px 0px 5px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 6px 14px;
+  border-radius: 50%;
+}
+.skeleton-banner {
+  z-index: 0 !important;
+}
+.react-pre-loading .react-loading-skeleton {
+  display: flex !important;
+}
+.banner-slider svg {
+  display: none;
+}
+
+.banner-slider .splide__arrow--next::before {
+  content: url("../../assets/img/arrow1.png");
+  /* Add your custom icon or image here */
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 6px 14px;
+  border-radius: 50%;
+  /* box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5); */
+}
+/* 
+  
+  
+  /* Customize the left arrow button position */
+
+.banner-slider .splide__arrow--prev {
+  left: 20px;
+  top: 180px !important;
+  /* display: none; */
+  opacity: 0.9 !important;
+}
+
+/* Customize the right arrow button position */
+
+.banner-slider .splide__arrow--next {
+  right: 20px;
+  top: 180px !important;
+  /* display: none; */
+  opacity: 0.9 !important;
+}
+
+@media screen and (max-width: 1024px) {
+  .banner-slider .splide__arrow--prev {
+    /* left: 210px;
+      top: 410px !important; */
+    display: none !important;
+  }
+
+  .banner-slider .splide__arrow--next {
+    /* right: 200px !important;
+      top: 410px !important; */
+    display: none !important;
+  }
+}

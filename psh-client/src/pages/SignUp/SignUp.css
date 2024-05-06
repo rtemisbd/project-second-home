@@ -1,0 +1,217 @@
+.registration {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.card {
+  background-color: #fff;
+  background-clip: border-box;
+  border: 0 solid rgba(0, 0, 0, 0.125);
+  border-radius: 0.25rem;
+}
+
+.signin_text {
+  color: rgb(34, 139, 209);
+}
+
+.registration_img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.sign_in_all {
+  background: linear-gradient(45deg, #343a40 0 50%, #0c1117 50% 100%);
+}
+
+.registration_img_main {
+  width: 220px;
+  margin: 60px 0;
+}
+
+.log_img {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 700px;
+}
+
+.user {
+  width: 100%;
+  margin-top: 20px;
+  padding: 7px;
+}
+
+.form > label {
+  color: black;
+  font-size: 22px;
+}
+
+.form > input {
+  padding: 5px 5px;
+  border-radius: 6px;
+  outline: none;
+  background: none;
+  /* border: 1px solid #e2464c; */
+  box-shadow: 0px 2px 6px 0px rgba(19, 18, 66, 0.07);
+  color: black;
+  margin-bottom: 5px;
+  font-size: 14px;
+}
+
+/* */
+.Auth {
+  display: flex;
+
+  height: 100vh;
+  gap: 4rem;
+}
+
+.Auth > div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* left side */
+.left {
+  gap: 2rem;
+}
+
+.left > img {
+  width: 4rem;
+  height: 4rem;
+}
+
+.Webname > h1 {
+  font-size: 3rem;
+  background-color: red;
+
+  background-image: var(--buttonBg);
+
+  background-size: 100%;
+  background-repeat: repeat;
+
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  -moz-background-clip: text;
+  -moz-text-fill-color: transparent;
+}
+
+.Webname > h6 {
+  font-size: 0.85rem;
+}
+
+.infoForm {
+  gap: 2rem;
+}
+
+.infoInput {
+  border: none;
+  outline: none;
+  background-color: var(--inputColor);
+  border-radius: 8px;
+  padding: 20px;
+  flex: 1;
+  width: 100%;
+  height: 40px;
+}
+.loginInputModal {
+  outline: none;
+  /* background-color: var(--inputColor); */
+  border-radius: 8px;
+  /* padding: 20px; */
+  /* flex: 1; */
+
+  border: 1px solid rgb(69, 69, 69);
+  width: 100%;
+  height: 35px;
+}
+
+.label-text {
+  font-size: 1rem !important;
+}
+.custom_modal_width {
+  max-width: 100px !important;
+}
+.infoForm > div {
+  gap: 1rem;
+
+  width: 90%;
+  margin-top: 20px;
+}
+
+.infoButton {
+  width: 6rem;
+  height: 2rem;
+  align-self: flex-end;
+}
+
+.authForm {
+  background-color: var(--cardColor);
+  border-radius: 1rem;
+  padding: 1rem;
+}
+
+.authForm > div {
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+}
+
+.card_signup {
+  background: rgba(255, 255, 255, 1);
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  border-radius: 30px;
+}
+
+/*----------------------------------------------------------------*/
+
+@media only screen and (max-width: 600px) {
+  .registration {
+    width: 100%;
+  }
+
+  .authForm {
+    background: none;
+    box-shadow: none;
+  }
+
+  .log_img {
+    display: none;
+  }
+
+  .form > label {
+    font-size: 6px;
+  }
+
+  .form > input {
+    padding: 7px;
+    border-radius: 10px;
+    outline: none;
+    background: none;
+    /* border: 1px solid #e2464c; */
+    box-shadow: 0px 2px 6px 0px rgba(19, 18, 66, 0.07);
+    color: black;
+    margin-bottom: 2px;
+  }
+}
+
+.remember-switch {
+  justify-content: space-between !important;
+  margin-top: -5px !important;
+}
+
+.divider {
+  justify-content: space-between !important;
+}
+
+.social-media {
+  justify-content: space-between !important;
+}
+
+.social-media-signUp {
+  justify-content: space-between !important;
+}

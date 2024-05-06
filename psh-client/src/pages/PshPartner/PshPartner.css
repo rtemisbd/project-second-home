@@ -1,0 +1,71 @@
+.finance-page {
+  font-family: "Rubik", sans-serif !important;
+}
+
+.finance-page button {
+  border: none;
+  outline: none;
+  background-color: #00bbb5;
+  /* padding: 15px 36px; */
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  border-radius: 30px;
+  transition: all ease 0.1s;
+  box-shadow: 0px 5px 0px 0px #1c1c1d;
+}
+.step-button {
+  padding: 8px 36px !important;
+}
+
+.finance-page button:active {
+  transform: translateY(5px);
+  box-shadow: 0px 2px 0px 0px #1c1c1d;
+}
+.finance-page button:hover {
+  transform: translateY(5px);
+  box-shadow: 0px 2px 0px 0px #1c1c1d;
+}
+.until-percent {
+  color: #00bbb4;
+  text-shadow: 0px 3px 8px rgba(0, 0, 0, 0.2);
+
+  /* font-size: 64px; */
+  font-style: normal;
+  font-weight: 500;
+  line-height: 76px;
+}
+.easy_steps {
+  background-image: url("../../../src/assets/img/common-room.jpg");
+  background-repeat: no-repeat;
+  /* height: 670px; */
+  background-size: cover;
+  /* width: 470px; */
+  background-position: right;
+}
+.step {
+  display: flex;
+  /* width: 30px;
+  height: 30px; */
+  padding: 9px 0px;
+  justify-content: center;
+  align-items: center;
+  flex-shrink: 0;
+  border-radius: 20px;
+  background: #ea2629;
+  color: white;
+}
+.invest-part {
+  border-radius: 8px;
+  border: 1px solid #e7e7e7;
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0px 8px 10px -6px rgba(0, 0, 0, 0.1),
+    0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+}
+.invest-part2 {
+  border-radius: 5px;
+
+  background: rgba(255, 255, 255, 0);
+  box-shadow: 0px 8px 10px -6px rgba(0, 0, 0, 0.1),
+    0px 20px 25px -5px rgba(0, 0, 0, 0.1);
+}

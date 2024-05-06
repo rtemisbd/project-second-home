@@ -1,0 +1,11 @@
+.account-details input:focus {
+  outline: none !important;
+  border: 0.5px solid #35b0a7;
+}
+.account-details label {
+  text-transform: uppercase;
+  font-size: 16px !important;
+}
+.account-details {
+  font-family: "Rubik", sans-serif !important;
+}

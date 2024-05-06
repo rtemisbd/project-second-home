@@ -1,0 +1,50 @@
+.splide {
+  padding: 0 !important;
+}
+
+.all_promo .splide__arrow--prev::before {
+  content: url("../../assets/img/arrow1.png");
+  /* Add your custom icon or image here */
+  border-radius: 5px 0px 0px 5px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 15px 20px;
+}
+
+.all_promo svg {
+  display: none;
+}
+
+.all_promo .splide__arrow--next::before {
+  content: url("../../assets/img/arrow2.png");
+  /* Add your custom icon or image here */
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 15px 20px;
+}
+
+.all_promo .splide__arrow--prev {
+  left: 635px;
+  top: 280px !important;
+}
+
+/* Customize the right arrow button position */
+
+.all_promo .splide__arrow--next {
+  right: 635px;
+  top: 280px !important;
+}
+
+@media screen and (max-width: 600px) {
+  .all_promo .splide__arrow--prev {
+    /* left: 210px !important;
+    top: 280px !important; */
+    display: none !important;
+  }
+
+  .all_promo .splide__arrow--next {
+    /* right: 200px !important;
+    top: 280px !important; */
+    display: none !important;
+  }
+}

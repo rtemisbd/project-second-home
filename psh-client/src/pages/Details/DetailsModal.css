@@ -1,0 +1,13 @@
+.modal {
+  background-color: white;
+}
+.modal-box {
+  height: 480px;
+  grid-column-start: 1;
+  grid-row-start: 1;
+
+  max-width: 720px;
+}
+.slick-dots li {
+  width: 100px !important;
+}

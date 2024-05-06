@@ -1,0 +1,279 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+a {
+  font-weight: 500;
+  color: black;
+  text-decoration: inherit;
+}
+
+a:hover {
+  color: #535bf2;
+}
+
+body {
+  margin: 0;
+  width: 100%;
+  font-family: "Rubik", sans-serif !important;
+}
+
+h1 {
+  font-size: 3.2em;
+  line-height: 1.1;
+}
+
+.text_c_color {
+  color: #35b0a7;
+}
+
+hr {
+  height: 1px;
+}
+
+button:hover {
+  border-color: #646cff;
+}
+
+button:focus,
+button:focus-visible {
+  outline: 4px auto -webkit-focus-ring-color;
+}
+
+.slick-slide > div {
+  margin: 0 10px;
+}
+
+.slick-list {
+  margin: 0 -10px;
+}
+
+.react-autosuggest__suggestions-container {
+  height: 0px;
+}
+
+.font-semibold {
+  font-weight: 300;
+}
+
+.react-datepicker__input-container {
+  position: unset !important;
+  display: inline-block;
+  width: 100%;
+}
+
+.react-autosuggest__suggestions-container ul {
+  background: white;
+  padding: 10px;
+}
+
+.react-autosuggest__suggestions-list li {
+  cursor: pointer;
+}
+
+.react-datepicker__input-container .react-datepicker__calendar-icon {
+  position: absolute;
+  padding: 0% !important;
+  margin-top: 3px;
+  margin-left: -15px;
+}
+
+/* On screens  */
+.searchBox {
+  display: block;
+}
+
+.searchBoxSm {
+  display: none;
+}
+
+.list-lg {
+  display: block;
+}
+
+.list-sm {
+  display: none;
+}
+
+.listFilterSm {
+  display: none;
+}
+
+.listFilterLg {
+  display: block;
+
+  overflow: scroll;
+}
+
+.left-filter {
+  padding: 15px;
+  border-radius: 5px;
+  border: 1px solid rgba(133, 138, 153, 0.5);
+  background: #fff;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+}
+
+.roomCartSm {
+  display: none;
+}
+
+.roomCartLg {
+  display: block;
+}
+
+/* On screens that are 992px or less, set the background color to blue */
+@media screen and (max-width: 992px) {
+  .searchBox {
+    display: none;
+  }
+
+  .searchBoxSm {
+    display: block;
+  }
+}
+
+/* On screens that are 600px or less, set the background color to olive */
+@media screen and (max-width: 600px) {
+  body {
+    padding: 0px;
+  }
+
+  .slider_margin {
+    margin-left: -48px;
+  }
+
+  .searchBox {
+    display: none;
+  }
+
+  .p-4 {
+    padding: 0px;
+  }
+
+  .searchBoxSm {
+    display: block;
+  }
+
+  .promo_img {
+    width: 100%;
+  }
+
+  .category_sm {
+    overflow: scroll;
+  }
+
+  .search-filed2 {
+    padding: 0px;
+    height: 100vh;
+    padding: 10px;
+    border-radius: 10px;
+    /* box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25); */
+    margin-top: 2px;
+    /* margin-bottom: 15px; */
+    background-color: white;
+  }
+
+  .dmyNonActive {
+    background: #eafffd;
+  }
+
+  .dmyActive {
+    background-color: #00bbb4;
+    color: white !important;
+  }
+
+  /* input filed Area */
+  .input_main {
+    border: 1px solid #00bbb4 !important;
+  }
+
+  .input_main:focus {
+    outline: 1px solid #00bbb4 !important;
+  }
+
+  .input-filed-area {
+    position: relative;
+    margin-top: 60px;
+  }
+
+  .location-icon {
+    position: absolute;
+    top: 8px;
+    left: 15px;
+  }
+
+  .final-rent2 {
+    display: flex;
+    justify-content: center;
+  }
+
+  .final-rent2_text {
+    color: rgb(0, 0, 0);
+    font-size: 23px;
+    font-weight: 600;
+  }
+
+  .styled-search-2 li span {
+    padding: 7px 7px;
+    color: black;
+
+    text-decoration: none;
+    border-radius: 3px;
+    cursor: pointer;
+    display: flex;
+    width: 112px;
+  }
+
+  /* list page*/
+  .list-lg {
+    display: none;
+  }
+
+  .list-sm {
+    display: block;
+  }
+
+  .listFilterSm {
+    display: block;
+  }
+
+  .listFilterLg {
+    display: none;
+  }
+
+  .left-filter {
+    padding: 0px;
+    border-radius: 5px;
+    border: 1px solid rgba(133, 138, 153, 0.5);
+    background: none;
+    box-shadow: none;
+    border: none;
+    height: 700px;
+  }
+
+  /* room page*/
+  .roomCartSm {
+    display: block;
+  }
+
+  .roomCartLg {
+    display: none;
+  }
+
+  .filter_card_sm_height {
+    height: 640px;
+  }
+}
+
+/* @media (prefers-color-scheme: light) {
+  :root {
+    color: black;
+    background-color: #ffffff;
+  }
+
+
+
+  button {
+    background-color: #f9f9f9;
+  }
+} */

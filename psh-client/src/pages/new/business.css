@@ -1,0 +1,99 @@
+.header {
+  color: #000;
+  font-family: Rubik;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 30px;
+  /* 150% */
+}
+
+.requestModal label {
+  font-weight: 400;
+  color: black;
+  margin: 0px;
+  font-size: 0.9rem !important;
+}
+
+.requestModal input {
+  font-size: 0.9rem !important;
+  height: 40px !important;
+  background-color: white;
+  border: 1px solid gray !important;
+}
+
+.requestModal select {
+  font-size: 0.9rem !important;
+  height: 40px !important;
+  background-color: white;
+  border: 1px solid gray !important;
+}
+
+.content {
+  color: #646464;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  /* 142.857% */
+}
+
+.second_part {
+  border-radius: 0px 0px 80px 0px;
+  background: #222;
+}
+
+.header2 {
+  color: #fff;
+  font-family: Rubik;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 26px;
+  /* 144.444% */
+}
+
+.content2 {
+  color: #e7e7e7;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  /* 142.857% */
+}
+
+.header3 {
+  color: #fff;
+  text-align: center;
+  font-size: 32px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 44px;
+  /* 137.5% */
+}
+
+.banner-left {
+  background-color: #222;
+}
+
+.banner_h1 {
+  color: #fff;
+  font-size: 40px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 50px;
+
+  /* 125% */
+}
+
+.banner_p {
+  color: #b3b3b3;
+  font-size: 18px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 26px;
+
+  /* 144.444% */
+}

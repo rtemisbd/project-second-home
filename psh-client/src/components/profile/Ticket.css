@@ -1,0 +1,15 @@
+.issu_title input,
+textarea:focus {
+  outline: none !important;
+}
+.issu_title input,
+textarea {
+  border: none !important;
+  background-color: #f7f7f7;
+}
+.bg-black {
+  background-color: transparent !important;
+}
+.tricket-view:hover {
+  color: #00bbb4;
+}

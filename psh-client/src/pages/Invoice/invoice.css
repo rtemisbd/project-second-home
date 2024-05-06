@@ -1,0 +1,37 @@
+.payment-info p {
+  font-size: 11px !important;
+}
+.booking-table p {
+  font-size: 11px !important;
+  border-radius: 2px 2px 0px 0px;
+}
+.total-amount-right p {
+  font-size: 11px !important;
+  margin-top: 5px;
+}
+.total-amount-right div p:nth-child(1) {
+  color: #35b0a7;
+}
+.paid-amount {
+  font-size: 12px !important;
+}
+.total-amount-left p {
+  margin-top: 2px;
+}
+.note-area textarea {
+  border: 1px solid #35b0a7;
+  border-radius: 5px;
+}
+.note-area textarea:focus {
+  outline: none;
+}
+.note-area label {
+  font-size: 11px !important;
+  line-height: 0;
+}
+.signature p {
+  font-size: 11px !important;
+}
+.invoice-footer p {
+  font-size: 11px !important;
+}

@@ -1,0 +1,13 @@
+.card_category {
+  display: flex;
+  box-shadow: rgba(17, 12, 46, 0.15) 0px 48px 100px 0px;
+  border-radius: 10px;
+}
+.card_category:hover {
+  color: black;
+}
+.minimum {
+  color: #e04848;
+  padding: 2px;
+  background: #ffeaea;
+}

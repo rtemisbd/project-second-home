@@ -1,0 +1,56 @@
+.box {
+    border-radius: 3px;
+    border: 1px dashed #35B0A7;
+    background: #FCFCFC;
+    padding: 10px;
+}
+
+.title {
+    color: #000;
+    font-family: Inter;
+    font-size: 32px;
+    font-style: normal;
+    font-weight: 600;
+    line-height: normal;
+}
+
+.voucher {
+    color: #222;
+    font-family: Roboto;
+    font-size: 18px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.code {
+    color: #222;
+    font-family: Roboto;
+    font-size: 20px;
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.details {
+    color: #1A8880;
+    text-align: right;
+    font-family: Inter;
+    font-size: 16px;
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+}
+
+.btn {
+    display: flex;
+    width: 100px;
+    height: 25px;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+    border-radius: 3px;
+    background: #35B0A7;
+    color: white;
+}

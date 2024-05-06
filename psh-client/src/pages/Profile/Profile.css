@@ -1,0 +1,83 @@
+.inner-circle {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  border: 4px solid #d9d9d9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.profile-close {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+
+.circle {
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background-color: #d9d9d9;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.circle img {
+  width: 60px;
+}
+
+.left-text {
+  text-transform: uppercase;
+  color: #35b0a7;
+  font-weight: bold;
+  line-height: 35px;
+}
+
+.right-text {
+  font-weight: normal;
+  line-height: 35px;
+}
+
+.profile-info {
+  margin-top: 80px;
+  margin-left: 60px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 15px;
+  width: 350px;
+  height: auto;
+}
+
+.profile-info .left-text span,
+.profile-info .right-text span {
+  display: block;
+  flex: none;
+  order: 4;
+  flex-grow: 0;
+}
+
+.profile-left {
+  background-color: white !important;
+}
+
+.inset-0 {
+  color: #35b0a7 !important;
+  background-color: transparent !important;
+}
+
+.profileTab {
+  border-bottom: 0.5px solid #d4cdcd;
+}
+
+.smProfileTab {
+  border-bottom: none;
+}
+
+.profile-info .right-text span {
+  color: #a5a5a5;
+
+  line-height: 35px;
+}

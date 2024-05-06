@@ -1,0 +1,16 @@
+.span_name {
+  background: #35b0a7;
+  color: white;
+  overflow: hidden;
+}
+
+.meet {
+  color: #35b0a7;
+}
+.about-hero {
+  z-index: 0 !important;
+}
+.product-ecosystem {
+  z-index: 999 !important;
+  position: relative;
+}

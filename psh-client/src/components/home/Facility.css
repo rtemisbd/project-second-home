@@ -1,0 +1,21 @@
+.facility>h2 {
+    font-size: 24px;
+}
+
+.facility_img {
+    width: 180px;
+}
+
+@media screen and (max-width: 600px) {
+    .facility>h2 {
+        font-size: 18px;
+    }
+
+    .facility_img {
+        width: 80px;
+    }
+
+    .facility>p {
+        font-size: 12px;
+    }
+}

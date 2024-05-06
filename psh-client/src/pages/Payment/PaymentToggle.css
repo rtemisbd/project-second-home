@@ -1,0 +1,33 @@
+.summary {
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.summary.active {
+  background-color: #35b0a7;
+
+  color: white;
+}
+.specification {
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.specification.active {
+  background-color: #35b0a7;
+  color: white;
+}
+.author {
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.author.active {
+  background-color: #35b0a7;
+  color: white;
+}
+.customer-review {
+  padding: 5px 10px;
+  border-radius: 3px;
+}
+.customer-review.active {
+  background-color: #35b0a7;
+  color: white;
+}

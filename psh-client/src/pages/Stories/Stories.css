@@ -1,0 +1,58 @@
+.stories_tag {
+  color: #aa7a12;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 500;
+  line-height: 20px; /* 142.857% */
+}
+.stories_date {
+  color: #646464;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+}
+.stories_dot {
+  color: #646464;
+  font-family: Rubik;
+  font-size: 34px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+  margin-top: -8px;
+}
+.stories_second_p {
+  color: #000;
+  font-family: Rubik;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px; /* 142.857% */
+}
+/*----------------------------------------------------------------*/
+/* ImageOverlayTextComponent.css */
+
+.image-overlay-container {
+  position: relative;
+  width: 100%;
+  /* Set a maximum width for the overlay */
+}
+
+.image-overlay-img {
+  width: 100%;
+  height: auto;
+  display: block;
+  height: 600px;
+}
+
+.image-overlay-text {
+  position: absolute;
+  top: 70%;
+  left: 30%;
+  transform: translate(-50%, -50%);
+  text-align: start;
+  color: white;
+  width: 700px;
+}

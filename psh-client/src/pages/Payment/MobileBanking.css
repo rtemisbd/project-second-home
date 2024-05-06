@@ -1,0 +1,95 @@
+.shipping-address {
+  border: 1px solid #065644;
+}
+
+.payment_option input {
+  width: 100%;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+}
+
+label {
+  margin-bottom: 10px;
+  display: block;
+  font-size: 1.3rem !important;
+}
+
+.icon-container {
+  margin-bottom: 20px;
+  padding: 7px 0;
+  font-size: 24px;
+}
+
+hr {
+  border: 1px solid lightgrey;
+}
+
+span.price {
+  float: right;
+  color: grey;
+}
+
+.radio-button2 {
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.cash-on-delivery img {
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+}
+
+h6 {
+  font-size: 1.3rem !important;
+}
+
+.mobile-payment img {
+  margin-bottom: 5px;
+  width: 70px;
+  height: 30px;
+  cursor: pointer;
+}
+
+.bkash-info-input {
+  padding: 3px;
+}
+
+.cash-on {
+  border-radius: 3px;
+}
+
+.cash-on.active {
+  color: white;
+}
+
+.bkash {
+  border-radius: 3px;
+}
+
+.bkash.active {
+  color: white;
+}
+
+.nagad {
+  border-radius: 3px;
+}
+
+.nagad.active {
+  color: white;
+}
+
+.order-button {
+  background-color: #065644;
+  font-size: 1.3rem !important;
+}
+
+.cart-total-part {
+  font-size: 1.3rem !important;
+}
+
+.checkout-button a {
+  font-size: 1.3rem !important;
+}

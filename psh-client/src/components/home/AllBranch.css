@@ -1,0 +1,134 @@
+.module {
+  width: 100%;
+  height: 240px;
+  position: relative;
+  overflow: hidden;
+  margin: 20px;
+}
+
+.module > header {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  padding: 20px 10px;
+  background: inherit;
+
+  overflow: hidden;
+}
+
+.module > header::before {
+  content: "";
+  position: absolute;
+  top: -20px;
+  left: 0;
+  width: 200%;
+  height: 200%;
+  background: inherit;
+
+  -webkit-filter: blur(4px);
+  filter: blur(4px);
+}
+
+.module > header::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.25);
+}
+
+.module > header > i {
+  margin: 0;
+
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.module > header > p {
+  margin: 0;
+  margin-left: 10px;
+  color: white;
+  position: relative;
+  z-index: 1;
+}
+
+.note {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 38px;
+  border-radius: 0.25rem;
+  background-color: #35b0a7;
+  font-size: 14px;
+  font-weight: 700;
+  color: white;
+}
+
+.note2 {
+  position: absolute;
+  top: 8px;
+  left: 8px;
+  padding: 4px 38px;
+  border-radius: 0.25rem;
+  background-color: #c9f2ef;
+  font-size: 14px;
+  font-weight: 700;
+  color: black;
+}
+
+.splide {
+  padding: 0 !important;
+}
+
+.all_branch .splide__arrow--prev::before {
+  content: url("../../assets/img/arrow1.png");
+  /* Add your custom icon or image here */
+  border-radius: 5px 0px 0px 5px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 15px 20px;
+}
+
+.all_branch svg {
+  display: none;
+}
+
+.all_branch .splide__arrow--next::before {
+  content: url("../../assets/img/arrow2.png");
+  /* Add your custom icon or image here */
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 15px 20px;
+}
+
+/* Customize the left arrow button position */
+
+.all_branch .splide__arrow--prev {
+  left: 635px;
+  top: 290px !important;
+}
+
+/* Customize the right arrow button position */
+
+.all_branch .splide__arrow--next {
+  right: 635px;
+  top: 290px !important;
+}
+
+@media screen and (max-width: 600px) {
+  .all_branch .splide__arrow--prev {
+    /* left: 280px !important;
+    top: 280px !important; */
+    display: none !important;
+  }
+
+  .all_branch .splide__arrow--next {
+    /* right: 215px !important;
+    top: 280px !important; */
+    display: none !important;
+  }
+}

@@ -1,0 +1,27 @@
+.contact_btn {
+  padding: 13px 20px;
+  gap: 10px;
+  height: 72px;
+  background: #00bbb4;
+  border-radius: 10px;
+  color: white;
+}
+
+.contact_btn1 {
+  /* padding: 13px 120px; */
+  gap: 10px;
+
+  height: 49px;
+  background: #35b0a7;
+  border-radius: 10px;
+}
+.contact-us label {
+  font-size: 18px !important;
+}
+.contact-us-form {
+  border: 1px solid rgba(0, 0, 0, 0.23) !important;
+}
+
+.contact-us-form:focus {
+  outline: none !important;
+}

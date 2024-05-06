@@ -1,0 +1,227 @@
+.banner-left-collaberation {
+  background: #222;
+}
+
+.btn-container {
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.btn-color-mode-switch {
+  display: inline-block;
+  margin: 0px;
+  position: relative;
+}
+
+.btn-color-mode-switch > label.btn-color-mode-switch-inner {
+  margin: 0px;
+  width: 340px;
+  height: 40px;
+  background-color: white;
+  border: 1px solid black;
+  border-radius: 26px;
+  overflow: hidden;
+  position: relative;
+  transition: all 0.3s ease;
+  /*box-shadow: 0px 0px 8px 0px rgba(17, 17, 17, 0.34) inset;*/
+  display: block;
+}
+
+.btn-color-mode-switch > label.btn-color-mode-switch-inner:before {
+  content: attr(data-on);
+  position: absolute;
+  top: 10px;
+  right: 20px;
+  color: #222;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.btn-color-mode-switch > label.btn-color-mode-switch-inner:after {
+  content: attr(data-off);
+  width: 170px;
+  height: 35px;
+  background: black;
+  border-radius: 26px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  left: 2px;
+  top: 2px;
+  text-align: center;
+  transition: all 0.3s ease;
+  box-shadow: 0px 0px 6px -2px #111;
+  padding: 7px 0px;
+  color: white;
+  font-size: 14px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 20px;
+}
+
+.btn-color-mode-switch input[type="checkbox"] {
+  cursor: pointer;
+  width: 50px;
+  height: 25px;
+  opacity: 0;
+  position: absolute;
+  top: 0;
+  z-index: 1;
+  margin: 0px;
+}
+
+.btn-color-mode-switch
+  input[type="checkbox"]:checked
+  + label.btn-color-mode-switch-inner {
+  background-color: white;
+}
+
+.btn-color-mode-switch
+  input[type="checkbox"]:checked
+  + label.btn-color-mode-switch-inner:after {
+  content: attr(data-on);
+  left: 168px;
+}
+
+.btn-color-mode-switch
+  input[type="checkbox"]:checked
+  + label.btn-color-mode-switch-inner:before {
+  content: attr(data-off);
+  right: auto;
+  left: 20px;
+}
+
+/* ----------------------------------------------------------------*/
+
+.splide {
+  padding: 0 !important;
+}
+
+.all_promo2 .splide2__arrow--prev::before {
+  content: url("../../assets/img/arrow1.png");
+  /* Add your custom icon or image here */
+  border-radius: 5px 0px 0px 5px;
+  border: 1px solid #e5e5e5;
+  background: #fff;
+  padding: 15px 20px;
+}
+
+.all_promo2 svg {
+  display: none;
+}
+
+/* Customize the right arrow button position */
+
+.card-slider2 .slick-slider .slick-arrow {
+  /* display: none !important; */
+
+  margin: 190px 530px 150px 740px;
+  z-index: 999;
+  border-radius: 10%;
+  cursor: pointer;
+  width: 55px;
+  height: 46px;
+  padding: 12px 12.5px;
+  background-color: #fff;
+
+  box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5);
+}
+
+.card-slider3 .slick-slider .slick-arrow {
+  /* display: none !important; */
+
+  margin: 140px 555px 150px 720px;
+  z-index: 999;
+  border-radius: 10%;
+  cursor: pointer;
+  width: 55px;
+  height: 46px;
+  padding: 12px 12.5px;
+  background-color: #fff;
+
+  box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5);
+}
+
+.feedback_p {
+  color: #000000;
+  font-family: Rubik;
+  font-size: 16px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 24px;
+  /* 150% */
+}
+
+.only-forMobile .slick-list {
+  padding: 0 105px !important;
+  transition: padding 0.5s ease-in-out;
+}
+
+/* .card-slider2 .slick-slider .slick-arrow {
+    display: none !important;
+} */
+
+.card-slider2 .slick-slider:hover .slick-arrow {
+  display: block !important;
+}
+
+.card-slider3 .slick-slider:hover .slick-arrow {
+  display: block !important;
+}
+
+.feedback_pic {
+  margin-top: 64px;
+}
+
+@media only screen and (min-width: 760px) and (max-width: 1200px) {
+  .card-slider2 .slick-slider .slick-arrow {
+    /* display: none !important; */
+
+    margin: 150px 450px 50px 600px;
+    z-index: 999;
+    border-radius: 10%;
+    cursor: pointer;
+    width: 55px;
+    height: 46px;
+    padding: 12px 12.5px;
+    background-color: #fff;
+
+    box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5);
+  }
+
+  .card-slider3 .slick-slider .slick-arrow {
+    /* display: none !important; */
+
+    margin: 90px 450px 50px 600px;
+    z-index: 999;
+    border-radius: 10%;
+    cursor: pointer;
+    width: 55px;
+    height: 46px;
+    padding: 12px 12.5px;
+    background-color: #fff;
+
+    box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5);
+  }
+
+  .feedback_pic {
+    margin-top: 12px;
+  }
+}
+
+@media screen and (max-width: 600px) {
+  .all_promo2 .splide__arrow--prev {
+    /* left: 210px !important;
+      top: 280px !important; */
+    display: none !important;
+  }
+
+  .all_promo2 .splide__arrow--next {
+    /* right: 200px !important;
+      top: 280px !important; */
+    display: none !important;
+  }
+}

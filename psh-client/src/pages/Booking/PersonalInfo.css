@@ -1,0 +1,36 @@
+.personal-info-page label {
+  font-size: 1rem !important;
+}
+
+.personal-info {
+  border: 1px solid rgba(0, 0, 0, 0.23) !important;
+}
+
+.personal-info:focus {
+  outline: none !important;
+}
+
+.total-area input,
+button:focus {
+  outline: none !important;
+}
+
+.total-area input {
+  border: 1px solid rgba(0, 0, 0, 0.23) !important;
+  margin-left: 5px;
+  margin-right: 2px;
+}
+
+.terms input[type="checkbox"] {
+  -ms-transform: scale(1.3);
+  -webkit-transform: scale(1.3);
+  transform: scale(1.3);
+}
+
+.special-req {
+  font-size: 14px !important;
+}
+
+.terms p {
+  font-size: 14px !important;
+}

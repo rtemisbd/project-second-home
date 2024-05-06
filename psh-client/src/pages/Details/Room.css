@@ -1,0 +1,50 @@
+.room_icon_card {
+  background: #c9f2ef;
+  width: 176px;
+  height: 160px;
+  border-radius: 8px;
+  justify-content: center;
+}
+
+.show_all_btn {
+  box-sizing: border-box;
+  width: 242px;
+  height: 60px;
+  left: 0px;
+  top: 227px;
+  background: #c9f2ef;
+  border: 1px solid #00bbb4;
+  border-radius: 6px;
+  margin: 20px 0px;
+}
+
+.facility_h1 {
+  background: rgba(244, 244, 244, 1);
+  border-bottom: 1px solid rgb(214, 212, 212);
+}
+.details-img div:nth-child(4) {
+  opacity: 0.4;
+}
+.react-datepicker__view-calendar-icon input {
+  padding: 0 !important;
+  padding-left: 10px !important;
+}
+
+.seat-section .seat-img {
+  width: 200px !important;
+  height: 130px;
+}
+
+.sub-nav-sticky {
+  position: sticky !important;
+  top: 0 !important;
+}
+.duraion-count {
+  border: 1px solid rgba(0, 0, 0, 0.23) !important;
+}
+.request-visit {
+  background-color: rgb(53, 176, 167);
+  color: white;
+  padding: 8px 15px;
+  border-radius: 10px;
+}

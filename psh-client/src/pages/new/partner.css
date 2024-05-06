@@ -1,0 +1,46 @@
+.banner-left {
+  background: linear-gradient(180deg, #35b0a7 0%, #438f8d 100%);
+}
+
+.banner_partner_p {
+  color: #55d2cd;
+  /* font-size: 16px; */
+  font-style: normal;
+  font-weight: 500;
+  line-height: 24px;
+  /* 150% */
+}
+
+.banner_partner_p2 {
+  color: #fff;
+  font-family: Rubik;
+  font-size: 20px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 30px;
+  /* 150% */
+}
+
+.partner_btn {
+  display: inline-flex;
+  padding: 8px 20.66px 8px 20.34px;
+  justify-content: center;
+  align-items: center;
+  border-radius: 4px;
+  border: 1px solid #222;
+  background: #fff;
+}
+
+.banner2 {
+  border-radius: 100px 0px;
+  background: #e9f5f4;
+}
+
+.partner_li li {
+  list-style-type: disc;
+  margin-left: 30px;
+}
+
+.banner3 {
+  background: #e7f9f7;
+}

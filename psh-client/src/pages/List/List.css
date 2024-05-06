@@ -1,0 +1,65 @@
+.list-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+
+.left-side {
+  flex: 1;
+}
+.sorry_text_h1 {
+  color: #08dfc1;
+  font-family: Rubik;
+  font-size: 36px;
+  font-style: normal;
+  font-weight: 600;
+  line-height: normal;
+  text-transform: uppercase;
+}
+.sorry_text_p {
+  color: #000;
+  font-family: Rubik;
+  font-size: 24px;
+  font-style: normal;
+  font-weight: 400;
+  line-height: normal;
+}
+.right-side {
+  position: sticky;
+  top: 80px;
+  max-height: 100vh;
+
+  /* max-height: calc(100vh - 20px); */
+  /* Adjust the margin value as needed */
+  overflow: auto;
+  /* Add margin to the top */
+}
+
+/* .filter {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  border-radius: 10px;
+  padding: 33px;
+  cursor: pointer;
+  font-size: 20px;
+  overflow: auto;
+  background-color: #35b0a7;
+  box-shadow: rgba(0, 0, 0, 0.2) 0px 2px 8px 0px;
+} */
+
+.filter {
+  width: 92%;
+  display: flex;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  border-radius: 10px 10px 0px 0px;
+
+  cursor: pointer;
+  font-size: 20px;
+  overflow: auto;
+  background-color: rgb(0, 187, 180);
+}

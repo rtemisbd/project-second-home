@@ -1,0 +1,285 @@
+.search-filed {
+  width: 1100px !important;
+  /* height: 340px; */
+  padding: 10px;
+  border-radius: 10px;
+  box-shadow: 0px 4px 4px 0px rgba(0, 0, 0, 0.25);
+  z-index: 1;
+  margin-top: -225px;
+  margin-bottom: 10px;
+  background-color: white;
+}
+
+.main-search li {
+  list-style: none;
+}
+
+.main-search li span {
+  padding: 9px 25px;
+  border-radius: 5px;
+  color: rgb(11, 11, 11);
+  margin: 5px;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.title-search li {
+  list-style: none;
+}
+
+.title-search li span {
+  color: black;
+  margin: 5px;
+  cursor: pointer;
+}
+
+.tab {
+  display: inline-block;
+  padding: 2px 20px;
+  margin: 5px;
+  cursor: pointer;
+  position: relative;
+}
+
+.tab.selected::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  /* Adjust the height as needed */
+  background-color: #00bbb4;
+  /* Adjust the color as needed */
+}
+
+.renActive {
+  border-bottom: 3px solid #35b0a7;
+}
+
+.dmyNonActive {
+  background: #eafffd;
+}
+
+.dmyActive {
+  background-color: #00bbb4;
+  color: white !important;
+}
+
+/* input filed Area */
+.input_main {
+  border: 1px solid #00bbb4 !important;
+}
+
+.input_main:focus {
+  outline: 1px solid #00bbb4 !important;
+}
+
+.input-filed-area {
+  position: relative;
+  margin-top: 20px;
+}
+
+.location-icon {
+  position: absolute;
+  top: 8px;
+  left: 15px;
+}
+
+.left-date {
+  position: absolute;
+  top: 7px;
+  right: 420px;
+
+  margin: 0px !important;
+}
+
+.left-date input {
+  border: none !important;
+}
+
+.left-date input:focus {
+  outline: none !important;
+}
+
+.right-date {
+  position: absolute;
+  top: 7px;
+  right: 200px;
+  /* background-color: rgb(179, 19, 19); */
+}
+
+.right-date input {
+  border: none !important;
+}
+.sm-date input {
+  border: none !important;
+  outline: none !important;
+  background-color: transparent;
+}
+
+.right-date input:focus {
+  outline: none !important;
+}
+
+.vl {
+  border-left: 2px solid #00bbb4;
+  height: 40px;
+  position: absolute;
+  top: 0px;
+  left: 420px;
+}
+
+.vl2 {
+  border-left: 2px solid #00bbb4;
+  height: 40px;
+  position: absolute;
+  top: 0px;
+  right: 200px;
+}
+
+.arrow-icon {
+  position: absolute;
+  top: 12px;
+  right: 450px;
+}
+.arrow-icon-sm {
+  position: absolute;
+  top: 270px;
+  right: 200px;
+  /* z-index: 000 !important; */
+}
+.arrow-icon2 {
+  position: absolute;
+  top: 12px;
+  right: 240px;
+}
+
+.final-rent {
+  position: absolute;
+  top: 8px;
+  right: 25px;
+  color: rgb(0, 0, 0);
+}
+
+.day-count {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+}
+
+.month-count {
+  position: absolute;
+  top: 10px;
+  right: -5px;
+}
+
+.year-count {
+  position: absolute;
+  top: 10px;
+  right: 0px;
+}
+
+/* Styled Searching */
+.styled-search-1 li {
+  list-style: none;
+}
+
+.styled-search-1 li span {
+  padding: 9px 25px;
+  color: black;
+  margin: 5px;
+  text-decoration: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+.bedNonActive {
+  background-color: #eafffd;
+}
+
+.bedActive {
+  background-color: #00bbb4;
+  color: white !important;
+}
+
+.price-list p {
+  line-height: 6px;
+}
+
+/* Auto Suggestion */
+.auto_suggestion {
+  position: absolute;
+  top: 7px;
+  left: 40px;
+}
+
+.react-autosuggest__input {
+  border: none !important;
+}
+
+.react-autosuggest__input:focus {
+  outline: none !important;
+}
+
+.react-autosuggest__suggestions-container {
+  background-color: #f2f2f2;
+
+  padding: 0px 20px;
+}
+
+/* */
+
+.searchButton {
+  width: 100%;
+  border: 1px solid #00b4cc;
+  /* display: flex;
+  justify-content: space-around; */
+  background: #fff;
+  text-align: center;
+  color: #00b4cc;
+  border-radius: 20px;
+  padding: 8px;
+  cursor: pointer;
+  font-size: 20px;
+  overflow: auto;
+}
+.searchButtonTop {
+  /* width: 110px; */
+  border: 1px solid #00b4cc;
+  display: flex;
+  justify-content: space-around;
+  background: #fff;
+
+  color: #00b4cc;
+  border-radius: 20px;
+  /* padding: 0 15px; */
+  cursor: pointer;
+  font-size: 16px;
+  overflow: auto;
+}
+
+@media screen and (max-width: 600px) {
+  .title-search li span {
+    color: black;
+    margin: 5px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  .tab {
+    display: inline-block;
+    padding: 2px 5px;
+    margin: 5px;
+    cursor: pointer;
+    position: relative;
+    font-weight: 400;
+    font-family: "Rubik", sans-serif !important;
+    color: #000;
+  }
+}
+
+.gender-sm {
+  border: none !important;
+  outline: none !important;
+}

@@ -1,0 +1,39 @@
+.price-input {
+  border: 1px solid #ccc !important;
+  background: #fff;
+}
+
+.price-input:focus {
+  outline: none !important;
+}
+
+.Slider {
+  width: 100%;
+  height: 10px;
+  background-color: #00bbb4;
+}
+/* .Slider .track {
+  background: #e0e8e8 !important;
+} */
+
+.Slider .thumb {
+  width: 23px;
+  height: 23px;
+  cursor: pointer;
+  background-color: white;
+  border-radius: 50%;
+  border: 1px solid #000000;
+  top: -5px;
+}
+
+.radio-button[type="radio"] {
+  -ms-transform: scale(1.5);
+  -webkit-transform: scale(1.5);
+  transform: scale(1.5);
+}
+
+.checkbox-button[type="checkbox"] {
+  -ms-transform: scale(1.3);
+  -webkit-transform: scale(1.3);
+  transform: scale(1.3);
+}
