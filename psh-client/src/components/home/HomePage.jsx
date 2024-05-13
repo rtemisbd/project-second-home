@@ -16,7 +16,7 @@ import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 
-export default function Categories() {
+export default function HomePage() {
   const { data, error } = UseFetch(`property`);
   const [categories, setCategories] = useState({});
   const [activeTab, setActiveTab] = useState("All");

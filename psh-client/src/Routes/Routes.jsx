@@ -9,7 +9,7 @@ import About from "../pages/About/About";
 import SignIn from "../pages/SignUp/SignIn";
 import Room from "../pages/Details/Room";
 import Checkout from "../pages/Checkout/Checkout";
-import Category from "../pages/Single/Category";
+
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
 import BranchDetails from "../pages/Branch/BranchDetails";
@@ -87,10 +87,6 @@ export const router = createBrowserRouter([
       {
         path: "/branch/:id",
         element: <BranchDetails></BranchDetails>,
-      },
-      {
-        path: "/category",
-        element: <Category></Category>,
       },
 
       {

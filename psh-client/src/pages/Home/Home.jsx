@@ -4,14 +4,14 @@ import AllBranch from "../../components/home/AllBranch";
 
 import Review from "../../components/home/Review";
 
-import Categories from "../../components/home/Categories";
 import Facility from "../../components/home/Facility";
 import Banner from "../../components/home/Banner";
 import SearchBoxSm from "../../components/home/SearchBoxSm";
 
-import Platform from "../../components/home/Platform";
+// import Platform from "../../components/home/Platform";
 import SearchBox from "../../components/home/SearchBox";
 import BusinessPlatform from "../new/BusinessPlatform";
+import HomePage from "../../components/home/HomePage";
 
 function Home() {
   return (
@@ -22,7 +22,7 @@ function Home() {
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
         <SearchBoxSm />
         <SearchBox />
-        <Categories />
+        <HomePage />
       </div>
 
       <Facility />
