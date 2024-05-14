@@ -1,12 +1,13 @@
 import { useContext } from "react";
 import { useEffect, useState } from "react";
 import { AuthContext } from "../contexts/UserProvider";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const useUser = () => {
   const [singleUser, setSingleUser] = useState({});
   const { user } = useContext(AuthContext);
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/users/${user?._id}`)
+    fetch(`${serverBaseUrl}/users/${user?._id}`)
       .then((res) => res.json())
       .then((data) => setSingleUser(data));
   }, []);

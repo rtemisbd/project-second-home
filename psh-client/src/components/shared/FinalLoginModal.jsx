@@ -15,6 +15,7 @@ import {
 } from "../../redux/reducers/smProfileMenuSlice";
 import axios from "axios";
 import LoadingState from "../../pages/LoadingState/LoadingState";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const FinalLoginModal = () => {
   const dispatch = useDispatch();
@@ -146,7 +147,7 @@ const FinalLoginModal = () => {
     try {
       dispatch(placeLoadingShow(true));
 
-      await axios.post("https://api.psh.com.bd/api/users/send-otp", otpData);
+      await axios.post(`${serverBaseUrl}/users/send-otp`, otpData);
 
       const intervalId = setInterval(() => {
         // Decrease the remaining seconds by 1
@@ -184,7 +185,7 @@ const FinalLoginModal = () => {
     toast.success("Please Check Your Phone Number");
 
     // try {
-    //   await axios.post("https://api.psh.com.bd/api/users/send-otp", otpData);
+    //   await axios.post(`${serverBaseUrl}/users/send-otp`, otpData);
     //   const intervalId = setInterval(() => {
     //     // Decrease the remaining seconds by 1
     //     setSeconds((prevSeconds) => prevSeconds - 1);

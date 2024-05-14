@@ -2,11 +2,10 @@ import React from "react";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 
 import UseFetch from "../../hooks/useFetch";
-import LeftArrow from "../../assets/img/arrow2.png";
-import RightArrow from "../../assets/img/arrow1.png";
+
 import "./Banner.css";
 import Skeleton from "react-loading-skeleton";
-import PopUp from "./PopUp";
+// import PopUp from "./PopUp";
 
 const Banner = () => {
   const { data } = UseFetch(`banner`);

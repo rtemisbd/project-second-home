@@ -6,6 +6,7 @@ import axios from "axios";
 import JoinWaitingListModal from "./JoinWaitingListModal";
 import userEndOrder from "../../hooks/userEndOrder";
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const JoinWaitingList = () => {
   const { user } = useContext(AuthContext);
@@ -25,7 +26,7 @@ const JoinWaitingList = () => {
       setEndOrder(lastOrder);
       const fetchData = async () => {
         try {
-          const response = await axios.get("https://api.psh.com.bd/api/branch");
+          const response = await axios.get(`${serverBaseUrl}/branch`);
           SetBranch(response.data);
         } catch (error) {
           console.log(error);

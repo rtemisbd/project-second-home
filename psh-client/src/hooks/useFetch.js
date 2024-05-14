@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const UseFetch = (path) => {
   const [data, setData] = useState([]);
@@ -9,7 +10,7 @@ const UseFetch = (path) => {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const res = await axios.get(`https://api.psh.com.bd/api/${path}`);
+        const res = await axios.get(`${serverBaseUrl}/${path}`);
         setData(res.data);
       } catch (err) {
         setError(err);
@@ -22,7 +23,7 @@ const UseFetch = (path) => {
   const reFetch = async () => {
     setLoading(true);
     try {
-      const res = await axios.get(`https://api.psh.com.bd/api/${path}`);
+      const res = await axios.get(`${serverBaseUrl}/${path}`);
       setData(res.data);
     } catch (err) {
       setError(err);

@@ -28,6 +28,7 @@ import {
   DialogBody,
   DialogFooter,
 } from "@material-tailwind/react";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
@@ -96,7 +97,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
   // Get Single User
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/users/${user?._id}`)
+    fetch(`${serverBaseUrl}/users/${user?._id}`)
       .then((res) => res.json())
       .then((data) => setSingleUser(data));
   }, [user?._id]);

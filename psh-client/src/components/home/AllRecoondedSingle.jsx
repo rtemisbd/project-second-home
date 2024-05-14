@@ -18,6 +18,7 @@ import { AuthContext } from "../../contexts/UserProvider";
 import whislistIcon from "../../assets/img/Wishlist.png";
 import heart2 from "../../assets/img/Heart2.png";
 import locationIcon from "../../assets/img/branchLocationIcon.png";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
   const { user } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
   const [data, setData] = useState({});
 
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/property/${item._id}`)
+    fetch(`${serverBaseUrl}/property/${item._id}`)
       .then((res) => res.json())
       .then((data) => setData(data));
   }, [item?._id]);
@@ -43,7 +44,7 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
         propertyId,
         email,
       };
-      await axios.post("https://api.psh.com.bd/api/wishlist", product);
+      await axios.post(`${serverBaseUrl}/wishlist`, product);
       // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
@@ -68,7 +69,7 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
         email,
       };
       await axios.delete(
-        `https://api.psh.com.bd/api/wishlist/${userWishList._id}`,
+        `${serverBaseUrl}/wishlist/${userWishList._id}`,
         product
       );
       // MySwal.fire("Successfullt Remove ! wishlisted");

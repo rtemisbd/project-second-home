@@ -22,6 +22,7 @@ import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import LoadingState from "../LoadingState/LoadingState";
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);
@@ -80,7 +81,7 @@ const PersonalInfo = () => {
   }, []);
   // Get Single singleUser
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/users/${user?._id}`)
+    fetch(`${serverBaseUrl}/users/${user?._id}`)
       .then((res) => res.json())
       .then((data) => {
         setSingleUser(data);
@@ -113,7 +114,6 @@ const PersonalInfo = () => {
     }
   };
 
-  console.log(validityType);
   const bookingOrder = async (e) => {
     e.preventDefault();
 
@@ -291,7 +291,7 @@ const PersonalInfo = () => {
     try {
       dispatch(placeLoadingShow(true));
 
-      await axios.post("https://api.psh.com.bd/api/order", formData);
+      await axios.post(`${serverBaseUrl}/order`, formData);
       MySwal.fire({
         icon: "success",
         title: "Booking successfully done",

@@ -1,7 +1,8 @@
 import axios from "axios";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const API = axios.create({
-  baseURL: "https://api.psh.com.bd/api",
+  baseURL: `${serverBaseUrl}`,
 });
 
 export const logIn = (formData) => API.post("/auth/login", formData);

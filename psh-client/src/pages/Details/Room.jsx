@@ -39,6 +39,7 @@ import "./Room.css";
 import RentVisitModal from "./RentVisitModal";
 import Skeleton from "react-loading-skeleton";
 import CardSkeleton from "../../components/CardSkeleton/CardSkeleton";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Room = () => {
   const { id } = useParams();
@@ -62,9 +63,7 @@ const Room = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch(
-          `https://api.psh.com.bd/api/property/${id}`
-        );
+        const response = await fetch(`${serverBaseUrl}/property/${id}`);
         const data = await response.json();
         setData(data);
       } catch (error) {
@@ -143,7 +142,7 @@ const Room = () => {
         propertyId,
         email,
       };
-      await axios.post("https://api.psh.com.bd/api/wishlist", product);
+      await axios.post(`${serverBaseUrl}/wishlist`, product);
       // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
@@ -169,7 +168,7 @@ const Room = () => {
         email,
       };
       await axios.delete(
-        `https://api.psh.com.bd/api/wishlist/${userWishList._id}`,
+        `${serverBaseUrl}/wishlist/${userWishList._id}`,
         product
       );
       // MySwal.fire("Successfullt Remove ! wishlisted");

@@ -7,6 +7,7 @@ import "./ExtraForm.css";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
 import LoadingState from "../LoadingState/LoadingState";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const ExtraForm = ({ handleOpen }) => {
   const [image, setImage] = useState([]);
@@ -81,7 +82,7 @@ const ExtraForm = ({ handleOpen }) => {
 
     try {
       dispatch(placeLoadingShow(true));
-      await axios.post("https://api.psh.com.bd/api/extraForm", formData);
+      await axios.post(`${serverBaseUrl}/extraForm`, formData);
       dispatch(placeLoadingShow(false));
       toast.success("Thank you, we will contact you very soon");
       handleOpen(null);

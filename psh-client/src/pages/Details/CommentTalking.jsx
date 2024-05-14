@@ -8,6 +8,7 @@ import React from "react";
 import { useRef } from "react";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const CommentTalking = () => {
   const MySwal = withReactContent(Swal);
@@ -25,7 +26,7 @@ const CommentTalking = () => {
         ...data2,
         userName,
       };
-      await axios.post("https://api.psh.com.bd/api/review", product);
+      await axios.post(`${serverBaseUrl}/review`, product);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {
@@ -34,7 +35,7 @@ const CommentTalking = () => {
   };
   const handleReply = async (reviewId, replyBody) => {
     try {
-      await axios.post(`https://api.psh.com.bd/api/review/${reviewId}`, {
+      await axios.post(`${serverBaseUrl}/review/${reviewId}`, {
         body: replyBody,
         userName: userName,
       });

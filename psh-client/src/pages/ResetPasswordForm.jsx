@@ -4,6 +4,7 @@ import axios from "axios";
 import { CardBody } from "@material-tailwind/react";
 import { useDispatch } from "react-redux";
 import { placeModalShow } from "../redux/reducers/smProfileMenuSlice";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 const ResetPasswordForm = () => {
   const dispatch = useDispatch();
   const { id, token } = useParams();
@@ -12,7 +13,7 @@ const ResetPasswordForm = () => {
   const handleResetPassword = async () => {
     try {
       const response = await axios.post(
-        `https://api.psh.com.bd/api/users/reset_password/${id}/${token}`,
+        `${serverBaseUrl}/users/reset_password/${id}/${token}`,
         { newPassword }
       );
       if (response.status === 200) {

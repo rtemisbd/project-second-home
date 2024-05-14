@@ -10,6 +10,7 @@ import { AuthContext } from "../../contexts/UserProvider";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
 import LoadingState from "../LoadingState/LoadingState";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const RentVisitModal = ({ property, handleOpen2 }) => {
   const MySwal = withReactContent(Swal);
@@ -39,7 +40,7 @@ const RentVisitModal = ({ property, handleOpen2 }) => {
         branchId: property?.branch?._id,
       };
 
-      await axios.post("https://api.psh.com.bd/api/requestVisit", product);
+      await axios.post(`${serverBaseUrl}/requestVisit`, product);
       dispatch(placeLoadingShow(false));
       toast.success("Thank you, we will contact you very soon");
       formRef.current.reset();

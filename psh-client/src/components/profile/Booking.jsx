@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { UserBooking } from "./UserBooking";
 import { AuthContext } from "../../contexts/UserProvider";
 import { CancelBooking } from "./CancelBooking";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 export default function Booking() {
   const { user } = useContext(AuthContext);
@@ -35,7 +36,7 @@ export default function Booking() {
       setEndOrder(lastOrder);
       const fetchData = async () => {
         try {
-          const response = await axios.get("https://api.psh.com.bd/api/branch");
+          const response = await axios.get(`${serverBaseUrl}/branch`);
           SetBranch(response.data);
         } catch (error) {
           console.log(error);

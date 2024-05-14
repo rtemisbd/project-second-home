@@ -17,6 +17,7 @@ import DatePicker from "react-datepicker";
 
 import toast, { Toaster } from "react-hot-toast";
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 export function CancelBooking({
   handleCancelShow,
@@ -48,10 +49,7 @@ export function CancelBooking({
     };
 
     try {
-      await axios.patch(
-        `https://api.psh.com.bd/api/order/${endOrder?._id}`,
-        cancelData
-      );
+      await axios.patch(`${serverBaseUrl}/order/${endOrder?._id}`, cancelData);
       toast.success(" Requested ! I will contact You very Soon");
     } catch (err) {
       toast.error("Something Error Found.", "warning");

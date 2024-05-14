@@ -10,6 +10,7 @@ import { AuthContext } from "../../contexts/UserProvider";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
 import LoadingState from "../LoadingState/LoadingState";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const PartnerModal = ({ handleOpen }) => {
   const MySwal = withReactContent(Swal);
@@ -55,7 +56,7 @@ const PartnerModal = ({ handleOpen }) => {
         ...data2,
       };
 
-      await axios.post("https://api.psh.com.bd/api/leaseproperty", product);
+      await axios.post(`${serverBaseUrl}/leaseproperty`, product);
       dispatch(placeLoadingShow(false));
       toast.success("Thank you, we will contact you very soon");
       handleOpen(null);

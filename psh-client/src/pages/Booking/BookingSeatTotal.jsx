@@ -20,6 +20,7 @@ import "../../components/shared/Custom.css";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 import FinalLoginModal from "../../components/shared/FinalLoginModal";
 import Skeleton from "react-loading-skeleton";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const BookingSeatTotal = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
@@ -79,7 +80,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
   const [singleUser, setSingleUser] = useState({});
   // Get Single User
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/users/${user?._id}`)
+    fetch(`${serverBaseUrl}/users/${user?._id}`)
       .then((res) => res.json())
       .then((data) => setSingleUser(data));
   }, [user?._id]);

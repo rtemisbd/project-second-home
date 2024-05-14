@@ -5,6 +5,7 @@ import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { placeModalShow } from "../redux/reducers/smProfileMenuSlice";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 export const AuthContext = createContext();
 
 export const UserProvider = ({ children }) => {
@@ -24,10 +25,10 @@ export const UserProvider = ({ children }) => {
 
   const loginUser = async (email, password) => {
     try {
-      const response = await axios.post(
-        "https://api.psh.com.bd/api/users/login",
-        { email, password }
-      );
+      const response = await axios.post(`${serverBaseUrl}/users/login`, {
+        email,
+        password,
+      });
 
       if (response.status === 200) {
         toast.success("Login Success");
@@ -44,26 +45,13 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         const errorMessage = error.response.data.message;
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Login Error",
-        //   text: errorMessage || "Invalid email or password. Please try again.",
-        // });
+
         toast.error(errorMessage);
       } else if (error.response && error.response.status === 404) {
         const errorMessage = error.response.data.message;
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Login Error",
-        //   text: errorMessage || "Invalid email or password. Please try again.",
-        // });
+
         toast.error(errorMessage);
       } else {
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Login Error",
-        //   text: "An error occurred. Please try again later.",
-        // });
         toast.error("An error occurred. Please try again later.");
       }
     }
@@ -79,7 +67,7 @@ export const UserProvider = ({ children }) => {
     role
   ) => {
     try {
-      const response = await axios.post("https://api.psh.com.bd/api/users", {
+      const response = await axios.post(`${serverBaseUrl}/users`, {
         firstName,
         email,
         phone,
@@ -104,26 +92,13 @@ export const UserProvider = ({ children }) => {
     } catch (error) {
       if (error.response && error.response.status === 401) {
         const errorMessage = error.response.data.message;
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Login Error",
-        //   text: errorMessage || "Invalid email or password. Please try again.",
-        // });
+
         toast.error(errorMessage);
       } else if (error.response && error.response.status === 404) {
         const errorMessage = error.response.data.message;
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Login Error",
-        //   text: errorMessage || "Invalid email or password. Please try again.",
-        // });
+
         toast.error(errorMessage);
       } else {
-        // MySwal.fire({
-        //   icon: "error",
-        //   title: "Login Error",
-        //   text: "An error occurred. Please try again later.",
-        // });
         toast.error("An error occurred. Please try again later.");
       }
     }

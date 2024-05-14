@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { SearchContext } from "../../contexts/SearchContext";
 import SearchBox from "./SearchBox";
 import "./Header.css";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 function Header({ type }) {
   const handleFurnitureSelection = (index) => {
@@ -77,9 +78,7 @@ function Header({ type }) {
   };
   const onSuggestionsFetchRequested = async ({ value }) => {
     try {
-      const response = await fetch(
-        `https://api.psh.com.bd/api/property?query=${value}`
-      );
+      const response = await fetch(`${serverBaseUrl}/property?query=${value}`);
       const data = await response.json();
 
       const suggestions = data.map((item) => item.city);

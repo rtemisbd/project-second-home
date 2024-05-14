@@ -6,6 +6,7 @@ import userEndOrder from "../../hooks/userEndOrder";
 import { AuthContext } from "../../contexts/UserProvider";
 import PaymentDetaislModal from "./PaymentDetaislModal";
 import useUserTransactions from "../../hooks/useUserTransactions";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Payment = () => {
   const { user } = useContext(AuthContext);
@@ -26,7 +27,7 @@ const Payment = () => {
       setEndOrder(lastOrder);
       const fetchData = async () => {
         try {
-          const response = await axios.get("https://api.psh.com.bd/api/branch");
+          const response = await axios.get(`${serverBaseUrl}/branch`);
           SetBranch(response.data);
         } catch (error) {
           console.log(error);

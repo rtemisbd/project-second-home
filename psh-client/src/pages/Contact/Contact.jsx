@@ -6,6 +6,7 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Contact = () => {
   const dispatch = useDispatch();
@@ -31,7 +32,7 @@ const Contact = () => {
     };
     try {
       dispatch(placeLoadingShow(true));
-      await axios.post("https://api.psh.com.bd/api/contact", contactUsData);
+      await axios.post(`${serverBaseUrl}/contact`, contactUsData);
       toast.success(
         "Thank you. One Confirmation email will be sent to you if your appointment is confirmed from us."
       );

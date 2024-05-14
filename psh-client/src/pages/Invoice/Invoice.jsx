@@ -14,6 +14,7 @@ import "./invoice.css";
 import { BlobProvider, View } from "@react-pdf/renderer";
 import DownlaodInvoice from "./DownlaodInvoice";
 import useUserTransactions from "../../hooks/useUserTransactions";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Invoice = () => {
   const ref = useRef();
@@ -33,7 +34,7 @@ const Invoice = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
+        const response = await axios.get(`${serverBaseUrl}/branch`);
         SetBranch(response.data);
       } catch (error) {
         console.log(error);

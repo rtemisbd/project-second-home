@@ -1,10 +1,11 @@
 import { useEffect } from "react";
 import { useState } from "react";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const useBranch = () => {
   const [allBranch, setAllBranch] = useState([]);
   useEffect(() => {
-    fetch("https://api.psh.com.bd/api/branch")
+    fetch(`${serverBaseUrl}/branch`)
       .then((res) => res.json())
       .then((data) => {
         setAllBranch(data);

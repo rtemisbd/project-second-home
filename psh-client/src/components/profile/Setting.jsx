@@ -9,6 +9,7 @@ import {
 } from "@material-tailwind/react";
 
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 function Setting() {
   const [open, setOpen] = useState(0);
@@ -38,7 +39,7 @@ function Setting() {
 
     try {
       // Send a request to your server to update the user's password
-      await axios.put(`https://api.psh.com.bd/api/users/${user?.email}`, {
+      await axios.put(`${serverBaseUrl}/users/${user?.email}`, {
         userId: user._id,
         currentPassword,
         newPassword,
@@ -56,7 +57,6 @@ function Setting() {
       // Clear the form fields
       e.target.reset();
     } catch (error) {
-      console.log(error);
       MySwal.fire({
         icon: "error",
         title: "Password update failed",

@@ -23,6 +23,7 @@ import { ReviewAll } from "./ReviewAll";
 import useBranch from "../../hooks/useBranch";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import "./Room.css";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const RoomDetails = ({ id }) => {
   const { user } = useContext(AuthContext);
@@ -33,7 +34,7 @@ const RoomDetails = ({ id }) => {
   const [data, setData] = useState([]);
   const [allBranch] = useBranch(id);
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/property/${id}`)
+    fetch(`${serverBaseUrl}/property/${id}`)
       .then((res) => res.json())
       .then((data) => setData(data));
   }, [id]);
@@ -91,7 +92,7 @@ const RoomDetails = ({ id }) => {
         propertyId,
         email,
       };
-      await axios.post("https://api.psh.com.bd/api/wishlist", product);
+      await axios.post(`${serverBaseUrl}/wishlist`, product);
       // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
@@ -117,7 +118,7 @@ const RoomDetails = ({ id }) => {
         email,
       };
       await axios.delete(
-        `https://api.psh.com.bd/api/wishlist/${userWishList._id}`,
+        `${serverBaseUrl}/wishlist/${userWishList._id}`,
         product
       );
       // MySwal.fire("Successfullt Remove ! wishlisted");

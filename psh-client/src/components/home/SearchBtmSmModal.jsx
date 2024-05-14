@@ -15,6 +15,7 @@ import location from "../../assets/img/location.PNG";
 import { SearchContext } from "../../contexts/SearchContext";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import UseFetch from "../../hooks/useFetch";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const SearchBtmSmModal = () => {
   const reduxDispatch = useDispatch();
@@ -155,9 +156,7 @@ const SearchBtmSmModal = () => {
 
   const onSuggestionsFetchRequested = async ({ value }) => {
     try {
-      const response = await fetch(
-        `https://api.psh.com.bd/api/property?query=${value}`
-      );
+      const response = await fetch(`${serverBaseUrl}/property?query=${value}`);
       const data = await response.json();
 
       const suggestions = data.map((item) => item.city);

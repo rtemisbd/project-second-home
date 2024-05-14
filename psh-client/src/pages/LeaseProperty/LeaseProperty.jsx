@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const LeaseProperty = () => {
   const MySwal = withReactContent(Swal);
@@ -48,7 +49,7 @@ const LeaseProperty = () => {
         ...data2,
       };
 
-      await axios.post("https://api.psh.com.bd/api/leaseproperty", product);
+      await axios.post(`${serverBaseUrl}/leaseproperty`, product);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {

@@ -9,6 +9,7 @@ import { useLocation } from "react-router-dom";
 
 import logo from "../../assets/img/logo.png";
 import "./invoice.css";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const InvoiceModal = ({ handleOpen, size }) => {
   const ref = useRef();
@@ -23,7 +24,7 @@ const InvoiceModal = ({ handleOpen, size }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
+        const response = await axios.get(`${serverBaseUrl}/branch`);
         SetBranch(response.data);
       } catch (error) {
         console.log(error);

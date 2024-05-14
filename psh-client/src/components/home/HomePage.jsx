@@ -15,6 +15,7 @@ import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 export default function HomePage() {
   const { data, error } = UseFetch(`property`);
@@ -50,12 +51,9 @@ export default function HomePage() {
     localStorage.removeItem("bookingItem");
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get(
-          "https://api.psh.com.bd/api/category",
-          {
-            mode: "cors",
-          }
-        );
+        const { data } = await axios.get(`${serverBaseUrl}/category`, {
+          mode: "cors",
+        });
 
         const categoryMap = {};
 

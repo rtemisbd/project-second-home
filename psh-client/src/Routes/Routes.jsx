@@ -178,46 +178,6 @@ export const router = createBrowserRouter([
         path: "/personal-info",
         element: <PersonalInfo></PersonalInfo>,
       },
-      // {
-      //   path: "/personal-info/m-info",
-      //   element: <Personal></Personal>,
-      // },
-      // {
-      //   path: "/personal-info/m-edit",
-      //   element: <EditProfile></EditProfile>,
-      // },
-      // {
-      //   path: "/personal-info/m-booking",
-      //   element: <Booking></Booking>,
-      // },
-      // {
-      //   path: "/personal-info/m-payment",
-      //   element: <Payment></Payment>,
-      // },
-      // {
-      //   path: "/personal-info/m-wishlist",
-      //   element: <WishList></WishList>,
-      // },
-      // {
-      //   path: "/personal-info/m-list",
-      //   element: <TicketList></TicketList>,
-      // },
-      // {
-      //   path: "/personal-info/m-Security",
-      //   element: <Setting></Setting>,
-      // },
-      // {
-      //   path: "/personal-info/m-vouchers",
-      //   element: <Vouchers></Vouchers>,
-      // },
-      // {
-      //   path: "/personal-info/m-referral",
-      //   element: <Referral></Referral>,
-      // },
-      // {
-      //   path: "/personal-info/m-community",
-      //   element: <Community></Community>,
-      // },
     ],
   },
   {

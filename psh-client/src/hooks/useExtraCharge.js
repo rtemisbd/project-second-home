@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const useExtraCharge = ({ data }) => {
   const [extraCharge, setExtraCharge] = useState([]);
   const { isLoading, refetch } = useQuery([data], () =>
-    fetch(`https://api.psh.com.bd/api/extraCharge`, {
+    fetch(`${serverBaseUrl}/extraCharge`, {
       method: "GET",
     })
       .then((res) => res.json())

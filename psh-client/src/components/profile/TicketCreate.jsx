@@ -8,6 +8,7 @@ import withReactContent from "sweetalert2-react-content";
 
 import { AuthContext } from "../../contexts/UserProvider";
 import "./Ticket.css";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const TicketCreate = ({ handleOpen, open }) => {
   const [issue, setIssue] = useState("Air Condition Problem");
@@ -21,7 +22,7 @@ const TicketCreate = ({ handleOpen, open }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
+        const response = await axios.get(`${serverBaseUrl}/branch`);
         SetBranch(response.data);
       } catch (error) {
         console.log(error);
@@ -49,7 +50,7 @@ const TicketCreate = ({ handleOpen, open }) => {
         userNumber: user?.phone,
       };
 
-      await axios.post("https://api.psh.com.bd/api/issue", product);
+      await axios.post(`${serverBaseUrl}/issue`, product);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {

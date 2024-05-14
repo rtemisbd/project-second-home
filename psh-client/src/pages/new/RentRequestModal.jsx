@@ -11,6 +11,7 @@ import "./business.css";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import LoadingState from "../LoadingState/LoadingState";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const RentRequestModal = ({ handleOpen }) => {
   const MySwal = withReactContent(Swal);
@@ -44,7 +45,7 @@ const RentRequestModal = ({ handleOpen }) => {
         ...data2,
       };
 
-      await axios.post("https://api.psh.com.bd/api/requestRent", product);
+      await axios.post(`${serverBaseUrl}/requestRent`, product);
       dispatch(placeLoadingShow(false));
       toast.success("Thank you, we will contact you very soon");
       handleOpen(null);

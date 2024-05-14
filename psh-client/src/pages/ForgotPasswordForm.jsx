@@ -3,13 +3,14 @@ import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { CardBody } from "@material-tailwind/react";
 import toast, { Toaster } from "react-hot-toast";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const ForgotPasswordForm = () => {
   const [email, setEmail] = useState("");
 
   const handleForgotPassword = async () => {
     try {
-      await axios.post("https://api.psh.com.bd/api/users/forgot-password", {
+      await axios.post(`${serverBaseUrl}/users/forgot-password`, {
         email,
       });
       toast.success("Please Check Your Email");

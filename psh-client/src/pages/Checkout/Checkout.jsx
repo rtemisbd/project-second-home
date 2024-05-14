@@ -6,6 +6,7 @@ import { useDispatch, useSelector } from "react-redux";
 
 import { useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 function formatExpires(value) {
   return value
@@ -42,7 +43,6 @@ const Checkout = () => {
 
   const navigate = useNavigate();
 
-  console.log(getState);
   const initialInfo = {
     firstName: user.firstName,
     lastName: user.lastName,
@@ -69,7 +69,7 @@ const Checkout = () => {
       getState,
     };
 
-    fetch("https://api.psh.com.bd/api/order", {
+    fetch(`${serverBaseUrl}/order`, {
       method: "POST",
       headers: {
         "content-type": "application/json",

@@ -12,6 +12,7 @@ import { Link, useNavigate } from "react-router-dom";
 import toast, { Toaster } from "react-hot-toast";
 
 import { AuthContext } from "../../contexts/UserProvider";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 export function UserBooking({
   handleDetailsShow,
@@ -54,7 +55,7 @@ export function UserBooking({
         rating,
       };
 
-      await axios.post("https://api.psh.com.bd/api/review", product);
+      await axios.post(`${serverBaseUrl}/review`, product);
       toast.success("Thanks ! for Your Review ");
       formRef.current.reset();
       handleDetailsShow();

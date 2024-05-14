@@ -3,13 +3,14 @@ import { Link, useParams } from "react-router-dom";
 
 import Recommended from "../../components/home/Recommended";
 import UseFetch from "../../hooks/useFetch";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const EventDetails = () => {
   const { id } = useParams();
   const { data: allEvent } = UseFetch(`event`);
   const [data, setData] = useState([]);
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/event/${id}`)
+    fetch(`${serverBaseUrl}/event/${id}`)
       .then((res) => res.json())
       .then((data) => setData(data));
   }, [id]);

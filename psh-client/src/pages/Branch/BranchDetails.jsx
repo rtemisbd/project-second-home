@@ -27,7 +27,7 @@ const BranchDetails = () => {
     `branch/${id}?page=${page}&pageSize=${itemsPerPage}`
   );
   const propertyData = branchData?.property;
-  console.log("branchData", propertyData);
+
   // find Published Recommended Property
 
   useEffect(() => {

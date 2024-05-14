@@ -1,12 +1,12 @@
 import { useContext } from "react";
 import { useEffect, useState } from "react";
-import { AuthContext } from "../contexts/UserProvider";
+import { serverBaseUrl } from "../serverApi/baseUrl";
 
 const usePromos = () => {
   const [promos, setPromos] = useState([]);
 
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/promo`)
+    fetch(`${serverBaseUrl}/promo`)
       .then((res) => res.json())
       .then((data) => setPromos(data));
   }, []);

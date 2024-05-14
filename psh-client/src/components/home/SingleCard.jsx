@@ -17,6 +17,7 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import { AuthContext } from "../../contexts/UserProvider";
 import UseFetch from "../../hooks/useFetch";
 import "./SingleCard.css";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const SingleCard = ({ item }) => {
   const { user } = useContext(AuthContext);
@@ -25,7 +26,7 @@ const SingleCard = ({ item }) => {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/property/${item._id}`)
+    fetch(`${serverBaseUrl}/property/${item._id}`)
       .then((res) => res.json())
       .then((data) => setData(data));
   }, [item?._id]);
@@ -66,7 +67,7 @@ const SingleCard = ({ item }) => {
         propertyId,
         email,
       };
-      await axios.post("https://api.psh.com.bd/api/wishlist", product);
+      await axios.post(`${serverBaseUrl}/wishlist`, product);
       // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
@@ -91,7 +92,7 @@ const SingleCard = ({ item }) => {
         email,
       };
       await axios.delete(
-        `https://api.psh.com.bd/api/wishlist/${userWishList._id}`,
+        `${serverBaseUrl}/wishlist/${userWishList._id}`,
         product
       );
       // MySwal.fire("Successfullt Remove ! wishlisted");

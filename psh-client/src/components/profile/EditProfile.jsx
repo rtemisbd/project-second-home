@@ -6,6 +6,7 @@ import { Toaster, toast } from "react-hot-toast";
 
 import { AuthContext } from "../../contexts/UserProvider";
 import "./Personal.css";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 function EditProfile() {
   const { user } = useContext(AuthContext);
@@ -104,7 +105,7 @@ function EditProfile() {
             // save User Update information to the database
             try {
               await axios.patch(
-                `https://api.psh.com.bd/api/users/${user?._id}`,
+                `${serverBaseUrl}/users/${user?._id}`,
                 finalUserData
               );
               localStorage.setItem("user", JSON.stringify(finalUserData));
@@ -121,7 +122,7 @@ function EditProfile() {
             // save User Update information without card picture to the database
             try {
               await axios.patch(
-                `https://api.psh.com.bd/api/users/${user?._id}`,
+                `${serverBaseUrl}/users/${user?._id}`,
                 userUpdate
               );
               localStorage.setItem("user", JSON.stringify(userUpdate));
@@ -157,10 +158,7 @@ function EditProfile() {
           ...userUpdate,
           photos: list,
         };
-        await axios.patch(
-          `https://api.psh.com.bd/api/users/${user?._id}`,
-          product
-        );
+        await axios.patch(`${serverBaseUrl}/users/${user?._id}`, product);
 
         MySwal.fire({
           icon: "success",
