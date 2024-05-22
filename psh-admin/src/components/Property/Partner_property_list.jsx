@@ -1,6 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import img from "../../img/college/Icon material-delete.png";
-import img3 from "../../img/college/Icon feather-edit.png";
+
 import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -8,10 +7,9 @@ import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap
 import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
 import { Link } from "react-router-dom";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+
 import "./Property.css";
-import Property from "../../pages/edit/PropertyUpdate";
+
 import { AuthContext } from "../../contexts/UserProvider";
 import { BiSolidEdit } from "react-icons/bi";
 import PropertyStatusUpdate from "../../pages/edit/PropertyStatusUpdate";

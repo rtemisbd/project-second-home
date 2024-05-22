@@ -1,6 +1,5 @@
-import React, { useContext, useEffect, useState } from "react";
-import img from "../../img/college/Icon material-delete.png";
-import img3 from "../../img/college/Icon feather-edit.png";
+import React, { useState } from "react";
+
 import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -9,7 +8,6 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
 import { Link } from "react-router-dom";
 
-import "jspdf-autotable";
 import "./Property.css";
 
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
@@ -19,7 +17,7 @@ import PropertyDetails from "./PropertyDetails";
 import PropertyStatusUpdate from "../../pages/edit/PropertyStatusUpdate";
 import { useQuery } from "react-query";
 import PropertyUpdate2 from "../../pages/edit/PropertyUpdate2";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
 
 const AdminPropertyList = (props) => {

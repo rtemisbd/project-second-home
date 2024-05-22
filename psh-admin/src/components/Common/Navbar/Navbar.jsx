@@ -42,7 +42,7 @@ const Navbar = () => {
   const [isActive8, setIsActive8] = useState(false);
   const [isActive9, setIsActive9] = useState(false);
   const [isActive10, setIsActive10] = useState(false);
-  console.log(user);
+
   const handleLogOut = () => {
     logoutUser();
     navigate("/signup");

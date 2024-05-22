@@ -23,6 +23,7 @@ const SeatSchema = new mongoose.Schema({
   seatType: {
     type: String,
   },
+
   perDay: {
     type: Number,
   },
@@ -30,6 +31,25 @@ const SeatSchema = new mongoose.Schema({
     type: Number,
   },
   perYear: {
+    type: Number,
+  },
+
+  dAmountForDay: {
+    type: Number,
+  },
+  dAmountForMonth: {
+    type: Number,
+  },
+  dAmountForYear: {
+    type: Number,
+  },
+  percentOfDiscountDay: {
+    type: Number,
+  },
+  percentOfDiscountMonth: {
+    type: Number,
+  },
+  percentOfDiscountYear: {
     type: Number,
   },
   photos: {
@@ -98,7 +118,6 @@ const PropertySchema = new mongoose.Schema(
     fulldesc: {
       type: String,
     },
-
     perDay: {
       type: Number,
     },
@@ -108,9 +127,29 @@ const PropertySchema = new mongoose.Schema(
     perYear: {
       type: Number,
     },
+
+    percentOfDiscountDay: {
+      type: Number,
+    },
+    percentOfDiscountMonth: {
+      type: Number,
+    },
+    percentOfDiscountYear: {
+      type: Number,
+    },
+
+    dAmountForDay: {
+      type: Number,
+    },
+    dAmountForMonth: {
+      type: Number,
+    },
+    dAmountForYear: {
+      type: Number,
+    },
+
     bedroom: {
       type: String,
-      // enum: ["1", "2", "3", "Bunker"],
     },
     bathroom: {
       type: String,

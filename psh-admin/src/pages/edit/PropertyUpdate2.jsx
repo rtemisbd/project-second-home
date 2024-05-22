@@ -15,12 +15,70 @@ const PropertyUpdate2 = ({ data, refetch }) => {
   const [files, setFiles] = useState("");
   const MySwal = withReactContent(Swal);
   const [categories, setCategories] = useState([]);
-  const [branch, setBranch] = useState(data?.branch?.name);
-  const [seatPhotos, setSeatPhotos] = useState("");
+
   const [facilities, setFacilities] = useState([]);
   const [commonFacilities, setCommonaFacilities] = useState([]);
   const [categoryName, setCategoryName] = useState(data?.category?.name);
   const [seatOptions, setSeatOptions] = useState([]);
+
+  const [perDay, setPerDay] = useState(data?.perDay);
+  const [discountForDay, setDiscountForDay] = useState(
+    data?.percentOfDiscountDay
+  );
+  const [dAmountForDay, setDAmountForDay] = useState(data?.dAmountForDay);
+
+  const [perMonth, setPerMonth] = useState(data?.perMonth);
+  const [discountForMonth, setDiscountForMonth] = useState(
+    data?.percentOfDiscountMonth
+  );
+  const [dAmountForMonth, setDAmountForMonth] = useState(data?.dAmountForMonth);
+
+  const [perYear, setPerYear] = useState(data?.perYear);
+  const [discountForYear, setDiscountForYear] = useState(
+    data?.percentOfDiscountYear
+  );
+  const [dAmountForYear, setDAmountForYear] = useState(data?.dAmountForYear);
+
+  // Handle Discount For Room
+  useEffect(() => {
+    // For Day
+    if (perDay > 0) {
+      const discountedAmountForDay = Number(perDay - dAmountForDay);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perDay)) * 100;
+
+      setDiscountForDay(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+    // For Month
+    if (perMonth > 0) {
+      const discountedAmountForDay = Number(perMonth - dAmountForMonth);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perMonth)) * 100;
+
+      setDiscountForMonth(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+    // For Year
+    if (perYear > 0) {
+      const discountedAmountForDay = Number(perYear - dAmountForYear);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perYear)) * 100;
+
+      setDiscountForYear(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+  }, [
+    perDay,
+    dAmountForDay,
+    dAmountForMonth,
+    perMonth,
+    perYear,
+    dAmountForYear,
+  ]);
 
   // Update seatOptions whenever categoryName changes
   useEffect(() => {
@@ -45,21 +103,6 @@ const PropertyUpdate2 = ({ data, refetch }) => {
 
     fetchData();
   }, []);
-  // const getFacilityImageURL = (facilityId) => {
-
-  //   const facility = facilities.find((facility) => facility._id === facilityId);
-  //   return facility?.photos?.[0] || "";
-  // };
-
-  //   const handleCategoryChange = (event) => {
-  //     const selectedCategoryId = event.target.value;
-  //     const selectedCategory = categories.find(
-  //       (category) => category._id === selectedCategoryId
-  //     );
-  //     setCategoryName(selectedCategory?.name || "");
-  //   };
-
-  //   console.log(categoryName);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -101,6 +144,9 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         perMonth: "",
         perYear: "",
         photos: [],
+        dAmountForDay: "",
+        dAmountForMonth: "",
+        dAmountForYear: "",
         isSeatPublished: "Published",
       },
     ]);
@@ -127,20 +173,36 @@ const PropertyUpdate2 = ({ data, refetch }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const perDay = event.target?.perDay?.value;
+    const perMonth = event.target?.perMonth?.value;
+    const perYear = event.target?.perYear?.value;
+    //  Checking Ren Details
+    if (categoryName === "Shared Room") {
+      const checkSeatPrice = seatOptions.some(
+        (option) =>
+          Number(option.dAmountForDay) > Number(option.perDay) ||
+          Number(option.dAmountForMonth) > Number(option.perMonth) ||
+          Number(option.dAmountForYear) > Number(option.perYear)
+      );
+
+      if (checkSeatPrice) {
+        toast.warn("Please Check Rent Details");
+        return;
+      }
+    } else {
+      if (
+        Number(perDay) < Number(dAmountForDay) ||
+        Number(perMonth) < Number(dAmountForMonth) ||
+        Number(perYear) < Number(dAmountForYear)
+      ) {
+        toast.warn("Please Check Rent Details");
+        return;
+      }
+    }
+
     const formData = new FormData(event.target);
 
-    // const selectedFacilities = [];
-
-    // facilities.forEach((pd) => {
-    //   pd.facility.forEach((facility) => {
-    //     if (formData.getAll("facility[]").includes(facility._id)) {
-    //       selectedFacilities.push({
-    //         name: facility.name,
-    //         photos: facility.photos, // Assuming you have the URLs of the photos in an array here
-    //       });
-    //     }
-    //   });
-    // });
     const selectedFacilities = formData.getAll("facility[]");
     const selectedCommonFacilities = formData.getAll("commonfacility[]");
     const selectedSeatOptions = seatOptions?.filter(
@@ -153,6 +215,9 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         option.perMonth &&
         option.photos &&
         option.perYear &&
+        option.dAmountForDay &&
+        option.dAmountForMonth &&
+        option.dAmountForYear &&
         option.isSeatPublished
     );
 
@@ -168,7 +233,6 @@ const PropertyUpdate2 = ({ data, refetch }) => {
       totalPerson: formData.get("totalPerson"),
       available: formData.get("available"), // Corrected typo
       rating: formData.get("rating"),
-      perDay: formData.get("perDay"),
       desc: formData.get("desc"),
       fulldesc: formData.get("fulldesc"),
       bedroom: formData.get("bedroom"),
@@ -176,8 +240,16 @@ const PropertyUpdate2 = ({ data, refetch }) => {
       car: formData.get("car"),
       bike: formData.get("bike"),
       pet: formData.get("pet"),
+      perDay: formData.get("perDay"),
       perMonth: formData.get("perMonth"),
       perYear: formData.get("perYear"),
+      dAmountForDay: dAmountForDay,
+      dAmountForMonth: dAmountForMonth,
+      dAmountForYear: dAmountForYear,
+      percentOfDiscountDay: discountForDay,
+      percentOfDiscountMonth: discountForMonth,
+      percentOfDiscountYear: discountForYear,
+
       categoryId: formData.get("category"),
       branchId: formData.get("branch"),
       recommended: formData.get("recommended"),
@@ -206,9 +278,9 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -223,9 +295,9 @@ const PropertyUpdate2 = ({ data, refetch }) => {
             Object.values(photos).map(async (file) => {
               const data = new FormData();
               data.append("file", file);
-              data.append("upload_preset", "upload");
+              data.append("upload_preset", "rtemis");
               const uploadRes = await axios.post(
-                "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+                "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
                 data
               );
 
@@ -254,7 +326,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         `https://api.psh.com.bd/api/property/${data?._id}`,
         product
       );
-      MySwal.fire("successfully Update", "success");
+      MySwal.fire("Property successfully Update");
       // formRef.current.reset();
       refetch();
     } catch (err) {
@@ -739,7 +811,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                       </h2>
                       <div className="col-md-12 form_sub_stream">
                         <div className="row p-4">
-                          <div className="col-md-4 form_sub_stream">
+                          <div className="col-md-6 form_sub_stream">
                             <label
                               htmlFor="inputState"
                               className="form-label profile_label3 "
@@ -754,9 +826,30 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                               placeholder="Per Day"
                               required
                               defaultValue={data?.perDay}
+                              onChange={(e) => setPerDay(e.target.value)}
+                              onWheel={(e) => e.target.blur()}
                             />
                           </div>
-                          <div className="col-md-4 form_sub_stream">
+
+                          <div className="col-md-6 form_sub_stream">
+                            <label
+                              htmlFor="inputState"
+                              className="form-label profile_label3 "
+                            >
+                              After Discount Amount (Day)
+                            </label>
+
+                            <input
+                              type="number"
+                              name="discountAmountForDay"
+                              className="main_form w-100"
+                              placeholder="After Discount Amount (Day)"
+                              defaultValue={dAmountForDay}
+                              onChange={(e) => setDAmountForDay(e.target.value)}
+                              onWheel={(e) => e.target.blur()}
+                            />
+                          </div>
+                          <div className="col-md-6 form_sub_stream">
                             <label
                               htmlFor="inputState"
                               className="form-label profile_label3 "
@@ -771,9 +864,32 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                               placeholder="Per Month"
                               required
                               defaultValue={data?.perMonth}
+                              onChange={(e) => setPerMonth(e.target.value)}
+                              onWheel={(e) => e.target.blur()}
                             />
                           </div>
-                          <div className="col-md-4 form_sub_stream">
+
+                          <div className="col-md-6 form_sub_stream">
+                            <label
+                              htmlFor="inputState"
+                              className="form-label profile_label3 "
+                            >
+                              After Discount Amount(Month)
+                            </label>
+
+                            <input
+                              type="number"
+                              name="discountAmountForMonth"
+                              className="main_form w-100"
+                              onChange={(e) =>
+                                setDAmountForMonth(e.target.value)
+                              }
+                              placeholder="After Discount Amount"
+                              defaultValue={dAmountForMonth}
+                              onWheel={(e) => e.target.blur()}
+                            />
+                          </div>
+                          <div className="col-md-6 form_sub_stream">
                             <label
                               htmlFor="inputState"
                               className="form-label profile_label3 "
@@ -787,7 +903,29 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                               name="perYear"
                               placeholder="Per Year"
                               required
-                              defaultValue={data?.perYear}
+                              onChange={(e) => setPerYear(e.target.value)}
+                              onWheel={(e) => e.target.blur()}
+                              defaultValue={dAmountForYear}
+                            />
+                          </div>
+                          <div className="col-md-6 form_sub_stream">
+                            <label
+                              htmlFor="inputState"
+                              className="form-label profile_label3 "
+                            >
+                              After Discount Amount (Year)
+                            </label>
+
+                            <input
+                              type="number"
+                              name="discountAmountForYear"
+                              className="main_form w-100"
+                              placeholder="After Discount Amount"
+                              onChange={(e) =>
+                                setDAmountForYear(e.target.value)
+                              }
+                              defaultValue={data?.dAmountForYear}
+                              onWheel={(e) => e.target.blur()}
                             />
                           </div>
                         </div>
@@ -864,15 +1002,10 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                   defaultValue={option?.seatNumber}
                                 />
                               </div>
-                              <div className="col-md-3 form_sub_stream">
+                              <div className="col-md-12 form_sub_stream">
                                 <label className="profile_label3">
                                   Seat Type
                                 </label>
-                                {/* <input
-                          type="text"
-                          className="main_form w-100"
-                          value={option.seatNumber}
-                        /> */}
 
                                 <select
                                   name="WiFi"
@@ -894,14 +1027,13 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                 </select>
                               </div>
 
-                              <div className="col-md-3 form_sub_stream">
+                              <div className="col-md-6 form_sub_stream">
                                 <label className="profile_label3">
                                   Per Day
                                 </label>
                                 <input
                                   type="text"
                                   className="main_form w-100"
-                                  // value={option.perDay}
                                   onChange={(e) => {
                                     const updatedOptions = [...seatOptions];
                                     updatedOptions[index].perDay =
@@ -913,14 +1045,33 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                   required
                                 />
                               </div>
-                              <div className="col-md-3 form_sub_stream">
+
+                              <div className="col-md-6 form_sub_stream">
+                                <label className="profile_label3">
+                                  After Discount Amount(Day)
+                                </label>
+                                <input
+                                  type="number"
+                                  className="main_form w-100"
+                                  defaultValue={option.dAmountForDay}
+                                  onChange={(e) => {
+                                    const updatedOptions = [...seatOptions];
+                                    updatedOptions[index].dAmountForDay =
+                                      e.target.value;
+                                    setSeatOptions(updatedOptions);
+                                  }}
+                                  placeholder=" After Discount Amount(Day)"
+                                  required
+                                  onWheel={(e) => e.target.blur()}
+                                />
+                              </div>
+                              <div className="col-md-6 form_sub_stream">
                                 <label className="profile_label3">
                                   Per Month
                                 </label>
                                 <input
                                   type="text"
                                   className="main_form w-100"
-                                  // value={option.perMonth}
                                   onChange={(e) => {
                                     const updatedOptions = [...seatOptions];
                                     updatedOptions[index].perMonth =
@@ -932,14 +1083,32 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                   required
                                 />
                               </div>
-                              <div className="col-md-3 form_sub_stream">
+                              <div className="col-md-6 form_sub_stream">
+                                <label className="profile_label3">
+                                  After Discount Amount(Month)
+                                </label>
+                                <input
+                                  type="number"
+                                  className="main_form w-100"
+                                  defaultValue={option.dAmountForMonth}
+                                  onChange={(e) => {
+                                    const updatedOptions = [...seatOptions];
+                                    updatedOptions[index].dAmountForMonth =
+                                      e.target.value;
+                                    setSeatOptions(updatedOptions);
+                                  }}
+                                  onWheel={(e) => e.target.blur()}
+                                  placeholder="After Discount Amount(Month)"
+                                  required
+                                />
+                              </div>
+                              <div className="col-md-6 form_sub_stream">
                                 <label className="profile_label3">
                                   Per Year
                                 </label>
                                 <input
                                   type="text"
                                   className="main_form w-100"
-                                  // value={option.perYear}
                                   onChange={(e) => {
                                     const updatedOptions = [...seatOptions];
                                     updatedOptions[index].perYear =
@@ -951,22 +1120,28 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                   required
                                 />
                               </div>
-                              {/* <div className="col-md-4 form_sub_stream">
-                        <label className="profile_label3">Description</label>
-                        <input
-                          type="text"
-                          className="main_form w-100"
-                          value={option.description}
-                          onChange={(e) => {
-                            const updatedOptions = [...seatOptions];
-                            updatedOptions[index].description =
-                              e.target.value;
-                            setSeatOptions(updatedOptions);
-                          }}
-                        />
-                      </div> */}
+
+                              <div className="col-md-6 form_sub_stream">
+                                <label className="profile_label3">
+                                  After Discount Amount(Year)
+                                </label>
+                                <input
+                                  type="number"
+                                  className="main_form w-100"
+                                  defaultValue={option.dAmountForYear}
+                                  onChange={(e) => {
+                                    const updatedOptions = [...seatOptions];
+                                    updatedOptions[index].dAmountForYear =
+                                      e.target.value;
+                                    setSeatOptions(updatedOptions);
+                                  }}
+                                  placeholder="After Discount Amount(Year)"
+                                  required
+                                  onWheel={(e) => e.target.blur()}
+                                />
+                              </div>
                               <div
-                                className="col-md-4 form_sub_stream"
+                                className="col-md-6 form_sub_stream"
                                 key={index}
                               >
                                 <label
@@ -993,7 +1168,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                   }
                                 />
                               </div>
-                              <div className="col-md-3 form_sub_stream">
+                              <div className="col-md-4 form_sub_stream">
                                 <label className="profile_label3">Status</label>
 
                                 <select

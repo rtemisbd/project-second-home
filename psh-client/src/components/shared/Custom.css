@@ -385,3 +385,7 @@
 .ReactModal__Overlay {
   inset: none !important;
 }
+
+.food_including label {
+  font-size: 12px !important;
+}

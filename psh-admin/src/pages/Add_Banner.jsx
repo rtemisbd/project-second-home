@@ -18,9 +18,9 @@ const Add_Banner = () => {
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -51,14 +51,14 @@ const Add_Banner = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Name
+                  Banner Tittle
                 </label>
 
                 <input
                   type="text"
                   className="main_form w-100"
                   name="name"
-                  placeholder="Banner Name"
+                  placeholder="Banner Tittle"
                 />
               </div>
               <div className="col-md-12 form_sub_stream">

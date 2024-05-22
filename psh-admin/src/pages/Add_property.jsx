@@ -4,18 +4,74 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { AuthContext } from "../contexts/UserProvider";
 import { useContext } from "react";
+
+import { ToastContainer, toast } from "react-toastify";
+
 const Add_property = () => {
   const { user } = useContext(AuthContext);
-
+  const [isLoading, setIsLoading] = useState(false);
   const [files, setFiles] = useState("");
   const MySwal = withReactContent(Swal);
   const [categories, setCategories] = useState([]);
   const [branch, setBranch] = useState([]);
-  const [seatPhotos, setSeatPhotos] = useState("");
+
   const [facilities, setFacilities] = useState([]);
   const [commonFacilities, setCommonaFacilities] = useState([]);
   const [categoryName, setCategoryName] = useState("");
   const [seatOptions, setSeatOptions] = useState([]);
+
+  const [perDay, setPerDay] = useState(0);
+  const [discountForDay, setDiscountForDay] = useState(null);
+  const [dAmountForDay, setDAmountForDay] = useState(0);
+
+  const [perMonth, setPerMonth] = useState(0);
+  const [discountForMonth, setDiscountForMonth] = useState(0);
+  const [dAmountForMonth, setDAmountForMonth] = useState(0);
+
+  const [perYear, setPerYear] = useState(0);
+  const [discountForYear, setDiscountForYear] = useState(0);
+  const [dAmountForYear, setDAmountForYear] = useState(0);
+
+  // Handle Discount For Room
+  useEffect(() => {
+    // For Day
+    if (perDay > 0) {
+      const discountedAmountForDay = Number(perDay - dAmountForDay);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perDay)) * 100;
+
+      setDiscountForDay(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+    // For Month
+    if (perMonth > 0) {
+      const discountedAmountForDay = Number(perMonth - dAmountForMonth);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perMonth)) * 100;
+
+      setDiscountForMonth(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+    // For Year
+    if (perYear > 0) {
+      const discountedAmountForDay = Number(perYear - dAmountForYear);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perYear)) * 100;
+
+      setDiscountForYear(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+  }, [
+    perDay,
+    dAmountForDay,
+    dAmountForMonth,
+    perMonth,
+    perYear,
+    dAmountForYear,
+  ]);
 
   // Update seatOptions whenever categoryName changes
   useEffect(() => {
@@ -27,8 +83,13 @@ const Add_property = () => {
           seatNumber: "",
           seatType: "",
           perDay: "",
+
           perMonth: "",
           perYear: "",
+          dAmountForDay: "",
+          dAmountForMonth: "",
+          dAmountForYear: "",
+
           photos: [],
         },
       ]);
@@ -37,7 +98,6 @@ const Add_property = () => {
     }
   }, [categoryName]);
 
-  console.log("seatOptions", seatOptions);
   const formRef = useRef(null);
   useEffect(() => {
     const fetchData = async () => {
@@ -51,11 +111,6 @@ const Add_property = () => {
 
     fetchData();
   }, []);
-  // const getFacilityImageURL = (facilityId) => {
-
-  //   const facility = facilities.find((facility) => facility._id === facilityId);
-  //   return facility?.photos?.[0] || "";
-  // };
 
   const handleCategoryChange = (event) => {
     const selectedCategoryId = event.target.value;
@@ -64,7 +119,6 @@ const Add_property = () => {
     );
     setCategoryName(selectedCategory?.name || "");
   };
-  console.log(categoryName);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -117,6 +171,9 @@ const Add_property = () => {
         perDay: "",
         perMonth: "",
         perYear: "",
+        dAmountForDay: "",
+        dAmountForMonth: "",
+        dAmountForYear: "",
         photos: [],
       },
     ]);
@@ -132,26 +189,42 @@ const Add_property = () => {
       MySwal.fire("You must need to select one seat.", "warning");
       return;
     }
-    const updatedOptions = seatOptions.filter((_, idx) => idx !== index);
+    const updatedOptions = seatOptions.slice(0, -1);
     setSeatOptions(updatedOptions);
   };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const perDay = event.target?.perDay?.value;
+    const perMonth = event.target?.perMonth?.value;
+    const perYear = event.target?.perYear?.value;
+    //  Checking Ren Details
+    if (categoryName === "Shared Room") {
+      const checkSeatPrice = seatOptions.some(
+        (option) =>
+          Number(option.dAmountForDay) > Number(option.perDay) ||
+          Number(option.dAmountForMonth) > Number(option.perMonth) ||
+          Number(option.dAmountForYear) > Number(option.perYear)
+      );
+
+      if (checkSeatPrice) {
+        toast.warn("Please Check Rent Details");
+        return;
+      }
+    } else {
+      if (
+        Number(perDay) < Number(dAmountForDay) ||
+        Number(perMonth) < Number(dAmountForMonth) ||
+        Number(perYear) < Number(dAmountForYear)
+      ) {
+        toast.warn("Please Check Rent Details");
+        return;
+      }
+    }
+
     const formData = new FormData(event.target);
 
-    // const selectedFacilities = [];
-
-    // facilities.forEach((pd) => {
-    //   pd.facility.forEach((facility) => {
-    //     if (formData.getAll("facility[]").includes(facility._id)) {
-    //       selectedFacilities.push({
-    //         name: facility.name,
-    //         photos: facility.photos, // Assuming you have the URLs of the photos in an array here
-    //       });
-    //     }
-    //   });
-    // });
     const selectedFacilities = formData.getAll("facility[]");
     const selectedCommonFacilities = formData.getAll("commonfacility[]");
     const selectedSeatOptions = seatOptions?.filter(
@@ -162,8 +235,11 @@ const Add_property = () => {
         option.seatType &&
         option.perDay &&
         option.perMonth &&
+        option.perYear &&
         option.photos &&
-        option.perYear
+        option.dAmountForDay &&
+        option.dAmountForMonth &&
+        option.dAmountForYear
     );
 
     const data2 = {
@@ -178,7 +254,6 @@ const Add_property = () => {
       totalPerson: formData.get("totalPerson"),
       available: formData.get("available"), // Corrected typo
       rating: formData.get("rating"),
-      perDay: formData.get("perDay"),
       desc: formData.get("desc"),
       fulldesc: formData.get("fulldesc"),
       bedroom: formData.get("bedroom"),
@@ -186,8 +261,16 @@ const Add_property = () => {
       car: formData.get("car"),
       bike: formData.get("bike"),
       pet: formData.get("pet"),
+      perDay: formData.get("perDay"),
       perMonth: formData.get("perMonth"),
       perYear: formData.get("perYear"),
+      dAmountForDay: dAmountForDay,
+      dAmountForMonth: dAmountForMonth,
+      dAmountForYear: dAmountForYear,
+      percentOfDiscountDay: discountForDay,
+      percentOfDiscountMonth: discountForMonth,
+      percentOfDiscountYear: discountForYear,
+
       categoryId: formData.get("category"),
       branchId: formData.get("branch"),
       recommended: formData.get("recommended"),
@@ -212,13 +295,14 @@ const Add_property = () => {
     };
 
     try {
+      setIsLoading(true);
       const list = await Promise.all(
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -233,9 +317,9 @@ const Add_property = () => {
             Object.values(photos).map(async (file) => {
               const data = new FormData();
               data.append("file", file);
-              data.append("upload_preset", "upload");
+              data.append("upload_preset", "rtemis");
               const uploadRes = await axios.post(
-                "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+                "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
                 data
               );
 
@@ -247,7 +331,7 @@ const Add_property = () => {
         })
       );
 
-      const product = {
+      const property = {
         ...data2,
         photos: list,
         seats: seatOptions?.map((option, index) => ({
@@ -256,15 +340,22 @@ const Add_property = () => {
         })),
       };
 
-      if (product?.photos?.length < 5) {
+      if (property?.photos?.length < 5) {
         return MySwal.fire("Sorry ! Minimum 5 Photo Required.", "warning");
       }
 
-      await axios.post("https://api.psh.com.bd/api/property", product);
-      MySwal.fire("Good job!", "successfully added", "success");
+      await axios.post("https://api.psh.com.bd/api/property", property);
+      MySwal.fire("Your Property!", "successfully added", "success");
+      setDiscountForDay(0);
+      setDiscountForMonth(0);
+      setDiscountForYear(0);
+      setDAmountForDay(0);
+      setDAmountForMonth(0);
+      setDAmountForYear(0);
       formRef.current.reset();
+      setIsLoading(false);
     } catch (err) {
-      console.log(err);
+      setIsLoading(false);
       MySwal.fire("Something Error Found.", "warning");
     }
   };
@@ -285,8 +376,8 @@ const Add_property = () => {
                   onChange={handleCategoryChange}
                 >
                   <option>Select Type</option>
-                  {categories.map((pd) => (
-                    <option key={pd._id} value={pd._id}>
+                  {categories.map((pd, index) => (
+                    <option key={index} value={pd._id}>
                       {pd.name}
                     </option>
                   ))}
@@ -304,8 +395,8 @@ const Add_property = () => {
                     required
                   >
                     <option value="">Select Type</option>
-                    {branch.map((category) => (
-                      <option key={category._id} value={category._id}>
+                    {branch.map((category, index) => (
+                      <option key={index} value={category._id}>
                         {category.name}
                       </option>
                     ))}
@@ -381,13 +472,13 @@ const Add_property = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Room Name
+                  Room Title
                 </label>
                 <input
                   type="text"
                   className="main_form w-100"
                   name="name"
-                  placeholder="Room Name"
+                  placeholder=" Room Title"
                   required
                 />
               </div>
@@ -463,13 +554,6 @@ const Add_property = () => {
                     >
                       Bed Type
                     </label>
-                    {/* <input
-                      type="text"
-                      className="main_form w-100"
-                      name="bedType"
-                      placeholder="Bed Type"
-                      required
-                    /> */}
 
                     <select
                       name="bedType"
@@ -552,14 +636,13 @@ const Add_property = () => {
                     <h2 className="profile_label3  mt-4">Regular</h2>
                     <div>
                       {commonFacilities.map((facility) => (
-                        <>
+                        <React.Fragment key={facility._id}>
                           <input
                             type="checkbox"
                             id={facility._id}
                             name="commonfacility[]"
                             value={facility._id}
                             multiple
-                            key={facility._id}
                             className="me-1"
                           />
                           <label className="ms-2 mt-1" htmlFor={facility._id}>
@@ -571,7 +654,7 @@ const Add_property = () => {
                             style={{ width: 20 }}
                             className="mx-3"
                           />
-                        </>
+                        </React.Fragment>
                       ))}
                     </div>
                   </div>
@@ -580,8 +663,8 @@ const Add_property = () => {
                   categoryName === "Shared Room" ? (
                     <>
                       <div className="row">
-                        {facilities.map((facility) => (
-                          <>
+                        {facilities.map((facility, index) => (
+                          <React.Fragment key={index}>
                             {facility.name === "Common" ? ( // Add this condition to check the facility name
                               <>
                                 <h2 className="profile_label3">
@@ -590,7 +673,7 @@ const Add_property = () => {
 
                                 <div>
                                   {facility.facility.map((pd) => (
-                                    <>
+                                    <React.Fragment key={pd._id}>
                                       <input
                                         type="checkbox"
                                         id={pd._id}
@@ -613,12 +696,12 @@ const Add_property = () => {
                                         style={{ width: 20 }}
                                         className="mx-3"
                                       />
-                                    </>
+                                    </React.Fragment>
                                   ))}
                                 </div>
                               </>
                             ) : null}
-                          </>
+                          </React.Fragment>
                         ))}
                       </div>
                     </>
@@ -626,22 +709,21 @@ const Add_property = () => {
                     ""
                   )}
                   <div className="row mt-2">
-                    {facilities.map((facility) => (
-                      <>
+                    {facilities.map((facility, index) => (
+                      <React.Fragment key={index}>
                         {facility.name !== "Common" ? ( // Add this condition to check the facility name
                           <>
                             <h2 className="profile_label3">{facility.name}</h2>
 
                             <div>
                               {facility.facility.map((pd) => (
-                                <>
+                                <React.Fragment key={pd._id}>
                                   <input
                                     type="checkbox"
                                     id={pd._id}
                                     name="facility[]"
                                     value={pd._id}
                                     multiple
-                                    key={pd._id}
                                     className="me-1"
                                   />
 
@@ -654,12 +736,12 @@ const Add_property = () => {
                                     style={{ width: 20 }}
                                     className="mx-3"
                                   />
-                                </>
+                                </React.Fragment>
                               ))}
                             </div>
                           </>
                         ) : null}
-                      </>
+                      </React.Fragment>
                     ))}
                   </div>
                 </div>
@@ -681,13 +763,55 @@ const Add_property = () => {
                         </label>
 
                         <input
-                          type="text"
+                          type="number"
                           className="main_form w-100"
                           name="perDay"
                           placeholder="Per Day"
+                          onChange={(e) => setPerDay(e.target.value)}
                           required
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
+                      {/* Discount For Day */}
+
+                      <div className="col-md-4 form_sub_stream">
+                        <label
+                          htmlFor="inputState"
+                          className="form-label profile_label3 "
+                        >
+                          After Discount Amount (Day)
+                        </label>
+
+                        <input
+                          type="number"
+                          name="discountAmountForDay"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount (Day)"
+                          onChange={(e) => setDAmountForDay(e.target.value)}
+                          onWheel={(e) => e.target.blur()}
+                        />
+                      </div>
+
+                      <div className="col-md-4 form_sub_stream">
+                        <label
+                          htmlFor="inputState"
+                          className="form-label profile_label3 "
+                        >
+                          Discount For Day
+                        </label>
+
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          value={
+                            discountForDay > 0 ? `${discountForDay} %` : ""
+                          }
+                          name="percentOfDiscountDay"
+                          placeholder=" Discount For Day"
+                          disabled
+                        />
+                      </div>
+
                       <div className="col-md-4 form_sub_stream">
                         <label
                           htmlFor="inputState"
@@ -697,13 +821,56 @@ const Add_property = () => {
                         </label>
 
                         <input
-                          type="text"
+                          type="number"
                           className="main_form w-100"
                           name="perMonth"
                           placeholder="Per Month"
+                          onChange={(e) => setPerMonth(e.target.value)}
                           required
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
+
+                      {/* Discount For Months */}
+
+                      <div className="col-md-4 form_sub_stream">
+                        <label
+                          htmlFor="inputState"
+                          className="form-label profile_label3 "
+                        >
+                          After Discount Amount(Month)
+                        </label>
+
+                        <input
+                          type="number"
+                          name="discountAmountForMonth"
+                          className="main_form w-100"
+                          onChange={(e) => setDAmountForMonth(e.target.value)}
+                          placeholder="After Discount Amount"
+                          onWheel={(e) => e.target.blur()}
+                        />
+                      </div>
+
+                      <div className="col-md-4 form_sub_stream">
+                        <label
+                          htmlFor="inputState"
+                          className="form-label profile_label3 "
+                        >
+                          Discount For Month
+                        </label>
+
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          name="percentOfDiscountMonth"
+                          placeholder=" Discount For Day"
+                          value={
+                            discountForMonth > 0 ? `${discountForMonth} %` : ""
+                          }
+                          disabled
+                        />
+                      </div>
+
                       <div className="col-md-4 form_sub_stream">
                         <label
                           htmlFor="inputState"
@@ -713,11 +880,53 @@ const Add_property = () => {
                         </label>
 
                         <input
-                          type="text"
+                          type="number"
                           className="main_form w-100"
                           name="perYear"
                           placeholder="Per Year"
                           required
+                          onChange={(e) => setPerYear(e.target.value)}
+                          onWheel={(e) => e.target.blur()}
+                        />
+                      </div>
+
+                      {/* Discount For Year */}
+
+                      <div className="col-md-4 form_sub_stream">
+                        <label
+                          htmlFor="inputState"
+                          className="form-label profile_label3 "
+                        >
+                          After Discount Amount (Year)
+                        </label>
+
+                        <input
+                          type="number"
+                          name="discountAmountForYear"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount"
+                          onChange={(e) => setDAmountForYear(e.target.value)}
+                          onWheel={(e) => e.target.blur()}
+                        />
+                      </div>
+
+                      <div className="col-md-4 form_sub_stream">
+                        <label
+                          htmlFor="inputState"
+                          className="form-label profile_label3 "
+                        >
+                          Discount For Year
+                        </label>
+
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          name="percentOfDiscountYear"
+                          placeholder=" Discount For Year"
+                          value={
+                            discountForYear > 0 ? `${discountForYear} %` : ""
+                          }
+                          disabled
                         />
                       </div>
                     </div>
@@ -746,11 +955,11 @@ const Add_property = () => {
                   <h2 className="profile_label3 profile_bg">Seat Details</h2>
                   <div className="row card_div p-4">
                     {seatOptions.map((option, index) => (
-                      <>
+                      <React.Fragment key={index}>
                         <h2 className="profile_label3 profile_bg">
-                          Seat No{index + 1}
+                          Seat No: {index + 1}
                         </h2>
-                        <div className="col-md-6 form_sub_stream" key={index}>
+                        <div className="col-md-6 form_sub_stream">
                           <label className="profile_label3">Seat Name</label>
                           <input
                             type="text"
@@ -766,7 +975,7 @@ const Add_property = () => {
                           />
                         </div>
 
-                        <div className="col-md-6 form_sub_stream">
+                        <div className="col-md-3 form_sub_stream">
                           <label className="profile_label3">Seat Number</label>
                           <input
                             type="text"
@@ -783,11 +992,6 @@ const Add_property = () => {
                         </div>
                         <div className="col-md-3 form_sub_stream">
                           <label className="profile_label3">Seat Type</label>
-                          {/* <input
-                            type="text"
-                            className="main_form w-100"
-                            value={option.seatNumber}
-                          /> */}
 
                           <select
                             name="WiFi"
@@ -807,10 +1011,10 @@ const Add_property = () => {
                           </select>
                         </div>
 
-                        <div className="col-md-3 form_sub_stream">
+                        <div className="col-md-6 form_sub_stream">
                           <label className="profile_label3">Per Day</label>
                           <input
-                            type="text"
+                            type="number"
                             className="main_form w-100"
                             value={option.perDay}
                             onChange={(e) => {
@@ -820,12 +1024,34 @@ const Add_property = () => {
                             }}
                             placeholder="Per Day Price"
                             required
+                            onWheel={(e) => e.target.blur()}
                           />
                         </div>
-                        <div className="col-md-3 form_sub_stream">
+
+                        <div className="col-md-6 form_sub_stream">
+                          <label className="profile_label3">
+                            After Discount Amount(Day)
+                          </label>
+                          <input
+                            type="number"
+                            className="main_form w-100"
+                            value={option.dAmountForDay}
+                            onChange={(e) => {
+                              const updatedOptions = [...seatOptions];
+                              updatedOptions[index].dAmountForDay =
+                                e.target.value;
+                              setSeatOptions(updatedOptions);
+                            }}
+                            placeholder=" After Discount Amount(Day)"
+                            required
+                            onWheel={(e) => e.target.blur()}
+                          />
+                        </div>
+
+                        <div className="col-md-6 form_sub_stream">
                           <label className="profile_label3">Per Month</label>
                           <input
-                            type="text"
+                            type="number"
                             className="main_form w-100"
                             value={option.perMonth}
                             onChange={(e) => {
@@ -835,12 +1061,33 @@ const Add_property = () => {
                             }}
                             placeholder="Per Month Price"
                             required
+                            onWheel={(e) => e.target.blur()}
                           />
                         </div>
-                        <div className="col-md-3 form_sub_stream">
+
+                        <div className="col-md-6 form_sub_stream">
+                          <label className="profile_label3">
+                            After Discount Amount(Month)
+                          </label>
+                          <input
+                            type="number"
+                            className="main_form w-100"
+                            value={option.dAmountForMonth}
+                            onChange={(e) => {
+                              const updatedOptions = [...seatOptions];
+                              updatedOptions[index].dAmountForMonth =
+                                e.target.value;
+                              setSeatOptions(updatedOptions);
+                            }}
+                            onWheel={(e) => e.target.blur()}
+                            placeholder="After Discount Amount(Month)"
+                            required
+                          />
+                        </div>
+                        <div className="col-md-6 form_sub_stream">
                           <label className="profile_label3">Per Year</label>
                           <input
-                            type="text"
+                            type="number"
                             className="main_form w-100"
                             value={option.perYear}
                             onChange={(e) => {
@@ -850,23 +1097,29 @@ const Add_property = () => {
                             }}
                             placeholder="Per Year Price"
                             required
+                            onWheel={(e) => e.target.blur()}
                           />
                         </div>
-                        {/* <div className="col-md-4 form_sub_stream">
-                          <label className="profile_label3">Description</label>
+                        <div className="col-md-3 form_sub_stream">
+                          <label className="profile_label3">
+                            After Discount Amount(Year)
+                          </label>
                           <input
-                            type="text"
+                            type="number"
                             className="main_form w-100"
-                            value={option.description}
+                            value={option.dAmountForYear}
                             onChange={(e) => {
                               const updatedOptions = [...seatOptions];
-                              updatedOptions[index].description =
+                              updatedOptions[index].dAmountForYear =
                                 e.target.value;
                               setSeatOptions(updatedOptions);
                             }}
+                            placeholder="After Discount Amount(Year)"
+                            required
+                            onWheel={(e) => e.target.blur()}
                           />
-                        </div> */}
-                        <div className="col-md-4 form_sub_stream" key={index}>
+                        </div>
+                        <div className="col-md-3 form_sub_stream" key={index}>
                           <label
                             htmlFor={`seatPhotos-${index}`}
                             className="form-label profile_label3"
@@ -883,22 +1136,40 @@ const Add_property = () => {
                             required
                           />
                         </div>
-
-                        <div
-                          className="col-md-2 form_sub_stream"
-                          style={{ marginTop: 50 }}
-                        >
-                          <i
-                            className="fa-solid fa-plus"
-                            onClick={handleAddSeatOption}
-                          ></i>
-                          <i
-                            className="fa-solid fa-trash ms-4"
-                            onClick={() => handleRemoveSeatOption(index)}
-                          ></i>
-                        </div>
-                      </>
+                      </React.Fragment>
                     ))}
+                    <div
+                      className="col-md-6 form_sub_stream d-flex gap-2"
+                      style={{ marginTop: 10 }}
+                    >
+                      <p
+                        onClick={handleAddSeatOption}
+                        style={{
+                          backgroundColor: "#006666",
+                          color: "white",
+                          padding: "10px 20px",
+                          borderRadius: "5px",
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Add New Seat
+                      </p>
+
+                      <p
+                        onClick={() => handleRemoveSeatOption()}
+                        style={{
+                          backgroundColor: "red",
+                          color: "white",
+                          padding: "10px 20px",
+                          borderRadius: "5px",
+                          fontSize: "1rem",
+                          cursor: "pointer",
+                        }}
+                      >
+                        Remove Seat
+                      </p>
+                    </div>
                   </div>
                 </>
               )}
@@ -1082,6 +1353,7 @@ const Add_property = () => {
           </form>
         </div>
       </div>
+      <ToastContainer className="toast-position" position="top-center" />
     </div>
   );
 };

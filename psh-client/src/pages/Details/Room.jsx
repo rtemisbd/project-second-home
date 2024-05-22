@@ -668,11 +668,7 @@ const Room = () => {
                       </div>
                       <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                         <p className="font-bold">Meal</p>
-                        <p>
-                          {/* {data.meal
-                      }  */}
-                          3 Times a day
-                        </p>
+                        <p>Complementary Breakfast</p>
                       </div>
                       {!keyDetails ? (
                         ""

@@ -249,7 +249,7 @@ const SingleCard = ({ item }) => {
               </div>
             </Link>
           </CardFooter>
-          <div className="absolute right-2 bottom-5 text-[14px]">
+          {/* <div className="absolute right-2 bottom-5 text-[14px]">
             <Link
               to="/promo"
               target="_blank"
@@ -258,6 +258,12 @@ const SingleCard = ({ item }) => {
               {" "}
               Get Special Discount
             </Link>
+          </div> */}
+          <div className="absolute right-5 bottom-28 text-[14px]">
+            <p className="hover:text-[#27b3b1] text-[#35B0A7] font-bold">
+              {" "}
+              Without Food
+            </p>
           </div>
         </Card>
       </div>
