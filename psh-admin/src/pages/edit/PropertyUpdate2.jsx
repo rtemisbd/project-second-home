@@ -322,7 +322,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         return MySwal.fire("Sorry ! Minimum 5 Photo Required.", "warning");
       }
 
-      await axios.put(
+      await axios.patch(
         `https://api.psh.com.bd/api/property/${data?._id}`,
         product
       );

@@ -1,12 +1,11 @@
-import axios from "axios";
 import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 import UseFetch from "../../hooks/useFetch";
 
 const PropertyDetails = ({ show, setShow, data }) => {
   const { data3, loading3, error3, refetch3 } = UseFetch("facilityCategory");
-  const formattedDate = new Date(data?.createdAt).toLocaleString();
+
+  console.log(data?.category?.name);
+
   return (
     <div className="">
       <div
@@ -75,7 +74,7 @@ const PropertyDetails = ({ show, setShow, data }) => {
                   </div>
                 )}
 
-                {data?.category?.name === "Shared Room " ? (
+                {data?.category?.name === "Shared Room" ? (
                   ""
                 ) : (
                   <>

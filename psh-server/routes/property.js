@@ -18,7 +18,7 @@ router.get("/booking-report", getBookingReport);
 router.patch("/featured", featuredRoom);
 router.get("/:id", getSinglePropertys);
 router.delete("/:id", deletePropertys);
-router.put("/:id", updatePropertys);
+router.patch("/:id", updatePropertys);
 
 router.get("/properties/recommended", getRecommendedPropertys);
 
