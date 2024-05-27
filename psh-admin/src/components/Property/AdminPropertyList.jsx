@@ -194,6 +194,7 @@ const AdminPropertyList = (props) => {
         );
       },
     },
+
     {
       text: "Status",
       formatter: (cellContent, row) => {

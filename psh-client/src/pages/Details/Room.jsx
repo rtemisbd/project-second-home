@@ -349,7 +349,7 @@ const Room = () => {
 
           <div className="mt-2 text-start ">
             <div className="sticky lg:top-[70px] sm:top-[70px] bg-white py-1 ">
-              <div className="flex text-[24px]  font-medium ">
+              <div className="flex text-[24px] font-medium">
                 <div onClick={() => setKeyValue(0)}>
                   <a
                     href="#keyDetails"

@@ -44,7 +44,6 @@ const PersonalInfo = () => {
     return lastDay;
   }
 
-  console.log(bookingItem);
   //cart
 
   const MySwal = withReactContent(Swal);
@@ -284,6 +283,8 @@ const PersonalInfo = () => {
     formData.append("payableAmount", bookingItem?.payableAmount);
     formData.append("discount", bookingItem?.discount);
     formData.append("totalReceiveTk", totalReceiveTk);
+    formData.append("foodAmount", bookingItem?.foodAmount);
+    formData.append("isIncludeFood", bookingItem?.isIncludeFood);
     formData.append("dueAmount", bookingItem?.payableAmount - totalReceiveTk);
     formData.append("paymentStatus", paymentStatus);
     formData.append("bookingExtend", bookingExtend);
@@ -1293,7 +1294,7 @@ const PersonalInfo = () => {
                     </div>
                     <p>BDT {bookingItem?.subTotal?.toLocaleString()}</p>
                   </div>
-                  {bookingItem?.food ? (
+                  {bookingItem?.foodAmount ? (
                     <div className="flex justify-between ">
                       <div className="ml-16 flex items-center">
                         <p>Food</p>
@@ -1338,7 +1339,7 @@ const PersonalInfo = () => {
                           </Tooltip>
                         </div>
                       </div>
-                      <p>BDT {bookingItem?.food?.toLocaleString()}</p>
+                      <p>BDT {bookingItem?.foodAmount?.toLocaleString()}</p>
                     </div>
                   ) : (
                     ""

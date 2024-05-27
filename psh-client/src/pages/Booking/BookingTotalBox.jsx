@@ -26,7 +26,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
-  const foodPrice = 300;
+
   const navigate = useNavigate();
 
   // date handle
@@ -325,9 +325,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
   const bookingData = {
     data: data,
-
     subTotal: subTotal,
-    food: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    isIncludeFood: isIncludeFood,
     promoCodeDiscount:
       userPromo?.promoDiscount === undefined ? 0 : userPromo?.promoDiscount,
     discount: discountTk,

@@ -135,7 +135,16 @@ const DownlaodInvoice = ({ data }) => {
             <View>
               <Text style={styles.subtitle}>Bill To</Text>
               <Text style={styles.text}>Name: {data?.fullName}</Text>
-              <Text style={styles.text}>Address: {data?.address}</Text>
+              <Text
+                style={{
+                  fontSize: 12,
+                  color: "#000000",
+                  marginBottom: 5,
+                  width: "150px",
+                }}
+              >
+                Address: {data?.address}
+              </Text>
               <Text style={styles.text}>Mobile: {data?.phone}</Text>
               <Text style={styles.text}>Email: {data?.email}</Text>
               <Text style={styles.text}>

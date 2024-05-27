@@ -16,14 +16,19 @@ import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import { useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { removeSeatBooking } from "../../redux/reducers/seatBookingSlice";
 
 export default function HomePage() {
   const { data, error } = UseFetch(`property`);
+  const dispatch = useDispatch();
   const [categories, setCategories] = useState({});
   const [activeTab, setActiveTab] = useState("All");
   const [isLoaded, setIsLoaded] = useState(false); // Track the loading status
   const [randomIndex, setRandomIndex] = useState([]);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
+  const { pathname } = useLocation();
 
   // show Random index
   const getRandomData = () => {
@@ -49,6 +54,7 @@ export default function HomePage() {
   useEffect(() => {
     localStorage.removeItem("seatItem");
     localStorage.removeItem("bookingItem");
+    dispatch(removeSeatBooking());
     const fetchCategories = async () => {
       try {
         const { data } = await axios.get(`${serverBaseUrl}/category`, {
@@ -67,7 +73,7 @@ export default function HomePage() {
     };
 
     fetchCategories();
-  }, []);
+  }, [pathname]);
 
   useEffect(() => {
     if (data.length > 0) {

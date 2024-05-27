@@ -46,6 +46,8 @@ export const createOrder = async (req, res, next) => {
     receivedTk,
     dueAmount,
     totalReceiveTk,
+    foodAmount,
+    isIncludeFood,
     // unReceivedTk,
     paymentStatus,
     totalAmount,
@@ -109,6 +111,8 @@ export const createOrder = async (req, res, next) => {
       receivedTk,
       dueAmount,
       totalReceiveTk,
+      foodAmount,
+      isIncludeFood,
       // unReceivedTk,
       paymentStatus,
       totalAmount,
@@ -824,7 +828,17 @@ export const updateBooking = async (req, res, next) => {
         adjustmentAmount: req.body?.adjustment,
       });
       await adjustment.save();
-    } else if (req?.body?.cancelReason) {
+    }
+
+    // else if (req?.body?.isFood === "Yes") {
+    //   console.log(req?.body?.isFood);
+    //   await OrderModel.findByIdAndUpdate(
+    //     req.params.id,
+    //     { $set: { isIncludeFood: req.body.isFood } },
+    //     { new: true }
+    //   );
+    // }
+    else if (req?.body?.cancelReason) {
       await OrderModel.findByIdAndUpdate(
         req.params.id,
         {

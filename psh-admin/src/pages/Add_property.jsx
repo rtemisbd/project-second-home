@@ -960,7 +960,7 @@ const Add_property = () => {
                           Seat No: {index + 1}
                         </h2>
                         <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">Seat Name</label>
+                          <label className="profile_label3">Seat Title</label>
                           <input
                             type="text"
                             className="main_form w-100"
@@ -970,7 +970,7 @@ const Add_property = () => {
                               updatedOptions[index].name = e.target.value;
                               setSeatOptions(updatedOptions);
                             }}
-                            placeholder="Seat Name"
+                            placeholder="Seat Title"
                             required
                           />
                         </div>

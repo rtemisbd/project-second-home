@@ -24,7 +24,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const BookingSeatTotal = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
-
+  const [isIncludeFood, setIsIncludeFood] = useState(false);
   const navigate = useNavigate();
 
   // date handle
@@ -177,9 +177,10 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
 
     // total Amount
     if (customerRent?.months >= 2) {
-      const totalAmountForMonths = parseInt(
-        subTotal + vatTax + addMissionFee + securityFee
-      );
+      const totalAmountForMonths =
+        parseInt(subTotal + vatTax + addMissionFee + securityFee) +
+        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
       // setminimumPayment(addMissionFee);
@@ -187,19 +188,22 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
       customerRent?.months === 0 &&
       customerRent?.years !== undefined
     ) {
-      const totalAmountForMonths = parseInt(
-        subTotal + vatTax + addMissionFee + securityFee
-      );
+      const totalAmountForMonths =
+        parseInt(subTotal + vatTax + addMissionFee + securityFee) +
+        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
       // setminimumPayment(addMissionFee);
     } else {
-      const totalAmountForDays = parseInt(subTotal + vatTax);
+      const totalAmountForDays =
+        parseInt(subTotal + vatTax) +
+        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
       setTotalRentAmount(parseInt(totalAmountForDays));
       setPayableAmount(parseInt(totalAmountForDays));
       // setminimumPayment(0);
     }
   }, [
+    isIncludeFood,
     startDate,
     endDate,
     customerRent?.remainingDays,
@@ -333,6 +337,8 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
     branch: data?.branch,
     seatBooking: seatBooking,
     subTotal: subTotal,
+    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    isIncludeFood: isIncludeFood,
     promoCodeDiscount:
       userPromo?.promoDiscount === undefined ? 0 : userPromo?.promoDiscount,
     discount: discountTk,
@@ -757,6 +763,52 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
           </div>
           <p>BDT {isNaN(subTotal) ? 0 : subTotal?.toLocaleString()}</p>
         </div>
+        {isIncludeFood ? (
+          <div className="flex justify-between ">
+            <div className="ml-16 flex items-center">
+              <p>Food</p>
+              <div className="ml-2">
+                <Tooltip
+                  content={
+                    <div>
+                      <Typography
+                        variant="small"
+                        style={{
+                          color: "white",
+                          backgroundColor: "black",
+                          width: "200px",
+                        }}
+                        className="font-normal opacity-75 px-5 py-2 rounded"
+                      >
+                        Including Complementary Breakfast with Lunch and dinner
+                        ({customerRent.remainingDays} Day X 300 ={" "}
+                        {300 * customerRent.remainingDays})
+                      </Typography>
+                    </div>
+                  }
+                >
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2}
+                    className="h-5 w-5 cursor-pointer text-blue-gray-500"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                    />
+                  </svg>
+                </Tooltip>
+              </div>
+            </div>
+            <p>+ BDT {300 * customerRent.remainingDays}</p>
+          </div>
+        ) : (
+          ""
+        )}
 
         <div className="flex justify-between">
           <div className="ml-16 flex items-center">
@@ -1104,6 +1156,59 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
         ) : (
           ""
         )}
+
+        <p className="ms-5 mt-3 text-[#35B0A7] mb-2">Important notes:</p>
+        <div className="flex items-center px-4 text-black">
+          <div>
+            <input
+              className="cursor-pointer"
+              type="checkbox"
+              name="terms"
+              id="food"
+              onClick={() => setIsIncludeFood(!isIncludeFood)}
+            />
+          </div>
+          <div className="text-left pl-3 text-black font-bold flex itmes-center food_including mt-1">
+            <label htmlFor="food" className="cursor-pointer">
+              Including Foods (2 Meals in a Day)
+            </label>
+            <div className="ml-2">
+              <Tooltip
+                content={
+                  <div>
+                    <Typography
+                      variant="small"
+                      style={{
+                        color: "white",
+                        backgroundColor: "black",
+                        width: "200px",
+                      }}
+                      className="font-normal opacity-75 px-5 py-2 rounded "
+                    >
+                      Including Complementary Breakfast with Lunch and dinner
+                      (Per day BDT 300)
+                    </Typography>
+                  </div>
+                }
+              >
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                  strokeWidth={2}
+                  className="h-5 w-5 cursor-pointer text-blue-gray-500"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                  />
+                </svg>
+              </Tooltip>
+            </div>
+          </div>
+        </div>
       </div>
       <div
         title={!seatBooking?._id ? "Please Select A Seat" : ""}

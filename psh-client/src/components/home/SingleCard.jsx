@@ -216,34 +216,67 @@ const SingleCard = ({ item }) => {
               <div>
                 {item?.category?.name === "Shared Room" ? (
                   <>
-                    <p>
-                      <span className="card-price-sub">
-                        BDT {item?.seats[0]?.perDay?.toLocaleString()}
-                      </span>
-                      <span className="day">/day</span>
-                    </p>
-                    <p className="">
-                      <span className=" card-price-sub">
-                        BDT {item?.seats[0]?.perMonth?.toLocaleString()}
-                      </span>
-                      <span className="day">/month</span>
-                    </p>
+                    <div className="flex gap-x-2">
+                      <p className="rotate-line-through text-red-500">
+                        <span className="card-price-sub">
+                          BDT {item?.seats[0]?.perDay?.toLocaleString()}
+                        </span>
+                        <span className="day">/day</span>
+                      </p>
+                      <p>
+                        <span className="card-price-sub">
+                          BDT {item?.seats[0]?.perDay?.toLocaleString()}
+                        </span>
+                        <span className="day">/day</span>
+                      </p>
+                    </div>
+                    <div className="flex gap-x-2">
+                      <p className="rotate-line-through text-red-500">
+                        <span className=" card-price-sub">
+                          BDT {item?.seats[0]?.perMonth?.toLocaleString()}
+                        </span>
+                        <span className="day">/month</span>
+                      </p>
+                      <p className="">
+                        <span className=" card-price-sub">
+                          BDT {item?.seats[0]?.perMonth?.toLocaleString()}
+                        </span>
+                        <span className="day">/month</span>
+                      </p>
+                    </div>
                   </>
                 ) : (
                   <>
-                    <p>
-                      <span className=" card-price-sub">
-                        BDT {item.perDay?.toLocaleString()}
-                      </span>
-                      <span className="day">/day</span>
-                    </p>
-                    <p>
-                      <span className="card-price-sub">
-                        {" "}
-                        BDT {item.perMonth?.toLocaleString()}
-                      </span>
-                      <span className="day">/month</span>
-                    </p>
+                    <div className="flex gap-x-2">
+                      <p className="rotate-line-through text-red-500">
+                        <span className=" card-price-sub">
+                          BDT {item.perDay?.toLocaleString()}
+                        </span>
+                        <span className="day">/day</span>
+                      </p>
+                      <p>
+                        <span className=" card-price-sub">
+                          BDT {item.perDay?.toLocaleString()}
+                        </span>
+                        <span className="day">/day</span>
+                      </p>
+                    </div>
+                    <div className="flex gap-x-2">
+                      <p className="rotate-line-through text-red-500">
+                        <span className="card-price-sub">
+                          {" "}
+                          BDT {item.perMonth?.toLocaleString()}
+                        </span>
+                        <span className="day">/month</span>
+                      </p>
+                      <p>
+                        <span className="card-price-sub">
+                          {" "}
+                          BDT {item.perMonth?.toLocaleString()}
+                        </span>
+                        <span className="day">/month</span>
+                      </p>
+                    </div>
                   </>
                 )}
               </div>

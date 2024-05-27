@@ -115,14 +115,27 @@ const Seats = ({ data, handleSubmit }) => {
                       </div> */}
                       <div className="flex mt-2 text-sm">
                         <div>
-                          <span>Rent : </span>
+                          <span>Regular Price: </span>
+                        </div>
+                        <div className="flex gap-x-2">
+                          <p className="text-start ms-2 text-red-500 px-2 rounded rotate-line-through2 z-0">
+                            {item?.perDay?.toLocaleString()}/ d
+                          </p>
+                          <p className="text-start  text-red-500 px-2 rounded rotate-line-through2 z-0">
+                            {item?.perMonth?.toLocaleString()}/ m
+                          </p>
+                        </div>
+                      </div>
+                      <div className="flex mt-2 text-sm">
+                        <div>
+                          <span className="font-bold">Offer Price : </span>
                         </div>
                         <div className="flex gap-x-2">
                           <p className="text-start ms-2 bg-[#27B3B1] text-white px-2 rounded">
-                            {item?.perDay?.toLocaleString()}/ Day
+                            {item?.perDay?.toLocaleString()}/ d
                           </p>
                           <p className="text-start  bg-[#27B3B1] text-white px-2 rounded">
-                            {item?.perMonth?.toLocaleString()}/ month
+                            {item?.perMonth?.toLocaleString()}/ m
                           </p>
                         </div>
                       </div>
@@ -130,7 +143,7 @@ const Seats = ({ data, handleSubmit }) => {
                   </div>
                 </div>
 
-                <div>
+                <div className="mt-10">
                   <div className="seatNumer text-center font-bold rounded mt-5">
                     <p className="text-sm"> Seat Number</p>
                     <div className="text-center w-full font-bold text-sm">

@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from "react";
 
-import styles from "./BookingUpdate.module.css";
 import DatePicker from "react-datepicker";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { toast } from "react-toastify";
 import UseFetch from "../../hooks/useFetch";
 import axios from "axios";
-import useExtraCharge from "../../hooks/useExtraCharge";
+
 import usePromo from "../../hooks/usePromo";
 
 const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
@@ -425,7 +424,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
           refetch();
           roomFetch();
         } catch (error) {
-          return toast.error(error.response.data.message);
+          return toast.error(error?.response?.data?.message);
         }
       }
     } else {

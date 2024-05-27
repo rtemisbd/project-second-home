@@ -86,13 +86,34 @@ const PropertyDetails = ({ show, setShow, data }) => {
                     </div>
                     <div className="col-lg-3">
                       {" "}
+                      <label htmlFor="" className="text-danger">
+                        Discount Price (Day)
+                      </label>
+                      <p> {data?.dAmountForDay?.toLocaleString()}</p>
+                    </div>
+                    <div className="col-lg-3">
+                      {" "}
                       <label htmlFor="">Per Month</label>
                       <p> {data?.perMonth?.toLocaleString()}</p>
                     </div>
                     <div className="col-lg-3">
                       {" "}
+                      <label htmlFor="" className="text-danger">
+                        Discount Price (Month)
+                      </label>
+                      <p> {data?.dAmountForMonth?.toLocaleString()}</p>
+                    </div>
+                    <div className="col-lg-3">
+                      {" "}
                       <label htmlFor="">Per Year</label>
                       <p> {data?.perYear?.toLocaleString()}</p>
+                    </div>
+                    <div className="col-lg-3">
+                      {" "}
+                      <label htmlFor="" className="text-danger">
+                        Discount Price (Year)
+                      </label>
+                      <p> {data?.dAmountForYear?.toLocaleString()}</p>
                     </div>
                   </>
                 )}
@@ -199,28 +220,69 @@ const PropertyDetails = ({ show, setShow, data }) => {
                                   <span> {item.seatNumber}</span>
                                 </div>
 
-                                <div className=" ">
+                                <div className=" d-flex gap-3 ">
                                   <label htmlFor=""> Per Day : </label>
                                   <span>
                                     {" "}
                                     {item.perDay?.toLocaleString()} Tk
                                   </span>
+
+                                  <label
+                                    htmlFor=""
+                                    style={{
+                                      color: "red",
+                                    }}
+                                  >
+                                    {" "}
+                                    Discount Price :{" "}
+                                  </label>
+                                  <span>
+                                    {" "}
+                                    {item.dAmountForDay?.toLocaleString()} Tk
+                                  </span>
                                 </div>
-                                <div className=" ">
+
+                                <div className=" d-flex gap-3">
                                   <label htmlFor=""> Per Monnth : </label>
                                   <span>
                                     {" "}
                                     {item.perMonth?.toLocaleString()} Tk
                                   </span>
+                                  <label
+                                    htmlFor=""
+                                    style={{
+                                      color: "red",
+                                    }}
+                                  >
+                                    {" "}
+                                    Discount Price:{" "}
+                                  </label>
+                                  <span>
+                                    {" "}
+                                    {item.dAmountForMonth?.toLocaleString()} Tk
+                                  </span>
                                 </div>
-                                <div className=" ">
+                                <div className=" d-flex gap-3">
                                   <label htmlFor=""> Per Year : </label>
                                   <span>
                                     {" "}
                                     {item?.perYear?.toLocaleString()} Tk
                                   </span>
+                                  <label
+                                    htmlFor=""
+                                    style={{
+                                      color: "red",
+                                    }}
+                                  >
+                                    {" "}
+                                    Discount Price :{" "}
+                                  </label>
+                                  <span>
+                                    {" "}
+                                    {item?.dAmountForYear?.toLocaleString()} Tk
+                                  </span>
                                 </div>
-                                <div className=" ">
+                                {/* <div className=" ">
                                   <label htmlFor=""> Booked Dates : </label>
                                   {item?.rentDate?.map((rent) => (
                                     <span>
@@ -228,7 +290,7 @@ const PropertyDetails = ({ show, setShow, data }) => {
                                       {rent?.bookEndDate}
                                     </span>
                                   ))}
-                                </div>
+                                </div> */}
                               </div>
                             </div>
                           </div>

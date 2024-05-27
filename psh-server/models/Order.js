@@ -144,6 +144,12 @@ const OrderSchema = new mongoose.Schema(
     totalReceiveTk: {
       type: Number,
     },
+    foodAmount: {
+      type: Number,
+    },
+    isIncludeFood: {
+      type: String,
+    },
 
     unReceivedTk: {
       type: Number,

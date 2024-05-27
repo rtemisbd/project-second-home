@@ -151,3 +151,38 @@
   right: 670px;
   top: 470px !important;
 }
+
+.rotate-line-through {
+  position: relative;
+  display: inline-block;
+}
+
+.rotate-line-through::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 25px;
+  width: 50%;
+  height: 1px;
+  background-color: currentColor;
+  transform: rotate(-10deg);
+  transform-origin: center;
+}
+.rotate-line-through2 {
+  position: relative;
+  display: inline-block;
+}
+
+.rotate-line-through2::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 80%;
+  height: 1px;
+  background-color: currentColor;
+  transform: rotate(-10deg);
+  transform-origin: center;
+
+  z-index: 0;
+}

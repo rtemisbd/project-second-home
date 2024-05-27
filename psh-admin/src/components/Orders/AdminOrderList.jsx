@@ -20,6 +20,7 @@ import useExtraCharge from "../../hooks/useExtraCharge";
 import img from "../../img/new/style.png";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+import FoodUpdate from "../../pages/edit/FoodUpdate";
 // import { useLocation } from "react-router-dom";
 
 const AdminOrderList = () => {
@@ -295,6 +296,43 @@ const AdminOrderList = () => {
         );
       },
     },
+    // {
+    //   text: "Food",
+    //   formatter: (cellContent, row, index) => {
+    //     return (
+    //       <>
+    //         <div className=" d-flex ">
+    //           <div>
+    //             <p
+    //               className="fw-bold"
+    //               style={
+    //                 {
+    //                   // color: row?.status === "Approved" ? "#27b3b1" : "red",
+    //                 }
+    //               }
+    //             >
+    //               {row?.isIncludeFood}
+    //             </p>
+    //           </div>
+
+    //           <button
+    //             type="button"
+    //             data-bs-toggle="modal"
+    //             data-bs-target={`#food${row._id}`}
+    //             className="d-flex bg-white p-0"
+    //           >
+    //             <BiSolidEdit style={{ width: "24px", height: "24px" }} />
+    //           </button>
+
+    //           {/* Modal Order Status Update */}
+    //         </div>
+    //         <div>
+    //           <FoodUpdate data={row} refetch={refetch} />
+    //         </div>
+    //       </>
+    //     );
+    //   },
+    // },
     {
       text: "Status",
       formatter: (cellContent, row, index) => {

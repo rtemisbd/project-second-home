@@ -961,11 +961,11 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                           <>
                             <div className="row">
                               <h2 className="profile_label3 profile_bg">
-                                Seat
+                                Seat {index + 1}
                               </h2>
                               <div className="col-md-6 form_sub_stream">
                                 <label className="profile_label3">
-                                  Seat Name
+                                  Seat Title
                                 </label>
                                 <input
                                   type="text"
@@ -977,7 +977,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
 
                                     setSeatOptions(updatedOptions);
                                   }}
-                                  placeholder="Seat Name"
+                                  placeholder="Seat Title"
                                   required
                                   defaultValue={option?.name}
                                 />
