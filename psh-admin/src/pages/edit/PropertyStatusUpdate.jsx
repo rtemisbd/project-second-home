@@ -33,14 +33,13 @@ const PropertyStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
         ...newPost,
       };
 
-      await axios.put(
+      await axios.patch(
         `https://api.psh.com.bd/api/property/${_id}`,
         updatedStatus
       );
       MySwal.fire("Updated", "success");
       refetch();
     } catch (err) {
-      console.log(err);
       MySwal.fire("Something Error Found.", "warning");
     }
   };
