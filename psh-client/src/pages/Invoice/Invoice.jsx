@@ -329,6 +329,14 @@ const Invoice = () => {
                             {userEndOrder?.bookingInfo?.subTotal?.toLocaleString()}
                           </p>
                         </div>
+                        <div className="flex justify-between">
+                          <p className="font-bold">Food</p>{" "}
+                          <p className="ml-[55px]">:</p>{" "}
+                          <p className="">
+                            BDT{" "}
+                            {userEndOrder?.bookingInfo?.foodAmount?.toLocaleString()}
+                          </p>
+                        </div>
 
                         <div className="flex justify-between">
                           <p className="font-bold">VAT </p>{" "}

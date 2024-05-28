@@ -1155,7 +1155,7 @@ const Room = () => {
                 </div>
 
                 <div className="w-full">
-                  {data?.branch?.locationLink ? (
+                  {data?.branch?.locationLink !== "." ? (
                     <>
                       <div className="facility_h1 p-2">
                         <h2 className="text-xl font-bold text-gray-900">

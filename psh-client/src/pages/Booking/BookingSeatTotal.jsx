@@ -19,7 +19,7 @@ import "./BookingTotalBox.css";
 import "../../components/shared/Custom.css";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 import FinalLoginModal from "../../components/shared/FinalLoginModal";
-import Skeleton from "react-loading-skeleton";
+
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const BookingSeatTotal = ({ data, seats, extraCharge }) => {
@@ -105,22 +105,24 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
 
     if (
       customerRent?.remainingDays &&
-      seatBooking?.perDay &&
+      seatBooking?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      setSubtotal(() => seatBooking?.perDay * customerRent?.remainingDays);
+      setSubtotal(
+        () => seatBooking?.dAmountForDay * customerRent?.remainingDays
+      );
     } else if (
       customerRent?.months !== undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
         () =>
-          seatBooking?.perMonth * customerRent?.months +
-          seatBooking?.perDay * customerRent?.days
+          seatBooking?.dAmountForMonth * customerRent?.months +
+          seatBooking?.dAmountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(() => seatBooking?.perYear * customerRent?.years);
+      setSubtotal(() => seatBooking?.dAmountForYear * customerRent?.years);
     }
     if (subTotal) {
       const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
@@ -132,7 +134,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      // const minimum = seatBooking?.perDay * 3;
+      // const minimum = seatBooking?.dAmountForDay * 3;
       // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
       setMinimumPayment(500);
 
@@ -209,9 +211,9 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
     customerRent?.remainingDays,
     customerRent?.months,
     customerRent?.years,
-    seatBooking?.perDay,
-    seatBooking?.perYear,
-    seatBooking?.perMonth,
+    seatBooking?.dAmountForDay,
+    seatBooking?.dAmountForYear,
+    seatBooking?.dAmountForMonth,
     subTotal,
     vatTax,
     extraCharge[0]?.admissionFee,
@@ -700,12 +702,13 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
                       customerRent?.years === undefined ? (
                         <span>
                           {customerRent?.remainingDays + " day"} X{" "}
-                          {seatBooking?.perDay} = {""}
+                          {seatBooking?.dAmountForDay} = {""}
                           {isNaN(
-                            seatBooking?.perDay * customerRent?.remainingDays
+                            seatBooking?.dAmountForDay *
+                              customerRent?.remainingDays
                           )
                             ? 0
-                            : seatBooking?.perDay *
+                            : seatBooking?.dAmountForDay *
                                 customerRent?.remainingDays +
                               " Tk"}
                         </span>
@@ -717,12 +720,13 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
                       customerRent?.years === undefined ? (
                         <span>
                           {customerRent.months + " month"} = {""}
-                          {seatBooking?.perMonth * customerRent.months +
+                          {seatBooking?.dAmountForMonth * customerRent.months +
                             " Tk"}{" "}
                           {customerRent?.days > 0 ? (
                             <span>
                               + {customerRent?.days + " Days"} = {""}
-                              {seatBooking?.perDay * customerRent?.days + " Tk"}
+                              {seatBooking?.dAmountForDay * customerRent?.days +
+                                " Tk"}
                             </span>
                           ) : (
                             ""
@@ -735,7 +739,8 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
                       {customerRent?.years === 1 ? (
                         <span>
                           {customerRent?.years + " Year"} = {""}
-                          {seatBooking?.perYear * customerRent?.years + " Tk"}
+                          {seatBooking?.dAmountForYear * customerRent?.years +
+                            " Tk"}
                         </span>
                       ) : (
                         ""

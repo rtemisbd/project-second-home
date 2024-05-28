@@ -39,7 +39,7 @@ const FoodUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
       };
 
       await axios.patch(
-        `http://localhost:8000/api/order/${_id}`,
+        `https://api.psh.com.bd/api/order/${_id}`,
         updatedFoodStatus
       );
       MySwal.fire("Updated", "success");

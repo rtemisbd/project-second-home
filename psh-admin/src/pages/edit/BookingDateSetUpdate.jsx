@@ -17,6 +17,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
   } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
 
   // const [extraCharge, setExtraCharge] = useState([]);
+  const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
   const [promos] = usePromo();
   const [userPromo, setUserPromo] = useState({});
   const [discountTk, setDisCountTk] = useState(0);
@@ -120,13 +121,14 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
 
     if (
       customerRent?.remainingDays &&
-      data?.bookingInfo?.seatBooking?.perDay &&
+      data?.bookingInfo?.seatBooking?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.seatBooking?.perDay * customerRent?.remainingDays
+          data?.bookingInfo?.seatBooking?.dAmountForDay *
+          customerRent?.remainingDays
       );
     } else if (
       customerRent?.months !== undefined &&
@@ -134,12 +136,14 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.seatBooking?.perMonth * customerRent?.months +
-          data?.bookingInfo?.seatBooking?.perDay * customerRent?.days
+          data?.bookingInfo?.seatBooking?.dAmountForMonth *
+            customerRent?.months +
+          data?.bookingInfo?.seatBooking?.dAmountForDay * customerRent?.days
       );
     } else {
       setSubtotal(
-        () => data?.bookingInfo?.seatBooking?.perYear * customerRent?.years
+        () =>
+          data?.bookingInfo?.seatBooking?.dAmountForYear * customerRent?.years
       );
     }
     if (subTotal) {
@@ -152,7 +156,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.seatBooking?.perDay * 3;
+      const minimum = data?.bookingInfo?.seatBooking?.dAmountForDay * 3;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
 
       setAddmissionFee(0);
@@ -194,9 +198,9 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
 
     // total Amount
     if (customerRent?.months >= 2) {
-      const totalAmountForMonths = parseInt(
-        subTotal + vatTax + addMissionFee + securityFee
-      );
+      const totalAmountForMonths =
+        parseInt(subTotal + vatTax + addMissionFee + securityFee) +
+        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
 
       setTotalRentAmount(parseInt(totalAmountForMonths));
 
@@ -231,9 +235,9 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       customerRent?.months === 0 &&
       customerRent?.years !== undefined
     ) {
-      const totalAmountForMonths = parseInt(
-        subTotal + vatTax + addMissionFee + securityFee
-      );
+      const totalAmountForMonths =
+        parseInt(subTotal + vatTax + addMissionFee + securityFee) +
+        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
 
       setTotalRentAmount(parseInt(totalAmountForMonths));
 
@@ -264,7 +268,9 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       }
       // setminimumPayment(addMissionFee);
     } else {
-      const totalAmountForDays = parseInt(subTotal + vatTax);
+      const totalAmountForDays =
+        parseInt(subTotal + vatTax) +
+        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
 
       setTotalRentAmount(parseInt(totalAmountForDays));
       if (
@@ -293,8 +299,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       // setminimumPayment(0);
     }
   }, [
-    // startDate,
-    // endDate,
+    isIncludeFood,
     data?.adjustmentAmount,
     userPromo?.minimumDays,
     promos,
@@ -302,7 +307,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.promoCodeDiscount,
 
     customerRent?.remainingDays,
-    data?.bookingInfo?.seatBooking?.perDay,
+    data?.bookingInfo?.seatBooking?.dAmountForDay,
     subTotal,
     vatTax,
     days,
@@ -316,8 +321,8 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.rentDate?.bookStartDate,
     data?.bookingInfo?.rentDate?.bookEndDate,
     data?.bookingInfo?.seatBooking._id,
-    data?.bookingInfo?.seatBooking?.perMonth,
-    data?.bookingInfo?.seatBooking?.perYear,
+    data?.bookingInfo?.seatBooking?.dAmountForMonth,
+    data?.bookingInfo?.seatBooking?.dAmountForYear,
     room,
     addMissionFee,
     securityFee,
@@ -334,6 +339,8 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     whichOfMonthPayment: data?.whichOfMonthPayment,
     seatBooking: data?.bookingInfo?.seatBooking,
     subTotal: subTotal,
+    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    isIncludeFood: isIncludeFood,
     promoCodeDiscount: data?.bookingInfo?.promoCodeDiscount,
     discount: discountTk,
     vatTax: vatTax,
@@ -620,6 +627,16 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
                     </div>
                     <p>BDT {subTotal}</p>
                   </div>
+                  {isIncludeFood ? (
+                    <div className="d-flex justify-content-between ">
+                      <div className="ml-5 ">
+                        <p>Food</p>
+                      </div>
+                      <p>BDT {300 * customerRent?.remainingDays}</p>
+                    </div>
+                  ) : (
+                    ""
+                  )}
 
                   <div className="d-flex justify-content-between">
                     <div className="ml-5 ">
@@ -703,6 +720,27 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
                       <p className="text-danger fw-bold">Minimum Payment</p>
                     </div>
                     <p> BDT {minimumPayment}</p>
+                  </div>
+                  <div className="d-flex gap-3 ms-3">
+                    <input
+                      style={{
+                        cursor: "pointer",
+                      }}
+                      type="checkbox"
+                      name="terms"
+                      id="food"
+                      defaultChecked={data?.isIncludeFood}
+                      onClick={() => setIsIncludeFood(!isIncludeFood)}
+                    />
+                    <label
+                      htmlFor="food"
+                      style={{
+                        cursor: "pointer",
+                        marginTop: "8px",
+                      }}
+                    >
+                      Including Foods (2 Meals in a Day)
+                    </label>
                   </div>
                 </div>
                 <div

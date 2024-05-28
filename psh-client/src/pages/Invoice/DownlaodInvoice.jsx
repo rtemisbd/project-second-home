@@ -329,19 +329,24 @@ const DownlaodInvoice = ({ data, transactions }) => {
             <View>
               <View style={styles.flex}>
                 <Text style={styles.bold}>Subtotal :</Text>
-                {/* <Text
-              style={{
-                marginLeft: "55px",
-              }}
-            >
-              :
-            </Text> */}
+
                 <Text
                   style={{
                     fontSize: 12,
                   }}
                 >
                   BDT {data?.bookingInfo?.subTotal?.toLocaleString()}
+                </Text>
+              </View>
+              <View style={styles.flex}>
+                <Text style={styles.bold}>Food :</Text>
+
+                <Text
+                  style={{
+                    fontSize: 12,
+                  }}
+                >
+                  BDT {data?.bookingInfo?.foodAmount?.toLocaleString()}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -494,7 +499,7 @@ const DownlaodInvoice = ({ data, transactions }) => {
         {/* Note */}
         <View
           style={{
-            marginTop: 80,
+            marginTop: 60,
             display: "flex",
             flexDirection: "row",
             justifyContent: "space-between",

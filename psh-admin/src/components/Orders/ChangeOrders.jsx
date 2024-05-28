@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
+
 import paginationFactory from "react-bootstrap-table2-paginator";
-import BootstrapTable from "react-bootstrap-table-next";
+
 import OrderStatusUpdate from "../../pages/edit/OrderStatusUpdate";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import { BiSolidEdit } from "react-icons/bi";
@@ -13,17 +13,15 @@ import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
 import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import { useQuery } from "react-query";
 import Payment from "../../pages/edit/Payment";
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 import useTransaction from "../../hooks/useTransaction";
 import useExtraCharge from "../../hooks/useExtraCharge";
 
 import img from "../../img/new/style.png";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
-
-// import { useLocation } from "react-router-dom";
-
-const AdminOrderList = () => {
+import BookingsTable from "./BookingsTable";
+const ChangeOrders = () => {
   const MySwal = withReactContent(Swal);
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
@@ -34,6 +32,8 @@ const AdminOrderList = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [error, setError] = useState(null);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(0);
 
   const [filterData, setFilterData] = useState([]);
 
@@ -60,9 +60,12 @@ const AdminOrderList = () => {
     [data, extraCharge, allBranch?.length],
     async () => {
       try {
-        const response = await fetch(`https://api.psh.com.bd/api/order`, {
-          method: "GET",
-        });
+        const response = await fetch(
+          `https://api.psh.com.bd/api/order?page=${page}&size=${10}`,
+          {
+            method: "GET",
+          }
+        );
 
         if (!response.ok) {
           throw new Error("Network Error");
@@ -74,6 +77,8 @@ const AdminOrderList = () => {
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
+        const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
+        setPageCount(totalPageCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -157,6 +162,8 @@ const AdminOrderList = () => {
           branch: branch,
           paymentStatus: paymentStatus,
           status: bookingStatus,
+          page: page,
+          size: 10,
         },
       });
 
@@ -309,43 +316,7 @@ const AdminOrderList = () => {
         );
       },
     },
-    // {
-    //   text: "Food",
-    //   formatter: (cellContent, row, index) => {
-    //     return (
-    //       <>
-    //         <div className=" d-flex ">
-    //           <div>
-    //             <p
-    //               className="fw-bold"
-    //               style={
-    //                 {
-    //                   // color: row?.status === "Approved" ? "#27b3b1" : "red",
-    //                 }
-    //               }
-    //             >
-    //               {row?.isIncludeFood}
-    //             </p>
-    //           </div>
 
-    //           <button
-    //             type="button"
-    //             data-bs-toggle="modal"
-    //             data-bs-target={`#food${row._id}`}
-    //             className="d-flex bg-white p-0"
-    //           >
-    //             <BiSolidEdit style={{ width: "24px", height: "24px" }} />
-    //           </button>
-
-    //           {/* Modal Order Status Update */}
-    //         </div>
-    //         <div>
-    //           <FoodUpdate data={row} refetch={refetch} />
-    //         </div>
-    //       </>
-    //     );
-    //   },
-    // },
     {
       text: "Status",
       formatter: (cellContent, row, index) => {
@@ -466,7 +437,7 @@ const AdminOrderList = () => {
                 Payment
               </button>
               {/* 
-              <button className="bg-danger">End</button> */}
+                <button className="bg-danger">End</button> */}
             </div>
             <Payment data={row} refetch={refetch} isLoading={isLoading} />
           </>
@@ -759,32 +730,12 @@ const AdminOrderList = () => {
             ) : data?.length > 0 || filterData?.length > 0 ? (
               <div className="card">
                 <div className="card-body card_body_sm">
-                  <>
-                    <ToolkitProvider
-                      bootstrap4
-                      keyField="_id"
-                      columns={columns}
-                      data={isFilter ? filterData : data}
-                      pagination={pagination}
-                    >
-                      {(props) => (
-                        <React.Fragment>
-                          <BootstrapTable
-                            bootstrap4
-                            keyField="_id"
-                            columns={columns}
-                            data={isFilter ? filterData : data}
-                            pagination={pagination}
-                            {...props.baseProps}
-                          />
-                          <ToastContainer
-                            className="toast-position"
-                            position="top-center"
-                          />
-                        </React.Fragment>
-                      )}
-                    </ToolkitProvider>
-                  </>
+                  <BookingsTable
+                    data={isFilter ? filterData : data}
+                    page={page}
+                    pageCount={pageCount}
+                    setPage={setPage}
+                  />
                 </div>
               </div>
             ) : (
@@ -799,4 +750,4 @@ const AdminOrderList = () => {
   );
 };
 
-export default AdminOrderList;
+export default ChangeOrders;

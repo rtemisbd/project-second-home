@@ -148,7 +148,7 @@ const OrderSchema = new mongoose.Schema(
       type: Number,
     },
     isIncludeFood: {
-      type: String,
+      type: Boolean,
     },
 
     unReceivedTk: {

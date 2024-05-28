@@ -225,7 +225,7 @@ const SingleCard = ({ item }) => {
                       </p>
                       <p>
                         <span className="card-price-sub">
-                          BDT {item?.seats[0]?.perDay?.toLocaleString()}
+                          BDT {item?.seats[0]?.dAmountForDay?.toLocaleString()}
                         </span>
                         <span className="day">/day</span>
                       </p>
@@ -239,7 +239,8 @@ const SingleCard = ({ item }) => {
                       </p>
                       <p className="">
                         <span className=" card-price-sub">
-                          BDT {item?.seats[0]?.perMonth?.toLocaleString()}
+                          BDT{" "}
+                          {item?.seats[0]?.dAmountForMonth?.toLocaleString()}
                         </span>
                         <span className="day">/month</span>
                       </p>
@@ -256,7 +257,7 @@ const SingleCard = ({ item }) => {
                       </p>
                       <p>
                         <span className=" card-price-sub">
-                          BDT {item.perDay?.toLocaleString()}
+                          BDT {item.dAmountForDay?.toLocaleString()}
                         </span>
                         <span className="day">/day</span>
                       </p>
@@ -272,7 +273,7 @@ const SingleCard = ({ item }) => {
                       <p>
                         <span className="card-price-sub">
                           {" "}
-                          BDT {item.perMonth?.toLocaleString()}
+                          BDT {item.dAmountForMonth?.toLocaleString()}
                         </span>
                         <span className="day">/month</span>
                       </p>
@@ -292,10 +293,10 @@ const SingleCard = ({ item }) => {
               Get Special Discount
             </Link>
           </div> */}
-          <div className="absolute right-5 bottom-28 text-[14px]">
+          <div className="absolute right-7 bottom-12 text-[14px]">
             <p className="hover:text-[#27b3b1] text-[#35B0A7] font-bold">
               {" "}
-              Without Food
+              (After Discount)
             </p>
           </div>
         </Card>

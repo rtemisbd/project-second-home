@@ -211,7 +211,6 @@ export const createOrder = async (req, res, next) => {
         receivedTk: result?.receivedTk,
         customerType: result?.customerType,
         whichOfMonthPayment: result?.whichOfMonthPayment,
-
         paymentType: result?.paymentType,
         paymentNumber: result?.paymentNumber,
         transactionId: result?.transactionId,
@@ -243,6 +242,8 @@ export const getOrder = async (req, res, next) => {
     const branch = req.query?.branch;
     const paymentStatus = req?.query?.paymentStatus;
     const bookingStatus = req?.query?.status;
+    // const page = parseInt(req.query?.page);
+    // const size = parseInt(req.query?.size);
 
     if (
       !orderId &&
@@ -255,11 +256,13 @@ export const getOrder = async (req, res, next) => {
       const orders = await OrderModel.find({})
         .populate("branch")
         .sort({ createdAt: -1 });
+      const bookingsTotalCount = await OrderModel.countDocuments({});
 
       res.status(200).json({
         status: "Success",
         message: "Success",
         orders,
+        bookingsTotalCount,
       });
     } else if (
       !orderId &&
@@ -272,11 +275,14 @@ export const getOrder = async (req, res, next) => {
       const orders = await OrderModel.find({ branch: branch })
         .populate("branch")
         .sort({ createdAt: -1 });
-
+      const bookingsTotalCount = await OrderModel.countDocuments({
+        branch: branch,
+      });
       res.status(200).json({
         status: "Success",
         message: "Success",
         orders,
+        bookingsTotalCount,
       });
     } else {
       const query = {
@@ -319,11 +325,12 @@ export const getOrder = async (req, res, next) => {
       const orders = await OrderModel.find(query)
         .populate("branch")
         .sort({ createdAt: -1 });
-
+      const bookingsTotalCount = await OrderModel.countDocuments(query);
       res.status(200).json({
         status: "Success",
         message: "Success",
         orders,
+        bookingsTotalCount,
       });
     }
 
@@ -828,17 +835,7 @@ export const updateBooking = async (req, res, next) => {
         adjustmentAmount: req.body?.adjustment,
       });
       await adjustment.save();
-    }
-
-    // else if (req?.body?.isFood === "Yes") {
-    //   console.log(req?.body?.isFood);
-    //   await OrderModel.findByIdAndUpdate(
-    //     req.params.id,
-    //     { $set: { isIncludeFood: req.body.isFood } },
-    //     { new: true }
-    //   );
-    // }
-    else if (req?.body?.cancelReason) {
+    } else if (req?.body?.cancelReason) {
       await OrderModel.findByIdAndUpdate(
         req.params.id,
         {
@@ -856,6 +853,7 @@ export const updateBooking = async (req, res, next) => {
           $set: {
             bookingInfo: req.body,
             totalAmount: req.body?.totalAmount,
+            foodAmount: req.body?.foodAmount,
             payableAmount: req.body?.payableAmount,
             dueAmount: req.body?.dueAmount,
             discount: req.body?.discount,

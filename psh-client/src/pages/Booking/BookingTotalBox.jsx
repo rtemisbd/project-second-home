@@ -67,7 +67,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const [showMiniumPayment, setShowMinimumPayment] = useState(false);
 
   const [subTotal, setSubtotal] = useState(
-    data?.seats?.length > 0 ? 0 : data?.perDay * customerRent?.remainingDays
+    data?.seats?.length > 0
+      ? 0
+      : data?.dAmountForDay * customerRent?.remainingDays
   );
 
   const [vatTax, setVatTaxt] = useState(
@@ -117,22 +119,22 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
     if (
       customerRent?.remainingDays &&
-      data?.perDay &&
+      data?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      setSubtotal(() => data?.perDay * customerRent?.remainingDays);
+      setSubtotal(() => data?.dAmountForDay * customerRent?.remainingDays);
     } else if (
       customerRent?.months !== undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
         () =>
-          data?.perMonth * customerRent?.months +
-          data?.perDay * customerRent?.days
+          data?.dAmountForMonth * customerRent?.months +
+          data?.dAmountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(() => data?.perYear * customerRent?.years);
+      setSubtotal(() => data?.dAmountForYear * customerRent?.years);
     }
     if (subTotal) {
       const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
@@ -144,7 +146,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      // const minimum = data?.perDay * 3;
+      // const minimum = data?.dAmountForDay * 3;
       // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
       setMinimumPayment(500);
 
@@ -219,9 +221,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     customerRent?.remainingDays,
     customerRent?.months,
     customerRent?.years,
-    data?.perDay,
-    data?.perYear,
-    data?.perMonth,
+    data?.dAmountForDay,
+    data?.dAmountForYear,
+    data?.dAmountForMonth,
     subTotal,
     vatTax,
     extraCharge[0]?.admissionFee,
@@ -692,8 +694,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                         customerRent?.years === undefined ? (
                           <span>
                             {customerRent?.remainingDays + " day"} X{" "}
-                            {data?.perDay} = {""}
-                            {data?.perDay * customerRent?.remainingDays + " Tk"}
+                            {data?.dAmountForDay} = {""}
+                            {data?.dAmountForDay * customerRent?.remainingDays +
+                              " Tk"}
                           </span>
                         ) : (
                           ""
@@ -703,11 +706,13 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                         customerRent?.years === undefined ? (
                           <span>
                             {customerRent.months + " month"} = {""}
-                            {data?.perMonth * customerRent.months + " Tk"}
+                            {data?.dAmountForMonth * customerRent.months +
+                              " Tk"}
                             {customerRent?.days > 0 ? (
                               <span>
                                 + {customerRent?.days + " Days"} = {""}
-                                {data?.perDay * customerRent?.days + " Tk"}
+                                {data?.dAmountForDay * customerRent?.days +
+                                  " Tk"}
                               </span>
                             ) : (
                               ""
@@ -720,7 +725,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                         {customerRent?.years === 1 ? (
                           <span>
                             {customerRent?.years + " Year"} = {""}
-                            {data?.perYear * customerRent?.years + " Tk"}
+                            {data?.dAmountForYear * customerRent?.years + " Tk"}
                           </span>
                         ) : (
                           ""

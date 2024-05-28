@@ -132,10 +132,10 @@ const Seats = ({ data, handleSubmit }) => {
                         </div>
                         <div className="flex gap-x-2">
                           <p className="text-start ms-2 bg-[#27B3B1] text-white px-2 rounded">
-                            {item?.perDay?.toLocaleString()}/ d
+                            {item?.dAmountForDay?.toLocaleString()}/ d
                           </p>
                           <p className="text-start  bg-[#27B3B1] text-white px-2 rounded">
-                            {item?.perMonth?.toLocaleString()}/ m
+                            {item?.dAmountForMonth?.toLocaleString()}/ m
                           </p>
                         </div>
                       </div>
