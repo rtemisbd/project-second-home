@@ -327,7 +327,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         product
       );
       MySwal.fire("Property successfully Update");
-      // formRef.current.reset();
+      formRef.current.reset();
       refetch();
     } catch (err) {
       console.log(err);
@@ -658,14 +658,13 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                             );
 
                             return (
-                              <>
+                              <React.Fragment key={facility._id}>
                                 <input
                                   type="checkbox"
                                   id={facility._id}
                                   name="commonfacility[]"
                                   value={facility._id}
                                   multiple
-                                  key={facility._id}
                                   className="me-1"
                                   defaultChecked={selectedCommon ? true : false}
                                 />
@@ -683,7 +682,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                   style={{ width: 20 }}
                                   className="mx-3"
                                 />
-                              </>
+                              </React.Fragment>
                             );
                           })}
                         </div>
@@ -694,8 +693,8 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                         <>
                           {/* facility */}
                           <div className="row">
-                            {facilities.map((facility) => (
-                              <>
+                            {facilities.map((facility, index) => (
+                              <React.Fragment key={index}>
                                 {facility.name === "Common" ? ( // Add this condition to check the facility name
                                   <>
                                     <h2 className="profile_label3">
@@ -709,14 +708,13 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                             (check) => check._id === pd._id
                                           );
                                         return (
-                                          <>
+                                          <React.Fragment key={pd._id}>
                                             <input
                                               type="checkbox"
                                               id={pd._id}
                                               name="facility[]"
                                               value={pd._id}
                                               multiple
-                                              key={pd._id}
                                               className="me-1"
                                               defaultChecked={
                                                 selectedFacility ? true : false
@@ -737,13 +735,13 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                               style={{ width: 20 }}
                                               className="mx-3"
                                             />
-                                          </>
+                                          </React.Fragment>
                                         );
                                       })}
                                     </div>
                                   </>
                                 ) : null}
-                              </>
+                              </React.Fragment>
                             ))}
                           </div>
                         </>
@@ -751,8 +749,8 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                         ""
                       )}
                       <div className="row mt-2">
-                        {facilities.map((facility) => (
-                          <>
+                        {facilities.map((facility, index) => (
+                          <React.Fragment key={index}>
                             {facility.name !== "Common" ? ( // Add this condition to check the facility name
                               <>
                                 <h2 className="profile_label3">
@@ -766,14 +764,13 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                         (check) => check._id === pd._id
                                       );
                                     return (
-                                      <>
+                                      <React.Fragment key={pd._id}>
                                         <input
                                           type="checkbox"
                                           id={pd._id}
                                           name="facility[]"
                                           value={pd._id}
                                           multiple
-                                          key={pd._id}
                                           className="me-1"
                                           defaultChecked={
                                             selectedFacility ? true : false
@@ -792,13 +789,13 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                           style={{ width: 20 }}
                                           className="mx-3"
                                         />
-                                      </>
+                                      </React.Fragment>
                                     );
                                   })}
                                 </div>
                               </>
                             ) : null}
-                          </>
+                          </React.Fragment>
                         ))}
                       </div>
                     </div>
@@ -958,7 +955,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
 
                       <div className=" card_div p-4">
                         {seatOptions.map((option, index) => (
-                          <>
+                          <React.Fragment key={index}>
                             <div className="row">
                               <h2 className="profile_label3 profile_bg">
                                 Seat {index + 1}
@@ -1205,7 +1202,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
                                 ></i>
                               </div>
                             </div>
-                          </>
+                          </React.Fragment>
                         ))}
                       </div>
                     </>
