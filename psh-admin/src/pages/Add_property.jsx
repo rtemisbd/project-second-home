@@ -301,6 +301,7 @@ const Add_property = () => {
           const data = new FormData();
           data.append("file", file);
           data.append("upload_preset", "rtemis");
+          data.append("unique_filename", false);
           const uploadRes = await axios.post(
             "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
@@ -318,6 +319,7 @@ const Add_property = () => {
               const data = new FormData();
               data.append("file", file);
               data.append("upload_preset", "rtemis");
+              data.append("unique_filename", false);
               const uploadRes = await axios.post(
                 "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
                 data
