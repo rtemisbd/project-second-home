@@ -221,6 +221,20 @@ const PropertyReports = (props) => {
     },
 
     {
+      text: "Status",
+      formatter: (cellContent, row) => {
+        return (
+          <>
+            <div>
+              <div className=" fw-bold">
+                <p>{row?.isPublished},</p>
+              </div>
+            </div>
+          </>
+        );
+      },
+    },
+    {
       text: "Seats",
       formatter: (cellContent, row) => {
         return (

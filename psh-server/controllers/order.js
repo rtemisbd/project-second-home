@@ -242,8 +242,8 @@ export const getOrder = async (req, res, next) => {
     const branch = req.query?.branch;
     const paymentStatus = req?.query?.paymentStatus;
     const bookingStatus = req?.query?.status;
-    // const page = parseInt(req.query?.page);
-    // const size = parseInt(req.query?.size);
+    const page = parseInt(req.query?.page);
+    const size = parseInt(req.query?.size);
 
     if (
       !orderId &&
@@ -255,7 +255,9 @@ export const getOrder = async (req, res, next) => {
     ) {
       const orders = await OrderModel.find({})
         .populate("branch")
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .skip(page * size)
+        .limit(size);
       const bookingsTotalCount = await OrderModel.countDocuments({});
 
       res.status(200).json({
@@ -274,7 +276,9 @@ export const getOrder = async (req, res, next) => {
     ) {
       const orders = await OrderModel.find({ branch: branch })
         .populate("branch")
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .skip(page * size)
+        .limit(size);
       const bookingsTotalCount = await OrderModel.countDocuments({
         branch: branch,
       });
@@ -324,7 +328,9 @@ export const getOrder = async (req, res, next) => {
 
       const orders = await OrderModel.find(query)
         .populate("branch")
-        .sort({ createdAt: -1 });
+        .sort({ createdAt: -1 })
+        .skip(page * size)
+        .limit(size);
       const bookingsTotalCount = await OrderModel.countDocuments(query);
       res.status(200).json({
         status: "Success",
