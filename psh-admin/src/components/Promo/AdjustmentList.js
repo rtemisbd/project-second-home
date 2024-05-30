@@ -1,8 +1,7 @@
 import React, { useState } from "react";
 
 import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
@@ -15,19 +14,16 @@ import UpdateAdjustment from "./UpdateAdjustment";
 import { ToastContainer, toast } from "react-toastify";
 
 const AdjustmentList = () => {
-  const MySwal = withReactContent(Swal);
-
   //sub stream
   const [data, setData] = useState([]);
 
-  console.log(data);
   const columns = [
     {
       text: "Booking Id",
       formatter: (cellContent, row) => {
         return (
           <div>
-            <p>#{row?.booking?._id?.slice(0, 5)}</p>
+            <p>#{row?.booking?._id?.slice(-5)} </p>
             <p>{row?.branch?.name}</p>
           </div>
         );
@@ -38,7 +34,7 @@ const AdjustmentList = () => {
       formatter: (cellContent, row) => {
         return (
           <div>
-            <p>#{row?.userId?._id?.slice(0, 5)}</p>
+            <p>#{row?.userId?._id?.slice(-5)}</p>
             <p>{row?.userId?.firstName}</p>
           </div>
         );
@@ -86,7 +82,7 @@ const AdjustmentList = () => {
               className="btn"
               style={{ backgroundColor: "#00bbb4", color: "white" }}
             >
-              {adjustment?.status === "Accepted" ? "Accepted" : "Accept"}
+              {adjustment?.status === "Accepted" ? "Accepted" : "Accept Now"}
             </button>
           </div>
         );

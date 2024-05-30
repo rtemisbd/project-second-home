@@ -3,12 +3,22 @@ import { Table } from "react-bootstrap";
 import BookingData from "./BookingData";
 import { ToastContainer } from "react-toastify";
 
-const BookingsTable = ({ data, setPage, page, pageCount }) => {
+const BookingsTable = ({
+  data,
+  setPage,
+  page,
+  pageCount,
+  refetch,
+  transactions,
+  extraCharge,
+  isLoading,
+}) => {
   return (
     <div>
       <Table striped bordered>
         <thead>
           <tr>
+            <th>No.</th>
             <th>Date & Time</th>
             <th>Booking Id</th>
             <th>User Id</th>
@@ -26,13 +36,21 @@ const BookingsTable = ({ data, setPage, page, pageCount }) => {
           </tr>
         </thead>
         <tbody>
-          {data?.map((booking) => (
-            <BookingData booking={booking} key={booking._id} />
+          {data?.map((booking, index) => (
+            <BookingData
+              booking={booking}
+              key={booking._id}
+              index={index}
+              refetch={refetch}
+              extraCharge={extraCharge}
+              transactions={transactions}
+              isLoading={isLoading}
+            />
           ))}
         </tbody>
       </Table>
       <ToastContainer className="toast-position" position="top-center" />
-      <div className="pagination d-flex justify-content-end">
+      <div className="pagination d-flex justify-content-end gap-2">
         <button onClick={() => setPage(page - 1)} disabled={page === 0}>
           Previous
         </button>

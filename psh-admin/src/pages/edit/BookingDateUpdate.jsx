@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 
-import styles from "./BookingUpdate.module.css";
+// import styles from "./BookingUpdate.module.css";
 import DatePicker from "react-datepicker";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { toast } from "react-toastify";
 import axios from "axios";
 import UseFetch from "../../hooks/useFetch";
-import useExtraCharge from "../../hooks/useExtraCharge";
+// import useExtraCharge from "../../hooks/useExtraCharge";
 import usePromo from "../../hooks/usePromo";
 
 const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
@@ -79,9 +79,9 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
 
   const [isAdjustmen, setIsAdjustment] = useState(false);
 
-  // useEffect(() => {
-  //   setIsIncludeFood(data?.isIncludeFood);
-  // }, []);
+  useEffect(() => {
+    setIsIncludeFood(data?.isIncludeFood);
+  }, []);
 
   useEffect(() => {
     //  Set Extra Charge
@@ -324,7 +324,7 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     data: data?.bookingInfo?.data,
     branch: data?.bookingInfo?.branch,
     subTotal: subTotal,
-    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : 0,
     isIncludeFood: isIncludeFood,
     promoCodeDiscount: data?.bookingInfo?.promoCodeDiscount,
     discount: data?.discount,

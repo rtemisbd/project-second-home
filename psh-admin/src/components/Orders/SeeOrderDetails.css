@@ -33,3 +33,11 @@
 .delete-button:hover {
   color: red;
 }
+.pagination button {
+  margin-right: 5px;
+  border-radius: 5px;
+}
+.page-selected {
+  background-color: red;
+  color: white;
+}

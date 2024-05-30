@@ -860,6 +860,7 @@ export const updateBooking = async (req, res, next) => {
             bookingInfo: req.body,
             totalAmount: req.body?.totalAmount,
             foodAmount: req.body?.foodAmount,
+            isIncludeFood: req.body?.isIncludeFood,
             payableAmount: req.body?.payableAmount,
             dueAmount: req.body?.dueAmount,
             discount: req.body?.discount,

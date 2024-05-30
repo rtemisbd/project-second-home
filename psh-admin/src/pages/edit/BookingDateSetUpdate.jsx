@@ -83,6 +83,10 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
   const [payableAmount, setPayableAmount] = useState(0);
 
   useEffect(() => {
+    setIsIncludeFood(data?.isIncludeFood);
+  }, []);
+
+  useEffect(() => {
     // set Extra Charge
     // setAddmissionFee(extraCharge[0]?.admissionFee);
     // setSecurityFee(extraCharge[0]?.securityFee);
@@ -339,7 +343,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     whichOfMonthPayment: data?.whichOfMonthPayment,
     seatBooking: data?.bookingInfo?.seatBooking,
     subTotal: subTotal,
-    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : 0,
     isIncludeFood: isIncludeFood,
     promoCodeDiscount: data?.bookingInfo?.promoCodeDiscount,
     discount: discountTk,
@@ -729,7 +733,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
                       type="checkbox"
                       name="terms"
                       id="food"
-                      defaultChecked={data?.isIncludeFood}
+                      defaultChecked={isIncludeFood}
                       onClick={() => setIsIncludeFood(!isIncludeFood)}
                     />
                     <label

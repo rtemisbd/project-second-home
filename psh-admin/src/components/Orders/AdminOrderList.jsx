@@ -197,7 +197,7 @@ const AdminOrderList = () => {
         return (
           <>
             {" "}
-            <p>#{row?._id?.slice(-5).toUpperCase()} </p>
+            <p>#{row?._id?.slice(-5)} </p>
             <p className="fw-bold">{row?.bookingInfo?.branch?.name}</p>
           </>
         );
@@ -209,7 +209,7 @@ const AdminOrderList = () => {
         return (
           <>
             {" "}
-            <p>#{row?.userId?.slice(-5).toUpperCase()}</p>
+            <p>#{row?.userId?.slice(-5)}</p>
             <p>{row?.fullName}</p>
           </>
         );
@@ -239,10 +239,12 @@ const AdminOrderList = () => {
               <p
                 className="fw-bold"
                 style={{
-                  color: "#35b0a7",
+                  color: "white",
+                  backgroundColor: "#35b0a7",
+                  padding: "10px",
                 }}
               >
-                With Food
+                Food
               </p>
             ) : (
               ""
@@ -328,19 +330,7 @@ const AdminOrderList = () => {
     //             </p>
     //           </div>
 
-    //           <button
-    //             type="button"
-    //             data-bs-toggle="modal"
-    //             data-bs-target={`#food${row._id}`}
-    //             className="d-flex bg-white p-0"
-    //           >
-    //             <BiSolidEdit style={{ width: "24px", height: "24px" }} />
-    //           </button>
-
     //           {/* Modal Order Status Update */}
-    //         </div>
-    //         <div>
-    //           <FoodUpdate data={row} refetch={refetch} />
     //         </div>
     //       </>
     //     );

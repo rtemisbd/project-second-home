@@ -5,6 +5,9 @@ const OrderSchema = new mongoose.Schema(
     bookingInfo: {
       type: Object,
     },
+    bookingId: {
+      type: String,
+    },
     branch: {
       type: ObjectId,
       ref: "Branch",

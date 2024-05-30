@@ -65,7 +65,7 @@ import FeaturedRoom from "./pages/Featured/FeaturedRoom";
 import AdminPropertyList from "./components/Property/AdminPropertyList";
 import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
-// import ChangeOrders from "./components/Orders/ChangeOrders";
+// import NewOrders from "./components/Orders/NewOrders";
 
 function App() {
   return (
@@ -126,7 +126,7 @@ function App() {
           <Route path="recommended_list" element={<Recommended />} />
           <Route path="orders_m" element={<Orders />} />
           <Route path="orders" element={<AdminOrders />} />
-          {/* <Route path="change-orders" element={<ChangeOrders />} /> */}
+          {/* <Route path="new-orders" element={<NewOrders />} /> */}
           <Route path="transaction" element={<TransactionAdmin />} />
           <Route path="transaction-m" element={<TransactionManager />} />
           <Route path="finance" element={<Finance />} />

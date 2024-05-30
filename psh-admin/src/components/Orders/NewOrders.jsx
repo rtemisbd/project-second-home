@@ -21,7 +21,7 @@ import img from "../../img/new/style.png";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
-const ChangeOrders = () => {
+const NewOrders = () => {
   const MySwal = withReactContent(Swal);
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
@@ -61,7 +61,7 @@ const ChangeOrders = () => {
     async () => {
       try {
         const response = await fetch(
-          `http://localhost:8000/api/order?page=${page}&size=${10}`,
+          `https://api.psh.com.bd/api/order?page=${page}&size=${10}`,
           {
             method: "GET",
           }
@@ -153,7 +153,7 @@ const ChangeOrders = () => {
       : "All";
 
     try {
-      const response = await axios.get(`http://localhost:8000/api/order`, {
+      const response = await axios.get(`https://api.psh.com.bd/api/order`, {
         params: {
           orderId: orderId,
           userId: bookingUserId,
@@ -735,6 +735,10 @@ const ChangeOrders = () => {
                     page={page}
                     pageCount={pageCount}
                     setPage={setPage}
+                    isLoading={isLoading}
+                    transactions={transactions}
+                    refetch={refetch}
+                    extraCharge={extraCharge}
                   />
                 </div>
               </div>
@@ -750,4 +754,4 @@ const ChangeOrders = () => {
   );
 };
 
-export default ChangeOrders;
+export default NewOrders;
