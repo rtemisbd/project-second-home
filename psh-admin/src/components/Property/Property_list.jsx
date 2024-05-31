@@ -289,7 +289,7 @@ const Property_list = (props) => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to="/add_property">
+                      <Link to="/dashboard/add_property">
                         <button className="college_btn2 ms-4 p-3">
                           Add New
                         </button>

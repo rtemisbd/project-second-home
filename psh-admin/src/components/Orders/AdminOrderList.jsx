@@ -242,9 +242,10 @@ const AdminOrderList = () => {
                   color: "white",
                   backgroundColor: "#35b0a7",
                   padding: "10px",
+                  fontSize: "10px",
                 }}
               >
-                Food
+                with food
               </p>
             ) : (
               ""

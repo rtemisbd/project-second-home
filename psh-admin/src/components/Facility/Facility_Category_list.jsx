@@ -173,7 +173,7 @@ const Facility_Category_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/add_category"}>
+                      <Link to={"add_banner/add_category"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New
                         </button>

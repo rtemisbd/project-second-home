@@ -13,7 +13,7 @@ import Promo from "../../pages/Promo";
 import Add_Promo from "../../pages/Add_Promo";
 import Add_Recommended from "../../pages/Add_Recommended";
 import Recommended from "../../pages/Recommended";
-import AdminRoute from "../AdminRoute/AdminRoute";
+import Dashboard from "../Dashboard/Dashboard";
 
 const router = createBrowserRouter([
   {
@@ -69,9 +69,9 @@ const router = createBrowserRouter([
   {
     path: "/",
     element: (
-      <AdminRoute>
+      <Dashboard>
         <Main></Main>
-      </AdminRoute>
+      </Dashboard>
     ),
 
     children: [
@@ -121,7 +121,7 @@ const router = createBrowserRouter([
     ],
   },
   {
-    path: "/signup",
+    path: "/login",
     element: <SignIn></SignIn>,
   },
 ]);

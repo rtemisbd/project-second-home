@@ -153,7 +153,7 @@ const Banner_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/add_promo"}>
+                      <Link to={"/dashboard/add_banner"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New
                         </button>

@@ -22,7 +22,7 @@ const SignIn = () => {
     const { email, password } = data;
 
     await loginUser(email, password);
-    navigate("/");
+    navigate("/dashboard");
   };
   const [showPassword, setShowPassword] = useState(false);
   const [password, setPassword] = useState("");

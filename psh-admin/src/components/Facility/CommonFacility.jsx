@@ -175,7 +175,7 @@ const CommonFacility_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/add_facility"}>
+                      <Link to={"add_banner/add_facility"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New
                         </button>
