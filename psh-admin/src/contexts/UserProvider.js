@@ -23,7 +23,7 @@ export const UserProvider = ({ children }) => {
     try {
       // Make your API call here to login the user using Axios
       const response = await axios.post(
-        "https://api.psh.com.bd/api/users/login",
+        "https://api.psh.com.bd/api/users/login-admin",
         { email, password }
       );
 

@@ -7,6 +7,7 @@ import {
   getJWT,
   getUser,
   getUsers,
+  loginAdminUser,
   loginUser,
   resetPassword,
   sendOtp,
@@ -29,6 +30,7 @@ const router = express.Router();
 // });
 router.post("/", createUser);
 router.post("/login", loginUser);
+router.post("/login-admin", loginAdminUser);
 router.post("/send-otp", sendOtp);
 router.post("/forgot-password", forgotPassword);
 router.post("/reset_password/:id/:token", resetPassword);

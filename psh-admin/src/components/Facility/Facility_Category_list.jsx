@@ -9,8 +9,6 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
 import Category from "../../pages/edit/Category";
 import { Link } from "react-router-dom";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
 
 const Facility_Category_list = () => {
   const MySwal = withReactContent(Swal);
@@ -135,7 +133,7 @@ const Facility_Category_list = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           MySwal.fire("Good job!", "successfully deleted", "success");
           if (data.deletedCount === 1) {
             const remainItem = products.filter((item) => item._id !== id);
@@ -143,21 +141,6 @@ const Facility_Category_list = () => {
           }
         });
     }
-  };
-  const handleDownloadPDF = () => {
-    const doc = new jsPDF();
-    const columns = [
-      { title: "No", dataKey: "no" },
-      { title: "Category", dataKey: "category" },
-    ];
-    const tableData = data.map((item, index) => ({
-      no: index + 1,
-      category: item.name,
-    }));
-    doc.autoTable(columns, tableData, { startY: 20 });
-
-    // Save the PDF file
-    doc.save("Facility_Category_list.pdf");
   };
 
   return (
@@ -180,12 +163,6 @@ const Facility_Category_list = () => {
                       </Link>
                     </div>
                   </div>
-                  <button
-                    className="export_btn mt-2 p-3"
-                    onClick={handleDownloadPDF}
-                  >
-                    Export to PDF
-                  </button>
                 </div>
               </div>
             </div>
