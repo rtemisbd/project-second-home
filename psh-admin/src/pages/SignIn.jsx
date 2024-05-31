@@ -7,6 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import "./Signin.css";
 
 import { AuthContext } from "../contexts/UserProvider";
+import { ToastContainer } from "react-toastify";
 const SignIn = () => {
   const {
     register,
@@ -99,9 +100,6 @@ const SignIn = () => {
                           ) : (
                             <VisibilityOffIcon />
                           )}
-                          {/* <FontAwesomeIcon
-                            icon={showPassword ? faEye : faEyeSlash}
-                          /> */}
                         </button>
                         {errors.password && (
                           <p className="text-red-500">
@@ -120,16 +118,9 @@ const SignIn = () => {
                           Enter Password
                         </button>
                       </div>
-                      {/* <h6 style={{ color: "#939198" }}>
-                        Forgot your password?
-                      </h6> */}
                     </form>
                   </div>
                 </div>
-                {/* <div className="mt-5">
-                  <p>username: mama@gmail.com</p>
-                  <p>password: 123456Pt!1</p>
-                </div> */}
               </div>
 
               {/* /.card-body */}
@@ -137,6 +128,7 @@ const SignIn = () => {
           </div>
         </div>
       </div>
+      <ToastContainer className="toast-position" position="top-center" />
     </div>
   );
 };

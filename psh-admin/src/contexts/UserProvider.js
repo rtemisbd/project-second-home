@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 // Create the context
 export const AuthContext = createContext();
@@ -36,7 +37,17 @@ export const UserProvider = ({ children }) => {
         throw new Error("Login failed");
       }
     } catch (error) {
-      console.error(error);
+      if (error.response && error.response.status === 401) {
+        const errorMessage = error.response.data.message;
+
+        toast.error(errorMessage);
+      } else if (error.response && error.response.status === 404) {
+        const errorMessage = error.response.data.message;
+
+        toast.error(errorMessage);
+      } else {
+        toast.error("An error occurred. Please try again later.");
+      }
     }
   };
   const registerUser = async (
@@ -70,7 +81,7 @@ export const UserProvider = ({ children }) => {
         throw new Error("Registration failed");
       }
     } catch (error) {
-      console.error(error);
+      // console.error(error);
     }
   };
   const logoutUser = () => {
