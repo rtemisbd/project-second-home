@@ -1,17 +1,16 @@
 import React, { useContext } from "react";
-import { Navigate, useOutlet } from "react-router-dom";
+import { useOutlet } from "react-router-dom";
 
-import useAdmin from "../../hooks/useAdmin";
 import { AuthContext } from "../../contexts/UserProvider";
 import Navbar from "../../components/Common/Navbar/Navbar";
 import Footer from "../../components/Common/Navbar/Footer";
 
-const AdminRoute = ({ children }) => {
+const Dashboard = ({ children }) => {
   const { user } = useContext(AuthContext);
   const outlet = useOutlet();
   // if (!user) {
   //   // user is not authenticated
-  //   return <Navigate to="/signup" />;
+  //   return <Navigate to="/login" />;
   // }
   return (
     <div>
@@ -22,4 +21,4 @@ const AdminRoute = ({ children }) => {
   );
 };
 
-export default AdminRoute;
+export default Dashboard;

@@ -157,7 +157,7 @@ const Branch_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/add_branch"}>
+                      <Link to={"/dashboard/add_branch"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New
                         </button>

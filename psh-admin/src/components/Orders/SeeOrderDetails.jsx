@@ -249,7 +249,7 @@ const SeeOrderDetails = ({
                 ) : (
                   <div className="col-lg-3">
                     <label htmlFor="" className="fw-medium">
-                      Room Name
+                      Room Title
                     </label>
                     <p> {data?.bookingInfo?.data?.name}</p>
                   </div>
@@ -325,6 +325,20 @@ const SeeOrderDetails = ({
                     Future Extend{" "}
                   </label>
                   <p> {data?.bookingExtend === true ? "Yes" : "No"}</p>
+                </div>
+                <div className="col-lg-3">
+                  {" "}
+                  <label htmlFor="" className="fw-medium">
+                    Food
+                  </label>
+                  <p>
+                    {" "}
+                    {data?.isIncludeFood === true
+                      ? "Yes"
+                      : data?.isIncludeFood === false
+                      ? "No"
+                      : "Yes"}
+                  </p>
                 </div>
               </div>
 

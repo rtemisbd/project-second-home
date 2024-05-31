@@ -45,7 +45,7 @@ const Navbar = () => {
 
   const handleLogOut = () => {
     logoutUser();
-    navigate("/signup");
+    navigate("/login");
   };
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
@@ -55,7 +55,7 @@ const Navbar = () => {
   const handleClose = () => {
     setAnchorEl(null);
   };
-  if (location.pathname === "/signup") {
+  if (location.pathname === "/login") {
     return null;
   }
 
@@ -177,7 +177,7 @@ const Navbar = () => {
                 user?.role === "admin" ||
                 user?.role === "subAdmin1" ||
                 user?.role === "manager" ? (
-                  <Link to={"/"}>
+                  <Link to={"/dashboard"}>
                     <li className="main_nav-link">
                       <div className=" nav-link text-black  d-flex align-items-center">
                         <MdDashboard
@@ -250,7 +250,7 @@ const Navbar = () => {
                           isActive1 ? "custom-drop-show" : ""
                         }`}
                       >
-                        <Link to={"/manager_list"}>
+                        <Link to={"/dashboard/manager_list"}>
                           <li className="main_nav-link">
                             <span className="nav-link">
                               {/* <img style={{ width: 16 }} src={img6} alt="" /> */}
@@ -266,7 +266,7 @@ const Navbar = () => {
                             </span>
                           </li>
                         </Link>
-                        <Link to={"/partner_list"}>
+                        <Link to={"/dashboard/partner_list"}>
                           <li className="main_nav-link">
                             <span className="nav-link">
                               {/* <img style={{ width: 16 }} src={img6} alt="" /> */}
@@ -329,7 +329,7 @@ const Navbar = () => {
                           isActive2 ? "custom-drop-show" : ""
                         }`}
                       >
-                        <Link to={"/add_branch"}>
+                        <Link to={"/dashboard/add_branch"}>
                           <li className="main_nav-link">
                             <span className="nav-link">
                               <div className="menu_flex">
@@ -344,7 +344,7 @@ const Navbar = () => {
                             </span>
                           </li>
                         </Link>
-                        <Link to={"/branch_list"}>
+                        <Link to={"/dashboard/branch_list"}>
                           <li className="main_nav-link">
                             <span className="nav-link">
                               <div className="menu_flex">
@@ -425,7 +425,7 @@ const Navbar = () => {
                     user?.role === "subAdmin1" ||
                     user?.role === "manager" ||
                     user?.role === "partner" ? (
-                      <Link to={"/property-report"}>
+                      <Link to={"/dashboard/property-report"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -449,7 +449,7 @@ const Navbar = () => {
                     user?.role === "partner" ||
                     user?.role === "subAdmin1" ? (
                       <>
-                        <Link to={"/add_property"}>
+                        <Link to={"/dashboard/add_property"}>
                           <li className="main_nav-link">
                             <span className="nav-link">
                               <div className="menu_flex">
@@ -471,7 +471,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/property_list"}>
+                      <Link to={"/dashboard/property_list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -491,7 +491,7 @@ const Navbar = () => {
                     )}
 
                     {user && user?.role === "manager" ? (
-                      <Link to={"/property_list_m"}>
+                      <Link to={"/dashboard/property_list_m"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -510,7 +510,7 @@ const Navbar = () => {
                       ""
                     )}
                     {user && user?.role === "partner" ? (
-                      <Link to={"/property_list_p"}>
+                      <Link to={"/dashboard/property_list_p"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -532,7 +532,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/category_list"}>
+                      <Link to={"/dashboard/category_list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -553,7 +553,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/featured"}>
+                      <Link to={"/dashboard/featured"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -630,7 +630,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/add-promo"}>
+                      <Link to={"/dashboard/add-promo"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -654,7 +654,7 @@ const Navbar = () => {
                     user?.role === "partner" ||
                     user?.role === "subAdmin1" ? (
                       <>
-                        <Link to={"/promo_list"}>
+                        <Link to={"/dashboard/promo_list"}>
                           <li className="main_nav-link">
                             <span className="nav-link">
                               <div className="menu_flex">
@@ -678,7 +678,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/used-promo"}>
+                      <Link to={"/dashboard/used-promo"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -701,7 +701,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/adjustmen-list"}>
+                      <Link to={"/dashboard/adjustmen-list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -777,7 +777,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/subscription-list"}>
+                      <Link to={"/dashboard/subscription-list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -799,7 +799,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/subscription-order"}>
+                      <Link to={"/dashboard/subscription-order"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -875,7 +875,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/transaction"}>
+                      <Link to={"/dashboard/transaction"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -894,7 +894,7 @@ const Navbar = () => {
                       ""
                     )}
                     {user && user?.role === "manager" ? (
-                      <Link to={"/transaction-m"}>
+                      <Link to={"/dashboard/transaction-m"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -916,7 +916,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/extra-charge"}>
+                      <Link to={"/dashboard/extra-charge"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -990,7 +990,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/add_facility"}>
+                      <Link to={"/dashboard/add_facility"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1012,7 +1012,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/facility_list"}>
+                      <Link to={"/dashboard/facility_list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1117,7 +1117,7 @@ const Navbar = () => {
                 user?.role === "admin" ||
                 user?.role === "subAdmin1" ? (
                   <Link
-                    to={"/visitingRequest"}
+                    to={"/dashboard/visitingRequest"}
                     style={{
                       backgroundColor:
                         location.pathname === "/visitingRequest"
@@ -1163,7 +1163,7 @@ const Navbar = () => {
                 user?.role === "admin" ||
                 user?.role === "subAdmin1" ? (
                   <Link
-                    to={"/issues"}
+                    to={"/dashboard/issues"}
                     style={{
                       backgroundColor:
                         location.pathname === "/issues" ? "#35b0a7" : "",
@@ -1204,7 +1204,7 @@ const Navbar = () => {
                 {/* For Manager */}
                 {user && user?.role === "manager" ? (
                   <Link
-                    to={"/issues_m"}
+                    to={"/dashboard/issues_m"}
                     style={{
                       backgroundColor:
                         location.pathname === "/issues_m" ? "#35b0a7" : "",
@@ -1246,7 +1246,7 @@ const Navbar = () => {
                 user?.role === "admin" ||
                 user?.role === "subAdmin1" ? (
                   <Link
-                    to={"/contact-us"}
+                    to={"/dashboard/contact-us"}
                     style={{
                       backgroundColor:
                         location.pathname === "/contact-us" ? "#35b0a7" : "",
@@ -1338,7 +1338,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/review"}>
+                      <Link to={"/dashboard/review"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1360,7 +1360,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/user-manage"}>
+                      <Link to={"/dashboard/user-manage"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1381,7 +1381,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/pages"}>
+                      <Link to={"/dashboard/pages"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1402,7 +1402,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/lease-property"}>
+                      <Link to={"/dashboard/lease-property"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1423,7 +1423,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/corporate-housing"}>
+                      <Link to={"/dashboard/corporate-housing"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1500,7 +1500,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/add_banner"}>
+                      <Link to={"/dashboard/add_banner"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
@@ -1522,7 +1522,7 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
-                      <Link to={"/banner_list"}>
+                      <Link to={"/dashboard/banner_list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
