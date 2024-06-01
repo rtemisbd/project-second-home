@@ -179,7 +179,7 @@ export const createOrder = async (req, res, next) => {
 
     const mailOptions = {
       from: "alaminbamna08@gmail.com",
-      to: `mohammad.alaminh08@gmail.com,${email}`,
+      to: `fahmi.rtemis@gmail.com,${email}`,
       subject: "Your Booking Details at Project Second Home",
       html: bookingMail(result),
     };
