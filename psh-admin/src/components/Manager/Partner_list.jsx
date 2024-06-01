@@ -195,7 +195,7 @@ const Partner_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/add_manager"}>
+                      <Link to={"/dashboard/add_manager"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add Partner
                         </button>

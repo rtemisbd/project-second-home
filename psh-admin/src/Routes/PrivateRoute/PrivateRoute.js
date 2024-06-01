@@ -10,7 +10,7 @@ const PrivateRoute = ({ children }) => {
   const outlet = useOutlet();
   if (!user) {
     // user is not authenticated
-    return <Navigate to="/signup" />;
+    return <Navigate to="/login" />;
   }
   return (
     <div>
