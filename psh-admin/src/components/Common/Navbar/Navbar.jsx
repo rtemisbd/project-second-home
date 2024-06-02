@@ -29,7 +29,6 @@ import { CgProfile } from "react-icons/cg";
 
 const Navbar = () => {
   const { logoutUser, user } = useContext(AuthContext);
-
   const location = useLocation();
   const navigate = useNavigate();
   const [isActive1, setIsActive1] = useState(false);
@@ -176,6 +175,7 @@ const Navbar = () => {
                 {(user && user?.role === "SuperAdmin") ||
                 user?.role === "admin" ||
                 user?.role === "subAdmin1" ||
+                user?.role === "subAdmin2" ||
                 user?.role === "manager" ? (
                   <Link to={"/dashboard"}>
                     <li className="main_nav-link">
@@ -584,7 +584,8 @@ const Navbar = () => {
                   {(user && user?.role === "SuperAdmin") ||
                   user?.role === "manager" ||
                   user?.role === "partner" ||
-                  user?.role === "subAdmin1" ? (
+                  user?.role === "subAdmin1" ||
+                  user?.role === "subAdmin2" ? (
                     <span
                       className="nav-link"
                       onClick={() => {
@@ -629,7 +630,8 @@ const Navbar = () => {
                   >
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
-                    user?.role === "subAdmin1" ? (
+                    user?.role === "subAdmin1" ||
+                    user?.role === "subAdmin2" ? (
                       <Link to={"/dashboard/add-promo"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
@@ -652,7 +654,8 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "manager" ||
                     user?.role === "partner" ||
-                    user?.role === "subAdmin1" ? (
+                    user?.role === "subAdmin1" ||
+                    user?.role === "subAdmin2" ? (
                       <>
                         <Link to={"/dashboard/promo_list"}>
                           <li className="main_nav-link">
@@ -677,7 +680,8 @@ const Navbar = () => {
                     )}
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
-                    user?.role === "subAdmin1" ? (
+                    user?.role === "subAdmin1" ||
+                    user?.role === "subAdmin2" ? (
                       <Link to={"/dashboard/used-promo"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
@@ -700,7 +704,8 @@ const Navbar = () => {
                     )}
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
-                    user?.role === "subAdmin1" ? (
+                    user?.role === "subAdmin1" ||
+                    user?.role === "subAdmin2" ? (
                       <Link to={"/dashboard/adjustmen-list"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
@@ -829,7 +834,8 @@ const Navbar = () => {
                   }}
                 >
                   {(user && user?.role === "SuperAdmin") ||
-                  user?.role === "subAdmin1" ? (
+                  user?.role === "subAdmin1" ||
+                  user?.role === "subAdmin2" ? (
                     <span
                       className="nav-link"
                       onClick={() => {
@@ -874,7 +880,8 @@ const Navbar = () => {
                   >
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
-                    user?.role === "subAdmin1" ? (
+                    user?.role === "subAdmin1" ||
+                    user?.role === "subAdmin2" ? (
                       <Link to={"/dashboard/transaction"}>
                         <li className="main_nav-link">
                           <span className="nav-link">

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -20,10 +20,13 @@ import useExtraCharge from "../../hooks/useExtraCharge";
 import img from "../../img/new/style.png";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
+import { AuthContext } from "../../contexts/UserProvider";
 
 // import { useLocation } from "react-router-dom";
 
 const AdminOrderList = () => {
+  const { logoutUser, user } = useContext(AuthContext);
+
   const MySwal = withReactContent(Swal);
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
@@ -312,31 +315,7 @@ const AdminOrderList = () => {
         );
       },
     },
-    // {
-    //   text: "Food",
-    //   formatter: (cellContent, row, index) => {
-    //     return (
-    //       <>
-    //         <div className=" d-flex ">
-    //           <div>
-    //             <p
-    //               className="fw-bold"
-    //               style={
-    //                 {
-    //                   // color: row?.status === "Approved" ? "#27b3b1" : "red",
-    //                 }
-    //               }
-    //             >
-    //               {row?.isIncludeFood}
-    //             </p>
-    //           </div>
 
-    //           {/* Modal Order Status Update */}
-    //         </div>
-    //       </>
-    //     );
-    //   },
-    // },
     {
       text: "Status",
       formatter: (cellContent, row, index) => {
@@ -359,7 +338,11 @@ const AdminOrderList = () => {
                 data-bs-target={`#status${row._id}`}
                 className="d-flex  bg-white p-0"
               >
-                <BiSolidEdit style={{ width: "24px", height: "24px" }} />
+                {user?.role === "subAdmin2" ? (
+                  ""
+                ) : (
+                  <BiSolidEdit style={{ width: "24px", height: "24px" }} />
+                )}
               </button>
               {/* Modal Order Status Update */}
             </div>
@@ -392,6 +375,7 @@ const AdminOrderList = () => {
         );
       },
     },
+
     {
       text: "Update Duration",
       formatter: (cellContent, row, index) => {
@@ -414,7 +398,13 @@ const AdminOrderList = () => {
                 }}
                 data-bs-toggle="modal"
                 data-bs-target={`#dateUpdate${row._id}`}
-                disabled={row?.status === "Approved" ? true : false}
+                disabled={
+                  row?.status === "Approved"
+                    ? true
+                    : false || user?.role === "subAdmin2"
+                    ? true
+                    : false
+                }
               >
                 <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
               </button>
@@ -513,7 +503,7 @@ const AdminOrderList = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
+          // console.log(data);
           MySwal.fire("Good job!", "successfully deleted", "success");
           if (data.deletedCount === 1) {
             const remainItem = products.filter((item) => item._id !== id);
