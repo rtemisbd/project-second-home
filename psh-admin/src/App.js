@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import "bootstrap-4-react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";

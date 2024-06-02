@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Admin_seat_list from "../components/Seat/Admin_seat_list";

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../../Layout/Main";
 import Add_Category from "../../pages/Add_Category";
