@@ -179,31 +179,62 @@ export const loginUser = async (req, res) => {
       branch: user?.branch,
       firstName: user?.firstName,
       lastName: user?.lastName,
-      // fatherName: user?.fatherName,
-      // motherName: user?.motherName,
       email: user?.email,
-      // phone: user?.phone,
-      // userAddress: user?.userAddress,
-      // passport: user?.passport,
-      // dateOfBirth: user?.dateOfBirth,
-      // gender: user?.gender,
-      // nationalId: user?.nationalId,
-      // validityType: user?.validityType,
-      // validityNumber: user?.validityNumber,
       role: user?.role,
-      // cardImage: user?.cardImage,
-      // gardianImg: user?.gardianImg,
+    };
 
-      // employmentStatus: {
-      //   workAs: user?.employmentStatus?.workAs,
-      //   monthlyIncome: user?.employmentStatus?.monthlyIncome,
-      // },
-      // emergencyContact: {
-      //   contactName: user?.emergencyContact?.contactName,
-      //   relation: user?.emergencyContact?.relation,
-      //   contactNumber: user?.emergencyContact?.contactNumber,
-      // },
-      // usedPromo: user?.usedPromo,
+    // Generate a JWT token
+    const token = jwt.sign({ userId: user._id }, "your-secret-key");
+
+    // Return the token and user information
+    res.status(200).json({ token, user: userData });
+  } catch (err) {
+    res.status(500).json(err);
+  }
+};
+
+// For Admin Login
+
+export const loginAdminUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Find the user by email and populate the branch field
+    const user = await User.findOne({ email }).populate("branch");
+
+    // If the user does not exist, return an error message
+    if (user.role === "user") {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    if (!user) {
+      res.status(404).json({ message: "User not found" });
+      return;
+    }
+    if (user.userStatus === "Blocked" || user.userStatus === "Deactive") {
+      res
+        .status(401)
+        .json({ message: "User is blocked or deactivated and cannot log in" });
+      return;
+    }
+
+    // Compare the provided password with the stored password
+    const passwordMatch = await bcrypt.compare(password, user.password);
+
+    // If the passwords do not match, return an error message
+    if (!passwordMatch) {
+      res.status(401).json({ message: "Invalid password" });
+      return;
+    }
+
+    // Create a user object with limited properties, including the branch
+    const userData = {
+      _id: user._id,
+      branch: user?.branch,
+      firstName: user?.firstName,
+      lastName: user?.lastName,
+      email: user?.email,
+      role: user?.role,
     };
 
     // Generate a JWT token
