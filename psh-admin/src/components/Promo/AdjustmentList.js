@@ -88,6 +88,16 @@ const AdjustmentList = () => {
         );
       },
     },
+    {
+      text: "Note",
+      formatter: (cellContent, adjustment) => {
+        return (
+          <div className="d-flex justify-content-between">
+            <p>{adjustment?.noteForAdjustment}</p>
+          </div>
+        );
+      },
+    },
 
     {
       text: "Action",

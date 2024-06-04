@@ -13,6 +13,6 @@ router.post("/", CreatePromo);
 router.get("/", getPromo);
 router.get("/:id", getSinglePromo);
 router.delete("/:id", deletePromo);
-router.put("/:id", updatePromo);
+router.patch("/:id", updatePromo);
 
 export default router;

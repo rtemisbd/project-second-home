@@ -5,8 +5,6 @@ import axios from "axios";
 import { useEffect } from "react";
 
 const Property = ({ data }) => {
-  console.log(data);
-
   const [user, setUser] = useState(data);
   const [files, setFiles] = useState("");
   const [categories, setCategories] = useState([]);

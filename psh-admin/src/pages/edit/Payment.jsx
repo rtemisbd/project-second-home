@@ -38,11 +38,7 @@ const Payment = ({ data, refetch, isLoading }) => {
     if (Number(receivedTk) === 0) {
       return toast.warn(`Sorry ! 0 Tk Receive Not Acceptable`);
     }
-    // const receivedTk = e.target.receivedTk.value;
-    // const dueAmount =
-    //   data?.payableAmount -
-    //   Number(discount) -
-    //   (data?.totalReceiveTk + Number(receivedTk));
+
     const dueAmount =
       data?.payableAmount - (data?.totalReceiveTk + Number(receivedTk));
 
@@ -75,7 +71,7 @@ const Payment = ({ data, refetch, isLoading }) => {
       bankHoldingName: e.target?.bankHoldingName?.value,
       receiverName: e.target?.receiverName?.value,
       acceptableStatus: paymentType === "cash" ? "Accepted" : "Pending",
-      // unReceivedTk: 0,
+      noteForTransaction: e.target?.noteForTransaction?.value,
     };
     handleClickCloseButton();
     try {
@@ -102,6 +98,8 @@ const Payment = ({ data, refetch, isLoading }) => {
   const handleAdjustment = async (e) => {
     e.preventDefault();
 
+    const noteForAdjustment = e.target.noteForAdjustment.value;
+
     //If Discount Amount <= 0
     if (Number(adjustmentAmount) <= 0) {
       return toast.warn(`Sorry ! 0 Tk Adjustment Not Acceptable`);
@@ -123,6 +121,7 @@ const Payment = ({ data, refetch, isLoading }) => {
     setLoading(true);
     const adjustment = {
       adjustment: adjustmentAmount,
+      noteForAdjustment: noteForAdjustment,
     };
     handleClickCloseButton();
     try {
@@ -145,55 +144,6 @@ const Payment = ({ data, refetch, isLoading }) => {
     e.target.reset();
   };
   // Handle Reduce Payment
-
-  const handleReducePayment = async (e) => {
-    e.preventDefault();
-    const unReceivedTk = e.target.unReceivedTk.value;
-
-    if (Number(unReceivedTk) > data?.totalReceiveTk) {
-      return toast.warn(
-        `Sorry ! You Total Received Tk ${data?.totalReceiveTk}`
-      );
-    }
-
-    const dueAmount =
-      data.bookingInfo.totalAmount -
-      (data?.totalReceiveTk - Number(unReceivedTk));
-
-    const reducePayment = {
-      paymentDate: e.target?.paymentDate?.value,
-
-      totalAmount: data.bookingInfo.totalAmount,
-      receivedTk: 0,
-      unReceivedTk: Number(unReceivedTk),
-      dueAmount: dueAmount,
-      totalReceiveTk: data?.totalReceiveTk - Number(unReceivedTk),
-      paymentType: paymentType,
-      paymentStatus: "Unpaid",
-      paymentNumber: e.target?.paymentNumber?.value,
-      transactionId: e.target?.transactionId?.value,
-      bankName: e.target?.bankName?.value,
-      bankHoldingName: e.target?.bankHoldingName?.value,
-      receiverName: e.target?.receiverName?.value,
-    };
-
-    try {
-      await axios.patch(
-        `https://api.psh.com.bd/api/order/${data._id}`,
-        reducePayment,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      e.target.reset();
-      toast.success("Success");
-      refetch();
-    } catch (error) {
-      return toast.error(error.response.data.message);
-    }
-  };
 
   return (
     <div className="container">
@@ -222,7 +172,7 @@ const Payment = ({ data, refetch, isLoading }) => {
               ></button>
             </div>
             <div className="modal-body">
-              <div className="d-flex gx-5">
+              <div className="d-flex gap-3">
                 {paymentOption?.map((option, index) => (
                   <p
                     key={index}
@@ -233,6 +183,7 @@ const Payment = ({ data, refetch, isLoading }) => {
                       color: paymentOptionValue === index ? "white" : "",
                       cursor: "pointer",
                       padding: "5px",
+                      border: "1px solid #00BBB4",
                     }}
                     className="fs-5 rounded"
                     onClick={() => setPaymentOptionValue(index)}
@@ -443,49 +394,21 @@ const Payment = ({ data, refetch, isLoading }) => {
                         <br />
                       </>
                     )}
+                    <div>
+                      <label htmlFor="" className="fs-5 fw-normal mt-2">
+                        Note : (Optional)
+                      </label>{" "}
+                      <br />
+                      <textarea
+                        className="px-2 rounded"
+                        placeholder="note"
+                        style={{ width: "300px", height: "70px" }}
+                        name="noteForTransaction"
+                      ></textarea>
+                      <br />
+                    </div>
                   </div>
-                  <div className="mt-3">
-                    {/* <div className="text-right total-amount-right font-[600] ">
-                      <div className="d-flex ">
-                        <p className="fw-bold">Total :</p>
 
-                        <p className="ms-5">{data?.totalAmount} Tk</p>
-                      </div>
-                      <div className="d-flex ">
-                        <p className="fw-bold">Discount :</p>
-
-                        <p className=" ms-5">{data?.discount} Tk</p>
-                      </div>
-                      <div className="d-flex ">
-                        <p className="fw-bold">Payable :</p>
-
-                        <p className=" ms-5">{data?.payableAmount} Tk</p>
-                      </div>
-
-                      <div className="paid-amount d-flex ">
-                        <p className="fw-bold ">Recieve :</p>
-                        <p className=" ms-5">
-                          {" "}
-                          {data?.totalReceiveTk + Number(receivedTk)} Tk
-                        </p>
-                      </div>
-
-                      <div className="paid-amount d-flex ">
-                        <p
-                          className="fw-bold "
-                          style={{
-                            color: data?.dueAmount > 0 ? "red" : "",
-                          }}
-                        >
-                          Due :
-                        </p>
-
-                        <p className=" text-[12px] ms-5">
-                          {data?.dueAmount - Number(receivedTk)} Tk
-                        </p>
-                      </div>
-                    </div> */}
-                  </div>
                   <input
                     type="submit"
                     className="mt-2 px-4 py-1 rounded text-white"
@@ -515,8 +438,8 @@ const Payment = ({ data, refetch, isLoading }) => {
                 <form onSubmit={handleAdjustment}>
                   <div>
                     <label htmlFor="" className="fs-5 fw-normal">
-                      Adjustment Amount
-                    </label>
+                      Adjustment Amount :
+                    </label>{" "}
                     <br />
                     <input
                       type="number"
@@ -527,6 +450,19 @@ const Payment = ({ data, refetch, isLoading }) => {
                       name="discount"
                       onChange={(e) => setAdjustmentAmount(e.target.value)}
                     />{" "}
+                    <br />
+                  </div>
+                  <div>
+                    <label htmlFor="" className="fs-5 fw-normal mt-2">
+                      Note :
+                    </label>{" "}
+                    <br />
+                    <textarea
+                      className="px-2 rounded"
+                      placeholder="note"
+                      style={{ width: "300px", height: "70px" }}
+                      name="noteForAdjustment"
+                    ></textarea>
                     <br />
                   </div>
                   <div className="mt-3">
@@ -593,188 +529,6 @@ const Payment = ({ data, refetch, isLoading }) => {
               ) : (
                 ""
               )}
-
-              {/* {paymentOptionValue === 1 ? (
-                <form onSubmit={handleReducePayment}>
-                  <div className="d-flex gap-3 justify-items-center">
-                    <div>
-                      <label htmlFor="" className="fs-5 fw-normal">
-                        Which Payment Date
-                      </label>
-                      <br />
-                      <input
-                        type="date"
-                        placeholder="Payment Date"
-                        id=""
-                        className="px-2 rounded"
-                        style={{ width: "300px", height: "40px" }}
-                        name="paymentDate"
-                        min={new Date()}
-                        required
-                      />{" "}
-                    </div>
-
-                    <div className="">
-                      <label htmlFor="" className="fw-normal">
-                        {" "}
-                        Which Payment Method
-                      </label>
-                      <br />
-                      <select
-                        name="paymentType"
-                        id=""
-                        className="rounded"
-                        style={{
-                          width: "150px",
-                          height: "40px",
-                          marginTop: "5px",
-                        }}
-                        required
-                        onChange={(e) => setPaymentType(e.target.value)}
-                        defaultValue={paymentType}
-                      >
-                        <option disabled> Which Payment Type</option>
-                        <option>Bkash</option>
-                        <option>Nagad</option>
-                        <option>dutch-bangla</option>
-                        <option>Cash</option>
-                        <option>Bank</option>
-                      </select>
-                    </div>
-                  </div>
-                  <div>
-                    <div>
-                      <label htmlFor="" className="fs-5 fw-normal">
-                        Reduce Amount
-                      </label>
-                      <br />
-                      <input
-                        type="number"
-                        placeholder="Type Received Tk 
-               "
-                        id=""
-                        className="px-2 rounded"
-                        style={{ width: "300px", height: "40px" }}
-                        name="unReceivedTk"
-                        required
-                      />{" "}
-                      <br />
-                    </div>
-                    {paymentType === "Payment Type" ? (
-                      ""
-                    ) : (
-                      <>
-                        {paymentType !== "Cash" && paymentType !== "Bank" ? (
-                          <>
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Which Payment Number
-                            </label>
-                            <br />
-                            <input
-                              type="number"
-                              placeholder="Type Payment Number "
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="paymentNumber"
-                              required
-                            />
-                            <br />
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Which Transaction Id
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Transaction Id"
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="transactionId"
-                              required
-                            />
-                            <br />
-                          </>
-                        ) : (
-                          ""
-                        )}
-
-                        {paymentType === "Bank" ? (
-                          <>
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Which Bank Name
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Bank Name 
-               "
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="bankName"
-                              required
-                            />
-                            <br />
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Which Bank Holding Name
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Holding Name
-               "
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="bankHoldingName"
-                              required
-                            />
-                            <br />
-                          </>
-                        ) : (
-                          ""
-                        )}
-                        <label htmlFor="" className="fs-5 fw-normal">
-                          Which Receiver Name
-                        </label>
-                        <br />
-                        <input
-                          type="text"
-                          placeholder="Receiver Name
-               "
-                          id=""
-                          className="px-2 rounded mt-2"
-                          style={{ width: "300px", height: "40px" }}
-                          name="receiverName"
-                          required
-                        />
-                        <br />
-                      </>
-                    )}
-                  </div>
-                  <input
-                    type="submit"
-                    className="mt-2 px-4 py-1 rounded text-white"
-                    id=""
-                    style={{
-                      fontSize: "18px",
-                      backgroundColor:
-                        data?.totalReceiveTk === data.bookingInfo.totalAmount
-                          ? "rgb(170 221 220)"
-                          : "#00BBB4",
-                      border: "none",
-                    }}
-                    disabled={
-                      data?.totalReceiveTk === data.bookingInfo.totalAmount
-                        ? true
-                        : false
-                    }
-                  />
-                </form>
-              ) : (
-                ""
-              )} */}
             </div>
           </div>
         </div>

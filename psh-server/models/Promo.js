@@ -34,6 +34,11 @@ const PromoSchema = new mongoose.Schema(
     photos: {
       type: [String],
     },
+    isPublished: {
+      type: String,
+      enum: ["Unpublished", "Published"],
+      default: "Unpublished",
+    },
     homePageCover: {
       type: [String],
     },
