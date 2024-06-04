@@ -178,7 +178,7 @@ const Promo_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"add_banner/add_promo"}>
+                      <Link to={"/dashboard/add-promo"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New Discount
                         </button>
