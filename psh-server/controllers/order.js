@@ -779,58 +779,18 @@ export const updateBooking = async (req, res, next) => {
         totalAmount: req.body?.totalAmount,
         payableAmount: req.body?.payableAmount,
         receivedTk: req.body?.receivedTk,
-
-        // discount: req.body?.discount,
         paymentType: req.body?.paymentType,
         userEmail: findSingleOrder?.email,
         userId: findSingleOrder?.userId,
         userName: findSingleOrder?.fullName,
         userPhone: findSingleOrder?.phone,
-
         paymentNumber: req.body?.paymentNumber,
         transactionId: req.body?.transactionId,
         bankName: req.body?.bankName,
         bankHoldingName: req.body?.bankHoldingName,
         receiverName: req.body?.receiverName,
         acceptableStatus: req.body?.acceptableStatus,
-      });
-      await transaction.save();
-    } else if (req.body?.unReceivedTk) {
-      // If Payment Reduce
-      await OrderModel.findByIdAndUpdate(
-        req.params.id,
-        {
-          $set: {
-            unReceivedTk: req.body?.unReceivedTk,
-            dueAmount: req.body?.dueAmount,
-            totalReceiveTk: req.body?.totalReceiveTk,
-          },
-        },
-        { new: true }
-      );
-      // Create Transaction every payment-less Time
-      const transaction = new Transaction({
-        orderId: findSingleOrder?._id,
-        branch: findSingleOrder?.bookingInfo?.branch,
-        paymentDate: req.body?.paymentDate,
-        totalAmount: req.body?.totalAmount,
-        receivedTk: req.body?.receivedTk,
-        unReceivedTk: req.body?.unReceivedTk,
-        dueAmount: req.body?.dueAmount,
-        totalReceiveTk: req.body?.totalReceiveTk,
-        // discount: req.body?.discount,
-        paymentType: req.body?.paymentType,
-        userEmail: findSingleOrder?.email,
-        userId: findSingleOrder?.userId,
-        userName: findSingleOrder?.fullName,
-        userPhone: findSingleOrder?.phone,
-        paymentStatus: req.body?.paymentStatus,
-        paymentNumber: req.body?.paymentNumber,
-        transactionId: req.body?.transactionId,
-        bankName: req.body?.bankName,
-        bankHoldingName: req.body?.bankHoldingName,
-        receiverName: req.body?.receiverName,
-        acceptableStatus: req.body?.acceptableStatus,
+        noteForTransaction: req.body?.noteForTransaction,
       });
       await transaction.save();
     } else if (req?.body?.adjustment) {

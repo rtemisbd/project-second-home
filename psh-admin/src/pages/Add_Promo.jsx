@@ -1,5 +1,6 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { ToastContainer, toast } from "react-toastify";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
@@ -12,6 +13,11 @@ const Add_Promo = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
+    const isPublished = event.target.isPublished.value;
+    if (isPublished === "Select Status") {
+      return toast.warn("Please Select Status");
+    }
+
     const data2 = {
       promoName: formData.get("promoName"),
       promoCode: formData.get("promoCode"),
@@ -22,6 +28,7 @@ const Add_Promo = () => {
       discountAmount: formData.get("discountAmount"),
       promoDetails: formData.get("promoDetails"),
       useTime: formData.get("useTime"),
+      isPublished: isPublished,
     };
 
     try {
@@ -44,9 +51,9 @@ const Add_Promo = () => {
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -209,7 +216,21 @@ const Add_Promo = () => {
                   required
                 />
               </div>
+
               <div className="col-md-4 form_sub_stream">
+                <label className="profile_label3">Status</label>
+
+                <select
+                  name="isPublished"
+                  className="main_form w-100"
+                  // required
+                >
+                  <option disabled>Select Status</option>
+                  <option>Published</option>
+                  <option>Unpublished</option>
+                </select>
+              </div>
+              <div className="col-md-6 form_sub_stream">
                 <label htmlFor="inputState" className="form-label  ">
                   Discount Details
                 </label>
@@ -235,6 +256,7 @@ const Add_Promo = () => {
           </form>
         </div>
       </div>
+      <ToastContainer className="toast-position" position="top-center" />
     </div>
   );
 };
