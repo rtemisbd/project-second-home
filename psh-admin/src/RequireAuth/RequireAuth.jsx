@@ -3,6 +3,7 @@ import { Navigate, useLocation } from "react-router-dom";
 import { AuthContext } from "../contexts/UserProvider";
 
 const RequireAuth = ({ children }) => {
+  // eslint-disable-next-line no-unused-vars
   const { logoutUser, user } = useContext(AuthContext);
   const location = useLocation();
 

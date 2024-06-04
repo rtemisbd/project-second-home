@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import Banner_list from "../components/Banner/Banner_list";
 

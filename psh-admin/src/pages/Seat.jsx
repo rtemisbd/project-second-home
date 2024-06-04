@@ -1,13 +1,13 @@
 /* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import Branch_list from "../components/Branch/Branch_list";
-const Branch = () => {
+import Seat_list from "../components/Seat/Seat_list";
+const Seat = () => {
   return (
     <div>
-      <Branch_list />
+      <Seat_list />
     </div>
   );
 };
 
-export default Branch;
+export default Seat;

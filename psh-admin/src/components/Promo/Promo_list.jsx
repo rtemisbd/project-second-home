@@ -1,17 +1,15 @@
-import React, { useEffect, useState } from "react";
-import img from "../../img/college/Icon material-delete.png";
-import img3 from "../../img/college/Icon feather-edit.png";
-import axios from "axios";
+import React, { useState } from "react";
+
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
-import Category from "../../pages/edit/Category";
+
 import { Link } from "react-router-dom";
 import PromoUpdate from "../../pages/edit/PromoUpdate";
-import jsPDF from "jspdf";
-import "jspdf-autotable";
+
+
 import { useQuery } from "react-query";
 import { BiSolidEdit } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
