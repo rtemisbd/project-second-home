@@ -839,6 +839,7 @@ export const updateBooking = async (req, res, next) => {
         branch: findSingleOrder?.bookingInfo?.branch,
         userId: findSingleOrder?.userId,
         adjustmentAmount: req.body?.adjustment,
+        noteForAdjustment: req.body?.noteForAdjustment,
       });
       await adjustment.save();
     } else if (req?.body?.cancelReason) {

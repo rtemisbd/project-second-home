@@ -102,6 +102,8 @@ const Payment = ({ data, refetch, isLoading }) => {
   const handleAdjustment = async (e) => {
     e.preventDefault();
 
+    const noteForAdjustment = e.target.noteForAdjustment.value;
+
     //If Discount Amount <= 0
     if (Number(adjustmentAmount) <= 0) {
       return toast.warn(`Sorry ! 0 Tk Adjustment Not Acceptable`);
@@ -123,6 +125,7 @@ const Payment = ({ data, refetch, isLoading }) => {
     setLoading(true);
     const adjustment = {
       adjustment: adjustmentAmount,
+      noteForAdjustment: noteForAdjustment,
     };
     handleClickCloseButton();
     try {
@@ -515,8 +518,8 @@ const Payment = ({ data, refetch, isLoading }) => {
                 <form onSubmit={handleAdjustment}>
                   <div>
                     <label htmlFor="" className="fs-5 fw-normal">
-                      Adjustment Amount
-                    </label>
+                      Adjustment Amount :
+                    </label>{" "}
                     <br />
                     <input
                       type="number"
@@ -527,6 +530,28 @@ const Payment = ({ data, refetch, isLoading }) => {
                       name="discount"
                       onChange={(e) => setAdjustmentAmount(e.target.value)}
                     />{" "}
+                    <br />
+                  </div>
+                  <div>
+                    <label htmlFor="" className="fs-5 fw-normal mt-2">
+                      Note :
+                    </label>{" "}
+                    <br />
+                    {/* <input
+                      type="text"
+                      placeholder="Adjustment Amount"
+                      id=""
+                      className="px-2 rounded"
+                      style={{ width: "300px", height: "100px" }}
+                      name="discount"
+                      onChange={(e) => setAdjustmentAmount(e.target.value)}
+                    />{" "} */}
+                    <textarea
+                      className="px-2 rounded"
+                      placeholder="note"
+                      style={{ width: "300px", height: "70px" }}
+                      name="noteForAdjustment"
+                    ></textarea>
                     <br />
                   </div>
                   <div className="mt-3">
