@@ -11,8 +11,7 @@ import "./Ticket.css";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const TicketCreate = ({ handleOpen, open }) => {
-  const [issue, setIssue] = useState("Air Condition Problem");
-  // const [allBranch] = useBranch();
+  const [category, setCategory] = useState("my-room");
   const { user } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
   const [branch, SetBranch] = useState([]);
@@ -31,6 +30,7 @@ const TicketCreate = ({ handleOpen, open }) => {
 
     fetchData();
   }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -39,7 +39,7 @@ const TicketCreate = ({ handleOpen, open }) => {
       desc: formData.get("desc"),
       email: formData.get("email"),
       type: formData.get("type"),
-      category: formData.get("category"),
+      category,
       subCategory: selectedSubCategory,
       branchId: formData.get("branch"),
     };
@@ -57,28 +57,42 @@ const TicketCreate = ({ handleOpen, open }) => {
       // MySwal.fire("Something Error Found.", "warning");
     }
   };
-  const issueSubCategories1 = [
-    "Ac Not Working",
-    "No Remote",
-    "Not Remote Working",
-    "Not Remote Working",
-    "Ac Issue",
-    "Not Remote Working",
-    "Other",
-  ];
-  const issueSubCategories2 = [
-    "Ac Working Problem",
-    "No Remote",
-    "Not Remote Working",
-    "Not Remote Working",
-    "Ac Issue",
-    "Not Remote Working",
-  ];
-  const [issueSubValue, setIssuSubValue] = useState(0);
+
+  const issueSubCategories = {
+    "my-room": [
+      "Roommate",
+      "Wifi",
+      "Air Condition",
+      "Cleaning",
+      "Room Lock issue",
+      "Fan or Light",
+      "Bed",
+      "Washroom",
+      "Others Issue",
+    ],
+    "common-area": [
+      "Food Issue",
+      "Kitchen",
+      "TV",
+      "Water",
+      "Fridge",
+      "Watching Machine",
+      "Housekeeper",
+      "Others",
+    ],
+    payment: [
+      "Invoice Update",
+      "Payment Not Showing",
+      "Payment Failed",
+      "Rent",
+      "Discount",
+      "Others Problem",
+    ],
+  };
+
   return (
     <Dialog open={open} handler={handleOpen}>
       <DialogHeader>
-        {" "}
         <h2
           className="text-xl font-bold md:p-0 sm:p-2"
           style={{ fontFamily: "inter" }}
@@ -88,117 +102,98 @@ const TicketCreate = ({ handleOpen, open }) => {
       </DialogHeader>
       <DialogBody
         divider
-        className=" md:h-[450px] sm:h-[300px]  overflow-y-auto  mb-5"
+        className="md:h-[650px] sm:h-[400px] overflow-y-auto mb-5 "
       >
         <div className="md:px-10 sm:px-3 ">
-          <h3 className="text-xl mt-1">Issue For</h3>
+          <div>
+            <label htmlFor="inputState" className="profile_label3 bg-green-50">
+              Branch
+            </label>
+            <select
+              name="branch"
+              id="inputState"
+              className="w-2/2 h-9 border rounded border-orange-400"
+              defaultValue={"Select Branch"}
+            >
+              <option selected disabled>
+                Select Branch
+              </option>
+              {branch.map((pd) => (
+                <option key={pd._id} value={pd._id}>
+                  {pd.name}
+                </option>
+              ))}
+            </select>
+          </div>
+          <h3 className="text-xl mt-1 bg-green-50">Issue For</h3>
           <form ref={formRef} onSubmit={handleSubmit}>
-            <div className="flex md:flex-row sm:flex-col md:gap-8 sm:gap-0 ">
-              <Radio
-                name="type"
-                label="My Room"
-                value="my-room"
-                defaultChecked
-              />
-              <Radio name="type" label="Common Area" value="common-area" />
-              <Radio name="type" label="Payment" value="payment" />
+            <div className="flex md:flex-row sm:flex-col md:gap-4 sm:gap-0">
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="type"
+                  value="my-room"
+                  className="custom-radio"
+                  defaultChecked
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <span className="ml-2">My Room</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="type"
+                  value="common-area"
+                  className="custom-radio"
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <span className="ml-2">Service</span>
+              </label>
+              <label className="flex items-center">
+                <input
+                  type="radio"
+                  name="type"
+                  value="payment"
+                  className="custom-radio"
+                  onChange={(e) => setCategory(e.target.value)}
+                />
+                <span className="ml-2">Payment</span>
+              </label>
             </div>
-            <div className="flex md:gap-x-16 gap-x-5 items-center">
-              <div>
-                <label htmlFor="inputState" className="profile_label3">
-                  Branch
-                </label>
-                <select
-                  name="branch"
-                  id="inputState"
-                  className="w-full h-9 border rounded  border-black"
-                  defaultValue={"Select Branch"}
-                >
-                  <option selected disabled>
-                    Select Branch
-                  </option>
-                  {branch.map((pd) => (
-                    <option key={pd._id} value={pd._id}>
-                      {pd.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div className="">
-                <h3 className="text-xl">Issu Category</h3>
-                <select
-                  className="w-full h-9 border rounded mt-4 border-black"
-                  onChange={(e) => setIssue(e.target.value)}
-                  name="category"
-                >
-                  <option>Air Condition Problem</option>
-                  <option>Room Problem</option>
-                </select>
+
+            <div className="mt-5 mb-5">
+              <h3 className="text-xl border-2 bg-green-50">
+                Select Sub Category
+              </h3>
+              <div className="flex flex-wrap gap-2">
+                {issueSubCategories[category].map((subCategory, index) => (
+                  <div
+                    className="mt-2"
+                    onClick={() => {
+                      setSelectedSubCategory(subCategory);
+                    }}
+                    key={index}
+                  >
+                    <span
+                      className={`${
+                        selectedSubCategory === subCategory
+                          ? "bg-[#399] text-white border-none"
+                          : ""
+                      } border border-black rounded px-4 py-2 cursor-pointer text-sm bg-emerald-400 hover:bg-emerald-500 transition-colors duration-200`}
+                    >
+                      {subCategory}
+                    </span>
+                  </div>
+                ))}
               </div>
             </div>
 
-            {/* Sub Category */}
-            <div className="mt-5 mb-5">
-              <h3 className="text-xl">Sub Category</h3>
-              {issue === "Air Condition Problem" ? (
-                <div className="grid lg:grid-cols-3  md:grid-cols-2 sm:grid-cols-1">
-                  {issueSubCategories1.map((issue, index) => (
-                    <div
-                      className="mt-6"
-                      onClick={() => {
-                        setIssuSubValue(index);
-                        setSelectedSubCategory(issue); // Update the selected sub-category
-                      }}
-                      key={index}
-                    >
-                      <span
-                        className={`${
-                          issueSubValue === index
-                            ? "bg-[#399] text-white border-none "
-                            : ""
-                        } border border-black rounded-[15px] px-5 py-1.5 cursor-pointer text-sm`}
-                      >
-                        {issue}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                ""
-              )}
-              {issue === "Room Problem" ? (
-                <div className="grid lg:grid-cols-3 md:grid-cols-2 sm:grid-cols-1 xs:grid-cols-1">
-                  {issueSubCategories2.map((issue, index) => (
-                    <div
-                      className="mt-6"
-                      onClick={() => {
-                        setIssuSubValue(index);
-                        setSelectedSubCategory(issue); // Update the selected sub-category
-                      }}
-                      key={index}
-                    >
-                      <span
-                        className={`${
-                          issueSubValue === index
-                            ? "bg-[#399] text-white border-none "
-                            : ""
-                        } border border-black rounded-[15px] text-sm px-5 py-1.5 cursor-pointer`}
-                      >
-                        {issue}
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-            {/* Issu Title */}
-            <div className="issu_title ">
-              <h3 className="text-xl">Issu Title</h3>
+            {/* Issue Title */}
+            <div className="issu_title">
+              <h3 className="text-xl">Issue Title</h3>
               <input
                 type="text"
-                className=" rounded mt-2 h-10 pl-3 w-full"
+                className="rounded mt-2 h-10 pl-3 w-full border-1"
                 placeholder="Problem"
                 name="name"
               />
@@ -212,12 +207,12 @@ const TicketCreate = ({ handleOpen, open }) => {
                 defaultValue={user.email || ""}
               />
             </div>
-            {/* Issu Description */}
-            <div className="issu_title mt-5 ">
+            {/* Issue Description */}
+            <div className="issu_title mt-5">
               <h3 className="text-xl">Description</h3>
               <textarea
-                className="w-full rounded mt-2 h-24  p-3"
-                placeholder="Write about your Problem "
+                className="w-full rounded mt-2 h-24 p-3"
+                placeholder="Write about your Problem"
                 name="desc"
               />
             </div>

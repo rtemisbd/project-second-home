@@ -10,6 +10,17 @@ import "./AllPromo.css";
 
 const PromoOffer = () => {
   const { data } = UseFetch(`promo`);
+  // const [filteredProducts, setFilteredProducts] = useState([]);
+
+  // useEffect(() => {
+  //   filterProducts();
+  // }, [data]);
+
+  const promoFiltering = data.filter(
+    (promo) => promo.isPublished === "Published"
+  );
+  console.log(promoFiltering);
+
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {
@@ -137,22 +148,22 @@ const PromoOffer = () => {
               </Splide> */}
 
               <Slider {...settings}>
-                {data
+                {promoFiltering
                   ?.slice()
                   ?.reverse()
                   .map((item, i) => (
                     <div key={i} className="group relative">
                       <Link to={`/promo/${item?._id}`}>
-                        <div className="relative w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
+                        <div className="relative w-full overflow-hidden rounded-r-lg rounded-l-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
                           {item?.homePageCover?.length > 0 ? (
                             <img
                               src={item?.homePageCover[0]}
                               alt=""
                               className="promo_img"
                               style={{
-                                maxWidth: "100%",
+                                maxWidth: "110%",
 
-                                height: "200px",
+                                height: "220px",
                               }}
                             />
                           ) : (

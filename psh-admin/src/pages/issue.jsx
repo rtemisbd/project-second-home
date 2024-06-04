@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import Issue_list from "../components/Issue/Issue_list";
