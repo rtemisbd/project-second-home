@@ -19,7 +19,7 @@ const PromoOffer = () => {
   const promoFiltering = data.filter(
     (promo) => promo.isPublished === "Published"
   );
-  console.log(promoFiltering);
+  //console.log(promoFiltering);
 
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {

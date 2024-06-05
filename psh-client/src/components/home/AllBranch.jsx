@@ -56,7 +56,7 @@ const AllBranch = () => {
         breakpoint: 1200,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+
           dots: false,
 
           autoplaySpeed: 3000,
@@ -66,7 +66,7 @@ const AllBranch = () => {
         breakpoint: 800,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1,
+
           initialSlide: 2,
 
           autoplaySpeed: 3000,
@@ -102,7 +102,7 @@ const AllBranch = () => {
             <span className="mt-2 text-[1rem]">
               Our available Branches for your stay
             </span>
-            <div className="all_recommended mt-4 slider_margin card-slider">
+            <div className="all_branch mt-4 slider_margin card-slider">
               {/* <Splide
                 options={{
                   // type: "loop",
@@ -190,12 +190,27 @@ const AllBranch = () => {
                             style={{
                               display: "flex",
                               justifyContent: "start",
+                              width: "317px",
+                              height: "48px",
+                              padding: "44px 20px 0px 10px",
+                              alignItems: "center",
+                              flexShrink: 0,
+                              background: "rgba(39, 179, 177, 0.80)",
+                              marginBottom: "-24px",
                             }}
                           >
-                            <i className="fa-solid fa-location-dot text-white me-3 mt-1"></i>
+                            <i
+                              className="fa-solid fa-location-dot text-white me-3 mt-1"
+                              style={{
+                                marginBottom: "42px",
+                              }}
+                            ></i>
                             <Typography
                               variant="h5"
-                              className="mb-4 text-white text-[1rem]"
+                              className="mb-0 text-white text-[1rem] "
+                              style={{
+                                marginBottom: "35px",
+                              }}
                             >
                               {item.name}
                             </Typography>
