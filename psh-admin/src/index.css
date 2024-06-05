@@ -3,3 +3,27 @@ body {
   width: 100%;
   font-family: "Rubik", sans-serif !important;
 }
+/* .ReactModal__Overlay--after-open {
+  background-color: rgba(255, 255, 255, 0.555) !important;
+  z-index: 9999 !important;
+  width: 300px !important;
+
+  height: 200px;
+}
+.ReactModal__Overlay {
+  inset: none !important;
+} */
+.modal-backdrop.show {
+  background-color: white !important;
+  opacity: 0.2 !important;
+}
+
+.custom-modal .modal-content {
+  box-shadow: none; /* Remove box shadow */
+  /* Add any other custom styles you need here */
+  border: none;
+  background-color: transparent;
+  margin-top: 300px;
+  /* text-align: center; */
+  margin-left: 150px;
+}

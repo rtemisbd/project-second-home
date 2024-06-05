@@ -35,7 +35,7 @@ import subscriptionOrder from "./routes/subscriptionOrder.js";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
-
+import helmet from "helmet";
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
 
@@ -109,6 +109,18 @@ app.use("/api/dynamic", dynamicRoute);
 app.use("/api/contact", contact);
 app.use("/api/subscription", subscription);
 app.use("/api/subscriptionOrder", subscriptionOrder);
+
+// app.use(helmet());
+
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       directives: {
+//         "script-src": ["'self'", "https://psh.com.bd/"],
+//       },
+//     },
+//   })
+// );
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

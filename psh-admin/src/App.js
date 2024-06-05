@@ -127,6 +127,7 @@ function App() {
         <Route path="recommended_list" element={<Recommended />} />
         <Route path="orders_m" element={<Orders />} />
         <Route path="orders" element={<AdminOrders />} />
+        {/* <Route path="orders-new" element={<NewOrders />} /> */}
         <Route path="transaction" element={<TransactionAdmin />} />
         <Route path="transaction-m" element={<TransactionManager />} />
         <Route path="finance" element={<Finance />} />

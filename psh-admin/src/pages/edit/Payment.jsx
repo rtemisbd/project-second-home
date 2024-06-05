@@ -1,11 +1,17 @@
-import { Modal } from "react-bootstrap";
 import React, { useEffect, useRef, useState } from "react";
 
 import axios from "axios";
 import { toast } from "react-toastify";
 import "./Payment.css";
+import { useDispatch, useSelector } from "react-redux";
+import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import LoadingState from "../LoadingState/LoadingState";
 
 const Payment = ({ data, refetch, isLoading }) => {
+  const dispatch = useDispatch();
+  const isLoadingState = useSelector(
+    (state) => state?.loadingModal?.isLoadingState
+  );
   const [paymentType, setPaymentType] = useState("Payment Type");
   const [customerType, setCustomerType] = useState("Customer Type");
   const paymentOption = ["Receive", "Adjustment"];
@@ -25,6 +31,8 @@ const Payment = ({ data, refetch, isLoading }) => {
   useEffect(() => {
     refetch();
   }, [data?.payableAmount, data?.totalReceiveTk, refetch]);
+
+  const handleClose = () => dispatch(placeLoadingShow(false));
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -73,8 +81,9 @@ const Payment = ({ data, refetch, isLoading }) => {
       acceptableStatus: paymentType === "cash" ? "Accepted" : "Pending",
       noteForTransaction: e.target?.noteForTransaction?.value,
     };
-    handleClickCloseButton();
+
     try {
+      dispatch(placeLoadingShow(true));
       await axios.patch(
         `https://api.psh.com.bd/api/order/${data?._id}`,
         receivedPayment,
@@ -86,10 +95,16 @@ const Payment = ({ data, refetch, isLoading }) => {
       );
       e.target.reset();
       setLoading(false);
-      refetch();
+      // dispatch(placeLoadingShow(false));
+      handleClose();
+
       toast.success("Payment Successfully Done");
+      refetch();
+      handleClickCloseButton();
     } catch (error) {
-      return toast.error(error.response.data.message);
+      // dispatch(placeLoadingShow(false));
+      handleClose();
+      toast.error(error?.response?.data?.message);
     }
   };
 
@@ -123,8 +138,9 @@ const Payment = ({ data, refetch, isLoading }) => {
       adjustment: adjustmentAmount,
       noteForAdjustment: noteForAdjustment,
     };
-    handleClickCloseButton();
+
     try {
+      dispatch(placeLoadingShow(true));
       await axios.patch(
         `https://api.psh.com.bd/api/order/${data._id}`,
         adjustment,
@@ -135,11 +151,14 @@ const Payment = ({ data, refetch, isLoading }) => {
         }
       );
 
-      toast.success("Success");
       setLoading(false);
+      handleClose();
+      toast.success("Request Success");
       refetch();
+      handleClickCloseButton();
     } catch (error) {
-      return toast.error(error.response.data.message);
+      handleClose();
+      toast.error(error.response.data.message);
     }
     e.target.reset();
   };
@@ -147,6 +166,7 @@ const Payment = ({ data, refetch, isLoading }) => {
 
   return (
     <div className="container">
+      <LoadingState handleClose={handleClose} />
       <div
         className="modal fade"
         id={`payment${data?._id}`}
@@ -155,6 +175,9 @@ const Payment = ({ data, refetch, isLoading }) => {
         tabIndex="-1"
         aria-labelledby="staticBackdropLabel"
         aria-hidden="true"
+        style={{
+          opacity: isLoadingState === true ? 0.5 : 1,
+        }}
       >
         <div className="modal-dialog">
           <div className="modal-content">
@@ -462,6 +485,7 @@ const Payment = ({ data, refetch, isLoading }) => {
                       placeholder="note"
                       style={{ width: "300px", height: "70px" }}
                       name="noteForAdjustment"
+                      required
                     ></textarea>
                     <br />
                   </div>
