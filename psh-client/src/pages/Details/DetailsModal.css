@@ -11,3 +11,13 @@
 .slick-dots li {
   width: 100px !important;
 }
+
+.element.style {
+ 
+  opacity: 1;
+  transform: none;
+}
+
+.modal-container {
+  overflow: hidden;
+}
