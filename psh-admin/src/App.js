@@ -66,7 +66,7 @@ import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
-import NewOrders from "./components/Orders/NewOrders";
+// import NewOrders from "./components/Orders/NewOrders";
 
 function App() {
   return (
@@ -127,11 +127,7 @@ function App() {
         <Route path="recommended_list" element={<Recommended />} />
         <Route path="orders_m" element={<Orders />} />
         <Route path="orders" element={<AdminOrders />} />
-<<<<<<< HEAD
-        <Route path="orders-new" element={<NewOrders />} />
-=======
         {/* <Route path="orders-new" element={<NewOrders />} /> */}
->>>>>>> c04781c2d7885712e3971e6e97e87bff9cae4c51
         <Route path="transaction" element={<TransactionAdmin />} />
         <Route path="transaction-m" element={<TransactionManager />} />
         <Route path="finance" element={<Finance />} />
