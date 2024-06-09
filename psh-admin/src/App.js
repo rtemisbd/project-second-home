@@ -66,7 +66,7 @@ import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
-// import NewOrders from "./components/Orders/NewOrders";
+import NewOrders from "./components/Orders/NewOrders";
 
 function App() {
   return (
