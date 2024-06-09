@@ -8,13 +8,28 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print"],
   },
+
   server: {
-    port: 5173,
     proxy: {
+      "/foo": "http://localhost:4567",
+
+      "^/fallback/.*": {
+        target: "https://api.psh.com.bd",
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/fallback/, ""),
+      },
+      // Using the proxy instance
       "/api": {
         target: "https://api.psh.com.bd",
         changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api/, ""),
+        configure: (proxy, options) => {
+          // proxy will be an instance of 'http-proxy'
+        },
+      },
+
+      "/socket.io": {
+        target: "ws://localhost:5174",
+        ws: true,
       },
     },
   },
