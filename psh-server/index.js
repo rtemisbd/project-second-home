@@ -36,6 +36,8 @@ import subscriptionOrder from "./routes/subscriptionOrder.js";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import helmet from "helmet";
+import { createProxyMiddleware } from "http-proxy-middleware";
+
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
 
@@ -66,18 +68,35 @@ mongoose.connection.on("connected", () => {
   console.log("mongoDB connected!");
 });
 
-app.use(
-  cors({
-    origin: "*",
-    methods: "GET,HEAD,PUT,PATCH,POST,DELETE",
-    credentials: true,
-    exposedHeaders: ["Authorization"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+app.use(cors());
 app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+// const API_SERVER_URL = process.env.API_SERVER_URL;
+// app.use(
+//   helmet({
+//     contentSecurityPolicy: {
+//       useDefaults: false,
+//       directives: {
+//         defaultSrc: ["'self'"],
+//         scriptSrc: ["'self'", "http://localhost:5173/"],
+//         objectSrc: ["'none'"],
+//       },
+//     },
+//     referrerPolicy: {
+//       policy: "origin-when-cross-origin",
+//     },
+//   })
+// );
+
+// Proxy configuration
+// app.use(
+//   "/api",
+//   createProxyMiddleware({
+//     target: "http://localhost:8000",
+//     changeOrigin: true,
+//   })
+// );
 
 app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
@@ -109,18 +128,6 @@ app.use("/api/dynamic", dynamicRoute);
 app.use("/api/contact", contact);
 app.use("/api/subscription", subscription);
 app.use("/api/subscriptionOrder", subscriptionOrder);
-
-// app.use(helmet());
-
-// app.use(
-//   helmet({
-//     contentSecurityPolicy: {
-//       directives: {
-//         "script-src": ["'self'", "https://psh.com.bd/"],
-//       },
-//     },
-//   })
-// );
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

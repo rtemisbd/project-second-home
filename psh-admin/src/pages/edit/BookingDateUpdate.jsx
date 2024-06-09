@@ -118,12 +118,13 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
 
     if (
       customerRent?.remainingDays &&
-      data?.bookingInfo?.data?.perDay &&
+      data?.bookingInfo?.data?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
-        () => data?.bookingInfo?.data?.perDay * customerRent?.remainingDays
+        () =>
+          data?.bookingInfo?.data?.dAmountForDay * customerRent?.remainingDays
       );
     } else if (
       customerRent?.months !== undefined &&
@@ -131,11 +132,13 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.data?.perMonth * customerRent?.months +
-          data?.bookingInfo?.data?.perDay * customerRent?.days
+          data?.bookingInfo?.data?.dAmountForMonth * customerRent?.months +
+          data?.bookingInfo?.data?.dAmountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(() => data?.bookingInfo?.data?.perYear * customerRent?.years);
+      setSubtotal(
+        () => data?.bookingInfo?.data?.dAmountForYear * customerRent?.years
+      );
     }
     if (subTotal) {
       const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
@@ -147,7 +150,7 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.data?.perDay * 3;
+      const minimum = data?.bookingInfo?.data?.dAmountForDay * 3;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
 
       setShowMinimumPayment(true);
@@ -297,7 +300,7 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.usedPromo?.promo,
     data?.bookingInfo?.promoCodeDiscount,
     customerRent?.remainingDays,
-    // data?.bookingInfo?.data?.perDay,
+
     subTotal,
     vatTax,
     days,
@@ -308,12 +311,11 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     customerRent?.days,
     customerRent?.months,
     customerRent?.years,
-    data?.bookingInfo?.data?.perMonth,
-    data?.bookingInfo?.data?.perDay,
-    data?.bookingInfo?.data?.perYear,
+    data?.bookingInfo?.data?.dAmountForDay,
+    data?.bookingInfo?.data?.dAmountForMonth,
+    data?.bookingInfo?.data?.dAmountForYear,
     data?.bookingInfo?.rentDate?.bookStartDate,
-    // data?.bookingInfo?.data?.perMonth,
-    // data?.bookingInfo?.data?.perYear,
+
     room,
     addMissionFee,
     securityFee,

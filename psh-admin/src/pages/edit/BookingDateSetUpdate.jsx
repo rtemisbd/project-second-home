@@ -125,13 +125,14 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
 
     if (
       customerRent?.remainingDays &&
-      data?.bookingInfo?.seatBooking?.perDay &&
+      data?.bookingInfo?.seatBooking?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.seatBooking?.perDay * customerRent?.remainingDays
+          data?.bookingInfo?.seatBooking?.dAmountForDay *
+          customerRent?.remainingDays
       );
     } else if (
       customerRent?.months !== undefined &&
@@ -139,12 +140,14 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.seatBooking?.perMonth * customerRent?.months +
-          data?.bookingInfo?.seatBooking?.perDay * customerRent?.days
+          data?.bookingInfo?.seatBooking?.dAmountForMonth *
+            customerRent?.months +
+          data?.bookingInfo?.seatBooking?.dAmountForDay * customerRent?.days
       );
     } else {
       setSubtotal(
-        () => data?.bookingInfo?.seatBooking?.perYear * customerRent?.years
+        () =>
+          data?.bookingInfo?.seatBooking?.dAmountForYear * customerRent?.years
       );
     }
     if (subTotal) {
@@ -157,7 +160,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.seatBooking?.perDay * 3;
+      const minimum = data?.bookingInfo?.seatBooking?.dAmountForDay * 3;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
 
       setAddmissionFee(0);
@@ -308,9 +311,9 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     promos,
     data?.bookingInfo?.usedPromo?.promo,
     data?.bookingInfo?.promoCodeDiscount,
-    data?.bookingInfo?.seatBooking?.perDay,
+
     customerRent?.remainingDays,
-    // data?.bookingInfo?.seatBooking?.perDay,
+
     subTotal,
     vatTax,
     days,
@@ -324,14 +327,13 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.rentDate?.bookStartDate,
     data?.bookingInfo?.rentDate?.bookEndDate,
     data?.bookingInfo?.seatBooking._id,
-    data?.bookingInfo?.seatBooking?.perMonth,
-    // data?.bookingInfo?.seatBooking?.perYear,
+    data?.bookingInfo?.seatBooking?.dAmountForDay,
+    data?.bookingInfo?.seatBooking?.dAmountForMonth,
+    data?.bookingInfo?.seatBooking?.dAmountForYear,
     room,
     addMissionFee,
     securityFee,
     extraCharge,
-    // data?.bookingInfo?.seatBooking?.perMonth,
-    data?.bookingInfo?.seatBooking?.perYear,
     // extraCharge[0]?.admissionFee,
     // extraCharge[0]?.securityFee,
     // extraCharge[0]?.vatTax,
