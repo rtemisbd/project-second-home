@@ -300,7 +300,7 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.usedPromo?.promo,
     data?.bookingInfo?.promoCodeDiscount,
     customerRent?.remainingDays,
-    data?.bookingInfo?.data?.dAmountForDay,
+
     subTotal,
     vatTax,
     days,
@@ -311,9 +311,11 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     customerRent?.days,
     customerRent?.months,
     customerRent?.years,
+    data?.bookingInfo?.data?.dAmountForDay,
     data?.bookingInfo?.data?.dAmountForMonth,
     data?.bookingInfo?.data?.dAmountForYear,
     data?.bookingInfo?.rentDate?.bookStartDate,
+
     room,
     addMissionFee,
     securityFee,

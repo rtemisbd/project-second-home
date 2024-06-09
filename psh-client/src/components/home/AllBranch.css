@@ -132,3 +132,79 @@
     display: none !important;
   }
 }
+
+/* ------------------------------------------------------------ */
+
+
+.all_branch .splide__arrow--prev::before {
+  content: url("../../assets/img/arrow2.png");
+  /* Add your custom icon or image here */
+  border-radius: 5px 0px 0px 5px;
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 2px 5px;
+  border-radius: 50%;
+}
+
+.all_branch {
+  position: relative; /* Make sure the parent container has a relative position */
+}
+
+.all_branch svg {
+  display: none;
+}
+
+.all_branch .splide__arrow {
+  /* Position the arrow buttons */
+  bottom: 10px; /* Adjust this value as needed */
+}
+
+.all_branch .splide__arrow--next::before {
+  content: url("../../assets/img/arrow1.png");
+  /* Add your custom icon or image here */
+  border: 1px solid #e5e5e5;
+  background: white;
+  padding: 6px 14px;
+  border-radius: 50%;
+  /* box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5); */
+}
+.all_branch .splide__arrow--prev {
+  left: 20px;
+ /* Adjust the top value to move the button down */
+  opacity: 0.9 !important;
+}
+
+.all_branch .splide__arrow--next {
+  right: 20px;
+ /* Adjust the top value to move the button down */
+  opacity: 0.9 !important;
+}
+
+.card-slider .slick-slider .slick-arrow {
+  /* display: none !important; */
+  margin: 3px 20px;
+  z-index: 1016;
+  border-radius: 79%;
+  cursor: pointer;
+  width: 35px;
+  height: 36px;
+  padding: 12px 12.5px;
+  background-color: #fff;
+  box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5);
+}
+
+
+@media screen and (max-width: 600px) {
+  .all_branch .splide__arrow--prev {
+    /* left: 210px;
+    top: 410px !important; */
+    display: none !important;
+  }
+
+  .all_branch .splide__arrow--next {
+    /* right: 200px !important;
+    top: 410px !important; */
+    display: none !important;
+  }
+}
+

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import Category_list from "../components/Category/Category_list";
 import "bootstrap/dist/css/bootstrap.min.css";

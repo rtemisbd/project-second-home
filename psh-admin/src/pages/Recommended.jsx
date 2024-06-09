@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import Recommended_list from "../components/Recommended/Recommended_list";
 

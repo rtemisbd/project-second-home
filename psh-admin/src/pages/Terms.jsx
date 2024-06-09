@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import Terms_list from "../components/Pages/Terms_list";
 

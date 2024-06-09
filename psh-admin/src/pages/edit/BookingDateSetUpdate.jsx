@@ -303,6 +303,8 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       // setminimumPayment(0);
     }
   }, [
+    startDate,
+    endDate,
     isIncludeFood,
     data?.adjustmentAmount,
     userPromo?.minimumDays,
@@ -311,7 +313,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.promoCodeDiscount,
 
     customerRent?.remainingDays,
-    data?.bookingInfo?.seatBooking?.dAmountForDay,
+
     subTotal,
     vatTax,
     days,
@@ -325,6 +327,7 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
     data?.bookingInfo?.rentDate?.bookStartDate,
     data?.bookingInfo?.rentDate?.bookEndDate,
     data?.bookingInfo?.seatBooking._id,
+    data?.bookingInfo?.seatBooking?.dAmountForDay,
     data?.bookingInfo?.seatBooking?.dAmountForMonth,
     data?.bookingInfo?.seatBooking?.dAmountForYear,
     room,

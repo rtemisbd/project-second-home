@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import React from "react";
 import img from "../img/home/Rectangle 999.png";
 import "./Signin.css";

@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import React from "react";
 import Pages_list from "../components/Pages/Pages_list";
 

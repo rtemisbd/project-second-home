@@ -84,6 +84,9 @@ const TransactionSchema = new mongoose.Schema(
     unReceivedTk: {
       type: Number,
     },
+    noteForTransaction: {
+      type: String,
+    },
   },
   {
     timestamps: true,

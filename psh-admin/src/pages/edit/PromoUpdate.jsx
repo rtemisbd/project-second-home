@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-
 import "./Main_steam.css";
 import axios from "axios";
 
@@ -22,9 +21,9 @@ const Promo = ({ data, refetch }) => {
       promoEnd: formData.get("promoEnd"),
       promoDiscount: discount,
       discountAmount: formData.get("discountAmount"),
-
       promoDetails: formData.get("promoDetails"),
       useTime: formData.get("useTime"),
+      isPublished: formData.get("isPublished"),
     };
 
     try {
@@ -32,9 +31,9 @@ const Promo = ({ data, refetch }) => {
         Object.values(homePageFile).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -47,9 +46,9 @@ const Promo = ({ data, refetch }) => {
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -57,7 +56,7 @@ const Promo = ({ data, refetch }) => {
           return secure_url;
         })
       );
-      console.log(data?.homePageCover);
+
       const updatePromo = {
         ...data2,
         photos: detailsCover?.length ? detailsCover : data?.photos,
@@ -66,7 +65,7 @@ const Promo = ({ data, refetch }) => {
           : data?.homePageCover,
       };
 
-      await axios.put(
+      await axios.patch(
         `https://api.psh.com.bd/api/promo/${data._id}`,
         updatePromo
       );
@@ -261,6 +260,19 @@ const Promo = ({ data, refetch }) => {
                         defaultValue={data?.promoDetails}
                         required
                       />
+                    </div>
+                    <div className="d-flex flex-column form_sub_stream">
+                      <label className="profile_label3">Status</label>
+
+                      <select
+                        name="isPublished"
+                        className="main_form w-100"
+                        // required
+                        defaultValue={data?.isPublished}
+                      >
+                        <option>Published</option>
+                        <option>Unpublished</option>
+                      </select>
                     </div>
 
                     <div>

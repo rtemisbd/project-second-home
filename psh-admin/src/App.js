@@ -1,3 +1,4 @@
+/* eslint-disable react/jsx-pascal-case */
 import "bootstrap-4-react";
 import { Route, Routes } from "react-router-dom";
 import "./App.css";
@@ -18,14 +19,13 @@ import Add_Branch from "./pages/Add_Branch";
 import Branch from "./pages/Branch";
 import Add_Facility from "./pages/Add_Facility";
 import Facility from "./pages/Facility";
-import Add_Seat from "./pages/Add_Seat";
-import Seat from "./pages/Seat";
+
 import Issue from "./pages/issue";
 import AdminOrders from "./pages/AdminOrders";
 import Review from "./pages/Review";
 import Issues from "./pages/Issues";
 import Admin_issue from "./pages/Admin_issue";
-import Admin_seat from "./pages/Admin_seat";
+
 import Invoice from "./pages/details/Invoice";
 import Add_Facility_Category from "./pages/Add_Facility_Category";
 import Facility_Category_list from "./components/Facility/Facility_Category_list";
@@ -110,9 +110,7 @@ function App() {
         <Route path="facility_list" element={<Facility />} />
         <Route path="add_commonfacility" element={<Add_CommonFacility />} />
         <Route path="commonfacility_list" element={<CommonFacility />} />
-        <Route path="add_seat" element={<Add_Seat />} />
-        <Route path="seat_list_m" element={<Seat />} />
-        <Route path="seat_list" element={<Admin_seat />} />
+
         <Route path="add_property" element={<Add_property />} />
         <Route path="property_list_m" element={<Property />} />
         <Route path="property_list_p" element={<Partner_property_list />} />
@@ -129,7 +127,11 @@ function App() {
         <Route path="recommended_list" element={<Recommended />} />
         <Route path="orders_m" element={<Orders />} />
         <Route path="orders" element={<AdminOrders />} />
+<<<<<<< HEAD
         <Route path="orders-new" element={<NewOrders />} />
+=======
+        {/* <Route path="orders-new" element={<NewOrders />} /> */}
+>>>>>>> c04781c2d7885712e3971e6e97e87bff9cae4c51
         <Route path="transaction" element={<TransactionAdmin />} />
         <Route path="transaction-m" element={<TransactionManager />} />
         <Route path="finance" element={<Finance />} />

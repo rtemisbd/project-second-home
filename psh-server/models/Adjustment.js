@@ -26,6 +26,10 @@ const AdjustmentSchema = new mongoose.Schema(
       enum: ["Accepted", "Not Accepted"],
       default: "Not Accepted",
     },
+    noteForAdjustment: {
+      type: String,
+      // required: true,
+    },
   },
   {
     timestamps: true,

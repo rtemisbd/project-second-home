@@ -149,7 +149,9 @@ const BookingData = ({
       </td>
       <td>
         <div>
-          <span onClick={handleShow}>
+          <span
+          //  onClick={handleShow}
+          >
             <AiOutlineEye
               style={{ width: "24px", height: "24px", cursor: "pointer" }}
             />
@@ -167,7 +169,7 @@ const BookingData = ({
       <td>
         <div className="d-flex justify-content-center">
           <button
-            onClick={handleDurationShow}
+            // onClick={handleDurationShow}
             title={`${
               booking?.status === "Approved"
                 ? "Sorry ! Your Booking Already Approved"
@@ -177,6 +179,8 @@ const BookingData = ({
             className={`rounded ${
               booking?.status === "Approved" ? "bg-white" : ""
             }`}
+            data-bs-toggle="modal"
+            data-bs-target={`#dateUpdate${booking._id}`}
             style={{
               backgroundColor:
                 booking?.status === "Approved" ? "white" : "#35b0a7",

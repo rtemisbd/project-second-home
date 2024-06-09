@@ -12,9 +12,15 @@ import { BiSolidEdit } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
 import UpdateAdjustment from "./UpdateAdjustment";
 import { ToastContainer, toast } from "react-toastify";
+import { useDispatch } from "react-redux";
+import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import LoadingState from "../../pages/LoadingState/LoadingState";
 
 const AdjustmentList = () => {
-  //sub stream
+  const dispatch = useDispatch();
+
+  const handleClose = () => dispatch(placeLoadingShow(false));
+
   const [data, setData] = useState([]);
 
   const columns = [
@@ -84,6 +90,16 @@ const AdjustmentList = () => {
             >
               {adjustment?.status === "Accepted" ? "Accepted" : "Accept Now"}
             </button>
+          </div>
+        );
+      },
+    },
+    {
+      text: "Note",
+      formatter: (cellContent, adjustment) => {
+        return (
+          <div className="d-flex justify-content-between">
+            <p>{adjustment?.noteForAdjustment}</p>
           </div>
         );
       },
@@ -183,6 +199,7 @@ const AdjustmentList = () => {
     };
 
     try {
+      dispatch(placeLoadingShow(true));
       await axios.patch(
         `https://api.psh.com.bd/api/adjustment/${adjustment._id}`,
         adjustmentData,
@@ -192,11 +209,12 @@ const AdjustmentList = () => {
           },
         }
       );
-
+      handleClose();
       toast.success("Accepted");
       refetch();
     } catch (error) {
-      return toast.error(error.response.data.message);
+      handleClose();
+      toast.error(error.response.data.message);
     }
   };
 
@@ -223,6 +241,7 @@ const AdjustmentList = () => {
 
   return (
     <div className="wrapper">
+      <LoadingState handleClose={handleClose} />
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">

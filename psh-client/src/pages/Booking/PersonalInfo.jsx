@@ -5,7 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { Tooltip, Typography } from "@material-tailwind/react";
 import { FaArrowLeft } from "react-icons/fa";
-import toast, { Toaster } from "react-hot-toast";
+import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 
 import cashImg from "../../assets/img/Cash-1.png";
@@ -14,7 +14,7 @@ import MobileBanking from "../Payment/MobileBanking";
 import CashOn from "../Payment/CashOn";
 import CreditCard from "../Payment/CreditCard";
 import BankTransfer from "../Payment/BankTransfer";
-import useBranch from "../../hooks/useBranch";
+
 import useExtraCharge from "../../hooks/useExtraCharge";
 import "../Payment/PaymentToggle.css";
 import "./PersonalInfo.css";

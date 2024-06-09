@@ -7,6 +7,10 @@ import { PropagateLoader } from "react-spinners";
 
 const PromoList = () => {
   const { data } = UseFetch(`promo`);
+  const promoFiltering = data.filter(
+    (promo) => promo.isPublished === "Published"
+  );
+  console.log(promoFiltering);
   return (
     <div className="custom-container mb-36 md:mx-0 sm:mx-5">
       <div className="flex items-center gap-x-3 md:mt-8 sm:mt-5">
@@ -24,9 +28,9 @@ const PromoList = () => {
         <p>Promo</p>
       </div>
       <h4 className=" md:my-5 sm:my-2 font-bold text-xl">Ongoing promotion</h4>
-      {data?.length > 0 ? (
+      {promoFiltering?.length > 0 ? (
         <div className="grid lg:grid-cols-3 md:grid-cols-3 sm:grid-cols-1 gap-x-4">
-          {data
+          {promoFiltering
             ?.slice()
             ?.reverse()
             .map((promo) => (
