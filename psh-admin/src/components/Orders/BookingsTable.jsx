@@ -2,6 +2,7 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import BookingData from "./BookingData";
 import { ToastContainer } from "react-toastify";
+import './BookingsTable.css';
 
 const BookingsTable = ({
   data,
@@ -13,6 +14,15 @@ const BookingsTable = ({
   extraCharge,
   isLoading,
 }) => {
+  const MAX_PAGE_BUTTONS = 5; // Define the maximum number of page buttons to show
+
+  // Calculate the range of page numbers to display
+  const startPage = Math.max(0, page - Math.floor(MAX_PAGE_BUTTONS / 2));
+  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount - 1);
+  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()].map(
+    (i) => startPage + i
+  );
+
   return (
     <div>
       <Table striped bordered>
@@ -50,15 +60,18 @@ const BookingsTable = ({
         </tbody>
       </Table>
       <ToastContainer className="toast-position" position="top-center" />
-      <div className="pagination d-flex justify-content-end gap-2">
-        <button onClick={() => setPage(page - 1)} disabled={page === 0}>
+      <div className="pagination d-flex justify-content-end gap-0">
+        <button onClick={() => setPage(0)} disabled={page === 0} className="pagination-button">
+          First
+        </button>
+        <button onClick={() => setPage(page - 1)} disabled={page === 0} className="pagination-button">
           Previous
         </button>
-        {[...Array(pageCount).keys()].map((number) => (
+        {visiblePageNumbers.map((number) => (
           <button
             key={number}
             onClick={() => setPage(number)}
-            className={page === number ? "page-selected" : ""}
+            className={page === number ? "page-selected pagination-button" : "pagination-button"}
           >
             {number + 1}
           </button>
@@ -66,8 +79,12 @@ const BookingsTable = ({
         <button
           onClick={() => setPage(page + 1)}
           disabled={page === pageCount - 1}
+          className="pagination-button"
         >
           Next
+        </button>
+        <button onClick={() => setPage(pageCount - 1)} disabled={page === pageCount - 1} className="pagination-button">
+          Last
         </button>
       </div>
     </div>

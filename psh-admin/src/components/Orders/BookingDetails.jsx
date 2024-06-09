@@ -1,17 +1,29 @@
 import React, { useEffect, useState } from "react";
+
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+
+import paginationFactory from "react-bootstrap-table2-paginator";
+
+import OrderStatusUpdate from "../../pages/edit/OrderStatusUpdate";
+import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
+import { BiSolidEdit } from "react-icons/bi";
+import SeeOrderDetails from "./SeeOrderDetails";
+import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
+import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import { useQuery } from "react-query";
+import Payment from "../../pages/edit/Payment";
 import { toast } from "react-toastify";
 import useTransaction from "../../hooks/useTransaction";
 import useExtraCharge from "../../hooks/useExtraCharge";
+
 import img from "../../img/new/style.png";
 import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
 
-const NewOrders = () => {
-  const MySwal = withReactContent(Swal);
+const BookingDetails = () => {
+    const MySwal = withReactContent(Swal);
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
   const [approvedBookings, setApprovedBookings] = useState([]);
@@ -20,7 +32,7 @@ const NewOrders = () => {
   // const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
-  const [setError] = useState(null);
+  const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(0);
 
@@ -130,6 +142,9 @@ const NewOrders = () => {
     if (bookingId.toLocaleLowerCase() && !withIdBooking) {
       return toast.error("Sorry! Wrong Id ");
     }
+    // if (userId && !withUserIdBooking) {
+    //   return toast.error("Sorry! Wrong Id ");
+    // }
 
     setIsLoading(true);
     setIsFilter(true);
@@ -166,13 +181,291 @@ const NewOrders = () => {
     }
   };
 
-  return (
-    <div className="wrapper">
-      <div>
-        <div className="wrapper">
-          {/* Content Wrapper. Contains page content */}
+  const columns = [
+    {
+      text: "Date & Time",
+      formatter: (cellContent, row, index) => {
+        const formattedDate = new Date(row?.createdAt).toLocaleString();
+        const formattedTime = new Date(row?.createdAt)
+          ?.toLocaleString()
+          ?.split(",")[1];
+        return (
+          <>
+            {" "}
+            <p>{formattedDate?.split(",")[0]}</p>
+            <p>{formattedTime}</p>
+          </>
+        );
+      },
+    },
 
-          <div className="content-wrapper h-0" style={{ background: "unset" }}>
+    {
+      text: <span>Booking Id</span>,
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {" "}
+            <p>#{row?._id?.slice(-5).toUpperCase()} </p>
+            <p className="fw-bold">{row?.bookingInfo?.branch?.name}</p>
+          </>
+        );
+      },
+    },
+    {
+      text: <span>User Id</span>,
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {" "}
+            <p>#{row?.userId?.slice(-5).toUpperCase()}</p>
+            <p>{row?.fullName}</p>
+          </>
+        );
+      },
+    },
+    {
+      text: <span>Room / Seat No</span>,
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {row?.bookingInfo?.roomType === "Shared Room"
+              ? row?.bookingInfo?.seatBooking?.seatNumber
+              : row?.bookingInfo?.data?.roomNumber}
+          </>
+        );
+      },
+    },
+
+    {
+      text: "Total Tk",
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {" "}
+            <p className="fw-bold">Tk {row?.totalAmount?.toLocaleString()}</p>
+            {row?.isIncludeFood === true ? (
+              <p
+                className="fw-bold"
+                style={{
+                  color: "#35b0a7",
+                }}
+              >
+                With Food
+              </p>
+            ) : (
+              ""
+            )}
+          </>
+        );
+      },
+    },
+    {
+      text: "Discount",
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {" "}
+            <p className="fw-bold">Tk {row?.discount?.toLocaleString()}</p>
+          </>
+        );
+      },
+    },
+    {
+      text: "Payable Tk",
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {" "}
+            <p className="fw-bold">Tk {row?.payableAmount?.toLocaleString()}</p>
+          </>
+        );
+      },
+    },
+    {
+      text: "Payment Status",
+      formatter: (cellContent, row, index) => {
+        return (
+          <span
+            className=" fw-bold "
+            style={{ color: row?.paymentStatus === "Paid" ? "green" : "red" }}
+          >
+            {" "}
+            {row?.paymentStatus}
+          </span>
+        );
+      },
+    },
+    {
+      text: "Due Amount",
+      formatter: (cellContent, row, index) => {
+        return (
+          <span
+            className=" fw-bold"
+            style={{ color: row?.paymentStatus === "Paid" ? "green" : "red" }}
+          >
+            {" "}
+            Tk {row?.dueAmount?.toLocaleString()}
+          </span>
+        );
+      },
+    },
+    {
+      text: "Total Receive",
+      formatter: (cellContent, row, index) => {
+        return (
+          <p className="fw-bold">Tk {row?.totalReceiveTk?.toLocaleString()}</p>
+        );
+      },
+    },
+
+    {
+      text: "Status",
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            <div className=" d-flex ">
+              <div>
+                <p
+                  className="fw-bold"
+                  style={{
+                    color: row?.status === "Approved" ? "#27b3b1" : "red",
+                  }}
+                >
+                  {row?.status}
+                </p>
+              </div>
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target={`#status${row._id}`}
+                className="d-flex  bg-white p-0"
+              >
+                <BiSolidEdit style={{ width: "24px", height: "24px" }} />
+              </button>
+              {/* Modal Order Status Update */}
+            </div>
+            <div>
+              <OrderStatusUpdate data={row} refetch={refetch} />
+            </div>
+          </>
+        );
+      },
+    },
+    {
+      text: "Details",
+      formatter: (cellContent, row, index) => {
+        return (
+          <div>
+            <button
+              type="button"
+              className="bg-white"
+              data-bs-toggle="modal"
+              data-bs-target={`#details${row._id}`}
+            >
+              <span>
+                <AiOutlineEye style={{ width: "24px", height: "24px" }} />
+              </span>
+            </button>
+
+            {/* Modal Order Details */}
+            <SeeOrderDetails data={row} transactions={transactions} />
+          </div>
+        );
+      },
+    },
+    {
+      text: "Update Duration",
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            <div className="d-flex justify-content-center">
+              <button
+                title={`${
+                  row?.status === "Approved"
+                    ? "Sorry ! Your Booking Already Approved"
+                    : ""
+                }`}
+                type="button"
+                className={`rounded ${
+                  row?.status === "Approved" ? "bg-white" : ""
+                }`}
+                style={{
+                  backgroundColor:
+                    row?.status === "Approved" ? "white" : "#35b0a7",
+                }}
+                data-bs-toggle="modal"
+                data-bs-target={`#dateUpdate${row._id}`}
+                disabled={row?.status === "Approved" ? true : false}
+              >
+                <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
+              </button>
+            </div>
+            {/* Modal order Date Update */}
+            {row?.bookingInfo?.roomType === "Shared Room" ? (
+              <div>
+                <BookingDateSetUpdate
+                  data={row}
+                  refetch={refetch}
+                  extraCharge={extraCharge}
+                />
+              </div>
+            ) : (
+              <div>
+                <BookingDateUpdate
+                  data={row}
+                  refetch={refetch}
+                  extraCharge={extraCharge}
+                />
+              </div>
+            )}
+          </>
+        );
+      },
+    },
+
+    {
+      text: "Action",
+      formatter: (cellContent, row) => {
+        return (
+          <>
+            <div className="d-flex gap-2 fw-bold">
+              <button
+                type="button"
+                data-bs-toggle="modal"
+                data-bs-target={`#payment${row._id}`}
+                style={{ backgroundColor: "#00BBB4" }}
+              >
+                Payment
+              </button>
+              {/* 
+                <button className="bg-danger">End</button> */}
+            </div>
+            <Payment data={row} refetch={refetch} isLoading={isLoading} />
+          </>
+        );
+      },
+    },
+    {
+      text: "RQ",
+      formatter: (cellContent, row, index) => {
+        return (
+          <>
+            {" "}
+            <p className=" fw-bold" style={{ color: "red" }}>
+              {row?.isCancel === "Yes" ? (
+                "Cancel Request"
+              ) : (
+                <span className="text-black">No Request</span>
+              )}
+            </p>
+          </>
+        );
+      },
+    },
+  ]; 
+    return (
+        <div>
+            <div className="content-wrapper h-0" style={{ background: "unset" }}>
             <h4 className="customize mx-lg-5 mb-3">Booking Deatails</h4>
             <div className="row customize mx-lg-5">
               <div className="col-md-3 home_card_m">
@@ -258,164 +551,7 @@ const NewOrders = () => {
             </div>
           </div>
         </div>
-      </div>
-
-      <div className="content-wrapper" style={{ background: "unset" }}>
-        <section className="content customize_list">
-          <div className="container-fluid">
-            <div className="d-lg-flex justify-content-end gap-4 ">
-              <div className="">
-                <label htmlFor="">From Date </label>
-                <br />
-                <div>
-                  <input
-                    type="date"
-                    onChange={(e) => setFromDate(e.target.value)}
-                    name=""
-                    id=""
-                  />
-                </div>
-              </div>
-              <div className="">
-                <label htmlFor="">To Date </label> <br />
-                <div>
-                  <input
-                    type="date"
-                    name=""
-                    id=""
-                    onChange={(e) => setToDate(e.target.value)}
-                  />
-                </div>
-              </div>
-              <div>
-                <label htmlFor="">Branch </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px" }}
-                  onChange={handleBranch}
-                >
-                  <option value="All">All</option>
-                  {allBranch?.map((branch) => (
-                    <option value={branch?._id}>{branch?.name}</option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="">Payment Status </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px", width: "120px" }}
-                  onChange={handlePaymentStatus}
-                >
-                  <option>All</option>
-
-                  <option>Paid</option>
-                  <option>Unpaid</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="">Booking Status </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px", width: "120px" }}
-                  onChange={handleBookingStatus}
-                >
-                  <option>All</option>
-
-                  <option>Pending</option>
-                  <option>Approved</option>
-                  <option>Canceled</option>
-                  <option>Processing</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="">User Id </label> <br />
-                <input
-                  type="text"
-                  list="userId"
-                  placeholder="Type User Id"
-                  onChange={(e) => setUserId(e.target.value)}
-                  style={{
-                    width: "160px",
-                  }}
-                />
-                {/* <datalist id="userId">
-                      {data?.map((booking) => {
-                        return (
-                          <option key={booking._id}>
-                            {booking?.userId?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
-              </div>
-              <div className=" ">
-                <label htmlFor="">Booking Id </label> <br />
-                <input
-                  type="text"
-                  list="bookingId"
-                  placeholder="Type Booking Id"
-                  onChange={(e) => setBookingId(e.target.value)}
-                  style={{
-                    width: "160px",
-                  }}
-                />
-                {/* <datalist id="bookingId">
-                      {data?.map((booking) => {
-                        return (
-                          <option key={booking._id} style={{ display: "none" }}>
-                            {booking?._id?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
-                <button
-                  onClick={handleSearch}
-                  className="btn text-white"
-                  style={{
-                    backgroundColor: "#35b0a7",
-                    height: "32px",
-                    padding: "0 10px",
-                  }}
-                >
-                  Search
-                </button>
-              </div>
-            </div>
-
-            <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
-            {isLoading ? (
-              <p
-                style={{ margin: "150px 0" }}
-                className="text-center text-danger fw-bold"
-              >
-                Please Wait... <Spinner size="sm" animation="grow" />
-              </p>
-            ) : data?.length > 0 || filterData?.length > 0 ? (
-              <div className="card">
-                <div className="card-body card_body_sm">
-                  <BookingsTable
-                    data={isFilter ? filterData : data}
-                    page={page}
-                    pageCount={pageCount}
-                    setPage={setPage}
-                    isLoading={isLoading}
-                    transactions={transactions}
-                    refetch={refetch}
-                    extraCharge={extraCharge}
-                  />
-                </div>
-              </div>
-            ) : (
-              <p className="text-center text-danger fw-bold">
-                Find Bookings... <Spinner size="sm" animation="grow" />
-              </p>
-            )}
-          </div>
-        </section>
-      </div>
-    </div>
-  );
+    );
 };
 
-export default NewOrders;
+export default BookingDetails;
