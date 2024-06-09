@@ -9,28 +9,28 @@ export default defineConfig({
     include: ["react-to-print"],
   },
 
-  server: {
-    proxy: {
-      "/foo": "http://localhost:4567",
+  // server: {
+  //   proxy: {
+  //     "/foo": "http://localhost:4567",
 
-      "^/fallback/.*": {
-        target: "https://api.psh.com.bd",
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/fallback/, ""),
-      },
-      // Using the proxy instance
-      "/api": {
-        target: "https://api.psh.com.bd",
-        changeOrigin: true,
-        configure: (proxy, options) => {
-          // proxy will be an instance of 'http-proxy'
-        },
-      },
+  //     "^/fallback/.*": {
+  //       target: "https://api.psh.com.bd",
+  //       changeOrigin: true,
+  //       rewrite: (path) => path.replace(/^\/fallback/, ""),
+  //     },
+  //     // Using the proxy instance
+  //     "/api": {
+  //       target: "https://api.psh.com.bd",
+  //       changeOrigin: true,
+  //       configure: (proxy, options) => {
+  //         // proxy will be an instance of 'http-proxy'
+  //       },
+  //     },
 
-      "/socket.io": {
-        target: "ws://localhost:5174",
-        ws: true,
-      },
-    },
-  },
+  //     "/socket.io": {
+  //       target: "ws://localhost:5174",
+  //       ws: true,
+  //     },
+  //   },
+  // },
 });
