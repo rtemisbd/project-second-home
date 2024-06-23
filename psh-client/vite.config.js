@@ -8,6 +8,11 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print"],
   },
+  build: {
+    rollupOptions: {
+      external: ["sweetalert2"],
+    },
+  },
 
   // server: {
   //   proxy: {
