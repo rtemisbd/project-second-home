@@ -1,6 +1,7 @@
 import React from "react";
 import { useEffect } from "react";
-
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 import axios from "axios";
 import {
   Card,
@@ -18,7 +19,6 @@ import whislistIcon from "../../assets/img/Wishlist.png";
 import heart2 from "../../assets/img/Heart2.png";
 import locationIcon from "../../assets/img/branchLocationIcon.png";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import toast from "react-hot-toast";
 
 const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
   const { user } = useContext(AuthContext);
@@ -33,7 +33,7 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
   }, [item?._id]);
 
   const propertyId = data?._id;
-
+  const MySwal = withReactContent(Swal);
   const { data: wishlist, reFetch: wishlistRefetch } = UseFetch(`wishlist`);
 
   const handleSubmit = async (event) => {
@@ -48,7 +48,7 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
       // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
-      toast.error("Already Added!");
+      MySwal.fire("Already Added!");
     }
   };
 
@@ -75,7 +75,7 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
       // MySwal.fire("Successfullt Remove ! wishlisted");
       wishlistRefetch();
     } catch (err) {
-      toast.error("Wrong!");
+      MySwal.fire("Wrong!");
     }
   };
   return (
