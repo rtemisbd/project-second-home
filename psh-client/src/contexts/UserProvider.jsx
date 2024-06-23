@@ -1,7 +1,5 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { placeModalShow } from "../redux/reducers/smProfileMenuSlice";
@@ -9,7 +7,6 @@ import { serverBaseUrl } from "../serverApi/baseUrl";
 export const AuthContext = createContext();
 
 export const UserProvider = ({ children }) => {
-  const MySwal = withReactContent(Swal);
   const dispatch = useDispatch();
 
   const [user, setUser] = useState(
