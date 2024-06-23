@@ -5,7 +5,7 @@ import withReactContent from "sweetalert2-react-content";
 import "./Main_steam.css";
 import axios from "axios";
 
-const Facility = ({ data }) => {
+const Category = ({ data }) => {
   const { _id, name } = data;
   const [user, setUser] = useState(data);
   const [files, setFiles] = useState("");
@@ -31,9 +31,9 @@ const Facility = ({ data }) => {
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -47,7 +47,7 @@ const Facility = ({ data }) => {
         photos: list,
       };
 
-      await axios.put(`https://api.psh.com.bd/api/facility/${_id}`, product);
+      await axios.put(`https://api.psh.com.bd/api/category/${_id}`, product);
       MySwal.fire("Good job!", "successfully edited", "success");
     } catch (err) {
       MySwal.fire("Something Error Found.", "warning");
@@ -64,7 +64,7 @@ const Facility = ({ data }) => {
                   htmlFor="inputState"
                   className="form-label profile_label3"
                 >
-                  Facility Name
+                  Category Name
                 </label>
                 <input
                   type="text"
@@ -79,7 +79,7 @@ const Facility = ({ data }) => {
                   htmlFor="inputState"
                   className="form-label profile_label3"
                 >
-                  Facility Picture
+                  Category Picture
                 </label>
                 <input
                   type="file"
@@ -96,7 +96,7 @@ const Facility = ({ data }) => {
                   className="profile_btn"
                   style={{ width: 220 }}
                 >
-                  Edit Facility
+                  Edit Category
                 </button>
               </div>
             </div>
@@ -107,4 +107,4 @@ const Facility = ({ data }) => {
   );
 };
 
-export default Facility;
+export default Category;

@@ -14,9 +14,7 @@ import recommendedRoute from "./routes/recommended.js";
 import facilityRoute from "./routes/facility.js";
 import commonfacilityRoute from "./routes/commonfacility.js";
 import branchRoute from "./routes/branch.js";
-import seatRoute from "./routes/seat.js";
 import propertyRoute from "./routes/property.js";
-
 import promoRoute from "./routes/promo.js";
 import bannerRoute from "./routes/banner.js";
 import IssueRouter from "./routes/issue.js";
@@ -86,7 +84,7 @@ app.use("/api/facility", facilityRoute);
 app.use("/api/commonfacility", commonfacilityRoute);
 app.use("/api/branch", branchRoute);
 app.use("/api/property", propertyRoute);
-app.use("/api/seat", seatRoute);
+
 app.use("/api/issue", IssueRouter);
 app.use("/api/review", reviewRouter);
 app.use("/api/wishlist", wishlistRouter);

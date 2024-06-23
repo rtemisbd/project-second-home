@@ -44,7 +44,7 @@ const PromoOffer = () => {
     slidesToScroll: 1,
     initialSlide: 0,
     adaptiveHeight: true,
-    arrows: data?.length > 3 ? true : false,
+    arrows: promoFiltering?.length > 3 ? true : false,
     autoplay: false,
     infinite: true,
     prevArrow: <SlickArrowLeft />,
@@ -111,42 +111,6 @@ const PromoOffer = () => {
               </p>
             </div>
             <div className="all_recommended slider_margin promo-slider">
-              {/* <Splide
-                options={{
-                  // type: "loop",
-                  arrows: data?.length > 3 ? true : false,
-
-                  rewind: true,
-                  drag: "free",
-                  gap: "1rem",
-                  perPage: 3,
-                  height: "14rem",
-                  pagination: false,
-                  breakpoints: {
-                    1200: { arrows: true, perPage: 3 },
-                    800: { arrows: true, perPage: 2 },
-                    640: { arrows: true, perPage: 1, padding: "5rem" },
-                  },
-                }}
-              >
-                {data.map((item, i) => (
-                  <SplideSlide>
-                    <div key={i} className="group relative">
-                      <Link to={`/promo/${item._id}`}>
-                        <div className="relative w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
-                          <img
-                            src={item.photos[0]}
-                            alt=""
-                            className="promo_img"
-                            style={{ width: "100%" }}
-                          />
-                        </div>
-                      </Link>
-                    </div>
-                  </SplideSlide>
-                ))}
-              </Splide> */}
-
               <Slider {...settings}>
                 {promoFiltering
                   ?.slice()

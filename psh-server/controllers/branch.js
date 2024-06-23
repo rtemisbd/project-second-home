@@ -10,7 +10,6 @@ export const CreateBranch = async (req, res, next) => {
 };
 export const getBranch = async (req, res, next) => {
   try {
-    // const branch = await Branch.find({}).populate("property user");
     const branch = await Branch.find({});
     res.status(200).json(branch);
   } catch (err) {

@@ -17,7 +17,7 @@ const Add_Facility = () => {
         );
         setCategories(response.data);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 

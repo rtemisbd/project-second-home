@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-
 import UseFetch from "../../hooks/useFetch";
 import BranchProperty from "./BranchProperty";
-
-// import BranchDetails from "./BrachList";
 
 const BranchDetails = () => {
   const { id } = useParams();
@@ -83,7 +80,7 @@ const BranchDetails = () => {
         <>
           <div className="grid lg:grid-cols-4 md:grid-cols-3 lg:gap-x-5 md:gap-x-7 sm:grid-cols-1 mt-2 sm:gap-x-0 z-0 sm:mx-auto md:mx-0">
             {paginatedData?.map((item) => (
-              <div className="">
+              <div>
                 <BranchProperty
                   key={item._id}
                   item={item}

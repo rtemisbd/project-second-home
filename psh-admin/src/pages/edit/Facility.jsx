@@ -5,24 +5,10 @@ import withReactContent from "sweetalert2-react-content";
 import "./Main_steam.css";
 import axios from "axios";
 
-const Manager = ({ data }) => {
-  const { _id, name, seatNumber, desc } = data;
+const Facility = ({ data }) => {
+  const { _id, name } = data;
   const [user, setUser] = useState(data);
   const [files, setFiles] = useState("");
-  const [categories, setCategories] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
-        setCategories(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
 
   const MySwal = withReactContent(Swal);
 
@@ -36,24 +22,18 @@ const Manager = ({ data }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
 
-    const data2 = {
-      branchId: formData.get("branch"),
-      categoryId: formData.get("category"),
-    };
     const newPost = {
       ...user,
-      ...data2,
     };
     try {
       const list = await Promise.all(
         Object.values(files).map(async (file) => {
           const data = new FormData();
           data.append("file", file);
-          data.append("upload_preset", "upload");
+          data.append("upload_preset", "rtemis");
           const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dtpvtjiry/image/upload",
+            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
             data
           );
 
@@ -67,7 +47,7 @@ const Manager = ({ data }) => {
         photos: list,
       };
 
-      await axios.put(`https://api.psh.com.bd/api/seat/${_id}`, product);
+      await axios.put(`https://api.psh.com.bd/api/facility/${_id}`, product);
       MySwal.fire("Good job!", "successfully edited", "success");
     } catch (err) {
       MySwal.fire("Something Error Found.", "warning");
@@ -79,29 +59,12 @@ const Manager = ({ data }) => {
         <div className="row">
           <div>
             <div className="card-body">
-              <div className="col-md-12 form_sub_stream ">
-                <label htmlFor="inputState" className="profile_label3">
-                  Room
-                </label>
-                <select
-                  name="property"
-                  id="inputState"
-                  className="main_form w-100"
-                >
-                  <option>Select Room</option>
-                  {categories.map((pd) => (
-                    <option key={pd._id} value={pd._id}>
-                      {pd.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
               <div className="col-md-12 mb-3">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3"
                 >
-                  Seat Name
+                  Facility Name
                 </label>
                 <input
                   type="text"
@@ -116,37 +79,7 @@ const Manager = ({ data }) => {
                   htmlFor="inputState"
                   className="form-label profile_label3"
                 >
-                  Seat Number
-                </label>
-                <input
-                  type="text"
-                  className="main_form  w-100"
-                  name="seatNumber"
-                  onBlur={handleOnBlur}
-                  defaultValue={seatNumber || ""}
-                />
-              </div>
-              <div className="col-md-12 mb-3">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3"
-                >
-                  Seat Description
-                </label>
-                <input
-                  type="text"
-                  className="main_form  w-100"
-                  name="desc"
-                  onBlur={handleOnBlur}
-                  defaultValue={desc || ""}
-                />
-              </div>
-              <div className="col-md-12 mb-3">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3"
-                >
-                  Seat Picture
+                  Facility Picture
                 </label>
                 <input
                   type="file"
@@ -163,7 +96,7 @@ const Manager = ({ data }) => {
                   className="profile_btn"
                   style={{ width: 220 }}
                 >
-                  Edit Seat
+                  Edit Facility
                 </button>
               </div>
             </div>
@@ -174,4 +107,4 @@ const Manager = ({ data }) => {
   );
 };
 
-export default Manager;
+export default Facility;

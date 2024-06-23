@@ -145,7 +145,7 @@ const SingleCard = ({ item }) => {
               ""
             )}
 
-            {isSeatIntoDate &&
+            {/* {isSeatIntoDate &&
             item?.category?.name === "Shared Room" &&
             isAlreadySeatBook?.length > 0 ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
@@ -159,10 +159,17 @@ const SingleCard = ({ item }) => {
               </div>
             ) : (
               ""
-            )}
-            {!isSeatIntoDate && item?.category?.name === "Shared Room" ? (
+            )} */}
+            {/* {!isSeatIntoDate && item?.category?.name === "Shared Room" ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
                 <span>{item?.seats?.length} Seat Available</span>
+              </div>
+            ) : (
+              ""
+            )} */}
+            {item?.category?.name === "Shared Room" ? (
+              <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
+                <span>{item?.seats?.length} Seat Room</span>
               </div>
             ) : (
               ""
