@@ -292,7 +292,7 @@ const Payment = ({ data, refetch, isLoading }) => {
                         defaultValue={customerType}
                       >
                         <option disabled>Customer Type</option>
-                        <option value="Working Days">Working Days</option>
+                        <option value="Walk-in Guest">Walk-in Guest</option>
                         <option value="Monthly">Monthly</option>
                         <option value="Yearly">Yearly</option>
                       </select>
