@@ -117,7 +117,7 @@ const Business = () => {
                       I am interested in
                     </button>
                   </div>
-                  <Link to={"/contact"}>
+                  <Link to={"/contact-us"}>
                     <div
                       className="justify-between items-stretch border flex gap-px pl-3 pr-4 py-3 rounded-lg border-solid border-white "
                       style={{ width: 220 }}

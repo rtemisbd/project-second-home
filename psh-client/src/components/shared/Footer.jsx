@@ -165,7 +165,7 @@ const Footer = () => {
 
                       <li className="mb-4 duration-200 hover:text-gray-800 dark:hover:text-white">
                         <Link
-                          to={"/investment-opportunities"}
+                          to={"/partner-registration"}
                           className="hover:text-[#00bbb4]"
                         >
                           Partner Registration
