@@ -410,29 +410,33 @@ export const getOrder = async (req, res, next) => {
 
     const bookingsTotalCount = await OrderModel.countDocuments(query);
 
+    // Perform updates after sending the response
+    await Promise.all([
+      OrderModel.updateMany(
+        { $expr: { $eq: ["$payableAmount", "$totalReceiveTk"] } },
+        { $set: { paymentStatus: "Paid" } },
+        { new: true }
+      ),
+      OrderModel.updateMany(
+        { $expr: { $ne: ["$payableAmount", "$totalReceiveTk"] } },
+        { $set: { paymentStatus: "Unpaid" } },
+        { new: true }
+      ),
+    ]);
+
+    // Send response with orders and counts
     res.status(200).json({
       status: "Success",
-      message: "Success",
+      message: "Orders retrieved successfully",
       orders,
       bookingsTotalCount,
     });
-
-    // Ensure updates happen after response is sent
-    await OrderModel.updateMany(
-      { $expr: { $eq: ["$payableAmount", "$totalReceiveTk"] } },
-      { $set: { paymentStatus: "Paid" } },
-      { new: true }
-    );
-
-    await OrderModel.updateMany(
-      { $expr: { $ne: ["$payableAmount", "$totalReceiveTk"] } },
-      { $set: { paymentStatus: "Unpaid" } },
-      { new: true }
-    );
   } catch (error) {
-    res.status(400).json({
+    // Handle errors
+    console.error("Error in getOrder:", error);
+    res.status(500).json({
       status: "failed",
-      message: "Sorry Order not found",
+      message: "Failed to retrieve orders",
       error: error.message,
     });
   }
