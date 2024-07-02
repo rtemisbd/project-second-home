@@ -233,6 +233,153 @@ export const createOrder = async (req, res, next) => {
   }
 };
 
+// export const getOrder = async (req, res, next) => {
+//   try {
+//     const orderId = req.query?.orderId;
+//     const userId = req.query?.userId;
+//     const fromDate = req.query?.fromDate;
+//     const toDate = req.query?.toDate;
+//     const branch = req.query?.branch;
+//     const paymentStatus = req?.query?.paymentStatus;
+//     const bookingStatus = req?.query?.status;
+//     const page = parseInt(req.query?.page);
+//     const size = parseInt(req.query?.size);
+
+//     if (
+//       !orderId &&
+//       !fromDate &&
+//       !toDate &&
+//       !branch &&
+//       !paymentStatus &&
+//       !bookingStatus
+//     ) {
+//       const orders = await OrderModel.find({})
+//         .populate("branch")
+//         .sort({ createdAt: -1 })
+//         .skip(page * size)
+//         .limit(size);
+//       const bookingsTotalCount = await OrderModel.countDocuments({});
+
+//       res.status(200).json({
+//         status: "Success",
+//         message: "Success",
+//         orders,
+//         bookingsTotalCount,
+//       });
+//     } else if (
+//       !orderId &&
+//       !fromDate &&
+//       !toDate &&
+//       branch &&
+//       !paymentStatus &&
+//       !bookingStatus
+//     ) {
+//       const orders = await OrderModel.find({ branch: branch })
+//         .populate("branch")
+//         .sort({ createdAt: -1 })
+//         .skip(page * size)
+//         .limit(size);
+//       const bookingsTotalCount = await OrderModel.countDocuments({
+//         branch: branch,
+//       });
+//       res.status(200).json({
+//         status: "Success",
+//         message: "Success",
+//         orders,
+//         bookingsTotalCount,
+//       });
+//     } else {
+//       const query = {
+//         branch: branch,
+//         _id: orderId,
+//         userId: userId,
+//         createdAt: {
+//           $gte: fromDate,
+//           $lte: toDate,
+//         },
+//         paymentStatus: paymentStatus,
+//         status: bookingStatus,
+//       };
+//       if (paymentStatus === "All") {
+//         // Remove paymentStatus from the query object
+//         delete query.paymentStatus;
+//       }
+
+//       if (bookingStatus === "All") {
+//         // Remove status from the query object
+//         delete query.status;
+//       }
+//       if (branch === "All") {
+//         // Remove status from the query object
+//         delete query.branch;
+//       }
+//       if (orderId === "All") {
+//         // Remove orderId from the query object
+//         delete query._id;
+//       }
+//       if (userId === "All") {
+//         // Remove userId from the query object
+//         delete query.userId;
+//       }
+//       if (!fromDate || !toDate) {
+//         // Remove createdAt from the query object
+//         delete query.createdAt;
+//       }
+
+//       const orders = await OrderModel.find(query)
+//         .populate("branch")
+//         .sort({ createdAt: -1 })
+//         .skip(page * size)
+//         .limit(size);
+//       const bookingsTotalCount = await OrderModel.countDocuments(query);
+//       res.status(200).json({
+//         status: "Success",
+//         message: "Success",
+//         orders,
+//         bookingsTotalCount,
+//       });
+//     }
+
+//     // if totalAmount equal totalReceiveTk
+//     await OrderModel.updateMany(
+//       {
+//         $expr: {
+//           $eq: ["$payableAmount", "$totalReceiveTk"],
+//         },
+//       },
+//       {
+//         $set: {
+//           paymentStatus: "Paid",
+//         },
+//       },
+//       { new: true }
+//     );
+//     // if not Match Total Receive Tk
+//     await OrderModel.updateMany(
+//       {
+//         $expr: {
+//           $ne: ["$payableAmount", "$totalReceiveTk"],
+//         },
+//       },
+//       {
+//         $set: {
+//           paymentStatus: "Unpaid",
+//         },
+//       },
+//       { new: true }
+//     );
+//     // res.status(200).json({
+//     //   orders,
+//     // });
+//   } catch (error) {
+//     res.status(400).json({
+//       status: "failed",
+//       message: "Sorry Order not found",
+//       error: error.message,
+//     });
+//   }
+// };
+
 export const getOrder = async (req, res, next) => {
   try {
     const orderId = req.query?.orderId;
@@ -242,135 +389,46 @@ export const getOrder = async (req, res, next) => {
     const branch = req.query?.branch;
     const paymentStatus = req?.query?.paymentStatus;
     const bookingStatus = req?.query?.status;
-    const page = parseInt(req.query?.page);
-    const size = parseInt(req.query?.size);
+    const page = parseInt(req.query?.page) || 0;
+    const size = parseInt(req.query?.size) || 10;
 
-    if (
-      !orderId &&
-      !fromDate &&
-      !toDate &&
-      !branch &&
-      !paymentStatus &&
-      !bookingStatus
-    ) {
-      const orders = await OrderModel.find({})
-        .populate("branch")
-        .sort({ createdAt: -1 })
-        .skip(page * size)
-        .limit(size);
-      const bookingsTotalCount = await OrderModel.countDocuments({});
+    let query = {};
 
-      res.status(200).json({
-        status: "Success",
-        message: "Success",
-        orders,
-        bookingsTotalCount,
-      });
-    } else if (
-      !orderId &&
-      !fromDate &&
-      !toDate &&
-      branch &&
-      !paymentStatus &&
-      !bookingStatus
-    ) {
-      const orders = await OrderModel.find({ branch: branch })
-        .populate("branch")
-        .sort({ createdAt: -1 })
-        .skip(page * size)
-        .limit(size);
-      const bookingsTotalCount = await OrderModel.countDocuments({
-        branch: branch,
-      });
-      res.status(200).json({
-        status: "Success",
-        message: "Success",
-        orders,
-        bookingsTotalCount,
-      });
-    } else {
-      const query = {
-        branch: branch,
-        _id: orderId,
-        userId: userId,
-        createdAt: {
-          $gte: fromDate,
-          $lte: toDate,
-        },
-        paymentStatus: paymentStatus,
-        status: bookingStatus,
-      };
-      if (paymentStatus === "All") {
-        // Remove paymentStatus from the query object
-        delete query.paymentStatus;
-      }
+    if (orderId && orderId !== "All") query._id = orderId;
+    if (userId && userId !== "All") query.userId = userId;
+    if (branch && branch !== "All") query.branch = branch;
+    if (paymentStatus && paymentStatus !== "All")
+      query.paymentStatus = paymentStatus;
+    if (bookingStatus && bookingStatus !== "All") query.status = bookingStatus;
+    if (fromDate && toDate) query.createdAt = { $gte: fromDate, $lte: toDate };
 
-      if (bookingStatus === "All") {
-        // Remove status from the query object
-        delete query.status;
-      }
-      if (branch === "All") {
-        // Remove status from the query object
-        delete query.branch;
-      }
-      if (orderId === "All") {
-        // Remove orderId from the query object
-        delete query._id;
-      }
-      if (userId === "All") {
-        // Remove userId from the query object
-        delete query.userId;
-      }
-      if (!fromDate || !toDate) {
-        // Remove createdAt from the query object
-        delete query.createdAt;
-      }
+    const orders = await OrderModel.find(query)
+      .populate("branch")
+      .sort({ createdAt: -1 })
+      .skip(page * size)
+      .limit(size);
 
-      const orders = await OrderModel.find(query)
-        .populate("branch")
-        .sort({ createdAt: -1 })
-        .skip(page * size)
-        .limit(size);
-      const bookingsTotalCount = await OrderModel.countDocuments(query);
-      res.status(200).json({
-        status: "Success",
-        message: "Success",
-        orders,
-        bookingsTotalCount,
-      });
-    }
+    const bookingsTotalCount = await OrderModel.countDocuments(query);
 
-    // if totalAmount equal totalReceiveTk
+    res.status(200).json({
+      status: "Success",
+      message: "Success",
+      orders,
+      bookingsTotalCount,
+    });
+
+    // Ensure updates happen after response is sent
     await OrderModel.updateMany(
-      {
-        $expr: {
-          $eq: ["$payableAmount", "$totalReceiveTk"],
-        },
-      },
-      {
-        $set: {
-          paymentStatus: "Paid",
-        },
-      },
+      { $expr: { $eq: ["$payableAmount", "$totalReceiveTk"] } },
+      { $set: { paymentStatus: "Paid" } },
       { new: true }
     );
-    // if not Match Total Receive Tk
+
     await OrderModel.updateMany(
-      {
-        $expr: {
-          $ne: ["$payableAmount", "$totalReceiveTk"],
-        },
-      },
-      {
-        $set: {
-          paymentStatus: "Unpaid",
-        },
-      },
+      { $expr: { $ne: ["$payableAmount", "$totalReceiveTk"] } },
+      { $set: { paymentStatus: "Unpaid" } },
       { new: true }
     );
-    // res.status(200).json({
-    //   orders,
-    // });
   } catch (error) {
     res.status(400).json({
       status: "failed",
