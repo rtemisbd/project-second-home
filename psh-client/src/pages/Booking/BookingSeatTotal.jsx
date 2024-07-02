@@ -97,6 +97,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
     setUserPromo(promo);
 
     dispatch(toTalRent());
+
     // if remainingDays under 1 then auto 1 day adding in Checkout Date
 
     if (customerRent.remainingDays < 1) {
@@ -389,12 +390,13 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
     let bookings = seatBooking?.rentDate?.map(
       (rent) => new Date(rent?.bookEndDate)
     );
-    function validPeriod(startDate, endDate, bookings) {
+
+    function validPeriod(minus1dFromStartDate, endDate, bookings) {
       let valid = true;
 
       for (let i = 0; i < bookings.length; i++) {
         const date = bookings[i];
-        if (startDate <= date && date <= endDate) {
+        if (minus1dFromStartDate <= date && date <= endDate) {
           valid = false;
           break;
         }
@@ -402,8 +404,13 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
 
       return valid;
     }
+    // if already Bookings Dates select then from startDate - 1 day
 
-    if (validPeriod(startDate, endDate, bookings)) {
+    const selectStartDate = new Date(startDate);
+    const minus1dFromStartDate = new Date(startDate);
+    minus1dFromStartDate.setDate(selectStartDate.getDate() + 1);
+
+    if (validPeriod(minus1dFromStartDate, endDate, bookings)) {
       if (showMiniumPayment) {
         dispatch(placeBooking(bookingDataUpdate));
       } else {
@@ -559,7 +566,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
               excludeDateIntervals={seatBooking?.rentDate?.map((rent) => {
                 return {
                   start: subDays(new Date(rent?.bookStartDate), 1),
-                  end: addDays(new Date(rent?.bookEndDate), 0),
+                  end: addDays(new Date(rent?.bookEndDate), -1),
                 };
               })}
               // minDate={subDays(new Date(), 0)}

@@ -373,12 +373,13 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
     // Already Booking Handle
     let bookings = data?.rentDate?.map((rent) => new Date(rent?.bookEndDate));
-    function validPeriod(startDate, endDate, bookings) {
+
+    function validPeriod(minus1dFromStartDate, endDate, bookings) {
       let valid = true;
 
       for (let i = 0; i < bookings.length; i++) {
         const date = bookings[i];
-        if (startDate <= date && date <= endDate) {
+        if (minus1dFromStartDate <= date && date <= endDate) {
           valid = false;
           break;
         }
@@ -387,7 +388,12 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
       return valid;
     }
 
-    if (validPeriod(startDate, endDate, bookings)) {
+    // if already Bookings Dates select then from startDate - 1 day
+    const selectStartDate = new Date(startDate);
+    const minus1dFromStartDate = new Date(startDate);
+    minus1dFromStartDate.setDate(selectStartDate.getDate() + 1);
+
+    if (validPeriod(minus1dFromStartDate, endDate, bookings)) {
       if (showMiniumPayment) {
         dispatch(placeBooking(bookingDataUpdate));
       } else {

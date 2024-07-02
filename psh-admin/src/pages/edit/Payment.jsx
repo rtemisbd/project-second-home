@@ -251,7 +251,9 @@ const Payment = ({ data, refetch, isLoading }) => {
                         onChange={(e) => setPaymentType(e.target.value)}
                         defaultValue={paymentType}
                       >
-                        <option disabled>Payment Type</option>
+                        <option disabled value="">
+                          Payment Type
+                        </option>
                         <option value="bkash">Bkash</option>
                         <option value="nagad">Nagad</option>
                         <option value="dutch">dutch-bangla</option>
