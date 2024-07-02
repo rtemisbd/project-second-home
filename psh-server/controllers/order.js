@@ -389,8 +389,8 @@ export const getOrder = async (req, res, next) => {
     const branch = req.query?.branch;
     const paymentStatus = req?.query?.paymentStatus;
     const bookingStatus = req?.query?.status;
-    const page = parseInt(req.query?.page) || 0;
-    const size = parseInt(req.query?.size) || 10;
+    // const page = parseInt(req.query?.page) || 0;
+    // const size = parseInt(req.query?.size) || 10;
 
     let query = {};
 
@@ -404,9 +404,9 @@ export const getOrder = async (req, res, next) => {
 
     const orders = await OrderModel.find(query)
       .populate("branch")
-      .sort({ createdAt: -1 })
-      .skip(page * size)
-      .limit(size);
+      .sort({ createdAt: -1 });
+    // .skip(page * size)
+    // .limit(size);
 
     const bookingsTotalCount = await OrderModel.countDocuments(query);
 
