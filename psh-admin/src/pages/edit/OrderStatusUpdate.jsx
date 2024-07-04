@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import toast, { Toaster } from "react-hot-toast";
+import { Toaster } from "react-hot-toast";
 import axios from "axios";
+// import { isAlreadyBookings } from "../../utils/bookingChecking";
 
-const OrderStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
+const OrderStatusUpdate = ({ data, refetch }) => {
   const { _id, name, seatNumber, desc, status } = data;
 
   const [user, setUser] = useState(data);
@@ -28,7 +29,16 @@ const OrderStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
     if (status === user?.status) {
       return MySwal.fire(`Sorry Already ${user?.status}`);
     }
+    // const inputStartDate = new Date(minus1dFromStartDate)
+    //   .toISOString()
+    //   .split("T")[0];
 
+    // const inputEndDate = new Date(endDate).toISOString().split("T")[0];
+    // const isBooked = isAlreadyBookings(
+    //   inputStartDate,
+    //   inputEndDate,
+    //   seatBooking?.rentDate
+    // );
     const newPost = {
       ...user,
     };
@@ -44,7 +54,7 @@ const OrderStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
       MySwal.fire("Updated", "success");
       refetch();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
       MySwal.fire("Something Error Found.", "warning");
     }
   };

@@ -21,6 +21,7 @@ import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 import FinalLoginModal from "../../components/shared/FinalLoginModal";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import { isAlreadyBookings } from "./bookingChecking";
 
 const BookingSeatTotal = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
@@ -386,31 +387,25 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
       };
     }
 
-    // Already Booking Handle
-    let bookings = seatBooking?.rentDate?.map(
-      (rent) => new Date(rent?.bookEndDate)
-    );
-
-    function validPeriod(minus1dFromStartDate, endDate, bookings) {
-      let valid = true;
-
-      for (let i = 0; i < bookings.length; i++) {
-        const date = bookings[i];
-        if (minus1dFromStartDate <= date && date <= endDate) {
-          valid = false;
-          break;
-        }
-      }
-
-      return valid;
-    }
+    // Already Bookings Handle
     // if already Bookings Dates select then from startDate - 1 day
 
     const selectStartDate = new Date(startDate);
     const minus1dFromStartDate = new Date(startDate);
     minus1dFromStartDate.setDate(selectStartDate.getDate() + 1);
 
-    if (validPeriod(minus1dFromStartDate, endDate, bookings)) {
+    const inputStartDate = new Date(minus1dFromStartDate)
+      .toISOString()
+      .split("T")[0];
+
+    const inputEndDate = new Date(endDate).toISOString().split("T")[0];
+    const isBooked = isAlreadyBookings(
+      inputStartDate,
+      inputEndDate,
+      seatBooking?.rentDate
+    );
+
+    if (!isBooked) {
       if (showMiniumPayment) {
         dispatch(placeBooking(bookingDataUpdate));
       } else {
