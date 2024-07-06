@@ -1,6 +1,4 @@
 import React, { useEffect, useState } from "react";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 import useTransaction from "../../hooks/useTransaction";
@@ -11,46 +9,36 @@ import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
 
 const NewOrders = () => {
-  const MySwal = withReactContent(Swal);
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
   const [approvedBookings, setApprovedBookings] = useState([]);
   const [pendingBookings, setPendingBookings] = useState([]);
   const [cancelBookings, setCancelBookings] = useState([]);
-  // const { pathname } = useLocation();
   const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
-  const [setError] = useState(null);
+  const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(0);
-
+  const [page, setPage] = useState(1);
   const [filterData, setFilterData] = useState([]);
-
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  let orderId = "All";
-
-  let bookingUserId = "All";
   const [bookingId, setBookingId] = useState("");
   const [userId, setUserId] = useState("");
   const [branch, setBranch] = useState("All");
-  const [paymentStatus, setPaymentStaus] = useState("All");
+  const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
   const [status, setStatus] = useState("Approved");
-  //sub stream
   const [data, setData] = useState([]);
-
   const [allBranch, setAllBranch] = useState([]);
-  // const [totalReceiveAmount, setTotalReceiveAmount] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
 
   // Get all Bookings
   const { refetch } = useQuery(
-    [data, extraCharge, allBranch?.length],
+    ["fetchBookings", page, extraCharge, allBranch?.length],
     async () => {
       try {
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?page=${page}&size=${10}`,
+          `http://localhost:8000/api/order?page=${page}&size=${10}`,
           {
             method: "GET",
           }
@@ -61,7 +49,6 @@ const NewOrders = () => {
         }
 
         const data = await response.json();
-
         setData(data?.orders);
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
@@ -69,8 +56,11 @@ const NewOrders = () => {
         const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
         setPageCount(totalPageCount);
       } catch (error) {
-        // console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error);
       }
+    },
+    {
+      refetchOnWindowFocus: false,
     }
   );
 
@@ -111,9 +101,11 @@ const NewOrders = () => {
   const handleBranch = (e) => {
     setBranch(e.target.value);
   };
+
   const handlePaymentStatus = (e) => {
-    setPaymentStaus(e.target.value);
+    setPaymentStatus(e.target.value);
   };
+
   const handleBookingStatus = (e) => {
     setBookingStatus(e.target.value);
   };
@@ -121,25 +113,25 @@ const NewOrders = () => {
   const handleSearch = async () => {
     setStatus(bookingStatus);
     const withIdBooking = data?.find(
-      (booking) => booking?._id?.slice(-5) === bookingId.toLocaleLowerCase()
+      (booking) => booking?._id?.slice(-5) === bookingId.toLowerCase()
     );
     const withUserIdBooking = data?.filter(
-      (booking) => booking?.userId?.slice(-5) === userId.toLocaleLowerCase()
+      (booking) => booking?.userId?.slice(-5) === userId.toLowerCase()
     );
 
-    if (bookingId.toLocaleLowerCase() && !withIdBooking) {
+    if (bookingId.toLowerCase() && !withIdBooking) {
       return toast.error("Sorry! Wrong Id ");
     }
 
     setIsLoading(true);
     setIsFilter(true);
-    orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-    bookingUserId = withUserIdBooking[0]?.userId
+    const orderId = withIdBooking?._id ? withIdBooking?._id : "All";
+    const bookingUserId = withUserIdBooking[0]?.userId
       ? withUserIdBooking[0]?.userId
       : "All";
 
     try {
-      const response = await axios.get(`https://api.psh.com.bd/api/order`, {
+      const response = await axios.get(`http://localhost:8000/api/order`, {
         params: {
           orderId: orderId,
           userId: bookingUserId,
@@ -153,12 +145,14 @@ const NewOrders = () => {
         },
       });
 
-      if (!response.status === 200) {
+      if (response.status !== 200) {
         throw new Error("Network response was not ok");
       }
 
       const data = response.data;
       setFilterData(data?.orders);
+      const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
+      setPageCount(totalPageCount);
     } catch (error) {
       setError(error);
     } finally {

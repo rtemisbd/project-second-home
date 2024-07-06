@@ -12,6 +12,10 @@ const rentDateSchema = new mongoose.Schema(
     roomNumber: {
       type: String,
     },
+    roomId: {
+      type: ObjectId,
+      ref: "Property",
+    },
     seatNumber: {
       type: String,
     },
@@ -20,6 +24,11 @@ const rentDateSchema = new mongoose.Schema(
     },
     roomType: {
       type: String,
+    },
+    bookingId: {
+      type: ObjectId,
+      ref: "order",
+      // required: true,
     },
     branch: {
       type: ObjectId,
@@ -31,6 +40,7 @@ const rentDateSchema = new mongoose.Schema(
       ref: "User",
       // required: true,
     },
+
     bookingStatus: {
       type: String,
       enum: ["Reserverd", "Booked", "complete"],

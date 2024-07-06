@@ -340,9 +340,8 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
     roomNumber: data?.bookingInfo?.roomNumber,
     roomType: data?.bookingInfo?.roomType,
     rentDate: {
-      bookStartDate: new Date(startDate).toISOString().split("T")[0],
-
-      bookEndDate: new Date(endDate).toISOString().split("T")[0],
+      bookStartDate: new Date(startDate)?.toISOString()?.split("T")[0],
+      bookEndDate: new Date(endDate)?.toISOString()?.split("T")[0],
     },
 
     customerRent: customerRent,

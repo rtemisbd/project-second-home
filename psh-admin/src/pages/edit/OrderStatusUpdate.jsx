@@ -48,7 +48,7 @@ const OrderStatusUpdate = ({ data, refetch }) => {
       };
 
       await axios.patch(
-        `https://api.psh.com.bd/api/order/${_id}`,
+        `http://localhost:8000/api/order/${_id}`,
         updatedStatus
       );
       MySwal.fire("Updated", "success");

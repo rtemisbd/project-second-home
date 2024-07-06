@@ -4,11 +4,11 @@ const { http } = pkg;
 export function bookingSms(bookingMessage) {
   return new Promise((resolve, reject) => {
     var options = {
-      method: "POST",
-      hostname: "bulksmsbd.net",
-      path: bookingMessage,
-      headers: {},
-      maxRedirects: 20,
+      // method: "POST",
+      // hostname: "bulksmsbd.net",
+      // path: bookingMessage,
+      // headers: {},
+      // maxRedirects: 20,
     };
 
     var req = http.request(options, function (res) {
