@@ -18,6 +18,7 @@ const NewOrders = () => {
   const [isFilter, setIsFilter] = useState(false);
   const [error, setError] = useState(null);
   const [pageCount, setPageCount] = useState(0);
+  const [pageCount2, setPageCount2] = useState(0);
   const [page, setPage] = useState(1);
   const [filterData, setFilterData] = useState([]);
   const [fromDate, setFromDate] = useState("");
@@ -34,11 +35,30 @@ const NewOrders = () => {
 
   // Get all Bookings
   const { refetch } = useQuery(
-    ["fetchBookings", page, extraCharge, allBranch?.length],
+    [
+      "fetchBookings",
+      page,
+      extraCharge,
+      branch,
+      paymentStatus,
+      bookingStatus,
+      fromDate,
+      toDate,
+    ],
     async () => {
       try {
+        const queryParams = new URLSearchParams({
+          fromDate: fromDate,
+          toDate: toDate,
+          branch: branch,
+          paymentStatus: paymentStatus,
+          status: bookingStatus,
+          page: page,
+          size: 10,
+        });
+
         const response = await fetch(
-          `http://localhost:8000/api/order?page=${page}&size=${10}`,
+          `http://localhost:8000/api/order?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -49,14 +69,15 @@ const NewOrders = () => {
         }
 
         const data = await response.json();
-        setData(data?.orders);
+        setData(data);
+        console.log(data);
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
         const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
         setPageCount(totalPageCount);
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     },
     {
@@ -72,31 +93,6 @@ const NewOrders = () => {
   }, []);
 
   // Get All Status Bookings
-  useEffect(() => {
-    const findApprovedBookings = data?.filter(
-      (booking) => booking?.status === "Approved"
-    );
-    setApprovedBookings(findApprovedBookings);
-    const findPendingBookings = data?.filter(
-      (booking) => booking?.status === "Pending"
-    );
-    setPendingBookings(findPendingBookings);
-    const findCancelBookings = data?.filter(
-      (booking) => booking?.status === "Canceled"
-    );
-    setCancelBookings(findCancelBookings);
-  }, [data]);
-
-  // Calculate Total Booking Amounts
-  let totalBookingAmount = 0;
-  let totalReceiveAmountFilter = 0;
-  let totalDueAmount = 0;
-
-  for (const item of isFilter ? filterData : allBookings) {
-    totalBookingAmount += item.payableAmount;
-    totalReceiveAmountFilter += item.totalReceiveTk;
-    totalDueAmount += item.dueAmount;
-  }
 
   const handleBranch = (e) => {
     setBranch(e.target.value);
@@ -110,55 +106,56 @@ const NewOrders = () => {
     setBookingStatus(e.target.value);
   };
 
-  const handleSearch = async () => {
-    setStatus(bookingStatus);
-    const withIdBooking = data?.find(
-      (booking) => booking?._id?.slice(-5) === bookingId.toLowerCase()
-    );
-    const withUserIdBooking = data?.filter(
-      (booking) => booking?.userId?.slice(-5) === userId.toLowerCase()
-    );
+  // const handleSearch = async () => {
+  //   setStatus(bookingStatus);
+  //   const withIdBooking = data?.find(
+  //     (booking) => booking?._id?.slice(-5) === bookingId.toLowerCase()
+  //   );
+  //   const withUserIdBooking = data?.filter(
+  //     (booking) => booking?.userId?.slice(-5) === userId.toLowerCase()
+  //   );
 
-    if (bookingId.toLowerCase() && !withIdBooking) {
-      return toast.error("Sorry! Wrong Id ");
-    }
+  //   if (bookingId.toLowerCase() && !withIdBooking) {
+  //     return toast.error("Sorry! Wrong Id ");
+  //   }
 
-    setIsLoading(true);
-    setIsFilter(true);
-    const orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-    const bookingUserId = withUserIdBooking[0]?.userId
-      ? withUserIdBooking[0]?.userId
-      : "All";
+  //   setIsLoading(true);
+  //   setIsFilter(true);
+  //   const orderId = withIdBooking?._id ? withIdBooking?._id : "All";
+  //   const bookingUserId = withUserIdBooking[0]?.userId
+  //     ? withUserIdBooking[0]?.userId
+  //     : "All";
 
-    try {
-      const response = await axios.get(`http://localhost:8000/api/order`, {
-        params: {
-          orderId: orderId,
-          userId: bookingUserId,
-          fromDate: fromDate,
-          toDate: toDate,
-          branch: branch,
-          paymentStatus: paymentStatus,
-          status: bookingStatus,
-          page: page,
-          size: 10,
-        },
-      });
+  //   try {
+  //     const response = await axios.get(`http://localhost:8000/api/order`, {
+  //       params: {
+  //         orderId: orderId,
+  //         userId: bookingUserId,
+  //         fromDate: fromDate,
+  //         toDate: toDate,
+  //         branch: branch,
+  //         paymentStatus: paymentStatus,
+  //         status: bookingStatus,
+  //         page: page,
+  //         size: 10,
+  //       },
+  //     });
 
-      if (response.status !== 200) {
-        throw new Error("Network response was not ok");
-      }
+  //     if (response.status !== 200) {
+  //       throw new Error("Network response was not ok");
+  //     }
 
-      const data = response.data;
-      setFilterData(data?.orders);
-      const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
-      setPageCount(totalPageCount);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     const data = response.data;
+  //     setFilterData(data?.orders);
+  //     console.log(data);
+  //     const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
+  //     setPageCount2(totalPageCount);
+  //   } catch (error) {
+  //     setError(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   return (
     <div className="wrapper">
@@ -177,10 +174,22 @@ const NewOrders = () => {
                     </div>
                     <div className="ms-3 ">
                       <p className="fw-bold">
-                        <span className="text-white">{status}</span> (Bookings)
+                        <span className="text-white">
+                          {bookingStatus === "All" ? "Approved" : bookingStatus}
+                        </span>{" "}
+                        (Bookings)
                       </p>
                       <p className="fw-bold text-white">
-                        {isFilter ? filterData?.length : allBookings?.length}{" "}
+                        {bookingStatus === "Pending"
+                          ? data?.pendingCount
+                          : bookingStatus === "Canceled"
+                          ? data?.canceledCount
+                          : bookingStatus === "Processing"
+                          ? data?.processingCount
+                          : bookingStatus === "Approved" ||
+                            bookingStatus === "All"
+                          ? data?.approvedCount
+                          : ""}{" "}
                         Booking
                       </p>
                     </div>
@@ -196,7 +205,7 @@ const NewOrders = () => {
                     <div className="ms-3 text-white">
                       <p className="">Total Payable Amount</p>
                       <p className="fw-bold">
-                        Tk {totalBookingAmount?.toLocaleString()}
+                        Tk {data?.totalBookingAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -211,7 +220,7 @@ const NewOrders = () => {
                     <div className="ms-3 text-white">
                       <p>Total Cash Amount</p>
                       <p className="fw-bold">
-                        Tk {totalReceiveAmountFilter?.toLocaleString()}
+                        Tk {data?.totalReceiveAmountFilter?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -226,7 +235,7 @@ const NewOrders = () => {
                     <div className="ms-3 text-white">
                       <p>Total Due Amount</p>
                       <p className="fw-bold">
-                        Tk {totalDueAmount?.toLocaleString()}
+                        Tk {data?.totalDueAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -235,19 +244,16 @@ const NewOrders = () => {
             </div>
             <div className="mx-lg-5 customize">
               <div className="d-flex mt-4 fw-bold ">
-                <p> Total Bookings : {data?.length}</p>
+                <p> Total Bookings : {data?.bookingsTotalCount}</p>
                 <p className="ms-2 text-green ">
                   {" "}
-                  Approved Bookings : {approvedBookings?.length}
+                  Approved Bookings : {data?.approvedCount}
                 </p>
                 <p className="ms-2 text-danger ">
                   {" "}
-                  Pending Bookings : {pendingBookings?.length}
+                  Pending Bookings : {data?.pendingCount}
                 </p>
-                <p className="ms-2">
-                  {" "}
-                  Cancel Bookings : {cancelBookings?.length}
-                </p>
+                <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p>
               </div>
             </div>
           </div>
@@ -322,7 +328,7 @@ const NewOrders = () => {
                   <option>Processing</option>
                 </select>
               </div>
-              <div>
+              {/* <div>
                 <label htmlFor="">User Id </label> <br />
                 <input
                   type="text"
@@ -333,17 +339,9 @@ const NewOrders = () => {
                     width: "160px",
                   }}
                 />
-                {/* <datalist id="userId">
-                      {data?.map((booking) => {
-                        return (
-                          <option key={booking._id}>
-                            {booking?.userId?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
-              </div>
-              <div className=" ">
+             
+              </div> */}
+              {/* <div className=" ">
                 <label htmlFor="">Booking Id </label> <br />
                 <input
                   type="text"
@@ -354,17 +352,9 @@ const NewOrders = () => {
                     width: "160px",
                   }}
                 />
-                {/* <datalist id="bookingId">
-                      {data?.map((booking) => {
-                        return (
-                          <option key={booking._id} style={{ display: "none" }}>
-                            {booking?._id?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
+              
                 <button
-                  onClick={handleSearch}
+                  // onClick={handleSearch}
                   className="btn text-white"
                   style={{
                     backgroundColor: "#35b0a7",
@@ -374,7 +364,7 @@ const NewOrders = () => {
                 >
                   Search
                 </button>
-              </div>
+              </div> */}
             </div>
 
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
@@ -385,11 +375,11 @@ const NewOrders = () => {
               >
                 Please Wait... <Spinner size="sm" animation="grow" />
               </p>
-            ) : data?.length > 0 || filterData?.length > 0 ? (
+            ) : data?.orders?.length > 0 ? (
               <div className="card">
                 <div className="card-body card_body_sm">
                   <BookingsTable
-                    data={isFilter ? filterData : data}
+                    data={data?.orders}
                     page={page}
                     pageCount={pageCount}
                     setPage={setPage}

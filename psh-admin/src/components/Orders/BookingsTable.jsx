@@ -25,7 +25,7 @@ const BookingsTable = ({
 
   return (
     <div>
-      <Table striped bordered>
+      <Table bordered>
         <thead>
           <tr>
             <th>No.</th>
@@ -60,6 +60,19 @@ const BookingsTable = ({
         </tbody>
       </Table>
       <ToastContainer className="toast-position" position="top-center" />
+
+      {/* <div className="pagination d-flex justify-content-end">
+        {[...Array(pageCount).keys()].map((number, index) => (
+          <div key={index}>
+            <button
+              onClick={() => setPage(number)}
+              className={page === number ? "page-selected" : ""}
+            >
+              {number + 1}
+            </button>
+          </div>
+        ))}
+      </div> */}
       <div className="pagination d-flex justify-content-end gap-0">
         <button
           onClick={() => setPage(1)}

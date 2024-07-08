@@ -19,6 +19,9 @@ const rentDateSchema = new mongoose.Schema(
     seatNumber: {
       type: String,
     },
+    seatId: {
+      type: String,
+    },
     seatNumber: {
       type: String,
     },
