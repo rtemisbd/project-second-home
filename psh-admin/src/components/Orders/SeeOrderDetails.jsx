@@ -6,19 +6,24 @@ import "./SeeOrderDetails.css";
 import { Table } from "react-bootstrap";
 
 import ReactToPrint from "react-to-print";
-
+import Modal from "react-bootstrap/Modal";
 import { BlobProvider, View } from "@react-pdf/renderer";
 import DownlaodInvoice from "../Invoice/DownlaodInvoice";
 import ImageViewer from "./ImageViewer";
+import styles from "./SeeBooking.module.css";
 
 const SeeOrderDetails = ({
   transactions,
   data,
+  showDetails,
+  setShowDetails,
   // totalReceiveAmount,
   // setTotalReceiveAmount,
 }) => {
   // console.log(data?.bookingInfo);
   const ref = useRef();
+
+  const handleClose = () => setShowDetails(false);
 
   const [branchs, SetBranchs] = useState([]);
   const [singleBranch, setSingleBranch] = useState({});
@@ -69,39 +74,35 @@ const SeeOrderDetails = ({
   const formattedDate = new Date(data?.createdAt).toLocaleString();
 
   return (
-    <div className="">
-      <div
-        className="modal fade "
-        id={`details${data._id}`}
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
+    <Modal
+      show={showDetails}
+      backdrop="static"
+      onHide={handleClose}
+      className={styles.modal}
+      // centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>
+          Booking Info (
+          <span
+            className="fw-bold text-right"
+            style={{
+              color: data.paymentStatus === "Paid" ? "green" : "red",
+            }}
+          >
+            {data.paymentStatus}
+          </span>
+          )
+        </Modal.Title>
+      </Modal.Header>
+      <Modal.Body
+        style={{
+          width: "100%",
+        }}
       >
-        <div className="modal-dialog" style={{ maxWidth: "1000px" }}>
-          <div className="modal-content">
-            <div className="modal-header">
-              <div className="d-flex justify-items-center">
-                <h3> Booking Info</h3> (
-                <h5
-                  className=" fw-bold text-right"
-                  style={{
-                    color: data.paymentStatus === "Paid" ? "green" : "red",
-                  }}
-                >
-                  {data.paymentStatus}
-                </h5>
-                )
-              </div>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body w-100 ">
+        <div>
+          <div>
+            <div className=" w-100 ">
               <h3
                 className=" fs-4 mt-3 ps-3 rounded"
                 style={{ backgroundColor: "#00bbb4", color: "White" }}
@@ -601,9 +602,10 @@ const SeeOrderDetails = ({
             </div>
           </div>
         </div>
-      </div>
-      <ImageViewer data={data} />
-    </div>
+
+        <ImageViewer data={data} />
+      </Modal.Body>
+    </Modal>
   );
 };
 
