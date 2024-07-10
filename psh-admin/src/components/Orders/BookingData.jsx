@@ -20,21 +20,45 @@ const BookingData = ({
     ?.toLocaleString()
     ?.split(",")[1];
 
-  // For Order Deatails
-  const [show, setShow] = useState(false);
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+  // For Status Modal
+  const [statusModalData, setStatusModalData] = useState(null);
 
-  // For Privet Room
-  const [durationModal, setDurationModal] = useState(false);
-  const handleDurationClose = () => setDurationModal(false);
-  const handleDurationShow = () => setDurationModal(true);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+
+  const handleStatusShow = (statusData) => {
+    setShowStatusModal(true);
+    setStatusModalData(statusData);
+  };
+
+  // For Payment Modal
+  const [paymentModalData, setPaymentModalData] = useState(null);
+
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  const handlePaymentShow = (paymentData) => {
+    setShowPaymentModal(true);
+    setPaymentModalData(paymentData);
+  };
+
+  // For Privet Room Modal
+  const [showDurationModal, setShowDurationModal] = useState(false);
+  const [durationUpdatePrivateRoom, setDurationUpdatePrivateRoom] =
+    useState(null);
+
+  const handleDurationShow = (privateRoomData) => {
+    setShowDurationModal(true);
+    setDurationUpdatePrivateRoom(privateRoomData);
+  };
+
+  const [isIncludeFood, setIsIncludeFood] = useState(false);
 
   // For Seat Update Duration Modal
-  const [durationSeatModal, setDurationSeatModal] = useState(false);
-  const handleSeatDurationClose = () => setDurationSeatModal(false);
-  const handleSeatDurationShow = () => setDurationSeatModal(true);
-  const [isIncludeFood, setIsIncludeFood] = useState(false);
+  const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
+  const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
+  const handleSeatShow = (seatData) => {
+    setShowSeatUpdateDuration(true);
+    setDurationUpdateDataSeat(seatData);
+  };
 
   // Details Modal
   const [bookingDetails, setBookingDetails] = useState(null);
@@ -142,12 +166,11 @@ const BookingData = ({
             </div>
             <button
               type="button"
-              data-bs-toggle="modal"
-              data-bs-target={`#status${booking._id}`}
               className="d-flex p-0 "
               style={{
                 backgroundColor: "transparent",
               }}
+              onClick={() => handleStatusShow(booking)}
             >
               <BiSolidEdit
                 style={{
@@ -160,7 +183,15 @@ const BookingData = ({
             {/* Modal Order Status Update */}
           </div>
           <div>
-            <OrderStatusUpdate data={booking} refetch={refetch} />
+            {statusModalData && (
+              <OrderStatusUpdate
+                data={statusModalData}
+                refetch={refetch}
+                isLoading={isLoading}
+                showStatusModal={showStatusModal}
+                setShowStatusModal={setShowStatusModal}
+              />
+            )}
           </div>
         </td>
         <td>
@@ -174,47 +205,72 @@ const BookingData = ({
         </td>
         <td>
           <div className="d-flex justify-content-center">
-            <button
-              // onClick={handleDurationShow}
-              title={`${
-                booking?.status === "Approved"
-                  ? "Sorry ! Your Booking Already Approved"
-                  : ""
-              }`}
-              type="button"
-              className={`rounded ${
-                booking?.status === "Approved" ? "bg-white" : ""
-              }`}
-              data-bs-toggle="modal"
-              data-bs-target={`#dateUpdate${booking._id}`}
-              style={{
-                backgroundColor:
-                  booking?.status === "Approved" ? "white" : "#35b0a7",
-              }}
-              disabled={booking?.status === "Approved" ? true : false}
-            >
-              <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
-            </button>
+            {booking?.bookingInfo?.roomType === "Shared Room" && (
+              <button
+                title={`${
+                  booking?.status === "Approved"
+                    ? "Sorry ! Your Booking Already Approved"
+                    : ""
+                }`}
+                type="button"
+                className={`rounded ${
+                  booking?.status === "Approved" ? "bg-white" : ""
+                }`}
+                style={{
+                  backgroundColor:
+                    booking?.status === "Approved" ? "white" : "#35b0a7",
+                }}
+                disabled={booking?.status === "Approved" ? true : false}
+                onClick={() => handleSeatShow(booking)}
+              >
+                <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
+              </button>
+            )}
+            {booking?.bookingInfo?.roomType === "Private Room" && (
+              <button
+                title={`${
+                  booking?.status === "Approved"
+                    ? "Sorry ! Your Booking Already Approved"
+                    : ""
+                }`}
+                type="button"
+                className={`rounded ${
+                  booking?.status === "Approved" ? "bg-white" : ""
+                }`}
+                style={{
+                  backgroundColor:
+                    booking?.status === "Approved" ? "white" : "#35b0a7",
+                }}
+                disabled={booking?.status === "Approved" ? true : false}
+                onClick={() => handleDurationShow(booking)}
+              >
+                <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
+              </button>
+            )}
           </div>
           {/* Modal order Date Update */}
-          {booking?.bookingInfo?.roomType === "Shared Room" ? (
+          {booking?.bookingInfo?.roomType === "Shared Room" &&
+          durationUpdateDataSeat ? (
             <div>
               <BookingDateSetUpdate
-                data={booking}
+                data={durationUpdateDataSeat}
                 refetch={refetch}
                 extraCharge={extraCharge}
-                handleDurationClose={handleDurationClose}
-                durationModal={durationModal}
+                setShowSeatUpdateDuration={setShowSeatUpdateDuration}
+                showSeatUpdateDuration={showSeatUpdateDuration}
               />
             </div>
           ) : (
+            ""
+          )}
+          {durationUpdatePrivateRoom && (
             <div>
               <BookingDateUpdate
-                data={booking}
+                data={durationUpdatePrivateRoom}
                 refetch={refetch}
                 extraCharge={extraCharge}
-                handleDurationClose={handleDurationClose}
-                durationModal={durationModal}
+                showDurationModal={showDurationModal}
+                setShowDurationModal={setShowDurationModal}
                 setIsIncludeFood={setIsIncludeFood}
                 isIncludeFood={isIncludeFood}
               />
@@ -225,16 +281,23 @@ const BookingData = ({
           <div className="d-flex gap-2 fw-bold">
             <button
               type="button"
-              data-bs-toggle="modal"
-              data-bs-target={`#payment${booking._id}`}
               style={{ backgroundColor: "#00BBB4" }}
+              onClick={() => handlePaymentShow(booking)}
             >
               Payment
             </button>
             {/* 
               <button className="bg-danger">End</button> */}
           </div>
-          <Payment data={booking} refetch={refetch} isLoading={isLoading} />
+          {paymentModalData && (
+            <Payment
+              data={paymentModalData}
+              refetch={refetch}
+              isLoading={isLoading}
+              showPaymentModal={showPaymentModal}
+              setShowPaymentModal={setShowPaymentModal}
+            />
+          )}
         </td>
         <td>
           <p className=" fw-bold" style={{ color: "red" }}>

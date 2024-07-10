@@ -8,8 +8,15 @@ import axios from "axios";
 import UseFetch from "../../hooks/useFetch";
 // import useExtraCharge from "../../hooks/useExtraCharge";
 import usePromo from "../../hooks/usePromo";
+import { Modal } from "react-bootstrap";
 
-const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
+const BookingDateUpdate = ({
+  data,
+  refetch,
+  extraCharge,
+  setShowDurationModal,
+  showDurationModal,
+}) => {
   const { room, loading, error } = UseFetch(
     `property/${data?.bookingInfo?.data?._id}`
   );
@@ -426,339 +433,319 @@ const BookingDateUpdate = ({ data, refetch, extraCharge }) => {
       toast.error("Sorry ! You Select Already Booking Dates");
     }
   };
+  const handleDurationClose = () => setShowDurationModal(false);
+  
   return (
-    <div className="">
-      <div
-        className="modal fade"
-        id={`dateUpdate${data._id}`}
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog ">
-          <div className="modal-content ">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                Booking Update Duration
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body ml-3">
-              {" "}
+    <>
+      <Modal show={showDurationModal} onHide={handleDurationClose}>
+        <Modal.Header closeButton>
+          <Modal.Title>Booking Update Duration</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div className=" ml-3">
+            <div
+              style={{
+                width: "430px",
+                // height: "650px",
+                boxShadow:
+                  "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25) ",
+                borderRadius: "3px",
+                backgroundColor: "white",
+              }}
+            >
               <div
                 style={{
+                  backgroundColor: "#35B0A7",
                   width: "430px",
-                  // height: "650px",
-                  boxShadow:
-                    "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25) ",
-                  borderRadius: "3px",
-                  backgroundColor: "white",
+                  height: "55px",
+                  borderRadius: "3px 3px 0px 0px",
+                }}
+              ></div>
+              <div
+                className="px-3 py-2 m-3"
+                style={{
+                  boxShadow: "0px 0px 5px 3px #CCC",
+                  borderRadius: "5px",
                 }}
               >
-                <div
+                <h2 className="text-left fw-bold" style={{ color: "#212A42" }}>
+                  {data?.name}
+                </h2>
+                <div className="d-flex ">
+                  <div>{/* <img src={brachLocationIcon} alt="" /> */}</div>
+                  <p className="text-black">{data.city}</p>
+                </div>
+                <p
+                  className=" d-flex justify-content-start "
                   style={{
-                    backgroundColor: "#35B0A7",
-                    width: "430px",
-                    height: "55px",
-                    borderRadius: "3px 3px 0px 0px",
-                  }}
-                ></div>
-                <div
-                  className="px-3 py-2 m-3"
-                  style={{
-                    boxShadow: "0px 0px 5px 3px #CCC",
+                    backgroundColor: "#FCA22A",
+                    color: "white",
+                    padding: "3px 5px ",
                     borderRadius: "5px",
                   }}
                 >
-                  <h2
-                    className="text-left fw-bold"
-                    style={{ color: "#212A42" }}
-                  >
-                    {data?.name}
-                  </h2>
-                  <div className="d-flex ">
-                    <div>{/* <img src={brachLocationIcon} alt="" /> */}</div>
-                    <p className="text-black">{data.city}</p>
-                  </div>
-                  <p
-                    className=" d-flex justify-content-start "
-                    style={{
-                      backgroundColor: "#FCA22A",
-                      color: "white",
-                      padding: "3px 5px ",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    {data?.bookingInfo?.roomType}
-                  </p>
-                </div>
-                <div className="mx-2">
-                  <ul className="d-flex justify-content-evenly list-unstyled calcaulation">
-                    <li className=" border py-1">
-                      <span
-                        onClick={() =>
-                          setEndDate(addDays(new Date(startDate), 1))
-                        }
-                        className={` px-5 py-2 ${
-                          customerRent.remainingDays < getLastDayOfMonth() &&
-                          customerRent.years === undefined
-                            ? "dmyActive "
-                            : "text-black"
-                        }`}
-                      >
-                        Day
-                      </span>
-                    </li>
-                    <li className=" border py-1">
-                      <span
-                        onClick={() =>
-                          setEndDate(addMonths(new Date(startDate), 1))
-                        }
-                        className={` px-5 py-2 ${
-                          customerRent.remainingDays >= getLastDayOfMonth() &&
-                          customerRent.years === undefined
-                            ? "dmyActive "
-                            : "text-black"
-                        }`}
-                      >
-                        Month
-                      </span>
-                    </li>
-                    <li className=" border py-1">
-                      <span
-                        onClick={() =>
-                          customerRent.years === undefined
-                            ? setEndDate(addYears(new Date(endDate), 1))
-                            : ""
-                        }
-                        className={` px-5 py-2 ${
-                          customerRent.years >= 1 ? "dmyActive " : "text-black"
-                        }`}
-                      >
-                        Year
-                      </span>
-                    </li>
-                  </ul>
-                </div>
-
-                <div className="d-flex justify-content-between gap-3 total-area text-black px-2 mt-3">
-                  <div>
-                    <p className="text-left font-bold mb-1">Check-In</p>
-                    <DatePicker
-                      selected={new Date(startDate)}
-                      dateFormat="dd/MM/yyyy"
-                      onChange={(date) => setStartDate(date)}
-                      // showIcon
-                      excludeDateIntervals={roomBookingDates?.map((rent) => {
-                        return {
-                          start: subDays(new Date(rent?.bookStartDate), 1),
-                          end: addDays(new Date(rent?.bookEndDate), 0),
-                        };
-                      })}
-                      // minDate={subDays(new Date(), 0)}
-                    />
-                  </div>
-                  <div>
-                    <p className="text-left font-bold mb-1">Check-Out</p>
-                    <DatePicker
-                      selected={new Date(endDate)}
-                      dateFormat="dd/MM/yyyy"
-                      onChange={(date) => setEndDate(date)}
-                      // showIcon
-                      excludeDateIntervals={roomBookingDates?.map((rent) => {
-                        return {
-                          start: subDays(new Date(rent?.bookStartDate), 1),
-                          end: addDays(new Date(rent?.bookEndDate), 0),
-                        };
-                      })}
-                      minDate={subDays(new Date(startDate), -1)}
-                    />
-                  </div>
-                </div>
-                <div className="d-flex justify-content-between mt-5 justify-items-center px-5">
-                  <p className="text-left fw-bold mb-1 ">Total Duration = </p>
-                  <div>
-                    <input
-                      className="pl-2"
-                      type="text"
-                      style={{ width: "100%", height: "30px" }}
-                      value={`${
-                        customerRent?.daysDifference >= 0
-                          ? `${customerRent?.daysDifference} days`
-                          : "" ||
-                            (customerRent?.months &&
-                              customerRent?.days >= 0 &&
-                              !customerRent?.years)
-                          ? `${customerRent?.months} months, ${customerRent?.days} days`
-                          : "" ||
-                            (customerRent?.years &&
-                              customerRent?.months >= 0 &&
-                              customerRent?.days >= 0)
-                          ? `${customerRent?.years} year`
-                          : ""
+                  {data?.bookingInfo?.roomType}
+                </p>
+              </div>
+              <div className="mx-2">
+                <ul className="d-flex justify-content-evenly list-unstyled calcaulation">
+                  <li className=" border py-1">
+                    <span
+                      onClick={() =>
+                        setEndDate(addDays(new Date(startDate), 1))
+                      }
+                      className={` px-5 py-2 ${
+                        customerRent.remainingDays < getLastDayOfMonth() &&
+                        customerRent.years === undefined
+                          ? "dmyActive "
+                          : "text-black"
                       }`}
-                      disabled
-                    />
-                  </div>
-                </div>
+                    >
+                      Day
+                    </span>
+                  </li>
+                  <li className=" border py-1">
+                    <span
+                      onClick={() =>
+                        setEndDate(addMonths(new Date(startDate), 1))
+                      }
+                      className={` px-5 py-2 ${
+                        customerRent.remainingDays >= getLastDayOfMonth() &&
+                        customerRent.years === undefined
+                          ? "dmyActive "
+                          : "text-black"
+                      }`}
+                    >
+                      Month
+                    </span>
+                  </li>
+                  <li className=" border py-1">
+                    <span
+                      onClick={() =>
+                        customerRent.years === undefined
+                          ? setEndDate(addYears(new Date(endDate), 1))
+                          : ""
+                      }
+                      className={` px-5 py-2 ${
+                        customerRent.years >= 1 ? "dmyActive " : "text-black"
+                      }`}
+                    >
+                      Year
+                    </span>
+                  </li>
+                </ul>
+              </div>
 
-                <div className="text-black pr-3 mt-3 fw-medium">
+              <div className="d-flex justify-content-between gap-3 total-area text-black px-2 mt-3">
+                <div>
+                  <p className="text-left font-bold mb-1">Check-In</p>
+                  <DatePicker
+                    selected={new Date(startDate)}
+                    dateFormat="dd/MM/yyyy"
+                    onChange={(date) => setStartDate(date)}
+                    // showIcon
+                    excludeDateIntervals={roomBookingDates?.map((rent) => {
+                      return {
+                        start: subDays(new Date(rent?.bookStartDate), 1),
+                        end: addDays(new Date(rent?.bookEndDate), 0),
+                      };
+                    })}
+                    // minDate={subDays(new Date(), 0)}
+                  />
+                </div>
+                <div>
+                  <p className="text-left font-bold mb-1">Check-Out</p>
+                  <DatePicker
+                    selected={new Date(endDate)}
+                    dateFormat="dd/MM/yyyy"
+                    onChange={(date) => setEndDate(date)}
+                    // showIcon
+                    excludeDateIntervals={roomBookingDates?.map((rent) => {
+                      return {
+                        start: subDays(new Date(rent?.bookStartDate), 1),
+                        end: addDays(new Date(rent?.bookEndDate), 0),
+                      };
+                    })}
+                    minDate={subDays(new Date(startDate), -1)}
+                  />
+                </div>
+              </div>
+              <div className="d-flex justify-content-between mt-5 justify-items-center px-5">
+                <p className="text-left fw-bold mb-1 ">Total Duration = </p>
+                <div>
+                  <input
+                    className="pl-2"
+                    type="text"
+                    style={{ width: "100%", height: "30px" }}
+                    value={`${
+                      customerRent?.daysDifference >= 0
+                        ? `${customerRent?.daysDifference} days`
+                        : "" ||
+                          (customerRent?.months &&
+                            customerRent?.days >= 0 &&
+                            !customerRent?.years)
+                        ? `${customerRent?.months} months, ${customerRent?.days} days`
+                        : "" ||
+                          (customerRent?.years &&
+                            customerRent?.months >= 0 &&
+                            customerRent?.days >= 0)
+                        ? `${customerRent?.years} year`
+                        : ""
+                    }`}
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className="text-black pr-3 mt-3 fw-medium">
+                <div className="d-flex justify-content-between ">
+                  <div className="ml-5 ">
+                    <p>Rent</p>
+                  </div>
+                  <p>BDT {subTotal}</p>
+                </div>
+                {isIncludeFood ? (
                   <div className="d-flex justify-content-between ">
                     <div className="ml-5 ">
-                      <p>Rent</p>
+                      <p>Food</p>
                     </div>
-                    <p>BDT {subTotal}</p>
+                    <p>BDT {300 * customerRent?.remainingDays}</p>
                   </div>
-                  {isIncludeFood ? (
-                    <div className="d-flex justify-content-between ">
-                      <div className="ml-5 ">
-                        <p>Food</p>
-                      </div>
-                      <p>BDT {300 * customerRent?.remainingDays}</p>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  <div className="d-flex justify-content-between">
+                ) : (
+                  ""
+                )}
+                <div className="d-flex justify-content-between">
+                  <div className="ml-5 ">
+                    <p>VAT</p>
+                  </div>
+
+                  <p> + BDT {vatTax}</p>
+                </div>
+                {customerRent.months >= 1 || customerRent.years ? (
+                  <div className="d-flex justify-content-between ">
                     <div className="ml-5 ">
-                      <p>VAT</p>
+                      <p>Admission Fee</p>
                     </div>
-
-                    <p> + BDT {vatTax}</p>
-                  </div>
-                  {customerRent.months >= 1 || customerRent.years ? (
-                    <div className="d-flex justify-content-between ">
-                      <div className="ml-5 ">
-                        <p>Admission Fee</p>
-                      </div>
-                      <p>
-                        BDT{" "}
-                        {customerRent.months >= 2 || customerRent.years
-                          ? addMissionFee
-                          : 0}
-                      </p>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-                  {customerRent.months >= 1 || customerRent.years ? (
-                    <div className="d-flex justify-content-between ">
-                      <div className="ml-5">
-                        <p>Security Fee</p>
-                      </div>
-                      <p>
-                        BDT{" "}
-                        {customerRent.months >= 2 || customerRent.years
-                          ? securityFee
-                          : 0}
-                      </p>
-                    </div>
-                  ) : (
-                    ""
-                  )}
-
-                  <hr className="mt-3 ml-5 text-black" />
-                  <div className="d-flex justify-content-between mt-2">
-                    <p className="ml-5">Total Amount</p>
-                    <p>BDT {totalRentAmount}</p>
-                  </div>
-
-                  <div className="d-flex justify-content-between mt-2">
-                    <p className="ml-5">
-                      {" "}
-                      {isAdjustmen ? "Previous Adjustment" : "Discount"}{" "}
+                    <p>
+                      BDT{" "}
+                      {customerRent.months >= 2 || customerRent.years
+                        ? addMissionFee
+                        : 0}
                     </p>
-                    <p>-BDT {discountTk}</p>
                   </div>
-                  <div className="d-flex justify-content-between mt-2">
-                    <p className="ml-5">Payable Amount</p>
-                    <p>BDT {payableAmount}</p>
-                  </div>
-                  {(customerRent?.months >= 1 &&
-                    customerRent?.years === undefined) ||
-                  (customerRent?.months === 0 &&
-                    customerRent?.years !== undefined) ? (
-                    <div className="d-flex justify-content-between">
-                      <div className="ml-5">
-                        <p className="text-danger fw-bold">Advance Payment</p>
-                      </div>
-                      <p> BDT {minimumPayment}</p>
+                ) : (
+                  ""
+                )}
+                {customerRent.months >= 1 || customerRent.years ? (
+                  <div className="d-flex justify-content-between ">
+                    <div className="ml-5">
+                      <p>Security Fee</p>
                     </div>
-                  ) : (
-                    ""
-                  )}
+                    <p>
+                      BDT{" "}
+                      {customerRent.months >= 2 || customerRent.years
+                        ? securityFee
+                        : 0}
+                    </p>
+                  </div>
+                ) : (
+                  ""
+                )}
 
-                  <div
-                    className={`d-flex justify-content-between ${
-                      (customerRent?.months >= 1 &&
-                        customerRent?.years === undefined) ||
-                      (customerRent?.months === 0 && customerRent?.years >= 1)
-                        ? "d-none"
-                        : "d-block"
-                    }`}
-                  >
-                    <div className="ml-5 d-flex justify-items-center ">
-                      <p className="text-danger fw-bold">Minimum Payment</p>
+                <hr className="mt-3 ml-5 text-black" />
+                <div className="d-flex justify-content-between mt-2">
+                  <p className="ml-5">Total Amount</p>
+                  <p>BDT {totalRentAmount}</p>
+                </div>
+
+                <div className="d-flex justify-content-between mt-2">
+                  <p className="ml-5">
+                    {" "}
+                    {isAdjustmen ? "Previous Adjustment" : "Discount"}{" "}
+                  </p>
+                  <p>-BDT {discountTk}</p>
+                </div>
+                <div className="d-flex justify-content-between mt-2">
+                  <p className="ml-5">Payable Amount</p>
+                  <p>BDT {payableAmount}</p>
+                </div>
+                {(customerRent?.months >= 1 &&
+                  customerRent?.years === undefined) ||
+                (customerRent?.months === 0 &&
+                  customerRent?.years !== undefined) ? (
+                  <div className="d-flex justify-content-between">
+                    <div className="ml-5">
+                      <p className="text-danger fw-bold">Advance Payment</p>
                     </div>
                     <p> BDT {minimumPayment}</p>
                   </div>
-                </div>
-                <div className="d-flex gap-3 ms-3">
-                  <input
-                    style={{
-                      cursor: "pointer",
-                    }}
-                    type="checkbox"
-                    name="terms"
-                    id="food"
-                    defaultChecked={data?.isIncludeFood}
-                    onClick={() => setIsIncludeFood(!isIncludeFood)}
-                  />
-                  <label
-                    htmlFor="food"
-                    style={{
-                      cursor: "pointer",
-                      marginTop: "8px",
-                    }}
-                  >
-                    Including Foods (2 Meals in a Day)
-                  </label>
-                </div>
+                ) : (
+                  ""
+                )}
+
                 <div
-                  className={` d-flex justify-content-center justify-items-center mt-5 `}
+                  className={`d-flex justify-content-between ${
+                    (customerRent?.months >= 1 &&
+                      customerRent?.years === undefined) ||
+                    (customerRent?.months === 0 && customerRent?.years >= 1)
+                      ? "d-none"
+                      : "d-block"
+                  }`}
+                >
+                  <div className="ml-5 d-flex justify-items-center ">
+                    <p className="text-danger fw-bold">Minimum Payment</p>
+                  </div>
+                  <p> BDT {minimumPayment}</p>
+                </div>
+              </div>
+              <div className="d-flex gap-3 ms-3">
+                <input
                   style={{
-                    backgroundColor: "#35B0A7",
+                    cursor: "pointer",
+                  }}
+                  type="checkbox"
+                  name="terms"
+                  id="food"
+                  defaultChecked={data?.isIncludeFood}
+                  onClick={() => setIsIncludeFood(!isIncludeFood)}
+                />
+                <label
+                  htmlFor="food"
+                  style={{
+                    cursor: "pointer",
+                    marginTop: "8px",
                   }}
                 >
-                  <div>
-                    <button
-                      className={`fs-5 p-2 text-white bg-transparent `}
-                      onClick={handleBookingDate}
-                      disabled={
-                        data?.endDate === endDate ||
-                        data?.endDate > endDate ||
-                        data?.endDate > startDate
-                          ? true
-                          : false
-                      }
-                    >
-                      Update Booking Duration
-                    </button>
-                  </div>
+                  Including Foods (2 Meals in a Day)
+                </label>
+              </div>
+              <div
+                className={` d-flex justify-content-center justify-items-center mt-5 `}
+                style={{
+                  backgroundColor: "#35B0A7",
+                }}
+              >
+                <div>
+                  <button
+                    className={`fs-5 p-2 text-white bg-transparent `}
+                    onClick={handleBookingDate}
+                    disabled={
+                      data?.endDate === endDate ||
+                      data?.endDate > endDate ||
+                      data?.endDate > startDate
+                        ? true
+                        : false
+                    }
+                  >
+                    Update Booking Duration
+                  </button>
                 </div>
               </div>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
+        </Modal.Body>
+      </Modal>
+    </>
   );
 };
 export default BookingDateUpdate;

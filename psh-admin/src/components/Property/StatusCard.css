@@ -1,0 +1,49 @@
+.summary-cards-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center; /* Center align cards horizontally */
+  margin: 20px 0;
+}
+
+.summary-card {
+  border: none;
+  border-radius: 8px;
+  padding: 20px 15px; /* Adjusted padding to increase height */
+  margin: 10px;
+  width: 270px;
+  text-align: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  height: 120px; /* Increased card height to accommodate radio buttons */
+  position: relative; /* Ensure relative positioning for absolute elements */
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+}
+
+.summary-card .details {
+  position: relative;
+}
+
+.summary-card .details h4,
+.summary-card .details h5 {
+  margin: 0;
+}
+
+.radio-buttons {
+  position: absolute;
+  top: 75px;
+  left: -1020px;
+  right: 0;
+  margin: 0 auto;
+  display: flex;
+  justify-content: center;
+  padding: 9px;
+  border-radius: 26px;
+  
+  z-index: 9;
+}
+.radio-buttons .form-check {
+  margin: 0 10px; /* Adjust spacing between radio buttons */
+}

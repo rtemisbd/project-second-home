@@ -43,14 +43,14 @@ export const getRentRooms = async (req, res, next) => {
       }
     );
 
-    const populatedRentRooms = await RentRoom.find({
+    const bookedRentRooms = await RentRoom.find({
       _id: { $in: rentRooms.map((room) => room._id) },
     }).populate("userId");
 
     res.status(200).json({
       status: "Success",
       message: "Orders retrieved successfully",
-      populatedRentRooms,
+      bookedRentRooms,
       upcomingRentRooms,
     });
   } catch (err) {

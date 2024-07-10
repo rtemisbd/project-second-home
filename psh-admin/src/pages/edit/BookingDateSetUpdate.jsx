@@ -5,15 +5,16 @@ import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { toast } from "react-toastify";
 import UseFetch from "../../hooks/useFetch";
 import axios from "axios";
-
+import Modal from 'react-bootstrap/Modal';
 import usePromo from "../../hooks/usePromo";
 
-const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
+const BookingDateSetUpdate = ({ data, refetch, extraCharge, showSeatUpdateDuration, setShowSeatUpdateDuration }) => {
   const {
     room,
     loading,
     error,
     refetch: roomFetch,
+
   } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
 
   // const [extraCharge, setExtraCharge] = useState([]);
@@ -445,31 +446,18 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
       toast.error("Sorry ! You Select Already Booking Dates");
     }
   };
+
+
+  const handleClose = () => setShowSeatUpdateDuration(false);
+
   return (
-    <div className="container">
-      <div
-        className="modal fade"
-        id={`dateUpdate${data._id}`}
-        data-bs-backdrop="static"
-        data-bs-keyboard="false"
-        tabIndex="-1"
-        aria-labelledby="staticBackdropLabel"
-        aria-hidden="true"
-      >
-        <div className="modal-dialog">
-          <div className="modal-content">
-            <div className="modal-header">
-              <h1 className="modal-title fs-5" id="staticBackdropLabel">
-                Booking Update Duration
-              </h1>
-              <button
-                type="button"
-                className="btn-close"
-                data-bs-dismiss="modal"
-                aria-label="Close"
-              ></button>
-            </div>
-            <div className="modal-body ml-3">
+    <>
+     <Modal show={showSeatUpdateDuration} onHide={handleClose}>
+        <Modal.Header closeButton>
+          <Modal.Title> Booking Update Duration</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        <div className=" ml-3">
               <div
                 style={{
                   width: "430px",
@@ -774,10 +762,13 @@ const BookingDateSetUpdate = ({ data, refetch, extraCharge }) => {
                 </div>
               </div>
             </div>
-          </div>
-        </div>
-      </div>
-    </div>
+
+        </Modal.Body>
+   
+      </Modal>
+  
+  
+    </>
   );
 };
 export default BookingDateSetUpdate;

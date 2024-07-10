@@ -1,13 +1,11 @@
-import React, { useContext, useEffect, useRef, useState } from "react";
-import img from "../../img/college/Icon material-delete.png";
-import img3 from "../../img/college/Icon feather-edit.png";
+import React, { useContext, useRef, useState } from "react";
+
 import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
-import { Link } from "react-router-dom";
+
 
 import "jspdf-autotable";
 import "./Property.css";
@@ -21,10 +19,13 @@ import { Spinner, Table } from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import ReportPrint from "./ReportPrint";
 import { AuthContext } from "../../contexts/UserProvider";
+import StatusCard from "./StatusCart";
+
 
 const PropertyReports = (props) => {
   const ref = useRef();
   const { logoutUser, user } = useContext(AuthContext);
+
 
   const userBranch = user?.branch?.name;
 
@@ -363,7 +364,7 @@ const PropertyReports = (props) => {
               <div className="row">
                 <div className="col-md-7">
                   <h6 className="college_h6">Booking Reports</h6>
-                </div>{" "}
+                </div>{" "}  <StatusCard />
                 <div className="d-flex justify-content-end ">
                   <div>
                     <div>
