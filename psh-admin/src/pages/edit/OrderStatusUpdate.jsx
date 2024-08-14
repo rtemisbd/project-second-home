@@ -55,7 +55,7 @@ const OrderStatusUpdate = ({
       };
 
       await axios.patch(
-        `http://localhost:8000/api/order/${_id}`,
+        `https://api.psh.com.bd/api/order/${_id}`,
         updatedStatus
       );
       MySwal.fire("Updated", "success");
@@ -71,7 +71,7 @@ const OrderStatusUpdate = ({
     <>
       <Modal show={showStatusModal} onHide={handleClose}>
         <Modal.Header closeButton>
-          <Modal.Title>Modal heading</Modal.Title>
+          <Modal.Title>Update Booking Status</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <form onSubmit={handleSubmit}>
@@ -80,7 +80,7 @@ const OrderStatusUpdate = ({
                 <div className="">
                   <div className="col-md-12 mb-3">
                     <label htmlFor="inputState" className="">
-                      Status ({status})
+                      Status
                     </label>
                     <br />
                     <select

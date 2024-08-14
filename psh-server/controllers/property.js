@@ -4,61 +4,7 @@ import Branch from "../models/Branch.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
-    const {
-      name,
-      city,
-      floor,
-      roomNumber,
-      builtYear,
-      area,
-      totalRoom,
-      available,
-      desc,
-      fulldesc,
-      rating,
-      perDay,
-      perMonth,
-      perYear,
-
-      dAmountForDay,
-      dAmountForMonth,
-      dAmountForYear,
-      percentOfDiscountDay,
-      percentOfDiscountMonth,
-      percentOfDiscountYear,
-
-      bedroom,
-      bathroom,
-      car,
-      bike,
-      pet,
-      categoryId,
-      recommended,
-      furnitured,
-      branchId,
-      facility,
-      commonfacility,
-      photos,
-      meal,
-      bedType,
-      CCTV,
-      WiFi,
-      balcony,
-      totalPerson,
-      rentDate,
-      type,
-      rules,
-      //apartment
-      roomCategory,
-      additionalFacility,
-      apartmentRent,
-      serviceCharge,
-      security,
-      faltPolicy,
-      seats, // Add the "options" field for seat options
-      isPublished,
-      isPartner,
-    } = req.body;
+    const { categoryId, branchId, rentDate, seats, ...othersData } = req.body;
 
     // Find the category by ID
     const category = await Category.findById(categoryId);
@@ -72,61 +18,13 @@ export const CreatePropertys = async (req, res, next) => {
       return res.status(404).json({ error: "Branch not found" });
     }
 
-    // Create the product and assign it to the category, branch, and facilities
+    // Create the Property and assign it to the category, branch, and facilities
     const product = new Property({
-      name,
-      city,
-      available,
-      desc,
-      roomNumber,
-      fulldesc,
-      rating,
-
-      perDay,
-      type,
-      perMonth,
-      perYear,
-
-      dAmountForDay,
-      dAmountForMonth,
-      dAmountForYear,
-      percentOfDiscountDay,
-      percentOfDiscountMonth,
-      percentOfDiscountYear,
-      recommended,
-      bedroom,
-      bathroom,
-      car,
-      bike,
-      pet,
-      facility,
-      commonfacility,
-      furnitured,
-      floor,
-      builtYear,
-      area,
-      totalRoom,
-      photos,
-      bedType,
-      meal,
-      CCTV,
-      WiFi,
-      balcony,
-      totalPerson,
       rentDate: rentDate,
-      rules,
-      //apartment
-      roomCategory,
-      additionalFacility,
-      apartmentRent,
-      serviceCharge,
-      security,
-      faltPolicy,
       category: category._id,
       branch: branch._id,
-      seats: seats, // Set the seat options
-      isPublished,
-      isPartner,
+      seats: seats,
+      ...othersData,
     });
     await product.save();
 

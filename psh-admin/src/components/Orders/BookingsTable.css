@@ -1,3 +1,8 @@
+/* .bookings_data td,
+p,
+span {
+  font-size: 14px !important;
+} */
 .pagination {
   display: flex;
   justify-content: center;
@@ -14,6 +19,7 @@
   font-size: 11px;
   margin: 2px 2px;
   border-radius: 2px;
+  height: 35px;
 }
 
 .pagination-button:hover {

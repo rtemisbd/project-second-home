@@ -2,193 +2,76 @@ import React, { useState } from "react";
 
 import axios from "axios";
 
-import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import BootstrapTable from "react-bootstrap-table-next";
-
 import "jspdf-autotable";
 import { useQuery } from "react-query";
-import { BiSolidEdit } from "react-icons/bi";
-import { AiOutlineDelete } from "react-icons/ai";
-import UpdateAdjustment from "./UpdateAdjustment";
-import { ToastContainer, toast } from "react-toastify";
+
+import { toast } from "react-toastify";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import LoadingState from "../../pages/LoadingState/LoadingState";
+import { Spinner } from "react-bootstrap";
+import AdjustmentTable from "./AdjustmentTable";
 
 const AdjustmentList = () => {
   const dispatch = useDispatch();
 
   const handleClose = () => dispatch(placeLoadingShow(false));
 
+  const [isLoading, setIsLoading] = useState(false);
+
+  const [pageCount, setPageCount] = useState(0);
+
+  const [page, setPage] = useState(1);
+
   const [data, setData] = useState([]);
 
-  const columns = [
-    {
-      text: "Booking Id",
-      formatter: (cellContent, row) => {
-        return (
-          <div>
-            <p>#{row?.booking?._id?.slice(-5)} </p>
-            <p>{row?.branch?.name}</p>
-          </div>
-        );
-      },
-    },
-    {
-      text: "User Id",
-      formatter: (cellContent, row) => {
-        return (
-          <div>
-            <p>#{row?.userId?._id?.slice(-5)}</p>
-            <p>{row?.userId?.firstName}</p>
-          </div>
-        );
-      },
-    },
-    {
-      text: "Total Amount",
-      formatter: (cellContent, row) => {
-        return <p>{row?.booking?.totalAmount} Tk</p>;
-      },
-    },
-    {
-      text: "Discount",
-      formatter: (cellContent, row) => {
-        return <p>{row?.booking?.discount} Tk</p>;
-      },
-    },
-    {
-      text: "Payable Amount",
-      formatter: (cellContent, row) => {
-        return <p>{row?.booking?.payableAmount} Tk</p>;
-      },
-    },
-    {
-      text: "Total Receive",
-      formatter: (cellContent, row) => {
-        return <p>{row?.booking?.totalReceiveTk} Tk</p>;
-      },
-    },
-    {
-      text: "Due",
-      formatter: (cellContent, row) => {
-        return <p>{row?.booking?.dueAmount} Tk</p>;
-      },
-    },
-    {
-      text: "Adjustment RQ",
-      formatter: (cellContent, adjustment) => {
-        return (
-          <div className="d-flex justify-content-between">
-            <p>{adjustment?.adjustmentAmount} Tk</p>
-            <button
-              disabled={adjustment?.status === "Accepted" ? true : false}
-              onClick={() => handleAccept(adjustment)}
-              className="btn"
-              style={{ backgroundColor: "#00bbb4", color: "white" }}
-            >
-              {adjustment?.status === "Accepted" ? "Accepted" : "Accept Now"}
-            </button>
-          </div>
-        );
-      },
-    },
-    {
-      text: "Note",
-      formatter: (cellContent, adjustment) => {
-        return (
-          <div className="d-flex justify-content-between">
-            <p>{adjustment?.noteForAdjustment}</p>
-          </div>
-        );
-      },
-    },
-
-    {
-      text: "Action",
-      formatter: (cellContent, adjustment) => {
-        return (
-          <>
-            <div className="d-flex justify-content-center gap-5">
-              <button
-                type="button"
-                className="bg-white"
-                data-bs-toggle="modal"
-                data-bs-target={`#discount${adjustment?._id}`}
-                disabled={adjustment?.status === "Accepted" ? true : false}
-              >
-                <BiSolidEdit style={{ width: "30px", height: "30px" }} />
-              </button>
-              <div className="">
-                <button
-                  className="btn "
-                  disabled={
-                    adjustment?.status === "Accepted"
-                      ? true
-                      : false ||
-                        adjustment?.booking?.payableAmount ===
-                          adjustment?.booking?.totalReceiveTk
-                      ? true
-                      : false
-                  }
-                >
-                  <AiOutlineDelete
-                    onClick={() => handleDelete(adjustment?._id)}
-                    style={{ width: "30px", height: "30px" }}
-                    className="delete-button"
-                  />
-                </button>
-              </div>
-            </div>
-            {/* Modal order Date Update */}
-
-            <div>
-              <UpdateAdjustment data={adjustment} refetch={refetch} />
-            </div>
-
-            <div className="d-flex justify-content-center"></div>
-            <div
-              className="modal fade"
-              id={`loginModal${adjustment._id}`}
-              tabIndex="{-1}"
-              role="dialog"
-              aria-labelledby="loginModal"
-              aria-hidden="true"
-            ></div>
-          </>
-        );
-      },
-    },
-  ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-  });
   // Get All Adjustment
-  const { isLoading, refetch } = useQuery([], () =>
-    fetch(`https://api.psh.com.bd/api/adjustment`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data?.adjustment);
-      })
+
+  const { refetch } = useQuery(
+    [
+      "fetchAdjustments",
+      page,
+      // branch,
+      // paymentStatus,
+      // bookingStatus,
+      // fromDate,
+      // toDate,
+    ],
+    async () => {
+      try {
+        const queryParams = new URLSearchParams({
+          // fromDate: fromDate,
+          // toDate: toDate,
+          // branch: branch,
+          // paymentStatus: paymentStatus,
+          // status: bookingStatus,
+          page: page,
+          size: 10,
+        });
+
+        const response = await fetch(
+          `https://api.psh.com.bd/api/adjustment?${queryParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network Error");
+        }
+
+        const data = await response.json();
+        setData(data);
+
+        const totalPageCount = Math.ceil(data?.totalAdjustments / 10);
+        setPageCount(totalPageCount);
+      } catch (error) {
+        // console.error("Error fetching data:", error);
+      }
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
   );
 
   // handle Accept Adjustment
@@ -219,7 +102,7 @@ const AdjustmentList = () => {
   };
 
   //delete
-  const [adjustments, setAdjustment] = useState(data);
+
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
@@ -231,10 +114,6 @@ const AdjustmentList = () => {
         .then((data) => {
           refetch();
           toast.success("Deleted");
-          if (data.deletedCount === 1) {
-            const remainItem = adjustments.filter((item) => item._id !== id);
-            setAdjustment(remainItem);
-          }
         });
     }
   };
@@ -251,37 +130,33 @@ const AdjustmentList = () => {
               </div>
             </div>
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
-            <div className="card">
-              <div className="card-body card_body_sm">
-                <>
-                  <ToolkitProvider
-                    bootstrap4
-                    keyField="_id"
-                    columns={columns}
-                    data={data}
-                    pagination={pagination}
-                    exportCSV
-                  >
-                    {(props) => (
-                      <React.Fragment>
-                        <BootstrapTable
-                          bootstrap4
-                          keyField="_id"
-                          columns={columns}
-                          data={data}
-                          pagination={pagination}
-                          {...props.baseProps}
-                        />
-                        <ToastContainer
-                          className="toast-position"
-                          position="top-center"
-                        />
-                      </React.Fragment>
-                    )}
-                  </ToolkitProvider>
-                </>
+            {isLoading ? (
+              <p
+                style={{ margin: "150px 0" }}
+                className="text-center text-danger fw-bold"
+              >
+                Please Wait... <Spinner size="sm" animation="grow" />
+              </p>
+            ) : data?.adjustments?.length > 0 ? (
+              <div className="card">
+                <div className="card-body card_body_sm">
+                  <AdjustmentTable
+                    data={data?.adjustments}
+                    page={page}
+                    pageCount={pageCount}
+                    setPage={setPage}
+                    isLoading={isLoading}
+                    refetch={refetch}
+                    handleAccept={handleAccept}
+                    handleDelete={handleDelete}
+                  />
+                </div>
               </div>
-            </div>
+            ) : (
+              <p className="text-center text-danger fw-bold">
+                Find Bookings... <Spinner size="sm" animation="grow" />
+              </p>
+            )}
             {/* /.row (main row) */}
           </div>
           {/* /.container-fluid */}

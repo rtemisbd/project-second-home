@@ -1,10 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import AdminOrderList from "../components/Orders/AdminOrderList";
+import NewOrders from "../components/Orders/NewOrders";
 const AdminOrders = () => {
   return (
     <div>
-      <AdminOrderList />
+      <NewOrders />
     </div>
   );
 };

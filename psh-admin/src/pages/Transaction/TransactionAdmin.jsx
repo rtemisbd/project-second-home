@@ -24,10 +24,15 @@ import { AuthContext } from "../../contexts/UserProvider";
 import img from "../../img/new/style.png";
 import TransactionStatusUpdate from "./TransactionStatusUpdate";
 import axios from "axios";
+import LoadingState from "../LoadingState/LoadingState";
+import { useDispatch } from "react-redux";
+import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 const TransactionAdmin = () => {
   const ref = useRef();
   const { user } = useContext(AuthContext);
+  const dispatch = useDispatch();
 
+  const handleClose = () => dispatch(placeLoadingShow(false));
   const MySwal = withReactContent(Swal);
   const [bookings] = useBooking();
   const [isLoading, setIsLoading] = useState(false);
@@ -287,7 +292,11 @@ const TransactionAdmin = () => {
               )}
             </div>
             <div>
-              <TransactionStatusUpdate data={row} refetch={refetch} />
+              <TransactionStatusUpdate
+                data={row}
+                refetch={refetch}
+                handleClose={handleClose}
+              />
             </div>
           </>
         );
@@ -402,29 +411,12 @@ const TransactionAdmin = () => {
   return (
     <>
       <div className="wrapper">
+        <LoadingState handleClose={handleClose} />
         <div className="wrapper">
           {/* Content Wrapper. Contains page content */}
-          <div className="content-wrapper h-0" style={{ background: "unset" }}>
+          <div className="content-wrapper h-0 " style={{ background: "unset" }}>
             <h4 className="customize mx-lg-5 mb-3">Transactions</h4>
-            <div className="row customize mx-lg-4">
-              {/* <div className="col-md-4 home_card_m">
-                <div className="card_2">
-                  <div className="d-flex p-3">
-                    <div className="d-flex justify-content-center align-items-center">
-                      <img src={img} alt="" className="img2" />
-                    </div>
-                    <div className="ms-3 text-white">
-                      <p className="">Total Payable Amount</p>
-                      <p className="fw-bold">
-                        Tk{" "}
-                        {data?.length > 0 || filterData.length > 0
-                          ? totalBookingAmount
-                          : 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
+            <div className="row customize mx-5">
               <div className="col-md-4">
                 <div className="card_3_transaction">
                   <div className="d-flex p-3">
@@ -443,30 +435,12 @@ const TransactionAdmin = () => {
                   </div>
                 </div>
               </div>
-              {/* <div className="col-md-4">
-                <div className="card_4">
-                  <div className="d-flex p-3">
-                    <div className="d-flex justify-content-center align-items-center">
-                      <img src={img} alt="" className="img3" />
-                    </div>
-                    <div className="ms-3 text-white">
-                      <p>Total Due Amount</p>
-                      <p className="fw-bold">
-                        Tk{" "}
-                        {data?.length > 0 || filterData.length > 0
-                          ? totalBookingAmount - mytotalReceiveTk
-                          : 0}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div> */}
             </div>
           </div>
         </div>
-        <div className="content-wrapper mt-3" style={{ background: "unset" }}>
-          <section className="content customize_list">
-            <div className="">
+        <div className="content-wrapper mt-3 " style={{ background: "unset" }}>
+          <section className="content customize_list ">
+            <div className="mx-4">
               <div className=" d-lg-flex gap-4 ">
                 <div className="">
                   <label htmlFor="">From Date </label>

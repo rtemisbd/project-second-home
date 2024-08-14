@@ -1,3 +1,4 @@
+import Property from "../models/Property.js";
 import RentRoom from "../models/RentRoom.js";
 
 export const getRentRooms = async (req, res, next) => {
@@ -8,6 +9,15 @@ export const getRentRooms = async (req, res, next) => {
       bookStartDate: { $lte: today },
       bookEndDate: { $gte: today },
     });
+    // Today Check in
+    const todayCheckIn = await RentRoom.find({
+      bookStartDate: today,
+    }).populate("userId");
+
+    // Today Check out
+    const todayCheckOut = await RentRoom.find({
+      bookEndDate: today,
+    }).populate("userId");
 
     // Update bookingStatus to "booked" for the found rent rooms
     await RentRoom.updateMany(
@@ -21,7 +31,7 @@ export const getRentRooms = async (req, res, next) => {
 
     const upcomingRentRooms = await RentRoom.find({
       bookStartDate: { $gt: today },
-    });
+    }).populate("userId");
 
     // Update bookingStatus to "reserved" for upcoming rent rooms
     await RentRoom.updateMany(
@@ -43,15 +53,25 @@ export const getRentRooms = async (req, res, next) => {
       }
     );
 
+    // Find Available Rooms
+    const availableRooms = await Property.find({
+      roomNumber: { $nin: rentRooms.map((room) => room.roomNumber) },
+      isPublished: "Published",
+    }).select({ _id: 0, roomNumber: 1 });
+
+    // Booked Rooms
     const bookedRentRooms = await RentRoom.find({
       _id: { $in: rentRooms.map((room) => room._id) },
     }).populate("userId");
 
     res.status(200).json({
       status: "Success",
-      message: "Orders retrieved successfully",
+      message: "Bookings retrieved successfully",
       bookedRentRooms,
       upcomingRentRooms,
+      availableRooms,
+      todayCheckIn,
+      todayCheckOut,
     });
   } catch (err) {
     next(err);

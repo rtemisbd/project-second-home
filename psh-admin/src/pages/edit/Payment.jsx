@@ -3,17 +3,23 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import "./Payment.css";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
-import LoadingState from "../LoadingState/LoadingState";
-import Button from "react-bootstrap/Button";
+// import LoadingState from "../LoadingState/LoadingState";
+// import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 
-const Payment = ({ data, refetch, isLoading ,showPaymentModal,setShowPaymentModal }) => {
+const Payment = ({
+  data,
+  refetch,
+  // isLoading,
+  showPaymentModal,
+  setShowPaymentModal,
+}) => {
   const dispatch = useDispatch();
-  const isLoadingState = useSelector(
-    (state) => state?.loadingModal?.isLoadingState
-  );
+  // const isLoadingState = useSelector(
+  //   (state) => state?.loadingModal?.isLoadingState
+  // );
   const [paymentType, setPaymentType] = useState("Payment Type");
   const [customerType, setCustomerType] = useState("Customer Type");
   const paymentOption = ["Receive", "Adjustment"];
@@ -33,8 +39,6 @@ const Payment = ({ data, refetch, isLoading ,showPaymentModal,setShowPaymentModa
   useEffect(() => {
     refetch();
   }, [data?.payableAmount, data?.totalReceiveTk, refetch]);
-
-  
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -164,7 +168,7 @@ const Payment = ({ data, refetch, isLoading ,showPaymentModal,setShowPaymentModa
     }
     e.target.reset();
   };
-  // Handle Reduce Payment
+
   const handleClose = () => setShowPaymentModal(false);
   return (
     <>
@@ -493,7 +497,7 @@ const Payment = ({ data, refetch, isLoading ,showPaymentModal,setShowPaymentModa
                         </div>
 
                         <div className="paid-amount d-flex ">
-                          <p className="fw-bold ">Recieve :</p>
+                          <p className="fw-bold ">Receive :</p>
                           <p className=" ms-5"> {data?.totalReceiveTk} Tk</p>
                         </div>
 
@@ -520,21 +524,31 @@ const Payment = ({ data, refetch, isLoading ,showPaymentModal,setShowPaymentModa
                       style={{
                         fontSize: "18px",
                         backgroundColor:
-                          data?.totalReceiveTk === data?.payableAmount
+                          data?.totalReceiveTk === data?.payableAmount ||
+                          data?.isAdjustmentRQ === "Yes"
                             ? "rgb(170 221 220)"
                             : "#00BBB4",
                         border: "none",
                       }}
                       value="Adjustment Request"
                       disabled={
-                        loading
-                          ? true
-                          : false ||
-                            data?.totalReceiveTk === data?.payableAmount
-                          ? true
-                          : false
+                        loading ||
+                        data?.totalReceiveTk === data?.payableAmount ||
+                        data?.isAdjustmentRQ === "Yes"
                       }
                     />
+
+                    <div>
+                      <span
+                        style={{
+                          color: "red",
+                        }}
+                      >
+                        {data?.isAdjustmentRQ === "Yes"
+                          ? "Sorry ! you already sent an adjustment request"
+                          : ""}
+                      </span>
+                    </div>
                   </form>
                 ) : (
                   ""

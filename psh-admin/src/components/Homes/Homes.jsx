@@ -1,11 +1,11 @@
 import React from "react";
 import "./Home.css";
 
-import AdminOrderList from "../Orders/AdminOrderList";
 import { AuthContext } from "../../contexts/UserProvider";
 import { useContext } from "react";
 
 import ManagerOrdersList from "../Orders/ManagerOrdersList";
+import NewOrders from "../Orders/NewOrders";
 
 const Homes = () => {
   const { user } = useContext(AuthContext);
@@ -18,7 +18,7 @@ const Homes = () => {
         </div>
       ) : (
         <div className="mt-0">
-          <AdminOrderList />
+          <NewOrders />
         </div>
       )}
     </>

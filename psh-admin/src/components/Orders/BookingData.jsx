@@ -14,6 +14,7 @@ const BookingData = ({
   transactions,
   extraCharge,
   isLoading,
+  page,
 }) => {
   const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
@@ -75,8 +76,9 @@ const BookingData = ({
 
   return (
     <>
-      <tr>
-        <td>{index + 1}</td>
+      <tr className="bookings_data">
+        <td>{(page - 1) * 10 + index + 1}</td>
+
         <td>
           {" "}
           <p>{formattedDate?.split(",")[0]}</p>
@@ -97,7 +99,11 @@ const BookingData = ({
             ? booking?.bookingInfo?.seatBooking?.seatNumber
             : booking?.bookingInfo?.data?.roomNumber}
         </td>
-        <td>
+        <td
+          style={{
+            width: "100px",
+          }}
+        >
           {" "}
           <p className="fw-bold">Tk {booking?.totalAmount?.toLocaleString()}</p>
           {booking?.isIncludeFood === true ? (

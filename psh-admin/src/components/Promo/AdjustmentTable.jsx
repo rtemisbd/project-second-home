@@ -1,18 +1,17 @@
 import React from "react";
 import { Table } from "react-bootstrap";
-import BookingData from "./BookingData";
 import { ToastContainer } from "react-toastify";
-import "./BookingsTable.css";
+import AdjustmentData from "./AdjustmentData";
 
-const BookingsTable = ({
+const AdjustmentTable = ({
   data,
   setPage,
   page,
   pageCount,
   refetch,
-  transactions,
-  extraCharge,
   isLoading,
+  handleAccept,
+  handleDelete,
 }) => {
   const MAX_PAGE_BUTTONS = 5; // Define the maximum number of page buttons to show
 
@@ -28,34 +27,29 @@ const BookingsTable = ({
       <Table bordered>
         <thead>
           <tr>
-            <th>No.</th>
-            <th>Date & Time</th>
             <th>Booking Id</th>
             <th>User Id</th>
-            <th>Room / Seat No</th>
-            <th>Total Tk</th>
+            <th>Total Amount</th>
             <th>Discount</th>
             <th>Payable Tk</th>
-            <th>Payment Status</th>
-            <th>Due Amount</th>
             <th>Total Receive</th>
-            <th>Status</th>
-            <th>Details</th>
-            <th>Update Duration</th>
+            <th>Due Amount</th>
+            <th>Adjustment RQ</th>
+            <th>Note</th>
             <th>Action</th>
           </tr>
         </thead>
         <tbody>
-          {data?.map((booking, index) => (
-            <BookingData
-              booking={booking}
-              key={booking._id}
+          {data?.map((adjustment, index) => (
+            <AdjustmentData
+              adjustment={adjustment}
+              key={adjustment._id}
               index={index}
               refetch={refetch}
               page={page}
-              extraCharge={extraCharge}
-              transactions={transactions}
               isLoading={isLoading}
+              handleAccept={handleAccept}
+              handleDelete={handleDelete}
             />
           ))}
         </tbody>
@@ -121,4 +115,4 @@ const BookingsTable = ({
   );
 };
 
-export default BookingsTable;
+export default AdjustmentTable;

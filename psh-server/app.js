@@ -31,6 +31,7 @@ import contact from "./routes/Contact.js";
 import subscription from "./routes/subscrioption.js";
 import subscriptionOrder from "./routes/subscriptionOrder.js";
 import rentRoomRoute from "./routes/rentRooms.js";
+import form from "./routes/form.js";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
@@ -69,6 +70,7 @@ app.use("/api/requestRent", requestRentRouter);
 app.use("/api/requestVisit", requestVisitRouter);
 app.use("/api/extraCharge", extraCharge);
 app.use("/api/extraForm", extraForm);
+app.use("/api/subscribe", form);
 app.use("/api/transaction", transaction);
 app.use("/api/adjustment", adjustment);
 app.use("/api/dynamic", dynamicRoute);

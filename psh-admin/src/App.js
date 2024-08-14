@@ -60,13 +60,13 @@ import RoomRent from "./pages/RoomRent/RoomRent";
 import RoomVisit from "./pages/RoomVisit/RoomVisit";
 import RoomVisitAdmin from "./pages/RoomVisit/RoomVisitAdmin";
 import PropertyReports from "./components/Property/PropertyReports";
+// import BookingReport from "./components/Property/BookingReport";
 import FeaturedRoom from "./pages/Featured/FeaturedRoom";
 import AdminPropertyList from "./components/Property/AdminPropertyList";
 import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
-import NewOrders from "./components/Orders/NewOrders";
 
 function App() {
   return (
@@ -116,6 +116,7 @@ function App() {
         <Route path="property_list_p" element={<Partner_property_list />} />
         <Route path="property_list" element={<AdminPropertyList />} />
         <Route path="property-report" element={<PropertyReports />} />
+        {/* <Route path="property-report" element={<BookingReport />} /> */}
         <Route path="add-promo" element={<Add_Promo />} />
         <Route path="promo_list" element={<Promo />} />
         <Route path="adjustmen-list" element={<AdjustmentList />} />
@@ -127,7 +128,6 @@ function App() {
         <Route path="recommended_list" element={<Recommended />} />
         <Route path="orders_m" element={<Orders />} />
         <Route path="orders" element={<AdminOrders />} />
-        <Route path="orders-new" element={<NewOrders />} />
         <Route path="transaction" element={<TransactionAdmin />} />
         <Route path="transaction-m" element={<TransactionManager />} />
         <Route path="finance" element={<Finance />} />

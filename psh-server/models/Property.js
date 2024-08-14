@@ -75,6 +75,7 @@ const PropertySchema = new mongoose.Schema(
 
     roomNumber: {
       type: String,
+      unique: true,
     },
     builtYear: {
       type: String,

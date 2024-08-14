@@ -4,10 +4,15 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import { useDispatch } from "react-redux";
+import LoadingState from "../LoadingState/LoadingState";
 
-const TransactionStatusUpdate = ({ data, refetch }) => {
+const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
   const { _id, name, seatNumber, desc, acceptableStatus } = data;
+  const dispatch = useDispatch();
 
+  // const handleClose = () => dispatch(placeLoadingShow(false));
   const [user, setUser] = useState(data);
 
   const MySwal = withReactContent(Swal);
@@ -34,6 +39,7 @@ const TransactionStatusUpdate = ({ data, refetch }) => {
       ...user,
     };
     try {
+      dispatch(placeLoadingShow(true));
       const updatedStatus = {
         ...newPost,
       };
@@ -43,9 +49,11 @@ const TransactionStatusUpdate = ({ data, refetch }) => {
         updatedStatus
       );
       MySwal.fire("Updated", "success");
+      handleClose();
       refetch();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
+      handleClose();
       MySwal.fire("Something Error Found.", "warning");
     }
   };

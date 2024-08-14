@@ -171,6 +171,11 @@ const OrderSchema = new mongoose.Schema(
     userCancel: {
       type: Object,
     },
+    isAdjustmentRQ: {
+      type: String,
+      enum: ["Yes", "No"],
+      default: "No",
+    },
   },
   { timestamps: true }
 );

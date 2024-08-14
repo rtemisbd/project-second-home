@@ -11,24 +11,20 @@ import BookingsTable from "./BookingsTable";
 const NewOrders = () => {
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
-  const [approvedBookings, setApprovedBookings] = useState([]);
-  const [pendingBookings, setPendingBookings] = useState([]);
-  const [cancelBookings, setCancelBookings] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
-  const [isFilter, setIsFilter] = useState(false);
-  const [error, setError] = useState(null);
+
   const [pageCount, setPageCount] = useState(0);
-  const [pageCount2, setPageCount2] = useState(0);
+
   const [page, setPage] = useState(1);
-  const [filterData, setFilterData] = useState([]);
+
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [bookingId, setBookingId] = useState("");
-  const [userId, setUserId] = useState("");
+
   const [branch, setBranch] = useState("All");
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
-  const [status, setStatus] = useState("Approved");
+
   const [data, setData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
@@ -58,7 +54,7 @@ const NewOrders = () => {
         });
 
         const response = await fetch(
-          `http://localhost:8000/api/order?${queryParams.toString()}`,
+          `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -127,7 +123,7 @@ const NewOrders = () => {
   //     : "All";
 
   //   try {
-  //     const response = await axios.get(`http://localhost:8000/api/order`, {
+  //     const response = await axios.get(`https://api.psh.com.bd/api/order`, {
   //       params: {
   //         orderId: orderId,
   //         userId: bookingUserId,

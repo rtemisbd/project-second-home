@@ -477,7 +477,7 @@ const SeeOrderDetails = ({
                   {/* <span className="fw-bold"> {data.paymentStatus}</span> */}
                 </h3>
 
-                <Table striped responsive>
+                <Table striped responsive bordered>
                   <thead>
                     <tr>
                       <th>Date</th>

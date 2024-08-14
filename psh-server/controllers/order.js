@@ -10,57 +10,13 @@ import { cancelBookingMail } from "../mail/cancelBookingMail.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import mongoose from "mongoose";
+import { generateBookingId } from "../utils/generateBookingId.js";
 export const createOrder = async (req, res, next) => {
-  const {
-    fullName,
-    fatherName,
-    motherName,
-    userId,
-    email,
-    phone,
-    address,
-    gender,
-    birthDate,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    employeeStatus,
-    emplyeeIncome,
-    nid,
-    validityType,
-    validityNumber,
-    passport,
-    arrivalTime,
-    request,
-    paymentType,
-    paymentNumber,
-    transactionId,
-    bkashNumber,
-    bkashTrx,
-    nagadNumber,
-    nagadTrx,
-    dutchNumber,
-    dutchTrx,
-    customerType,
-    whichOfMonthPayment,
-    receivedTk,
-    dueAmount,
-    totalReceiveTk,
-    foodAmount,
-    isIncludeFood,
-    // unReceivedTk,
-    paymentStatus,
-    totalAmount,
-    payableAmount,
-    discount,
-    adjustmentAmount,
-
-    bookingExtend,
-  } = req.body;
+  const { email, bookingInfo, ...bookingData } = req.body;
   try {
     const user = await User.findOne({ email: email });
 
-    const bookingInfo = JSON.parse(req.body?.bookingInfo);
+    const bookingInfoParse = JSON.parse(bookingInfo);
 
     const gardianImg = req?.files?.gardianImg?.length
       ? req?.files?.gardianImg[0]?.path
@@ -69,57 +25,18 @@ export const createOrder = async (req, res, next) => {
     const image = req?.files?.image?.length
       ? req?.files?.image[0]?.path
       : user?.cardImage;
-    const branch = bookingInfo?.branch;
+    const branch = bookingInfoParse?.branch;
+
+    const generateId = await generateBookingId();
 
     const newOrder = new OrderModel({
-      // seat: seatId,
-      bookingInfo,
-      branch,
-      fullName,
-      fatherName,
-      motherName,
-      userId,
+      bookingInfo: bookingInfoParse,
+      bookingId: generateId,
       email,
-      phone,
-      address,
-      gender,
-      birthDate,
-      emergencyContactName,
-      emergencyRelationC,
-      emergencyContact,
-      employeeStatus,
-      emplyeeIncome,
-      nid,
-      validityType,
-      validityNumber,
-      passport,
-      arrivalTime,
-      request,
+      branch,
       image,
       gardianImg,
-      paymentType,
-      paymentNumber,
-      transactionId,
-      bkashNumber,
-      bkashTrx,
-      nagadNumber,
-      nagadTrx,
-      dutchNumber,
-      dutchTrx,
-      customerType,
-      whichOfMonthPayment,
-      receivedTk,
-      dueAmount,
-      totalReceiveTk,
-      foodAmount,
-      isIncludeFood,
-      // unReceivedTk,
-      paymentStatus,
-      totalAmount,
-      payableAmount,
-      discount,
-      adjustmentAmount,
-      bookingExtend,
+      bookingData,
     });
 
     // Booking Save to Database
@@ -176,19 +93,20 @@ export const createOrder = async (req, res, next) => {
         pass: "qesfajhmrfhkfnbo",
       },
     });
+    const adminEmail = "psh.info2016@gmail.com";
 
     const mailOptions = {
       from: "alaminbamna08@gmail.com",
-      to: `fahmi.rtemis@gmail.com,${email}`,
+      to: `${adminEmail},${email}`,
       subject: "Your Booking Details at Project Second Home",
       html: bookingMail(result),
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log(error);
+        // console.log(error);
       } else {
-        console.log("Email sent: " + info.response);
+        // console.log("Email sent: " + info.response);
       }
     });
 
@@ -391,8 +309,7 @@ export const getOrder = async (req, res, next) => {
     const page = parseInt(req.query?.page) || 1;
     const size = parseInt(req.query?.size) || 10;
     let matchStage = {};
-    console.log(fromDate);
-    console.log(toDate);
+
     if (orderId && orderId !== "All") matchStage._id = orderId;
     if (userId && userId !== "All") matchStage.userId = userId;
     if (branch && branch !== "All")
@@ -997,6 +914,18 @@ export const updateBooking = async (req, res, next) => {
         noteForAdjustment: req.body?.noteForAdjustment,
       });
       await adjustment.save();
+
+      // Update Order adjustment request
+      await OrderModel.findByIdAndUpdate(
+        req.params.id,
+
+        {
+          $set: {
+            isAdjustmentRQ: "Yes",
+          },
+        },
+        { new: true }
+      );
     } else if (req?.body?.cancelReason) {
       await OrderModel.findByIdAndUpdate(
         req.params.id,

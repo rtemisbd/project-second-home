@@ -3,19 +3,29 @@ import OrderModel from "../models/Order.js";
 
 export const getAdjustment = async (req, res, next) => {
   try {
-    const adjustment = await Adjustment.find({}).populate(
-      "booking branch userId"
-    );
+    const page = parseInt(req.query?.page) || 1;
+    const size = parseInt(req.query?.size) || 10;
+    const skip = (page - 1) * size;
+
+    const adjustments = await Adjustment.find({})
+      .populate("booking branch userId")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(size);
+
+    const adjustmentCount = await Adjustment.countDocuments({});
 
     res.status(200).json({
       status: "Success",
       message: "Success",
-      adjustment,
+      adjustments,
+      totalAdjustments: adjustmentCount,
+      currentPage: page,
     });
   } catch (error) {
     res.status(400).json({
       status: "failed",
-      message: "Sorry Adjustement not found",
+      message: "Sorry, Adjustment not found",
       error: error.message,
     });
   }
@@ -46,6 +56,7 @@ export const updateAdjustment = async (req, res, next) => {
             discount: findBooking?.discount + req?.body?.adjustmentAmount,
             adjustmentAmount:
               findBooking?.adjustmentAmount + req?.body?.adjustmentAmount,
+            isAdjustmentRQ: "No",
           },
         },
         { new: true }
