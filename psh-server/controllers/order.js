@@ -12,7 +12,27 @@ import { bookingSms } from "../SMS/BookingSms.js";
 import mongoose from "mongoose";
 import { generateBookingId } from "../utils/generateBookingId.js";
 export const createOrder = async (req, res, next) => {
-  const { email, bookingInfo, ...bookingData } = req.body;
+  const {
+    email,
+    bookingInfo,
+    fullName,
+    fatherName,
+    motherName,
+    phone,
+    address,
+    passport,
+    birthDate,
+    gender,
+    nid,
+    validityType,
+    validityNumber,
+    employeeStatus,
+    emplyeeIncome,
+    emergencyContactName,
+    emergencyRelationC,
+    emergencyContact,
+    ...bookingData
+  } = req.body;
   try {
     const user = await User.findOne({ email: email });
 
@@ -36,6 +56,22 @@ export const createOrder = async (req, res, next) => {
       branch,
       image,
       gardianImg,
+      fullName,
+      fatherName,
+      motherName,
+      phone,
+      address,
+      passport,
+      birthDate,
+      gender,
+      nid,
+      validityType,
+      validityNumber,
+      employeeStatus,
+      emplyeeIncome,
+      emergencyContactName,
+      emergencyRelationC,
+      emergencyContact,
       ...bookingData,
     });
 
