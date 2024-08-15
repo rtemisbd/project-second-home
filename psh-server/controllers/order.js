@@ -36,7 +36,7 @@ export const createOrder = async (req, res, next) => {
       branch,
       image,
       gardianImg,
-      bookingData,
+      ...bookingData,
     });
 
     // Booking Save to Database
