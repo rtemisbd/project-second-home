@@ -11,7 +11,9 @@ import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import mongoose from "mongoose";
 import { generateBookingId } from "../utils/generateBookingId.js";
-export const createOrder = async (req, res, next) => {
+import catchAsync from "../shared/cathAsync.js";
+import sendResponse from "../shared/sendResponse.js";
+export const createOrder = catchAsync(async (req, res, next) => {
   const {
     email,
     bookingInfo,
@@ -33,159 +35,156 @@ export const createOrder = async (req, res, next) => {
     emergencyContact,
     ...bookingData
   } = req.body;
-  try {
-    const user = await User.findOne({ email: email });
 
-    const bookingInfoParse = JSON.parse(bookingInfo);
+  const user = await User.findOne({ email: email });
 
-    const gardianImg = req?.files?.gardianImg?.length
-      ? req?.files?.gardianImg[0]?.path
-      : user?.gardianImg;
+  const bookingInfoParse = JSON.parse(bookingInfo);
 
-    const image = req?.files?.image?.length
-      ? req?.files?.image[0]?.path
-      : user?.cardImage;
-    const branch = bookingInfoParse?.branch;
+  const gardianImg = req?.files?.gardianImg?.length
+    ? req?.files?.gardianImg[0]?.path
+    : user?.gardianImg;
 
-    const generateId = await generateBookingId();
+  const image = req?.files?.image?.length
+    ? req?.files?.image[0]?.path
+    : user?.cardImage;
+  const branch = bookingInfoParse?.branch;
 
-    const newOrder = new OrderModel({
-      bookingInfo: bookingInfoParse,
-      bookingId: generateId,
-      email,
-      branch,
-      image,
-      gardianImg,
-      fullName,
-      fatherName,
-      motherName,
-      phone,
-      address,
-      passport,
-      birthDate,
-      gender,
-      nid,
-      validityType,
-      validityNumber,
-      employeeStatus,
-      emplyeeIncome,
-      emergencyContactName,
-      emergencyRelationC,
-      emergencyContact,
-      ...bookingData,
+  const generateId = await generateBookingId();
+
+  const newOrder = new OrderModel({
+    bookingInfo: bookingInfoParse,
+    bookingId: generateId,
+    email,
+    branch,
+    image,
+    gardianImg,
+    fullName,
+    fatherName,
+    motherName,
+    phone,
+    address,
+    passport,
+    birthDate,
+    gender,
+    nid,
+    validityType,
+    validityNumber,
+    employeeStatus,
+    emplyeeIncome,
+    emergencyContactName,
+    emergencyRelationC,
+    emergencyContact,
+    ...bookingData,
+  });
+
+  // Booking Save to Database
+  const result = await newOrder.save();
+  const objectIdString = result?._id ? result?._id.toString() : "";
+  const slicedObjectId = objectIdString.slice(19);
+  // Phone Sms For Booking
+  const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${slicedObjectId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+
+  bookingSms(bookingMessage)
+    .then((response) => {
+      console.log("Response from SMS API:", response);
+      // Handle response data as needed
+    })
+    .catch((error) => {
+      console.error("Error while sending SMS:", error);
+      // Handle error
     });
 
-    // Booking Save to Database
-    const result = await newOrder.save();
-    const objectIdString = result?._id ? result?._id.toString() : "";
-    const slicedObjectId = objectIdString.slice(19);
-    // Phone Sms For Booking
-    const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${slicedObjectId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+  // User data Update
+  const userUpdate = {
+    firstName: fullName,
+    fatherName: fatherName,
+    motherName: motherName,
+    branch: user?.branch,
+    email: email,
+    phone: phone,
+    userAddress: address,
+    passport: passport,
+    dateOfBirth: birthDate,
+    gender: gender,
+    nationalId: nid,
+    validityType: validityType,
+    validityNumber: validityNumber,
+    cardImage: image,
+    gardianImg: gardianImg,
 
-    bookingSms(bookingMessage)
-      .then((response) => {
-        console.log("Response from SMS API:", response);
-        // Handle response data as needed
-      })
-      .catch((error) => {
-        console.error("Error while sending SMS:", error);
-        // Handle error
-      });
+    employmentStatus: {
+      workAs: employeeStatus,
+      monthlyIncome: emplyeeIncome,
+    },
+    emergencyContact: {
+      contactName: emergencyContactName,
+      relation: emergencyRelationC,
+      contactNumber: emergencyContact,
+    },
+  };
 
-    // User data Update
-    const userUpdate = {
-      firstName: fullName,
-      fatherName: fatherName,
-      motherName: motherName,
-      branch: user?.branch,
-      email: email,
-      phone: phone,
-      userAddress: address,
-      passport: passport,
-      dateOfBirth: birthDate,
-      gender: gender,
-      nationalId: nid,
-      validityType: validityType,
-      validityNumber: validityNumber,
-      cardImage: image,
-      gardianImg: gardianImg,
+  // Order Mail to customer and Manager
+  const transporter = nodemailer.createTransport({
+    service: "gmail",
+    auth: {
+      user: "alaminbamna08@gmail.com",
+      pass: "qesfajhmrfhkfnbo",
+    },
+  });
+  const adminEmail = "psh.info2016@gmail.com";
 
-      employmentStatus: {
-        workAs: employeeStatus,
-        monthlyIncome: emplyeeIncome,
-      },
-      emergencyContact: {
-        contactName: emergencyContactName,
-        relation: emergencyRelationC,
-        contactNumber: emergencyContact,
-      },
-    };
+  const mailOptions = {
+    from: "alaminbamna08@gmail.com",
+    to: `${adminEmail},${email}`,
+    subject: "Your Booking Details at Project Second Home",
+    html: bookingMail(result),
+  };
 
-    // Order Mail to customer and Manager
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "alaminbamna08@gmail.com",
-        pass: "qesfajhmrfhkfnbo",
-      },
-    });
-    const adminEmail = "psh.info2016@gmail.com";
-
-    const mailOptions = {
-      from: "alaminbamna08@gmail.com",
-      to: `${adminEmail},${email}`,
-      subject: "Your Booking Details at Project Second Home",
-      html: bookingMail(result),
-    };
-
-    transporter.sendMail(mailOptions, function (error, info) {
-      if (error) {
-        // console.log(error);
-      } else {
-        // console.log("Email sent: " + info.response);
-      }
-    });
-
-    await User.updateOne(
-      { email: email },
-      { $set: userUpdate },
-      { runValidators: true }
-    );
-
-    // Create Transaction whent First booking only payment bkash or nagad
-
-    if (result?.paymentType !== "cash") {
-      const currentDate = new Date().toISOString().split("T")[0];
-      const transaction = new Transaction({
-        orderId: result?._id,
-        branch: result?.bookingInfo?.branch,
-        paymentDate: currentDate,
-        totalAmount: result?.totalAmount,
-        payableAmount: result?.payableAmount,
-        receivedTk: result?.receivedTk,
-        customerType: result?.customerType,
-        whichOfMonthPayment: result?.whichOfMonthPayment,
-        paymentType: result?.paymentType,
-        paymentNumber: result?.paymentNumber,
-        transactionId: result?.transactionId,
-        userEmail: result?.email,
-        userName: result?.fullName,
-        userId: result?.userId,
-        userPhone: result?.phone,
-        acceptableStatus: "Pending",
-      });
-      await transaction.save();
+  transporter.sendMail(mailOptions, function (error, info) {
+    if (error) {
+      // console.log(error);
+    } else {
+      // console.log("Email sent: " + info.response);
     }
+  });
 
-    res.status(200).json({
-      status: "success",
-      message:
-        " Thank Youe ! Your Booking Successfully Done, I will very soon Contact You",
+  await User.updateOne(
+    { email: email },
+    { $set: userUpdate },
+    { runValidators: true }
+  );
+
+  // Create Transaction whent First booking only payment bkash or nagad
+
+  if (result?.paymentType !== "cash") {
+    const currentDate = new Date().toISOString().split("T")[0];
+    const transaction = new Transaction({
+      orderId: result?._id,
+      branch: result?.bookingInfo?.branch,
+      paymentDate: currentDate,
+      totalAmount: result?.totalAmount,
+      payableAmount: result?.payableAmount,
+      receivedTk: result?.receivedTk,
+      customerType: result?.customerType,
+      whichOfMonthPayment: result?.whichOfMonthPayment,
+      paymentType: result?.paymentType,
+      paymentNumber: result?.paymentNumber,
+      transactionId: result?.transactionId,
+      userEmail: result?.email,
+      userName: result?.fullName,
+      userId: result?.userId,
+      userPhone: result?.phone,
+      acceptableStatus: "Pending",
     });
-  } catch (error) {
-    res.status(500).json(error);
+    await transaction.save();
   }
-};
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message:
+      "Thank Youe ! Your Booking Successfully Done, I will very soon Contact You",
+  });
+});
 // export const getOrder = async (req, res, next) => {
 //   try {
 //     const orderId = req.query?.orderId;

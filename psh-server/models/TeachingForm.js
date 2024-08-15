@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 
-const formSchema = mongoose.Schema(
+const TeachingFormSchema = mongoose.Schema(
   {
     fullName: {
       type: String,
@@ -25,6 +25,6 @@ const formSchema = mongoose.Schema(
   }
 );
 
-const FormSubmit = mongoose.model("FormSubmit", formSchema);
+const TeachingForm = mongoose.model("TeachingForm", TeachingFormSchema);
 
-export default FormSubmit;
+export default TeachingForm;

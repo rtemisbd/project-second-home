@@ -46,8 +46,8 @@ const rentDateSchema = new mongoose.Schema(
 
     bookingStatus: {
       type: String,
-      enum: ["Reserverd", "Booked", "complete"],
-      default: "Reserverd",
+      enum: ["Reserved", "Booked", "Complete"],
+      default: "Reserved",
     },
   },
   { timestamps: true }

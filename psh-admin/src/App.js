@@ -59,8 +59,8 @@ import ContactUs from "./pages/ContactUs/ContactUs";
 import RoomRent from "./pages/RoomRent/RoomRent";
 import RoomVisit from "./pages/RoomVisit/RoomVisit";
 import RoomVisitAdmin from "./pages/RoomVisit/RoomVisitAdmin";
-import PropertyReports from "./components/Property/PropertyReports";
-// import BookingReport from "./components/Property/BookingReport";
+// import PropertyReports from "./components/Property/PropertyReports";
+import BookingReport from "./components/BookedReport/BookingReport";
 import FeaturedRoom from "./pages/Featured/FeaturedRoom";
 import AdminPropertyList from "./components/Property/AdminPropertyList";
 import SubcriptionList from "./pages/Subscription/SubcriptionList";
@@ -115,8 +115,8 @@ function App() {
         <Route path="property_list_m" element={<Property />} />
         <Route path="property_list_p" element={<Partner_property_list />} />
         <Route path="property_list" element={<AdminPropertyList />} />
-        <Route path="property-report" element={<PropertyReports />} />
-        {/* <Route path="property-report" element={<BookingReport />} /> */}
+        {/* <Route path="property-report" element={<PropertyReports />} /> */}
+        <Route path="property-report" element={<BookingReport />} />
         <Route path="add-promo" element={<Add_Promo />} />
         <Route path="promo_list" element={<Promo />} />
         <Route path="adjustmen-list" element={<AdjustmentList />} />

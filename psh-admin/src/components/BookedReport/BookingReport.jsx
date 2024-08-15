@@ -1,11 +1,11 @@
 import React, { useContext, useRef, useState } from "react";
 
 import { useQuery } from "react-query";
+import BookingReportData from "./BookingReportsData";
 
 // import { Spinner, Table } from "react-bootstrap";
 // import ReactToPrint from "react-to-print";
 // import ReportPrint from "./ReportPrint";
-import StatusCard from "./StatusCard";
 
 const PropertyReports = (props) => {
   const ref = useRef();
@@ -27,7 +27,7 @@ const PropertyReports = (props) => {
         });
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/rent-rooms?${queryParams.toString()}`,
+          `http://localhost:8000/api/rent-rooms?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -49,21 +49,25 @@ const PropertyReports = (props) => {
       refetchOnWindowFocus: false,
     }
   );
-  console.log(data);
+
   return (
     <>
       <div className="wrapper">
         <div className="content-wrapper" style={{ background: "unset" }}>
           <section className="content customize_list">
-            <div className="container-fluid">
-              <div className="d-flex justif-content-between"></div>
-              <div className="row">
-                <div className="col-md-7">
-                  <h6 className="college_h6">Booking Reports</h6>
-                </div>{" "}
-                <StatusCard />
-              </div>
-            </div>
+            <div className="container-fluid ">
+              <h6
+                className="college_h6 fw-bold text-center"
+                style={{
+                  color: "#35b0a7",
+                  fontSize: "35px",
+                }}
+              >
+                Today Bookings Reports
+              </h6>
+              <hr />
+            </div>{" "}
+            <BookingReportData data={data} />
           </section>
         </div>
       </div>

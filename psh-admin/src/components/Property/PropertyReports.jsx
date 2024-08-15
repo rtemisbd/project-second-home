@@ -18,7 +18,7 @@ import { Spinner, Table } from "react-bootstrap";
 import ReactToPrint from "react-to-print";
 import ReportPrint from "./ReportPrint";
 import { AuthContext } from "../../contexts/UserProvider";
-import StatusCard from "./StatusCard";
+import StatusCard from "../BookedReport/BookingReportsData";
 
 const PropertyReports = (props) => {
   const ref = useRef();
