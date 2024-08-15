@@ -27,7 +27,7 @@ const PropertyReports = (props) => {
         });
 
         const response = await fetch(
-          `http://localhost:8000/api/rent-rooms?${queryParams.toString()}`,
+          `https://api.psh.com.bd/api/rent-rooms?${queryParams.toString()}`,
           {
             method: "GET",
           }
