@@ -1,14 +1,15 @@
-import FormSubmit from "../models/Form.js";
+import TeachingForm from "../models/TeachingForm.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import nodemailer from "nodemailer";
 export const createTeachingForm = catchAsync(async (req, res) => {
-  const { fullName, mobileNumber, email } = req.body;
+  const { name, mobileNumber, arrivalDate, arrivalTime } = req.body;
   //   console.log(fullName);
-  const newData = new FormSubmit({
-    fullName,
-    mobileNumber,
-    email,
+  const newData = new TeachingForm({
+    name: name,
+    mobileNumber: mobileNumber,
+    arrivalDate: arrivalDate,
+    arrivalTime: arrivalTime,
   });
 
   await newData.save();
@@ -23,8 +24,8 @@ export const createTeachingForm = catchAsync(async (req, res) => {
 
   const mailOptions = {
     from: "alaminbamna08@gmail.com",
-    to: "sharikana.invest@gmail.com",
-    subject: "Subscribe",
+    to: "psh.info2016@gmail.com",
+    subject: "Study Space",
     html: `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -64,9 +65,11 @@ export const createTeachingForm = catchAsync(async (req, res) => {
 </head>
 <body>
     <div class="container">
-      <p><strong>Name:</strong> ${fullName}</p>
+      <p><strong>Name:</strong> ${name}</p>
         <p><strong>Phone Number:</strong> ${mobileNumber}</p>
-        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Arrival Date:</strong> ${arrivalDate}</p>
+        <p><strong>Arrival Time:</strong> ${arrivalTime}</p>
+       
       
     </div>
 </body>
@@ -92,5 +95,16 @@ export const createTeachingForm = catchAsync(async (req, res) => {
     statusCode: 200,
     success: true,
     message: "Thanks for your subscribe",
+  });
+});
+
+export const getAllTeachingData = catchAsync(async (req, res) => {
+  const allTeachingsData = await TeachingForm.find({});
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Get All Teachings",
+    data: allTeachingsData,
   });
 });

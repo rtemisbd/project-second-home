@@ -64,7 +64,7 @@ const MobileBanking = ({ bookingItem }) => {
               number. After that The transaction was done from bKash number and
               that transaction Attach the number/id in the box below.
             </p>
-            <p className="text-left">
+            <p className="text-left font-bold">
               bKash Personal Number :{" "}
               {bookingItem?.branch?.branchBkashNumber
                 ? bookingItem?.branch?.branchBkashNumber
@@ -117,7 +117,7 @@ const MobileBanking = ({ bookingItem }) => {
       </div>
       {/* nagad */}
       <div>
-        <div className="nagad mobile-payment flex items-center">
+        {/* <div className="nagad mobile-payment flex items-center">
           <div
             onClick={() => {
               return (
@@ -145,7 +145,7 @@ const MobileBanking = ({ bookingItem }) => {
               <img src={nagad} alt="" />
             </div>
           </label>
-        </div>
+        </div> */}
         {showNagad ? (
           <div>
             <p className="text-left">
@@ -210,7 +210,7 @@ const MobileBanking = ({ bookingItem }) => {
       </div>
       {/* Dutch Bangla */}
       <div>
-        <div className="nagad mobile-payment flex items-center mt-4">
+        {/* <div className="nagad mobile-payment flex items-center mt-4">
           <div
             onClick={() => {
               return (
@@ -238,7 +238,7 @@ const MobileBanking = ({ bookingItem }) => {
               <img src={dutch} alt="" />
             </div>
           </label>
-        </div>
+        </div> */}
         {showDucth ? (
           <div>
             <p className="text-left">

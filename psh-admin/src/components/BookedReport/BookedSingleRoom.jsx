@@ -5,7 +5,7 @@ import { formatDate } from "../../utils/dateConvert";
 const BookedSingleRoom = ({ bookedRooms }) => {
   return (
     <>
-      <p className="mt-5 fw-bold">Booked Rooms : </p>
+      <p className="mt-5 fw-bold">Booked Single Rooms : </p>
       <Row className="g-3">
         {bookedRooms?.map((room, index) => (
           <Col
@@ -15,6 +15,7 @@ const BookedSingleRoom = ({ bookedRooms }) => {
             lg={3}
             style={{
               border: "1px solid #35b0a7",
+              padding: "15px",
             }}
           >
             <p>Room Number : {room?.roomNumber}</p>

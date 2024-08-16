@@ -3,6 +3,12 @@ p,
 span {
   font-size: 14px !important;
 } */
+
+.bookings_data p,
+span,
+button {
+  font-size: 14px !important;
+}
 .pagination {
   display: flex;
   justify-content: center;

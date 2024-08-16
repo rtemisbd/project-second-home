@@ -110,7 +110,9 @@ const BookingData = ({
             <p
               className="fw-bold"
               style={{
-                color: "#35b0a7",
+                color: "white",
+                backgroundColor: "#35b0a7",
+                padding: "0 2px",
               }}
             >
               With Food

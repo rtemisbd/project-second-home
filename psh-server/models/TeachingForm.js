@@ -2,22 +2,21 @@ import mongoose from "mongoose";
 
 const TeachingFormSchema = mongoose.Schema(
   {
-    fullName: {
+    name: {
       type: String,
-      required: true,
-      // unique: true,
     },
     mobileNumber: {
       type: String,
-      required: true,
       trim: true,
-      // unique: true,
     },
-    email: {
-      type: String,
-      required: true,
+
+    arrivalDate: {
+      type: Date,
       trim: true,
-      // unique: true,
+    },
+    arrivalTime: {
+      type: String,
+      trim: true,
     },
   },
   {

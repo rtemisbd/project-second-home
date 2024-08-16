@@ -3,8 +3,8 @@ import RentRoom from "../models/RentRoom.js";
 
 export const getRentRooms = async (req, res, next) => {
   try {
-    const today = new Date().toISOString()?.split("T")[0];
-
+    const { checkingDate } = req.query;
+    const today = new Date(checkingDate).toISOString()?.split("T")[0];
     const rentRooms = await RentRoom.find({
       bookStartDate: { $lte: today },
       bookEndDate: { $gte: today },
@@ -125,7 +125,11 @@ export const getRentRooms = async (req, res, next) => {
       ])
       .select({ _id: 0, roomNumber: 1 });
 
-    // Fine Booked Privet Rooms
+    const filteredAvailableRooms = availableRooms.filter(
+      (room) => room.category
+    );
+
+    // Fine Booked Privet Roomscd
     const bookedRooms = await RentRoom.find({
       _id: {
         $in: rentRooms
@@ -268,7 +272,6 @@ export const getRentRooms = async (req, res, next) => {
     const totalAvailableSeats =
       availableSeatsWithCount[0]?.totalAvailableSeats || 0;
     const availableSeats = availableSeatsWithCount[0]?.availableSeats || [];
-    // console.log(allSeats);
     // Filter out properties where the category did not match "Shared Room"
 
     res.status(200).json({
@@ -276,7 +279,7 @@ export const getRentRooms = async (req, res, next) => {
       message: "Bookings retrieved successfully",
       bookedRooms,
       upcomingRentRooms,
-      availableRooms,
+      availableRooms: filteredAvailableRooms,
       bookedSeats,
       todayCheckIn,
       todayCheckOut,

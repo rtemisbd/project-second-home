@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-import Slider from "react-slick";
+import studyBanner from "../../assets/img/study-banner.jpeg";
 
-import ExtraForm from "../ExtraForm/ExtraForm";
-import partnerImg from "../../assets/img/partner-img1.jpeg";
-import PartnerService from "../new/PartnerService";
-import OtherOpportunities from "../new/OtherOpportunities";
-import PartnerFeedback from "../new/PartnerFeedback";
-import "./PshPartner.css";
+import StudyForm from "./StudyForm";
+import StudySpaceBottom from "./StudySpaceBottom";
 
-const PshPartner = () => {
+const StudySpace = () => {
   const [size, setSize] = useState(null);
   const handleOpen = (value) => setSize(value);
 
@@ -23,17 +19,11 @@ const PshPartner = () => {
               className="sm:pt-5 flex justify-end items-center"
               style={{ height: "100vh" }}
             >
-              <div className="xl:w-[67%] md:w-[90%]">
+              <div className="xl:w-[67%] md:w-[80%]">
                 <div>
-                  <h2 className=" text-white mb-5 md:text-5xl sm:text-[25px]">
-                    Invest and Grow with Project Second Home
-                  </h2>
-
-                  <p className="text-sm mb-4 text-white md:text-xl sm:text-sm mt-2">
-                    Become a PSH angel Investor, Project Director, Franchise
-                    Partner or Share holder to maximize your idle money and
-                    Increase your property valuation to great a social
-                    recognition and hassle free income.
+                  <p className="text-sm mb-10 text-white md:text-xl sm:text-sm mt-2 ">
+                    At PSH, we offer flexible, comfortable spaces for individual
+                    study, group discussions, and tutoring sessions
                   </p>
                 </div>
                 <div className="md:flex gap-4 md:pb-11 sm:pb-5">
@@ -43,7 +33,7 @@ const PshPartner = () => {
                       style={{ width: 220 }}
                       onClick={() => handleOpen("sm")}
                     >
-                      Apply for PSH Partner
+                      Book Your Slot
                     </button>
                   </div>
                   <Link to={"/contact-us"}>
@@ -67,7 +57,7 @@ const PshPartner = () => {
           </div>
           <div className="flex flex-col space-y-3 sm:col-span-12 md:col-span-6 ">
             <img
-              src={partnerImg}
+              src={studyBanner}
               alt="project second home finance"
               style={{ height: "100vh" }}
             />
@@ -77,7 +67,7 @@ const PshPartner = () => {
       <div className="md:hidden sm:block">
         <div>
           <img
-            src={partnerImg}
+            src={studyBanner}
             alt="project second home finance"
             style={{ height: "350px", width: "100%" }}
           />
@@ -127,7 +117,10 @@ const PshPartner = () => {
               open={size === "sm"}
               size={size || "sm"}
               handler={handleOpen}
-              style={{ height: "100vh", overflow: "scroll" }}
+              style={{
+                // height: "100vh",
+                overflow: "scroll",
+              }}
             >
               <DialogHeader>
                 {" "}
@@ -139,81 +132,16 @@ const PshPartner = () => {
                 </div>
               </DialogHeader>
               <DialogBody className="p-2">
-                <ExtraForm handleOpen={handleOpen} />
+                <StudyForm handleOpen={handleOpen} />
               </DialogBody>
             </Dialog>
           </div>
         </div>
       </div>
-      <PartnerService />
-      <div className="custom-container ">
-        <h2 className="text-xl font-bold mb-5 mt-24 md:mx-0 sm:mx-5">
-          3 Steps to lease an investor
-        </h2>
-        <div className=" grid md:grid-cols-3 sm:grid-cols-1 md:gap-0 sm:gap-10 md:mx-0 sm:mx-5">
-          <div className="group relative">
-            <div className="overflow-hidden">
-              <div className="flex justify-between gap-4 items-start">
-                <p className="justify-center text-white text-lg items-center bg-teal-600 h-9 px-3.5 py-1 rounded-xl">
-                  1
-                </p>
-                <div className="self-stretch flex grow basis-[0%] flex-col items-stretch">
-                  <div className="justify-center text-black text-lg font-medium leading-7 whitespace-nowrap">
-                    Register as an investor
-                  </div>
-                  <div className="text-stone-500 text-sm leading-5 whitespace-nowrap mt-2.5">
-                    Our team will carry out an evaluation
-                  </div>
-                </div>
-              </div>
-              <button
-                className="partner_btn ms-12 mt-3"
-                onClick={() => handleOpen("sm")}
-              >
-                Apply Now
-              </button>
-            </div>
-          </div>
-          <div className="group relative">
-            <div className="overflow-hidden">
-              <div className="flex justify-between gap-4 items-start">
-                <p className="justify-center text-white text-lg items-center bg-teal-600 h-9 px-3.5 py-1 rounded-xl">
-                  2
-                </p>
-                <div className="self-stretch flex grow basis-[0%] flex-col items-stretch">
-                  <div className="justify-center text-black text-lg font-medium leading-7 whitespace-nowrap">
-                    Contract Signature
-                  </div>
-                  <div className="justify-center text-stone-500 text-sm leading-5 whitespace-nowrap mt-2.5">
-                    Check the contract and sign the contract
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="group relative">
-            <div className="overflow-hidden">
-              <div className="flex justify-between gap-4 items-start">
-                <p className="justify-center text-white text-lg items-center bg-teal-600 h-9 px-3.5 py-1 rounded-xl">
-                  3
-                </p>
-                <div className="self-stretch flex grow basis-[0%] flex-col items-stretch">
-                  <div className="text-black text-lg font-medium leading-7 whitespace-nowrap">
-                    Enjoy the Results
-                  </div>
-                  <div className="justify-center text-stone-500 text-sm leading-5 whitespace-nowrap mt-2.5">
-                    Sit back and enjoy the hassle free return
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <OtherOpportunities />
-      <PartnerFeedback />
+
+      <StudySpaceBottom />
     </div>
   );
 };
 
-export default PshPartner;
+export default StudySpace;

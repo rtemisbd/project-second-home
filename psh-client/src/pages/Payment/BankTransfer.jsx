@@ -2,8 +2,8 @@ import React from "react";
 
 const BankTransfer = () => {
   return (
-    <div>
-      <h4>Comming Soon Bank Transfer Option</h4>
+    <div className="mt-3">
+      <h4>Coming Soon Bank Transfer Option</h4>
     </div>
   );
 };

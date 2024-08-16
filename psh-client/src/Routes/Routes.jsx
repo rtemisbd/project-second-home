@@ -38,6 +38,7 @@ import EventDetails from "../pages/Details/EventDetails";
 
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
+import StudySpace from "../pages/StudySpace/StudySpace";
 
 export const router = createBrowserRouter([
   {
@@ -145,6 +146,10 @@ export const router = createBrowserRouter([
       {
         path: "/partner-registration",
         element: <PshPartner />,
+      },
+      {
+        path: "/study-space",
+        element: <StudySpace />,
       },
       {
         path: "/register-property",

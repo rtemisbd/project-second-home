@@ -21,6 +21,7 @@ const BookingReportData = ({ data }) => {
     availableSeats,
     totalAvailableSeats,
   } = data;
+
   const renderActiveView = () => {
     switch (activeView) {
       case "availableRooms":
@@ -47,6 +48,7 @@ const BookingReportData = ({ data }) => {
       <Row className="g-2">
         {/* Available Single Rooms */}
         <Col
+          className="booking_report_card"
           sm={12}
           md={3}
           lg={3}
@@ -64,7 +66,13 @@ const BookingReportData = ({ data }) => {
           </div>
         </Col>
         {/* Booked Single Rooms */}
-        <Col sm={12} md={3} lg={3} onClick={() => setActiveView("bookedRooms")}>
+        <Col
+          className="booking_report_card"
+          sm={12}
+          md={3}
+          lg={3}
+          onClick={() => setActiveView("bookedRooms")}
+        >
           <div
             style={{
               backgroundColor: "#321f39",
@@ -77,7 +85,13 @@ const BookingReportData = ({ data }) => {
           </div>
         </Col>
         {/* Booked Seats */}
-        <Col sm={12} md={3} lg={3} onClick={() => setActiveView("bookedSeats")}>
+        <Col
+          className="booking_report_card"
+          sm={12}
+          md={3}
+          lg={3}
+          onClick={() => setActiveView("bookedSeats")}
+        >
           <div
             style={{
               backgroundColor: "#321f39",
@@ -91,6 +105,7 @@ const BookingReportData = ({ data }) => {
         </Col>
         {/* Available Seats */}
         <Col
+          className="booking_report_card"
           sm={12}
           md={3}
           lg={3}
@@ -109,6 +124,7 @@ const BookingReportData = ({ data }) => {
         </Col>
         {/* Upcoming Bookings */}
         <Col
+          className="booking_report_card"
           sm={12}
           md={3}
           lg={3}
@@ -126,7 +142,13 @@ const BookingReportData = ({ data }) => {
           </div>
         </Col>
         {/* Today Check-in */}
-        <Col sm={12} md={3} lg={3} onClick={() => setActiveView("checkIn")}>
+        <Col
+          className="booking_report_card"
+          sm={12}
+          md={3}
+          lg={3}
+          onClick={() => setActiveView("checkIn")}
+        >
           <div
             style={{
               backgroundColor: "#321f39",
@@ -139,7 +161,13 @@ const BookingReportData = ({ data }) => {
           </div>
         </Col>
         {/* Today Check-out */}
-        <Col sm={12} md={3} lg={3} onClick={() => setActiveView("checkOut")}>
+        <Col
+          className="booking_report_card"
+          sm={12}
+          md={3}
+          lg={3}
+          onClick={() => setActiveView("checkOut")}
+        >
           <div
             style={{
               backgroundColor: "#321f39",

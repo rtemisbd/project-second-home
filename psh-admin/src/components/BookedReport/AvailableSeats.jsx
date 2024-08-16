@@ -14,6 +14,7 @@ const AvailableSeats = ({ availableSeats }) => {
             lg={3}
             style={{
               border: "1px solid #35b0a7",
+              padding: "15px",
             }}
           >
             <p className="fw-bold">Room No : {room?.roomNumber}</p>
