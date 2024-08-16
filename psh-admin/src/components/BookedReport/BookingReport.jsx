@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useQuery } from "react-query";
 import BookingReportData from "./BookingReportsData";
@@ -8,14 +8,16 @@ import { Spinner } from "react-bootstrap";
 
 const BookingReports = () => {
   const [checkingDate, setCheckingDate] = useState(new Date());
-
+  // const [allBranch, setAllBranch] = useState([]);
+  // const [branch, setBranch] = useState("");
   // Fetch booking reports based on the checkingDate
   const { data, error, isLoading } = useQuery(
     ["fetchBookingsReports", checkingDate],
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          checkingDate: checkingDate, // Ensure date format is consistent
+          checkingDate: checkingDate,
+          // branch: branch,
         });
 
         const response = await fetch(
@@ -40,6 +42,18 @@ const BookingReports = () => {
       staleTime: 60000, // Cache data for 1 minute
     }
   );
+  // Get All Branch
+  // useEffect(() => {
+  //   fetch(`https://api.psh.com.bd/api/branch`)
+  //     .then((res) => res.json())
+  //     .then((data) => setAllBranch(data));
+  // }, []);
+
+  // // Get All Status Bookings
+
+  // const handleBranch = (e) => {
+  //   setBranch(e.target.value);
+  // };
 
   if (isLoading)
     return (
@@ -68,13 +82,30 @@ const BookingReports = () => {
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">
-            <label htmlFor="">Choose your day :</label>
-            <br />
-            <DatePicker
-              selected={checkingDate}
-              dateFormat="dd/MM/yyyy"
-              onChange={(date) => setCheckingDate(date)}
-            />
+            <div className="d-flex gap-3 mb-5">
+              <div>
+                <label htmlFor="">Choose your day :</label>
+                <br />
+                <DatePicker
+                  selected={checkingDate}
+                  dateFormat="dd/MM/yyyy"
+                  onChange={(date) => setCheckingDate(date)}
+                />
+              </div>
+              {/* <div>
+                <label htmlFor="">Branch </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px" }}
+                  onChange={handleBranch}
+                >
+                  <option value="">All</option>
+                  {allBranch?.map((branch) => (
+                    <option value={branch?._id}>{branch?.name}</option>
+                  ))}
+                </select>
+              </div> */}
+            </div>
             <h6
               className="college_h6 fw-bold text-center"
               style={{ color: "#35b0a7", fontSize: "30px" }}
