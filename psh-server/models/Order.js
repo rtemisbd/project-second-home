@@ -11,7 +11,7 @@ const OrderSchema = new mongoose.Schema(
     roomId: {
       type: ObjectId,
       ref: "Property",
-      required: true,
+      // required: true,
     },
     branch: {
       type: ObjectId,

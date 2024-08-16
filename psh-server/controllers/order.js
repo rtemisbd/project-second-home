@@ -404,7 +404,7 @@ export const updateBooking = async (req, res, next) => {
     const findSingleOrder = await OrderModel.findOne({ _id: req.params.id });
     const bookingInfo_Id = findSingleOrder?.bookingInfo?.data?._id;
 
-    let bookingInfoForShareRoomId;
+    let bookingInfoForShareRoomId = findSingleOrder?.bookingInfo?.roomId;
 
     const bookingInfoForShareSeatId =
       findSingleOrder?.bookingInfo?.seatBooking?._id;
@@ -423,7 +423,6 @@ export const updateBooking = async (req, res, next) => {
 
       if (findSingleOrder?.bookingInfo?.roomType === "Shared Room") {
         if (req.body?.status === "Approved") {
-          bookingInfoForShareRoomId = findSingleOrder?.bookingInfo?.roomId;
           await Property.findByIdAndUpdate(
             { _id: bookingInfoForShareRoomId },
             {
