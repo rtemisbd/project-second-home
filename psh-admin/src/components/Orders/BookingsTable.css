@@ -40,3 +40,17 @@ span {
     margin: 2px;
   }
 }
+.bookings_data p,
+span,
+button {
+  font-size: 13px !important;
+}
+.table_heading {
+  font-size: 13px !important;
+}
+.food {
+  color: white;
+  background-color: #35b0a7;
+  font-size: 13px !important;
+  padding: 2px 10px;
+}

@@ -11,6 +11,7 @@ import { BlobProvider, View } from "@react-pdf/renderer";
 import DownlaodInvoice from "../Invoice/DownlaodInvoice";
 import ImageViewer from "./ImageViewer";
 import styles from "./SeeBooking.module.css";
+import { formatDate } from "../../utils/dateConvert";
 
 const SeeOrderDetails = ({
   transactions,
@@ -111,7 +112,7 @@ const SeeOrderDetails = ({
                 Customer Details
               </h3>
 
-              <div className="row px-5">
+              <div className="row px-5 mt-2">
                 <div className="col-lg-3">
                   <label htmlFor="" className="fw-medium">
                     Customer Name
@@ -171,11 +172,7 @@ const SeeOrderDetails = ({
                   <label htmlFor="" className="fw-medium">
                     National Id
                   </label>
-                  <div
-                    style={{
-                      marginBottom: "100px",
-                    }}
-                  >
+                  <div>
                     <button
                       type="button"
                       className="bg-transparent"
@@ -214,12 +211,12 @@ const SeeOrderDetails = ({
 
               {/* Room Details */}
               <h3
-                className=" fs-4 mt-3 ps-3 rounded"
+                className=" fs-4 mt-1 ps-3 rounded"
                 style={{ backgroundColor: "#00bbb4", color: "White" }}
               >
-                Room Details
+                Booking Details
               </h3>
-              <div className="row px-5">
+              <div className="row px-5 mt-2">
                 <div className="col-lg-3">
                   <label htmlFor="" className="fw-medium">
                     Booking Id
@@ -288,14 +285,17 @@ const SeeOrderDetails = ({
                   <label htmlFor="" className="fw-medium">
                     Check In{" "}
                   </label>
-                  <p> {data?.bookingInfo?.rentDate?.bookStartDate}</p>
+                  <p>
+                    {" "}
+                    {formatDate(data?.bookingInfo?.rentDate?.bookStartDate)}
+                  </p>
                 </div>
                 <div className="col-lg-3">
                   {" "}
                   <label htmlFor="" className="fw-medium">
                     Check Out{" "}
                   </label>
-                  <p> {data?.bookingInfo?.rentDate?.bookEndDate}</p>
+                  <p> {formatDate(data?.bookingInfo?.rentDate?.bookEndDate)}</p>
                 </div>
                 <div className="col-lg-3">
                   {" "}

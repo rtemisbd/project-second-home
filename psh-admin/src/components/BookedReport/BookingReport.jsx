@@ -1,33 +1,25 @@
-import React, { useContext, useRef, useState } from "react";
-
+import React, { useState } from "react";
+import DatePicker from "react-datepicker";
 import { useQuery } from "react-query";
 import BookingReportData from "./BookingReportsData";
+import "./BookingReport.css";
+import { formatDate } from "../../utils/dateConvert";
+import { Spinner } from "react-bootstrap";
 
-// import { Spinner, Table } from "react-bootstrap";
-// import ReactToPrint from "react-to-print";
-// import ReportPrint from "./ReportPrint";
+const BookingReports = () => {
+  const [checkingDate, setCheckingDate] = useState(new Date());
 
-const PropertyReports = (props) => {
-  const ref = useRef();
-
-  //sub stream
-  const [data, setData] = useState([]);
-
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(1);
-
-  // Handle Search
-  const { refetch } = useQuery(
-    ["fetchBookingsReports"],
+  // Fetch booking reports based on the checkingDate
+  const { data, error, isLoading } = useQuery(
+    ["fetchBookingsReports", checkingDate],
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          page: page,
-          size: 10,
+          checkingDate: checkingDate, // Ensure date format is consistent
         });
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/rent-rooms?${queryParams.toString()}`,
+          `http://localhost:8000/api/rent-rooms?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -38,41 +30,72 @@ const PropertyReports = (props) => {
         }
 
         const data = await response.json();
-        setData(data);
-        // const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
-        // setPageCount(totalPageCount);
+        return data;
       } catch (error) {
-        // console.error("Error fetching data:", error);
+        throw new Error(error.message);
       }
     },
     {
       refetchOnWindowFocus: false,
+      staleTime: 60000, // Cache data for 1 minute
     }
   );
 
-  return (
-    <>
-      <div className="wrapper">
-        <div className="content-wrapper" style={{ background: "unset" }}>
-          <section className="content customize_list">
-            <div className="container-fluid ">
-              <h6
-                className="college_h6 fw-bold text-center"
-                style={{
-                  color: "#35b0a7",
-                  fontSize: "35px",
-                }}
-              >
-                Today Bookings Reports
-              </h6>
-              <hr />
-            </div>{" "}
-            <BookingReportData data={data} />
-          </section>
-        </div>
+  if (isLoading)
+    return (
+      <div
+        className="text-center text-danger fw-bold loading"
+        style={{ margin: "2rem 0" }}
+      >
+        <p>
+          Finding Bookings Reports... <Spinner size="sm" animation="grow" />
+        </p>
       </div>
-    </>
+    );
+
+  if (error)
+    return (
+      <div
+        className="text-center text-danger fw-bold"
+        style={{ margin: "2rem 0" }}
+      >
+        <p>Error: {error.message}</p>
+      </div>
+    );
+
+  return (
+    <div className="wrapper">
+      <div className="content-wrapper" style={{ background: "unset" }}>
+        <section className="content customize_list">
+          <div className="container-fluid">
+            <label htmlFor="">Choose your day :</label>
+            <br />
+            <DatePicker
+              selected={checkingDate}
+              dateFormat="dd/MM/yyyy"
+              onChange={(date) => setCheckingDate(date)}
+            />
+            <h6
+              className="college_h6 fw-bold text-center"
+              style={{ color: "#35b0a7", fontSize: "30px" }}
+            >
+              {checkingDate.toDateString() === new Date().toDateString()
+                ? `Today Bookings Reports`
+                : `${formatDate(checkingDate)} Booking Reports`}
+            </h6>
+            <hr />
+            {data?.availableRooms ? (
+              <BookingReportData data={data} />
+            ) : (
+              <div className="text-center text-danger fw-bold loading">
+                <p>No Bookings Data Available</p>
+              </div>
+            )}
+          </div>
+        </section>
+      </div>
+    </div>
   );
 };
 
-export default PropertyReports;
+export default BookingReports;

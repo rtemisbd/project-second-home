@@ -1,10 +1,10 @@
 import React from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
-import NewOrders from "../components/Orders/NewOrders";
+import Bookings from "../components/Orders/Bookings";
 const AdminOrders = () => {
   return (
     <div>
-      <NewOrders />
+      <Bookings />
     </div>
   );
 };

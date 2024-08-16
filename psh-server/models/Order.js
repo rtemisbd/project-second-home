@@ -8,6 +8,11 @@ const OrderSchema = new mongoose.Schema(
     bookingId: {
       type: String,
     },
+    roomId: {
+      type: ObjectId,
+      ref: "Property",
+      required: true,
+    },
     branch: {
       type: ObjectId,
       ref: "Branch",

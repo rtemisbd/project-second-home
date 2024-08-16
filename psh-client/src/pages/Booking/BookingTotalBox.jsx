@@ -337,6 +337,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     vatTax: vatTax,
     totalAmount: totalRentAmount,
     payableAmount: payableAmount,
+    roomId: data?._id,
     roomName: data?.name,
     roomNumber: data?.roomNumber,
     roomType: data?.category?.name,

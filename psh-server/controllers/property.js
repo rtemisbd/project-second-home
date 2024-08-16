@@ -1,6 +1,7 @@
 import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 import Branch from "../models/Branch.js";
+import Seat from "../models/Seat.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -19,24 +20,34 @@ export const CreatePropertys = async (req, res, next) => {
     }
 
     // Create the Property and assign it to the category, branch, and facilities
-    const product = new Property({
+    const property = new Property({
       rentDate: rentDate,
       category: category._id,
       branch: branch._id,
       seats: seats,
       ...othersData,
     });
-    await product.save();
+    await property.save();
+
+    // Create New Seat
+    const newSeat = new Seat({
+      roomId: property._id,
+      category: category._id,
+      branch: branch._id,
+      ...seats,
+    });
+
+    await newSeat.save();
 
     // Add the product to the category's products array
-    category.property.push(product._id);
+    category.property.push(property._id);
     await category.save();
 
     // Add the product to the branch's products array
-    branch.property.push(product._id);
+    branch.property.push(property._id);
     await branch.save();
 
-    res.status(201).json(product);
+    res.status(201).json(property);
   } catch (err) {
     next(err);
   }

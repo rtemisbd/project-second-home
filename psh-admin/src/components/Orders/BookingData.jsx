@@ -6,6 +6,7 @@ import SeeOrderDetails from "./SeeOrderDetails";
 import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
 import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
+import { formatDate } from "../../utils/dateConvert";
 
 const BookingData = ({
   booking,
@@ -16,7 +17,7 @@ const BookingData = ({
   isLoading,
   page,
 }) => {
-  const formattedDate = new Date(booking?.createdAt).toLocaleString();
+  // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
@@ -76,12 +77,12 @@ const BookingData = ({
 
   return (
     <>
-      <tr className="bookings_data">
+      <tr className="bookings_data ">
         <td>{(page - 1) * 10 + index + 1}</td>
 
         <td>
           {" "}
-          <p>{formattedDate?.split(",")[0]}</p>
+          <p>{formatDate(booking?.createdAt)}</p>
           <p>{formattedTime}</p>
         </td>
         <td>
@@ -107,14 +108,7 @@ const BookingData = ({
           {" "}
           <p className="fw-bold">Tk {booking?.totalAmount?.toLocaleString()}</p>
           {booking?.isIncludeFood === true ? (
-            <p
-              className="fw-bold"
-              style={{
-                color: "#35b0a7",
-              }}
-            >
-              With Food
-            </p>
+            <p className="fw-bold food">With Food</p>
           ) : (
             ""
           )}

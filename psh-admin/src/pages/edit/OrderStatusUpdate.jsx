@@ -3,7 +3,6 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
-import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 // import { isAlreadyBookings } from "../../utils/bookingChecking";
 
@@ -55,17 +54,16 @@ const OrderStatusUpdate = ({
       };
 
       await axios.patch(
-        `https://api.psh.com.bd/api/order/${_id}`,
+        `http://localhost:8000/api/order/${_id}`,
         updatedStatus
       );
       MySwal.fire("Updated", "success");
       refetch();
     } catch (err) {
-      // console.log(err);
+      console.log(err);
       MySwal.fire("Something Error Found.", "warning");
     }
   };
-
   const handleClose = () => setShowStatusModal(false);
   return (
     <>

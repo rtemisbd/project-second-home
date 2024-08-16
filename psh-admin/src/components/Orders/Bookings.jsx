@@ -1,14 +1,13 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { toast } from "react-toastify";
+
 import useTransaction from "../../hooks/useTransaction";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import img from "../../img/new/style.png";
-import axios from "axios";
 import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
 
-const NewOrders = () => {
+const Bookings = () => {
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
 
@@ -54,7 +53,7 @@ const NewOrders = () => {
         });
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
+          `http://localhost:8000/api/order?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -101,58 +100,7 @@ const NewOrders = () => {
   const handleBookingStatus = (e) => {
     setBookingStatus(e.target.value);
   };
-
-  // const handleSearch = async () => {
-  //   setStatus(bookingStatus);
-  //   const withIdBooking = data?.find(
-  //     (booking) => booking?._id?.slice(-5) === bookingId.toLowerCase()
-  //   );
-  //   const withUserIdBooking = data?.filter(
-  //     (booking) => booking?.userId?.slice(-5) === userId.toLowerCase()
-  //   );
-
-  //   if (bookingId.toLowerCase() && !withIdBooking) {
-  //     return toast.error("Sorry! Wrong Id ");
-  //   }
-
-  //   setIsLoading(true);
-  //   setIsFilter(true);
-  //   const orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-  //   const bookingUserId = withUserIdBooking[0]?.userId
-  //     ? withUserIdBooking[0]?.userId
-  //     : "All";
-
-  //   try {
-  //     const response = await axios.get(`https://api.psh.com.bd/api/order`, {
-  //       params: {
-  //         orderId: orderId,
-  //         userId: bookingUserId,
-  //         fromDate: fromDate,
-  //         toDate: toDate,
-  //         branch: branch,
-  //         paymentStatus: paymentStatus,
-  //         status: bookingStatus,
-  //         page: page,
-  //         size: 10,
-  //       },
-  //     });
-
-  //     if (response.status !== 200) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = response.data;
-  //     setFilterData(data?.orders);
-  //     console.log(data);
-  //     const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
-  //     setPageCount2(totalPageCount);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
+  console.log(data);
   return (
     <div className="wrapper">
       <div>
@@ -398,4 +346,4 @@ const NewOrders = () => {
   );
 };
 
-export default NewOrders;
+export default Bookings;
