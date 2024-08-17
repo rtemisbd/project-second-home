@@ -1,16 +1,13 @@
 import React, { useState } from "react";
 import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-import Slider from "react-slick";
-
-import ExtraForm from "../ExtraForm/ExtraForm";
-import partnerImg from "../../assets/img/partner-img1.jpeg";
+import studyBanner from "../../assets/img/study-banner.jpeg";
 import PartnerService from "../new/PartnerService";
 import OtherOpportunities from "../new/OtherOpportunities";
 import PartnerFeedback from "../new/PartnerFeedback";
-import "./PshPartner.css";
+import StudyForm from "./StudyForm";
 
-const PshPartner = () => {
+const StudySpace = () => {
   const [size, setSize] = useState(null);
   const handleOpen = (value) => setSize(value);
 
@@ -23,17 +20,11 @@ const PshPartner = () => {
               className="sm:pt-5 flex justify-end items-center"
               style={{ height: "100vh" }}
             >
-              <div className="xl:w-[67%] md:w-[90%]">
+              <div className="xl:w-[67%] md:w-[80%]">
                 <div>
-                  <h2 className=" text-white mb-5 md:text-5xl sm:text-[25px]">
-                    Invest and Grow with Project Second Home
-                  </h2>
-
-                  <p className="text-sm mb-4 text-white md:text-xl sm:text-sm mt-2">
-                    Become a PSH angel Investor, Project Director, Franchise
-                    Partner or Share holder to maximize your idle money and
-                    Increase your property valuation to great a social
-                    recognition and hassle free income.
+                  <p className="text-sm mb-10 text-white md:text-xl sm:text-sm mt-2 ">
+                    At PSH, we offer flexible, comfortable spaces for individual
+                    study, group discussions, and tutoring sessions
                   </p>
                 </div>
                 <div className="md:flex gap-4 md:pb-11 sm:pb-5">
@@ -43,7 +34,7 @@ const PshPartner = () => {
                       style={{ width: 220 }}
                       onClick={() => handleOpen("sm")}
                     >
-                      Apply for PSH Partner
+                      Book Your Slot
                     </button>
                   </div>
                   <Link to={"/contact-us"}>
@@ -67,7 +58,7 @@ const PshPartner = () => {
           </div>
           <div className="flex flex-col space-y-3 sm:col-span-12 md:col-span-6 ">
             <img
-              src={partnerImg}
+              src={studyBanner}
               alt="project second home finance"
               style={{ height: "100vh" }}
             />
@@ -77,7 +68,7 @@ const PshPartner = () => {
       <div className="md:hidden sm:block">
         <div>
           <img
-            src={partnerImg}
+            src={studyBanner}
             alt="project second home finance"
             style={{ height: "350px", width: "100%" }}
           />
@@ -127,7 +118,10 @@ const PshPartner = () => {
               open={size === "sm"}
               size={size || "sm"}
               handler={handleOpen}
-              style={{ height: "100vh", overflow: "scroll" }}
+              style={{
+                // height: "100vh",
+                overflow: "scroll",
+              }}
             >
               <DialogHeader>
                 {" "}
@@ -139,7 +133,7 @@ const PshPartner = () => {
                 </div>
               </DialogHeader>
               <DialogBody className="p-2">
-                <ExtraForm handleOpen={handleOpen} />
+                <StudyForm handleOpen={handleOpen} />
               </DialogBody>
             </Dialog>
           </div>
@@ -216,4 +210,4 @@ const PshPartner = () => {
   );
 };
 
-export default PshPartner;
+export default StudySpace;

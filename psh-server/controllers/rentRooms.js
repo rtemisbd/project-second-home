@@ -125,7 +125,11 @@ export const getRentRooms = async (req, res, next) => {
       ])
       .select({ _id: 0, roomNumber: 1 });
 
-    // Fine Booked Privet Rooms
+    const filteredAvailableRooms = availableRooms.filter(
+      (room) => room.category
+    );
+
+    // Fine Booked Privet Roomscd
     const bookedRooms = await RentRoom.find({
       _id: {
         $in: rentRooms
@@ -275,7 +279,7 @@ export const getRentRooms = async (req, res, next) => {
       message: "Bookings retrieved successfully",
       bookedRooms,
       upcomingRentRooms,
-      availableRooms,
+      availableRooms: filteredAvailableRooms,
       bookedSeats,
       todayCheckIn,
       todayCheckOut,

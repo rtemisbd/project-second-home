@@ -221,7 +221,7 @@ export default function Navmenu() {
         onClick={() => setNaValue("/investment-opportunities")}
       >
         <Link
-          to={"/partner-registration"}
+          to={"/study-space"}
           className="flex items-center hover:text-[#00bbb4] md:ml-0 sm:ml-5"
           style={{
             color:
@@ -234,7 +234,7 @@ export default function Navmenu() {
               className="mr-2"
             />
           </div>
-          <span className="hover:text-[#00bbb4]">Partner Registration</span>
+          <span className="hover:text-[#00bbb4]">Study Space</span>
         </Link>
       </Typography>
 
