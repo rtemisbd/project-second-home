@@ -2,10 +2,9 @@ import React, { useState } from "react";
 import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import studyBanner from "../../assets/img/study-banner.jpeg";
-import PartnerService from "../new/PartnerService";
-import OtherOpportunities from "../new/OtherOpportunities";
-import PartnerFeedback from "../new/PartnerFeedback";
+
 import StudyForm from "./StudyForm";
+import StudySpaceBottom from "./StudySpaceBottom";
 
 const StudySpace = () => {
   const [size, setSize] = useState(null);
@@ -139,73 +138,8 @@ const StudySpace = () => {
           </div>
         </div>
       </div>
-      <PartnerService />
-      <div className="custom-container ">
-        <h2 className="text-xl font-bold mb-5 mt-24 md:mx-0 sm:mx-5">
-          3 Steps to lease an investor
-        </h2>
-        <div className=" grid md:grid-cols-3 sm:grid-cols-1 md:gap-0 sm:gap-10 md:mx-0 sm:mx-5">
-          <div className="group relative">
-            <div className="overflow-hidden">
-              <div className="flex justify-between gap-4 items-start">
-                <p className="justify-center text-white text-lg items-center bg-teal-600 h-9 px-3.5 py-1 rounded-xl">
-                  1
-                </p>
-                <div className="self-stretch flex grow basis-[0%] flex-col items-stretch">
-                  <div className="justify-center text-black text-lg font-medium leading-7 whitespace-nowrap">
-                    Register as an investor
-                  </div>
-                  <div className="text-stone-500 text-sm leading-5 whitespace-nowrap mt-2.5">
-                    Our team will carry out an evaluation
-                  </div>
-                </div>
-              </div>
-              <button
-                className="partner_btn ms-12 mt-3"
-                onClick={() => handleOpen("sm")}
-              >
-                Apply Now
-              </button>
-            </div>
-          </div>
-          <div className="group relative">
-            <div className="overflow-hidden">
-              <div className="flex justify-between gap-4 items-start">
-                <p className="justify-center text-white text-lg items-center bg-teal-600 h-9 px-3.5 py-1 rounded-xl">
-                  2
-                </p>
-                <div className="self-stretch flex grow basis-[0%] flex-col items-stretch">
-                  <div className="justify-center text-black text-lg font-medium leading-7 whitespace-nowrap">
-                    Contract Signature
-                  </div>
-                  <div className="justify-center text-stone-500 text-sm leading-5 whitespace-nowrap mt-2.5">
-                    Check the contract and sign the contract
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div className="group relative">
-            <div className="overflow-hidden">
-              <div className="flex justify-between gap-4 items-start">
-                <p className="justify-center text-white text-lg items-center bg-teal-600 h-9 px-3.5 py-1 rounded-xl">
-                  3
-                </p>
-                <div className="self-stretch flex grow basis-[0%] flex-col items-stretch">
-                  <div className="text-black text-lg font-medium leading-7 whitespace-nowrap">
-                    Enjoy the Results
-                  </div>
-                  <div className="justify-center text-stone-500 text-sm leading-5 whitespace-nowrap mt-2.5">
-                    Sit back and enjoy the hassle free return
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-      <OtherOpportunities />
-      <PartnerFeedback />
+
+      <StudySpaceBottom />
     </div>
   );
 };

@@ -2,8 +2,8 @@ import React from "react";
 
 const CreditCard = () => {
   return (
-    <div>
-      <h4>Comming Soon Crdit Card Option</h4>
+    <div className="mt-3">
+      <h4>Coming Soon Credit Card Option</h4>
     </div>
   );
 };

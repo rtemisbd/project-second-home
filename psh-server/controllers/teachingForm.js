@@ -97,3 +97,14 @@ export const createTeachingForm = catchAsync(async (req, res) => {
     message: "Thanks for your subscribe",
   });
 });
+
+export const getAllTeachingData = catchAsync(async (req, res) => {
+  const allTeachingsData = await TeachingForm.find({});
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Get All Teachings",
+    data: allTeachingsData,
+  });
+});

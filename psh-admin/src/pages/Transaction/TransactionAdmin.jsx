@@ -278,7 +278,7 @@ const TransactionAdmin = () => {
               >
                 {row?.acceptableStatus}
               </p>
-              {user?.role === "SuperAdmin" ? (
+              {user?.role === "SuperAdmin" || user?.role === "subAdmin1" ? (
                 <button
                   type="button"
                   data-bs-toggle="modal"

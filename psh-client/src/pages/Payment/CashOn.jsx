@@ -41,7 +41,7 @@ const CashOn = () => {
         </div>
         {showCashOn ? (
           <div>
-            <h5 className="text-[1rem]">Cash to be paid after Comming.</h5>
+            <h5 className="text-[1rem]">Cash to be paid after Coming.</h5>
           </div>
         ) : null}
       </div>
