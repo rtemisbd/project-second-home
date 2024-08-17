@@ -15,6 +15,7 @@ const BookedSeats = ({ bookedSeats }) => {
             lg={3}
             style={{
               border: "1px solid #35b0a7",
+              padding: "15px",
             }}
           >
             <p>Room No : {room?.roomNumber}</p>

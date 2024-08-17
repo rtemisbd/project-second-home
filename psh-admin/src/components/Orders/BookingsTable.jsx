@@ -27,7 +27,11 @@ const BookingsTable = ({
     <div>
       <Table bordered>
         <thead>
-          <tr>
+          <tr
+            style={{
+              fontSize: "14px",
+            }}
+          >
             <th>No.</th>
             <th>Date & Time</th>
             <th>Booking Id</th>

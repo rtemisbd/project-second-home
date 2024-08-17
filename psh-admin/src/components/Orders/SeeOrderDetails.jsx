@@ -78,8 +78,8 @@ const SeeOrderDetails = ({
       show={showDetails}
       backdrop="static"
       onHide={handleClose}
-      // className={styles.modal}
-      size="lg"
+      className={styles.modal}
+      // size="xl"
       // centered
     >
       <Modal.Header closeButton>
