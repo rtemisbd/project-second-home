@@ -76,15 +76,9 @@ const StudySpace = () => {
         <div className="banner-left md:px-0 sm:px-5">
           <div className=" custom-container">
             <div className="md:pt-48 sm:pt-5 md:w-[50%] sm:w-[100%]">
-              <h2 className=" text-white mb-5 md:text-5xl sm:text-[25px]">
-                Invest and Grow with Project Second Home
-              </h2>
-
               <p className="text-sm mb-4 text-white md:text-xl sm:text-sm mt-2">
-                Become a PSH angel Investor, Project Director, Franchise Partner
-                or Share holder to maximize your idle money and Increase your
-                property valuation to great a social recognition and hassle free
-                income.
+                At PSH, we offer flexible, comfortable spaces for individual
+                study, group discussions, and tutoring sessions
               </p>
             </div>
             <div className="md:flex gap-4 md:pb-11 sm:pb-5">
@@ -94,7 +88,7 @@ const StudySpace = () => {
                   style={{ width: 220 }}
                   onClick={() => handleOpen("sm")}
                 >
-                  Apply for Partner
+                  Book Your Slot
                 </button>
               </div>
               <Link to={"/contact"}>
