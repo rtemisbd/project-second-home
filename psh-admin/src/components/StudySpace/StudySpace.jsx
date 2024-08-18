@@ -5,7 +5,7 @@ import { formatDate } from "../../utils/dateConvert";
 
 const StudySpace = () => {
   const [data, setData] = useState([]);
-  console.log(data);
+
   const { refetch } = useQuery(
     ["fetchTeachingData"],
     async () => {
@@ -42,7 +42,8 @@ const StudySpace = () => {
               <thead>
                 <tr>
                   <th>No</th>
-                  <th> Name</th>
+                  <th>Purpose</th>
+                  <th>Name</th>
                   <th>Phone Number</th>
                   <th>Arrival Date</th>
                   <th>Arrival Time</th>
@@ -52,6 +53,7 @@ const StudySpace = () => {
                 {data?.map((study, index) => (
                   <tr>
                     <td>{index + 1}</td>
+                    <td>{study?.purpose}</td>
                     <td>{study?.name}</td>
                     <td>{study?.mobileNumber}</td>
                     <td>{formatDate(study?.arrivalDate)}</td>

@@ -3,9 +3,10 @@ import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import nodemailer from "nodemailer";
 export const createTeachingForm = catchAsync(async (req, res) => {
-  const { name, mobileNumber, arrivalDate, arrivalTime } = req.body;
+  const { purpose, name, mobileNumber, arrivalDate, arrivalTime } = req.body;
   //   console.log(fullName);
   const newData = new TeachingForm({
+    purpose: purpose,
     name: name,
     mobileNumber: mobileNumber,
     arrivalDate: arrivalDate,
@@ -65,6 +66,7 @@ export const createTeachingForm = catchAsync(async (req, res) => {
 </head>
 <body>
     <div class="container">
+      <p><strong>Purpose:</strong> ${purpose}</p>
       <p><strong>Name:</strong> ${name}</p>
         <p><strong>Phone Number:</strong> ${mobileNumber}</p>
         <p><strong>Arrival Date:</strong> ${arrivalDate}</p>

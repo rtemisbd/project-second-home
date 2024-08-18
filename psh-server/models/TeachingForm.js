@@ -2,6 +2,9 @@ import mongoose from "mongoose";
 
 const TeachingFormSchema = mongoose.Schema(
   {
+    purpose: {
+      type: String,
+    },
     name: {
       type: String,
     },

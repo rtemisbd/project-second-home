@@ -23,7 +23,7 @@ const StudySpace = () => {
                 <div>
                   <p className="text-sm mb-10 text-white md:text-xl sm:text-sm mt-2 ">
                     At PSH, we offer flexible, comfortable spaces for individual
-                    study, group discussions, and tutoring sessions
+                    study, Co-working, group discussions and tutoring sessions
                   </p>
                 </div>
                 <div className="md:flex gap-4 md:pb-11 sm:pb-5">
@@ -78,7 +78,7 @@ const StudySpace = () => {
             <div className="md:pt-48 sm:pt-5 md:w-[50%] sm:w-[100%]">
               <p className="text-sm mb-4 text-white md:text-xl sm:text-sm mt-2">
                 At PSH, we offer flexible, comfortable spaces for individual
-                study, group discussions, and tutoring sessions
+                study, Co-working, group discussions, and tutoring sessions
               </p>
             </div>
             <div className="md:flex gap-4 md:pb-11 sm:pb-5">

@@ -7,6 +7,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const StudyForm = ({ handleOpen }) => {
   const [arrivalTime, setArrivalTime] = useState("");
+  const [purpose, setPurpose] = useState("");
 
   const handleExtraForm = async (e) => {
     e.preventDefault();
@@ -19,6 +20,7 @@ const StudyForm = ({ handleOpen }) => {
     // Form Data Append
 
     const formData = {
+      purpose: purpose,
       name: name,
       mobileNumber: phone,
       arrivalDate: arrivalDate,
@@ -62,8 +64,38 @@ const StudyForm = ({ handleOpen }) => {
                 Location : Dhanmondi, House No: 23, Road No: 03, Dhaka,
                 Bangladesh
               </span>
-              <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-y-3 md:mt-5 sm:mt-3">
-                <div className="col-span-2">
+              <br />
+              <span
+                className="font-bold"
+                style={{
+                  fontSize: "13px",
+                }}
+              >
+                Price Start From 200 BDT
+              </span>
+              <div className="mt-3">
+                <label htmlFor="">Purpose</label>
+                <select
+                  className="personal-info w-full h-[45px] rounded"
+                  name="estimatedArrival"
+                  id="estimatedArrival"
+                  onChange={(e) => setPurpose(e.target.value)}
+                  value={purpose}
+                >
+                  <option value="" disabled>
+                    Select your purpose
+                  </option>
+                  <option>Study</option>
+                  <option>Session</option>
+                  <option>Get go gether</option>
+                  <option>Meting</option>
+                  <option>Co-Working</option>
+                  <option>Training</option>
+                  <option>Tutorial video shotting</option>
+                </select>
+              </div>
+              <div className=" md:mt-3 sm:mt-3">
+                <div className="">
                   <label htmlFor="">Name</label>
                   <input
                     placeholder="Your Name *"
@@ -93,16 +125,17 @@ const StudyForm = ({ handleOpen }) => {
                   />
                 </div>
               </div>
-              <div className="grid grid-cols-1 gap-x-5">
-                <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
+              <div className="">
+                <div className=" mt-3">
                   <label htmlFor="">Estimated date of Arrival</label>
                   <input
                     type="date"
-                    className="text-black personal-info rounded w-full"
+                    className="text-black personal-info rounded"
                     name="arrivalDate"
                     style={{
                       height: "45px",
                       padding: "0px 10px",
+                      width: "100%",
                     }}
                     required
                   />
@@ -116,7 +149,7 @@ const StudyForm = ({ handleOpen }) => {
                   /> */}
                 </div>
 
-                <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
+                <div className="mt-3">
                   <label htmlFor="">Estimated time of Arrival</label>
                   <select
                     className="personal-info w-full h-[45px] rounded"
