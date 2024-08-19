@@ -112,7 +112,7 @@ const StudySpace = () => {
               size={size || "sm"}
               handler={handleOpen}
               style={{
-                // height: "100vh",
+                height: "100vh",
                 overflow: "scroll",
               }}
             >
