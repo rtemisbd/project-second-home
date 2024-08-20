@@ -1,5 +1,4 @@
 #root {
-
   padding: 2rem 0rem;
   text-align: center;
 }
@@ -19,8 +18,9 @@
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
-
-
+.study_form {
+  width: 100% !important;
+}
 
 @keyframes logo-spin {
   from {
@@ -37,8 +37,6 @@
     animation: logo-spin infinite 20s linear;
   }
 }
-
-
 
 .read-the-docs {
   color: #888;

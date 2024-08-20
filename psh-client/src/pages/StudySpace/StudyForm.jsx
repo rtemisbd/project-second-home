@@ -1,13 +1,15 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 import LoadingState from "../LoadingState/LoadingState";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-
+// import DatePicker from "react-datepicker";
 const StudyForm = ({ handleOpen }) => {
   const [arrivalTime, setArrivalTime] = useState("");
+  const [arrivalDate, setArrivalDate] = useState(new Date());
   const [purpose, setPurpose] = useState("");
+  const dateInputRef = useRef(null);
 
   const handleExtraForm = async (e) => {
     e.preventDefault();
@@ -110,7 +112,7 @@ const StudyForm = ({ handleOpen }) => {
                   />
                 </div>
 
-                <div className="col-span-2">
+                <div className="col-span-2 mt-2">
                   <label htmlFor="">Mobile Number</label>
                   <input
                     type="text"
@@ -126,26 +128,26 @@ const StudyForm = ({ handleOpen }) => {
                 </div>
               </div>
               <div className="">
-                <div className=" mt-3">
+                <div className=" mt-3 w-full">
                   <label htmlFor="">Estimated date of Arrival</label>
                   <input
                     type="date"
-                    className="text-black personal-info rounded"
+                    ref={dateInputRef}
+                    className="text-black personal-info rounded block w-full cursor-pointer"
                     name="arrivalDate"
                     style={{
                       height: "45px",
                       padding: "0px 10px",
-                      width: "100%",
                     }}
                     required
+                    onClick={() => dateInputRef.current?.showPicker()} // Use .showPicker() for programmatic trigger
                   />
 
                   {/* <DatePicker
                     selected={new Date(arrivalDate)}
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => setArrivalDate(date)}
-                    className="border"
-                    style={{ width: "100%" }}
+                    className="ps-3 lg:w-[570px] md:w-[500px] sm:w-[100%] border rounded h-[40px] "
                   /> */}
                 </div>
 
@@ -185,6 +187,7 @@ const StudyForm = ({ handleOpen }) => {
           </div>
         </div>
       </form>
+      {/* Property Management Platform */}
     </>
   );
 };

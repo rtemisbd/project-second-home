@@ -218,14 +218,13 @@ export default function Navmenu() {
       <Typography
         as="li"
         className="p-1 font-normal"
-        onClick={() => setNaValue("/investment-opportunities")}
+        onClick={() => setNaValue("/study-space")}
       >
         <Link
           to={"/study-space"}
           className="flex items-center hover:text-[#00bbb4] md:ml-0 sm:ml-5"
           style={{
-            color:
-              navVlaue === "/investment-opportunities" ? "#00bbb4" : "black",
+            color: navVlaue === "/study-space" ? "#00bbb4" : "black",
           }}
         >
           <div className="md:hidden sm:block">
