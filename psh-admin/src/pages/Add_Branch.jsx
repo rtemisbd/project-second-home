@@ -22,6 +22,7 @@ const Add_Branch = () => {
       nearLocation5: formData.get("nearLocation5"),
       nearLocation6: formData.get("nearLocation6"),
       branchEmail: formData.get("branchEmail"),
+      foodAmount: formData.get("foodAmount"),
       branchAddress: formData.get("branchAddress"),
       branchMobileNumber: formData.get("branchMobileNumber"),
       branchBkashNumber: formData.get("branchBkashNumber"),
@@ -169,6 +170,22 @@ const Add_Branch = () => {
                   className="main_form w-100"
                   name="branchEmail"
                   placeholder="Branch Email"
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Food Amount
+                </label>
+
+                <input
+                  type="number"
+                  className="main_form w-100"
+                  name="foodAmount"
+                  placeholder="Food Amount"
                   required
                 />
               </div>

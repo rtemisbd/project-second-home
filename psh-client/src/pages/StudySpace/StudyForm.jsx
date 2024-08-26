@@ -187,7 +187,6 @@ const StudyForm = ({ handleOpen }) => {
           </div>
         </div>
       </form>
-      {/* Property Management Platform */}
     </>
   );
 };

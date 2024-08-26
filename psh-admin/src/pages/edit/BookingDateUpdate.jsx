@@ -32,7 +32,7 @@ const BookingDateUpdate = ({
     data?.bookingInfo?.rentDate?.bookEndDate
   );
   const [customerRent, setCustomerRent] = useState({});
-
+  console.log(data?.branchDetails?.foodAmount);
   // Get Total Days this Year
   function getDaysInCurrentYear() {
     const currentDate = new Date(startDate);
@@ -202,7 +202,9 @@ const BookingDateUpdate = ({
     if (customerRent?.months >= 2) {
       const totalAmountForMonths =
         parseInt(subTotal + vatTax + addMissionFee + securityFee) +
-        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+        (isIncludeFood
+          ? data?.branchDetails?.foodAmount * customerRent.remainingDays
+          : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
 
       if (
@@ -237,7 +239,9 @@ const BookingDateUpdate = ({
     ) {
       const totalAmountForMonths =
         parseInt(subTotal + vatTax + addMissionFee + securityFee) +
-        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+        (isIncludeFood
+          ? data?.branchDetails?.foodAmount * customerRent.remainingDays
+          : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       if (
         userPromo?.minimumDays &&
@@ -269,7 +273,9 @@ const BookingDateUpdate = ({
     } else {
       const totalAmountForDays =
         parseInt(subTotal + vatTax) +
-        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+        (isIncludeFood
+          ? data?.branchDetails?.foodAmount * customerRent.remainingDays
+          : 0);
       setTotalRentAmount(parseInt(totalAmountForDays));
 
       if (
@@ -322,7 +328,7 @@ const BookingDateUpdate = ({
     data?.bookingInfo?.data?.dAmountForMonth,
     data?.bookingInfo?.data?.dAmountForYear,
     data?.bookingInfo?.rentDate?.bookStartDate,
-
+    data?.branchDetails?.foodAmount,
     room,
     addMissionFee,
     securityFee,
@@ -333,7 +339,9 @@ const BookingDateUpdate = ({
     data: data?.bookingInfo?.data,
     branch: data?.bookingInfo?.branch,
     subTotal: subTotal,
-    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : 0,
+    foodAmount: isIncludeFood
+      ? data?.branchDetails?.foodAmount * customerRent.remainingDays
+      : 0,
     isIncludeFood: isIncludeFood,
     promoCodeDiscount: data?.bookingInfo?.promoCodeDiscount,
     discount: data?.discount,
@@ -434,7 +442,7 @@ const BookingDateUpdate = ({
     }
   };
   const handleDurationClose = () => setShowDurationModal(false);
-  
+
   return (
     <>
       <Modal show={showDurationModal} onHide={handleDurationClose}>
@@ -609,7 +617,11 @@ const BookingDateUpdate = ({
                     <div className="ml-5 ">
                       <p>Food</p>
                     </div>
-                    <p>BDT {300 * customerRent?.remainingDays}</p>
+                    <p>
+                      BDT{" "}
+                      {data?.branchDetails?.foodAmount *
+                        customerRent?.remainingDays}
+                    </p>
                   </div>
                 ) : (
                   ""
@@ -698,27 +710,32 @@ const BookingDateUpdate = ({
                   <p> BDT {minimumPayment}</p>
                 </div>
               </div>
-              <div className="d-flex gap-3 ms-3">
-                <input
-                  style={{
-                    cursor: "pointer",
-                  }}
-                  type="checkbox"
-                  name="terms"
-                  id="food"
-                  defaultChecked={data?.isIncludeFood}
-                  onClick={() => setIsIncludeFood(!isIncludeFood)}
-                />
-                <label
-                  htmlFor="food"
-                  style={{
-                    cursor: "pointer",
-                    marginTop: "8px",
-                  }}
-                >
-                  Including Foods (2 Meals in a Day)
-                </label>
-              </div>
+              {data?.branchDetails?.foodAmount === 0 ? (
+                ""
+              ) : (
+                <div className="d-flex gap-3 ms-3">
+                  <input
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    type="checkbox"
+                    name="terms"
+                    id="food"
+                    defaultChecked={data?.isIncludeFood}
+                    onClick={() => setIsIncludeFood(!isIncludeFood)}
+                  />
+                  <label
+                    htmlFor="food"
+                    style={{
+                      cursor: "pointer",
+                      marginTop: "8px",
+                    }}
+                  >
+                    Including Foods (2 Meals in a Day)
+                  </label>
+                </div>
+              )}
+
               <div
                 className={` d-flex justify-content-center justify-items-center mt-5 `}
                 style={{

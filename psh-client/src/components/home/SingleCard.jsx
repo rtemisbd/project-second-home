@@ -101,6 +101,7 @@ const SingleCard = ({ item }) => {
       MySwal.fire("Wrong!");
     }
   };
+
   return (
     <>
       <div className="single-card ">
@@ -193,6 +194,13 @@ const SingleCard = ({ item }) => {
                     </span>
                   )}
                 </div>
+                <div>
+                  {item?.branch?.foodAmount === 0 && (
+                    <span className="text-sm font-medium bg-[#27B3B1] text-white px-2 py-1 rounded">
+                      With Food
+                    </span>
+                  )}
+                </div>
               </div>
               <div className="flex itmes-center">
                 <img
@@ -224,18 +232,32 @@ const SingleCard = ({ item }) => {
                 {item?.category?.name === "Shared Room" ? (
                   <>
                     <div className="flex gap-x-2">
-                      <p className="rotate-line-through text-red-500">
-                        <span className="card-price-sub">
-                          BDT {item?.seats[0]?.perDay?.toLocaleString()}
-                        </span>
-                        <span className="day">/day</span>
-                      </p>
-                      <p>
-                        <span className="card-price-sub">
-                          BDT {item?.seats[0]?.dAmountForDay?.toLocaleString()}
-                        </span>
-                        <span className="day">/day</span>
-                      </p>
+                      {item?.seats[0]?.perDay ===
+                      item?.seats[0]?.dAmountForDay ? (
+                        <p>
+                          <span className="card-price-sub">
+                            BDT{" "}
+                            {item?.seats[0]?.dAmountForDay?.toLocaleString()}
+                          </span>
+                          <span className="day">/day</span>
+                        </p>
+                      ) : (
+                        <>
+                          <p className="rotate-line-through text-red-500">
+                            <span className="card-price-sub">
+                              BDT {item?.seats[0]?.perDay?.toLocaleString()}
+                            </span>
+                            <span className="day">/day</span>
+                          </p>
+                          <p>
+                            <span className="card-price-sub">
+                              BDT{" "}
+                              {item?.seats[0]?.dAmountForDay?.toLocaleString()}
+                            </span>
+                            <span className="day">/day</span>
+                          </p>
+                        </>
+                      )}
                     </div>
                     <div className="flex gap-x-2">
                       <p className="rotate-line-through text-red-500">
@@ -256,19 +278,32 @@ const SingleCard = ({ item }) => {
                 ) : (
                   <>
                     <div className="flex gap-x-2">
-                      <p className="rotate-line-through text-red-500">
-                        <span className=" card-price-sub">
-                          BDT {item.perDay?.toLocaleString()}
-                        </span>
-                        <span className="day">/day</span>
-                      </p>
-                      <p>
-                        <span className=" card-price-sub">
-                          BDT {item.dAmountForDay?.toLocaleString()}
-                        </span>
-                        <span className="day">/day</span>
-                      </p>
+                      {item?.perDay === item?.dAmountForDay ? (
+                        <p>
+                          <span className=" card-price-sub">
+                            BDT {item.dAmountForDay?.toLocaleString()}
+                          </span>
+                          <span className="day">/day</span>
+                        </p>
+                      ) : (
+                        <>
+                          <p className="rotate-line-through text-red-500">
+                            <span className=" card-price-sub">
+                              BDT {item.perDay?.toLocaleString()}
+                            </span>
+                            <span className="day">/day</span>
+                          </p>
+                          <p>
+                            <span className=" card-price-sub">
+                              BDT {item.dAmountForDay?.toLocaleString()}
+                            </span>
+                            <span className="day">/day</span>
+                          </p>
+                        </>
+                      )}
                     </div>
+
+                    {/* Month Price  */}
                     <div className="flex gap-x-2">
                       <p className="rotate-line-through text-red-500">
                         <span className="card-price-sub">

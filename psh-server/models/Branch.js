@@ -43,6 +43,10 @@ const BranchSchema = new mongoose.Schema(
     branchEmail: {
       type: String,
     },
+    foodAmount: {
+      type: Number,
+      required: true,
+    },
     photos: {
       type: [String],
     },

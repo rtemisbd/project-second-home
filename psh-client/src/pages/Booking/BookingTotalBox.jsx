@@ -193,7 +193,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     if (customerRent?.months >= 2) {
       const totalAmountForMonths =
         parseInt(subTotal + vatTax + addMissionFee + securityFee) +
-        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+        (isIncludeFood
+          ? data?.branch?.foodAmount * customerRent.remainingDays
+          : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
       // setminimumPayment(addMissionFee);
@@ -203,14 +205,18 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     ) {
       const totalAmountForMonths =
         parseInt(subTotal + vatTax + addMissionFee + securityFee) +
-        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+        (isIncludeFood
+          ? data?.branch?.foodAmount * customerRent.remainingDays
+          : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
       // setminimumPayment(addMissionFee);
     } else {
       const totalAmountForDays =
         parseInt(subTotal + vatTax) +
-        (isIncludeFood ? 300 * customerRent.remainingDays : 0);
+        (isIncludeFood
+          ? data?.branch?.foodAmount * customerRent.remainingDays
+          : 0);
       setTotalRentAmount(parseInt(totalAmountForDays));
       setPayableAmount(parseInt(totalAmountForDays));
       // setminimumPayment(0);
@@ -329,7 +335,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const bookingData = {
     data: data,
     subTotal: subTotal,
-    foodAmount: isIncludeFood ? 300 * customerRent.remainingDays : "",
+    foodAmount: isIncludeFood
+      ? data?.branch?.foodAmount * customerRent.remainingDays
+      : "",
     isIncludeFood: isIncludeFood,
     promoCodeDiscount:
       userPromo?.promoDiscount === undefined ? 0 : userPromo?.promoDiscount,
@@ -773,8 +781,11 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                           className="font-normal opacity-75 px-5 py-2 rounded"
                         >
                           Including Complementary Breakfast with Lunch and
-                          dinner ({customerRent.remainingDays} Day X 300 ={" "}
-                          {300 * customerRent.remainingDays})
+                          dinner ({customerRent.remainingDays} Day X{" "}
+                          {data?.branch?.foodAmount} ={" "}
+                          {data?.branch?.foodAmount *
+                            customerRent.remainingDays}
+                          )
                         </Typography>
                       </div>
                     }
@@ -796,7 +807,10 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                   </Tooltip>
                 </div>
               </div>
-              <p> + BDT {300 * customerRent.remainingDays}</p>
+              <p>
+                {" "}
+                + BDT {data?.branch?.foodAmount * customerRent.remainingDays}
+              </p>
             </div>
           ) : (
             ""
@@ -1135,58 +1149,65 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
           ) : (
             ""
           )}
-          <p className="ms-5 mt-3 text-[#35B0A7] mb-2">Important notes:</p>
-          <div className="flex items-center px-4 text-black">
-            <div>
-              <input
-                className="cursor-pointer"
-                type="checkbox"
-                name="terms"
-                id="food"
-                onClick={() => setIsIncludeFood(!isIncludeFood)}
-              />
-            </div>
-            <div className="text-left pl-3 text-black font-bold flex itmes-center food_including mt-1">
-              <label htmlFor="food" className="cursor-pointer">
-                Including Foods (2 Meals in a Day)
-              </label>
-              <div className="ml-2">
-                <Tooltip
-                  content={
-                    <div>
-                      <Typography
-                        variant="small"
-                        style={{
-                          color: "white",
-                          backgroundColor: "black",
-                          width: "200px",
-                        }}
-                        className="font-normal opacity-75 px-5 py-2 rounded "
+
+          {data?.branch?.foodAmount === 0 ? (
+            ""
+          ) : (
+            <>
+              <p className="ms-5 mt-3 text-[#35B0A7] mb-2">Important notes:</p>
+              <div className="flex items-center px-4 text-black">
+                <div>
+                  <input
+                    className="cursor-pointer"
+                    type="checkbox"
+                    name="terms"
+                    id="food"
+                    onClick={() => setIsIncludeFood(!isIncludeFood)}
+                  />
+                </div>
+                <div className="text-left pl-3 text-black font-bold flex itmes-center food_including mt-1">
+                  <label htmlFor="food" className="cursor-pointer">
+                    Including Foods (2 Meals in a Day)
+                  </label>
+                  <div className="ml-2">
+                    <Tooltip
+                      content={
+                        <div>
+                          <Typography
+                            variant="small"
+                            style={{
+                              color: "white",
+                              backgroundColor: "black",
+                              width: "200px",
+                            }}
+                            className="font-normal opacity-75 px-5 py-2 rounded "
+                          >
+                            Including Complementary Breakfast with Lunch and
+                            dinner (Per day BDT {data?.branch?.foodAmount})
+                          </Typography>
+                        </div>
+                      }
+                    >
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                        strokeWidth={2}
+                        className="h-5 w-5 cursor-pointer text-blue-gray-500"
                       >
-                        Including Complementary Breakfast with Lunch and dinner
-                        (Per day BDT 300)
-                      </Typography>
-                    </div>
-                  }
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
-                    viewBox="0 0 24 24"
-                    stroke="currentColor"
-                    strokeWidth={2}
-                    className="h-5 w-5 cursor-pointer text-blue-gray-500"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                    />
-                  </svg>
-                </Tooltip>
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                        />
+                      </svg>
+                    </Tooltip>
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
+            </>
+          )}
         </div>
         <div
           className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a] mt-2 ${

@@ -23,6 +23,7 @@ const Branch = ({ data }) => {
       nearLocation5: formData.get("nearLocation5"),
       nearLocation6: formData.get("nearLocation6"),
       branchEmail: formData.get("branchEmail"),
+      foodAmount: formData.get("foodAmount"),
       branchAddress: formData.get("branchAddress"),
       branchMobileNumber: formData.get("branchMobileNumber"),
       branchBkashNumber: formData.get("branchBkashNumber"),
@@ -156,6 +157,20 @@ const Branch = ({ data }) => {
               placeholder="Branch Email"
               required
               defaultValue={data?.branchEmail}
+            />
+          </div>
+          <div className="col-md-6 form_sub_stream">
+            <label htmlFor="inputState" className="form-label profile_label3 ">
+              Food Amount
+            </label>
+
+            <input
+              type="text"
+              className="main_form w-100"
+              name="foodAmount"
+              placeholder="Food Amount"
+              required
+              defaultValue={data?.foodAmount}
             />
           </div>
           {/* Arrount The Building */}

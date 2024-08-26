@@ -66,7 +66,7 @@ const NewOrders = () => {
 
         const data = await response.json();
         setData(data);
-        console.log(data);
+
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
