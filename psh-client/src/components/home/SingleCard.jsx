@@ -260,19 +260,32 @@ const SingleCard = ({ item }) => {
                       )}
                     </div>
                     <div className="flex gap-x-2">
-                      <p className="rotate-line-through text-red-500">
-                        <span className=" card-price-sub">
-                          BDT {item?.seats[0]?.perMonth?.toLocaleString()}
-                        </span>
-                        <span className="day">/month</span>
-                      </p>
-                      <p className="">
-                        <span className=" card-price-sub">
-                          BDT{" "}
-                          {item?.seats[0]?.dAmountForMonth?.toLocaleString()}
-                        </span>
-                        <span className="day">/month</span>
-                      </p>
+                      {item?.seats[0]?.perMonth ===
+                      item?.seats[0]?.dAmountForMonth ? (
+                        <p className="">
+                          <span className=" card-price-sub">
+                            BDT{" "}
+                            {item?.seats[0]?.dAmountForMonth?.toLocaleString()}
+                          </span>
+                          <span className="day">/month</span>
+                        </p>
+                      ) : (
+                        <>
+                          <p className="rotate-line-through text-red-500">
+                            <span className=" card-price-sub">
+                              BDT {item?.seats[0]?.perMonth?.toLocaleString()}
+                            </span>
+                            <span className="day">/month</span>
+                          </p>
+                          <p className="">
+                            <span className=" card-price-sub">
+                              BDT{" "}
+                              {item?.seats[0]?.dAmountForMonth?.toLocaleString()}
+                            </span>
+                            <span className="day">/month</span>
+                          </p>
+                        </>
+                      )}
                     </div>
                   </>
                 ) : (
@@ -305,20 +318,32 @@ const SingleCard = ({ item }) => {
 
                     {/* Month Price  */}
                     <div className="flex gap-x-2">
-                      <p className="rotate-line-through text-red-500">
-                        <span className="card-price-sub">
-                          {" "}
-                          BDT {item.perMonth?.toLocaleString()}
-                        </span>
-                        <span className="day">/month</span>
-                      </p>
-                      <p>
-                        <span className="card-price-sub">
-                          {" "}
-                          BDT {item.dAmountForMonth?.toLocaleString()}
-                        </span>
-                        <span className="day">/month</span>
-                      </p>
+                      {item?.perMonth === item?.dAmountForMonth ? (
+                        <p>
+                          <span className="card-price-sub">
+                            {" "}
+                            BDT {item.dAmountForMonth?.toLocaleString()}
+                          </span>
+                          <span className="day">/month</span>
+                        </p>
+                      ) : (
+                        <>
+                          <p className="rotate-line-through text-red-500">
+                            <span className="card-price-sub">
+                              {" "}
+                              BDT {item.perMonth?.toLocaleString()}
+                            </span>
+                            <span className="day">/month</span>
+                          </p>
+                          <p>
+                            <span className="card-price-sub">
+                              {" "}
+                              BDT {item.dAmountForMonth?.toLocaleString()}
+                            </span>
+                            <span className="day">/month</span>
+                          </p>
+                        </>
+                      )}
                     </div>
                   </>
                 )}
