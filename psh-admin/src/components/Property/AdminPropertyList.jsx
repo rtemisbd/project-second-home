@@ -19,10 +19,15 @@ import { useQuery } from "react-query";
 import PropertyUpdate2 from "../../pages/edit/PropertyUpdate2";
 import { ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import LoadingState from "../../pages/LoadingState/LoadingState";
+import { useDispatch } from "react-redux";
+import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 
 const AdminPropertyList = (props) => {
   const MySwal = withReactContent(Swal);
+  const dispatch = useDispatch();
 
+  const handleClose = () => dispatch(placeLoadingShow(false));
   //sub stream
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
@@ -249,7 +254,11 @@ const AdminPropertyList = (props) => {
               </div>
 
               <div>
-                <PropertyUpdate2 data={row} refetch={refetch} />
+                <PropertyUpdate2
+                  data={row}
+                  refetch={refetch}
+                  handleClose={handleClose}
+                />
               </div>
               <div>
                 <button
@@ -322,6 +331,8 @@ const AdminPropertyList = (props) => {
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">
+            <LoadingState handleClose={handleClose} />
+
             <div className="d-flex justif-content-between">
               <p
                 className="fs-5"

@@ -7,6 +7,7 @@ import { AuthContext } from "../contexts/UserProvider";
 import { useContext } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
+import { multipleImageUpload } from "../utils/multipleImageUpload";
 
 const Add_property = () => {
   const { user } = useContext(AuthContext);
@@ -297,39 +298,12 @@ const Add_property = () => {
 
     try {
       setIsLoading(true);
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
+      const list = await multipleImageUpload(files);
 
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
       const seatPhotoList = await Promise.all(
         seatOptions.map(async (option) => {
           const photos = option.photos;
-          const photoUrls = await Promise.all(
-            Object.values(photos).map(async (file) => {
-              const data = new FormData();
-              data.append("file", file);
-              data.append("upload_preset", "rtemis");
-
-              const uploadRes = await axios.post(
-                "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-                data
-              );
-
-              const { url } = uploadRes.data;
-              return url;
-            })
-          );
+          const photoUrls = await multipleImageUpload(photos);
           return photoUrls;
         })
       );

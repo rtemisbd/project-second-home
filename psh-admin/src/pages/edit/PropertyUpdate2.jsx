@@ -8,11 +8,13 @@ import Swal from "sweetalert2";
 import { useEffect } from "react";
 import { useRef } from "react";
 import { toast } from "react-toastify";
+import { multipleImageUpload } from "../../utils/multipleImageUpload";
 
-const PropertyUpdate2 = ({ data, refetch }) => {
+const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
   const { user } = useContext(AuthContext);
 
   const [files, setFiles] = useState("");
+  const [uploadedSeatPhoto, setUploadedSeatPhoto] = useState([]);
   const MySwal = withReactContent(Swal);
   const [categories, setCategories] = useState([]);
 
@@ -97,7 +99,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         const response = await axios.get("https://api.psh.com.bd/api/category");
         setCategories(response.data);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 
@@ -112,7 +114,7 @@ const PropertyUpdate2 = ({ data, refetch }) => {
         );
         setFacilities(response.data);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 
@@ -153,9 +155,10 @@ const PropertyUpdate2 = ({ data, refetch }) => {
   };
   const handleSeatPhotosChange = (e, index, seatPhoto) => {
     const updatedOptions = [...seatOptions];
+    setUploadedSeatPhoto([...Array.from(e.target.files)]);
 
     updatedOptions[index].photos =
-      e.target.files === "" ? seatPhoto : e.target.files;
+      e.target.files?.length > 0 ? e.target.files : seatPhoto;
     setSeatOptions(updatedOptions);
   };
 
@@ -173,6 +176,11 @@ const PropertyUpdate2 = ({ data, refetch }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+
+    const seatPhotos =
+      data?.seats
+        ?.map((seat) => seat.photos[0])
+        .filter((photo) => photo !== undefined) || [];
 
     const perDay = event.target?.perDay?.value;
     const perMonth = event.target?.perMonth?.value;
@@ -274,41 +282,23 @@ const PropertyUpdate2 = ({ data, refetch }) => {
     };
 
     try {
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
-
+      const list = await multipleImageUpload(files);
       const seatPhotoList = await Promise.all(
-        seatOptions.map(async (option) => {
+        seatOptions.map(async (option, index) => {
           const photos = option.photos;
-          const photoUrls = await Promise.all(
-            Object.values(photos).map(async (file) => {
-              const data = new FormData();
-              data.append("file", file);
-              data.append("upload_preset", "rtemis");
-              const uploadRes = await axios.post(
-                "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-                data
-              );
+          let photoUrls = [];
 
-              const { url } = uploadRes.data;
-              return url;
-            })
-          );
-          return photoUrls;
+          if (uploadedSeatPhoto?.length > 0) {
+            // If there are uploaded photos, process them
+            photoUrls = await multipleImageUpload(photos);
+          } else {
+            // Otherwise, use the predefined seat photos
+            photoUrls = seatPhotos[index]; // Assuming seatPhotos has arrays corresponding to each index
+          }
+
+          return photoUrls; // Ensure the result is an array of URLs
         })
       );
-
       const product = {
         ...data2,
         photos: list?.length > 0 ? list : data?.photos,
@@ -329,8 +319,10 @@ const PropertyUpdate2 = ({ data, refetch }) => {
       MySwal.fire("Property successfully Update");
       event.target.reset();
       refetch();
+      handleClose();
     } catch (err) {
-      console.log(err);
+      // console.log(err);
+      handleClose();
       MySwal.fire("Something Error Found.", "warning");
     }
   };
