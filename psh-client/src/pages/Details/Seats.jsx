@@ -113,32 +113,53 @@ const Seats = ({ data, handleSubmit }) => {
                           <p className="text-start ms-2">Window outside view</p>
                         </div>
                       </div> */}
-                      <div className="flex mt-2 text-sm">
-                        <div>
-                          <span>Regular Price: </span>
+
+                      {item?.perDay === item?.dAmountForDay ? (
+                        <div className="flex mt-2 text-sm">
+                          <div>
+                            <span className="font-bold"> Price : </span>
+                          </div>
+                          <div className="flex gap-x-2">
+                            <p className="text-start ms-2 bg-[#27B3B1] text-white px-2 rounded">
+                              {item?.dAmountForDay?.toLocaleString()}/ d
+                            </p>
+                            <p className="text-start  bg-[#27B3B1] text-white px-2 rounded">
+                              {item?.dAmountForMonth?.toLocaleString()}/ m
+                            </p>
+                          </div>
                         </div>
-                        <div className="flex gap-x-2">
-                          <p className="text-start ms-2 text-red-500 px-2 rounded rotate-line-through2 z-0">
-                            {item?.perDay?.toLocaleString()}/ d
-                          </p>
-                          <p className="text-start  text-red-500 px-2 rounded rotate-line-through2 z-0">
-                            {item?.perMonth?.toLocaleString()}/ m
-                          </p>
-                        </div>
-                      </div>
-                      <div className="flex mt-2 text-sm">
-                        <div>
-                          <span className="font-bold">Offer Price : </span>
-                        </div>
-                        <div className="flex gap-x-2">
-                          <p className="text-start ms-2 bg-[#27B3B1] text-white px-2 rounded">
-                            {item?.dAmountForDay?.toLocaleString()}/ d
-                          </p>
-                          <p className="text-start  bg-[#27B3B1] text-white px-2 rounded">
-                            {item?.dAmountForMonth?.toLocaleString()}/ m
-                          </p>
-                        </div>
-                      </div>
+                      ) : (
+                        <>
+                          <div className="flex mt-2 text-sm">
+                            <div>
+                              <span>Regular Price: </span>
+                            </div>
+                            <div className="flex gap-x-2">
+                              <p className="text-start ms-2 text-red-500 px-2 rounded rotate-line-through2 z-0">
+                                {item?.perDay?.toLocaleString()}/ d
+                              </p>
+
+                              <p className="text-start  text-red-500 px-2 rounded rotate-line-through2 z-0">
+                                {item?.perMonth?.toLocaleString()}/ m
+                              </p>
+                            </div>
+                          </div>
+
+                          <div className="flex mt-2 text-sm">
+                            <div>
+                              <span className="font-bold">Offer Price : </span>
+                            </div>
+                            <div className="flex gap-x-2">
+                              <p className="text-start ms-2 bg-[#27B3B1] text-white px-2 rounded">
+                                {item?.dAmountForDay?.toLocaleString()}/ d
+                              </p>
+                              <p className="text-start  bg-[#27B3B1] text-white px-2 rounded">
+                                {item?.dAmountForMonth?.toLocaleString()}/ m
+                              </p>
+                            </div>
+                          </div>
+                        </>
+                      )}
                     </div>
                   </div>
                 </div>
