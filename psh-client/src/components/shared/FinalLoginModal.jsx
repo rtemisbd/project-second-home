@@ -662,9 +662,8 @@ const FinalLoginModal = () => {
                 <form onSubmit={handleOtp} className="mt-20 ">
                   <div className="flex gap-x-3">
                     {otp.map((digit, index) => (
-                      <div>
+                      <div key={index}>
                         <input
-                          key={index}
                           type="text"
                           id={`otp-${index}`}
                           name={`otp-${index}`}
