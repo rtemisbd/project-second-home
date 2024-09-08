@@ -140,7 +140,7 @@ const StudyForm = ({ handleOpen }) => {
                       padding: "0px 10px",
                     }}
                     required
-                    onClick={() => dateInputRef.current?.showPicker()} // Use .showPicker() for programmatic trigger
+                    onClick={() => dateInputRef.current?.showPicker()}
                   />
 
                   {/* <DatePicker

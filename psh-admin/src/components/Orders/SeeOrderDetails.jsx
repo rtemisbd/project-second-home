@@ -10,6 +10,7 @@ import Modal from "react-bootstrap/Modal";
 import { BlobProvider, View } from "@react-pdf/renderer";
 import DownlaodInvoice from "../Invoice/DownlaodInvoice";
 import ImageViewer from "./ImageViewer";
+import { formatDate } from "../../utils/dateConvert";
 // import styles from "./SeeBooking.module.css";
 
 const SeeOrderDetails = ({
@@ -71,7 +72,10 @@ const SeeOrderDetails = ({
     setShareRoomBranch(shareRoomBranch);
   }, [branchs, data?.bookingInfo?.data?.branch, data?.bookingInfo?.branch]);
 
-  const formattedDate = new Date(data?.createdAt).toLocaleString();
+  // const formattedDate = new Date(data?.createdAt).toLocaleString();
+  const formattedTime = new Date(data?.createdAt)
+    ?.toLocaleString()
+    ?.split(",")[1];
 
   return (
     <Modal
@@ -222,14 +226,17 @@ const SeeOrderDetails = ({
               <label htmlFor="" className="fw-medium">
                 Booking Id
               </label>
-              <p>#{data._id.slice(19)}</p>
+              <p>#{data?.bookingId}</p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Booking Date & Time
               </label>
-              <p>{formattedDate}</p>
+              <p>
+                {formatDate(data?.createdAt)}
+                {formattedTime}
+              </p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
@@ -286,14 +293,14 @@ const SeeOrderDetails = ({
               <label htmlFor="" className="fw-medium">
                 Check In{" "}
               </label>
-              <p> {data?.bookingInfo?.rentDate?.bookStartDate}</p>
+              <p> {formatDate(data?.bookingInfo?.rentDate?.bookStartDate)}</p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Check Out{" "}
               </label>
-              <p> {data?.bookingInfo?.rentDate?.bookEndDate}</p>
+              <p> {formatDate(data?.bookingInfo?.rentDate?.bookEndDate)}</p>
             </div>
             <div className="col-lg-3">
               {" "}

@@ -27,8 +27,13 @@ import axios from "axios";
 import LoadingState from "../LoadingState/LoadingState";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import ExportToExcel from "./ExportToExcel";
+import { formatDate } from "../../utils/dateConvert";
 const TransactionAdmin = () => {
   const ref = useRef();
+  const fromDateRef = useRef(null);
+  const toDateRef = useRef(null);
+
   const { user } = useContext(AuthContext);
   const dispatch = useDispatch();
 
@@ -54,6 +59,7 @@ const TransactionAdmin = () => {
   const [userAllBooking, setUserAllBooking] = useState([]);
   // console.log(allBranch);
   // Get All Transactions
+
   const { refetch } = useQuery([data, allBranch?.length], async () => {
     try {
       const response = await fetch(`https://api.psh.com.bd/api/transaction`, {
@@ -167,18 +173,18 @@ const TransactionAdmin = () => {
     {
       text: "Date",
       formatter: (cellContent, row, index) => {
-        const formattedDate = new Date(row?.paymentDate)
-          .toISOString()
-          .split("T")[0];
-        const formattedTime = new Date(row?.createdAt)
-          ?.toLocaleString()
-          ?.split(",")[1];
+        // const formattedDate = new Date(row?.paymentDate)
+        //   .toISOString()
+        //   .split("T")[0];
+        // const formattedTime = new Date(row?.createdAt)
+        //   ?.toLocaleString()
+        //   ?.split(",")[1];
 
         return (
           <>
             {" "}
-            <p>{formattedDate}</p>
-            <p>{formattedTime}</p>
+            <p style={{ width: "140px" }}>{formatDate(row?.paymentDate)}</p>
+            {/* <p>{formattedTime}</p> */}
           </>
         );
       },
@@ -378,12 +384,12 @@ const TransactionAdmin = () => {
     showTotal: true,
     alwaysShowAllBtns: true,
     onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
+      // console.log("page", page);
+      // console.log("sizePerPage", sizePerPage);
     },
     onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
+      // console.log("page", page);
+      // console.log("sizePerPage", sizePerPage);
     },
   });
 
@@ -448,9 +454,11 @@ const TransactionAdmin = () => {
                   <div>
                     <input
                       type="date"
+                      ref={fromDateRef}
                       onChange={(e) => setFromDate(e.target.value)}
                       name=""
                       id=""
+                      onClick={() => fromDateRef.current?.showPicker()}
                     />
                   </div>
                 </div>
@@ -459,9 +467,11 @@ const TransactionAdmin = () => {
                   <div>
                     <input
                       type="date"
+                      ref={toDateRef}
                       name=""
                       id=""
                       onChange={(e) => setToDate(e.target.value)}
+                      onClick={() => toDateRef.current?.showPicker()}
                     />
                   </div>
                 </div>
@@ -582,21 +592,30 @@ const TransactionAdmin = () => {
                 </p>
               ) : (
                 <>
-                  <div className="d-flex gap-5 justify-content-end mt-3">
+                  <div className="d-flex gap-2 justify-content-end justify-items-center mt-3">
                     {data.length > 0 || filterData.length > 0 ? (
-                      <div className="mt-2">
-                        <ReactToPrint
-                          trigger={() => (
-                            <button
-                              className=" px-3 rounded text-white font-medium"
-                              style={{ backgroundColor: "#35b0a7" }}
-                            >
-                              Print
-                            </button>
+                      <>
+                        <div className="">
+                          <ReactToPrint
+                            trigger={() => (
+                              <button
+                                className=" px-3 rounded text-white font-medium"
+                                style={{ backgroundColor: "#35b0a7" }}
+                              >
+                                Print
+                              </button>
+                            )}
+                            content={() => ref.current}
+                          />
+                        </div>
+                        <div>
+                          {isFilter ? (
+                            <ExportToExcel data={filterData} />
+                          ) : (
+                            <ExportToExcel data={data} />
                           )}
-                          content={() => ref.current}
-                        />
-                      </div>
+                        </div>
+                      </>
                     ) : (
                       ""
                     )}

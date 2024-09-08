@@ -6,6 +6,7 @@ import SeeOrderDetails from "./SeeOrderDetails";
 import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
 import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
+import { formatDate } from "../../utils/dateConvert";
 
 const BookingData = ({
   booking,
@@ -16,7 +17,7 @@ const BookingData = ({
   isLoading,
   page,
 }) => {
-  const formattedDate = new Date(booking?.createdAt).toLocaleString();
+  // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
@@ -79,14 +80,18 @@ const BookingData = ({
       <tr className="bookings_data">
         <td>{(page - 1) * 10 + index + 1}</td>
 
-        <td>
+        <td
+          style={{
+            width: "140px",
+          }}
+        >
           {" "}
-          <p>{formattedDate?.split(",")[0]}</p>
+          <p>{formatDate(booking?.createdAt)}</p>
           <p>{formattedTime}</p>
         </td>
         <td>
           {" "}
-          <p>#{booking?._id?.slice(-5).toUpperCase()} </p>
+          <p>#{booking?.bookingId} </p>
           <p className="fw-bold">{booking?.bookingInfo?.branch?.name}</p>
         </td>
         <td>

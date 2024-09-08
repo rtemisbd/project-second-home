@@ -5,6 +5,7 @@ import { toast } from "react-toastify";
 import "./Payment.css";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+
 // import LoadingState from "../LoadingState/LoadingState";
 // import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
@@ -17,10 +18,12 @@ const Payment = ({
   setShowPaymentModal,
 }) => {
   const dispatch = useDispatch();
+  const dateInputRef = useRef(null);
+
   // const isLoadingState = useSelector(
   //   (state) => state?.loadingModal?.isLoadingState
   // );
-  const [paymentType, setPaymentType] = useState("Payment Type");
+  const [paymentType, setPaymentType] = useState("cash");
   const [customerType, setCustomerType] = useState("Customer Type");
   const paymentOption = ["Receive", "Adjustment"];
   const [paymentOptionValue, setPaymentOptionValue] = useState(0);
@@ -43,9 +46,9 @@ const Payment = ({
   const handlePayment = async (e) => {
     e.preventDefault();
 
-    if (paymentType === "Payment Type") {
-      return toast.warn("Please Select Payment Type");
-    }
+    // if (paymentType === "Payment Type") {
+    //   return toast.warn("Please Select Payment Type");
+    // }
     if (customerType === "Customer Type") {
       return toast.warn("Please Select Customer Type");
     }
@@ -210,6 +213,7 @@ const Payment = ({
                         <br />
                         <input
                           type="date"
+                          ref={dateInputRef}
                           placeholder="Payment Date"
                           id=""
                           className="px-2 rounded"
@@ -217,7 +221,8 @@ const Payment = ({
                           name="paymentDate"
                           min={new Date()}
                           required
-                        />{" "}
+                          onClick={() => dateInputRef.current?.showPicker()}
+                        />
                       </div>
 
                       <div className="">
@@ -234,15 +239,15 @@ const Payment = ({
                           }}
                           required
                           onChange={(e) => setPaymentType(e.target.value)}
-                          defaultValue={paymentType}
+                          value={paymentType}
                         >
                           <option disabled value="">
                             Payment Type
                           </option>
+                          <option value="cash">Cash</option>
                           <option value="bkash">Bkash</option>
                           <option value="nagad">Nagad</option>
                           <option value="dutch">dutch-bangla</option>
-                          <option value="cash">Cash</option>
                           <option value="bank">Bank</option>
                         </select>
                       </div>
@@ -256,8 +261,7 @@ const Payment = ({
                         <input
                           onChange={(e) => setReciveTk(e.target.value)}
                           type="number"
-                          placeholder="Type Received Tk 
-              "
+                          placeholder="Type Received Tk "
                           id=""
                           className="px-2 rounded"
                           style={{ width: "300px", height: "40px" }}
@@ -372,12 +376,12 @@ const Payment = ({
                               />
                               <br />
                               <label htmlFor="" className="fs-5 fw-normal">
-                                Bank Holding Name
+                                Bank {`Holder's`} Name
                               </label>
                               <br />
                               <input
                                 type="text"
-                                placeholder="Type Holding Name
+                                placeholder="Type Holder's Name
                                                             "
                                 id=""
                                 className="px-2 rounded mt-2"

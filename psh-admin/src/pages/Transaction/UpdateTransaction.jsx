@@ -241,12 +241,11 @@ const UpdateTransaction = ({
                       onChange={(e) => setPaymentType(e.target.value)}
                       defaultValue={paymentType}
                     >
-                      <option disabled>Payment Type</option>
-                      <option>Bkash</option>
-                      <option>Nagad</option>
-                      <option>dutch-bangla</option>
-                      <option>Cash</option>
-                      <option>Bank</option>
+                      <option value="cash">Cash</option>
+                      <option value="bkash">Bkash</option>
+                      <option value="nagad">Nagad</option>
+                      <option value="dutch">dutch-bangla</option>
+                      <option value="bank">Bank</option>
                     </select>
                   </div>
                 </div>
@@ -319,7 +318,7 @@ const UpdateTransaction = ({
                     ""
                   ) : (
                     <>
-                      {paymentType !== "Cash" && paymentType !== "Bank" ? (
+                      {paymentType !== "cash" && paymentType !== "bank" ? (
                         <>
                           <label htmlFor="" className="fs-5 fw-normal">
                             Payment Number
@@ -356,7 +355,7 @@ const UpdateTransaction = ({
                         ""
                       )}
 
-                      {paymentType === "Bank" ? (
+                      {paymentType === "bank" ? (
                         <>
                           <label htmlFor="" className="fs-5 fw-normal">
                             Bank Name
@@ -374,12 +373,12 @@ const UpdateTransaction = ({
                           />
                           <br />
                           <label htmlFor="" className="fs-5 fw-normal">
-                            Bank Holding Name
+                            Bank {`Holder's`} Name
                           </label>
                           <br />
                           <input
                             type="text"
-                            placeholder="Type Holding Name"
+                            placeholder="Type Holder's Name"
                             id=""
                             className="px-2 rounded"
                             style={{ width: "300px", height: "40px" }}
@@ -394,7 +393,7 @@ const UpdateTransaction = ({
                       )}
 
                       <label htmlFor="" className="fs-5 fw-normal">
-                        Recevier Name
+                        Receiver Name
                       </label>
                       <br />
                       <input
