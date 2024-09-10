@@ -60,7 +60,7 @@ export default function Faq10() {
         <AccordionBody className="md:pr-40 sm:pr-0">
           PSH business is a business solution that we offer for your company and
           business needs. PSH business provides Corporate Housing solutions
-          (employee accommodation solutions) and Rucollab (advertising
+          (employee accommodation solutions) and PSH Collab (advertising
           solutions, product placement, event sponsorship, etc.).
         </AccordionBody>
       </Accordion>
@@ -173,9 +173,9 @@ export default function Faq10() {
           </div>
         </AccordionHeader>
         <AccordionBody className="md:pr-40 sm:pr0">
-          PSH collab is one of PSH Bisnis' services to answer your company and
-          business needs. Rucollab can help you to reach target consumers and
-          increase exposure. Rucollab provides services:
+          PSH Collab is one of PSH Business' services to answer your company and
+          business needs. PSH Collab can help you to reach target consumers and
+          increase exposure. PSH Collab provides services:
           <br />
           1.Advertising space on PSH offline products <br />
           2.Advertising space on the PSH online platform <br />

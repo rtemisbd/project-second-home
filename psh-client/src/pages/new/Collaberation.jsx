@@ -95,7 +95,7 @@ const Collaberation = () => {
                 style={{ height: "100vh" }}
               >
                 <div className="">
-                  <p className="banner_partner_p text-white">RuCollab</p>
+                  <p className="banner_partner_p text-white">PSH Collab</p>
                   <h1 className="banner_h1">
                     Beriklan di PSH & Tingkatkan Eksposure
                   </h1>

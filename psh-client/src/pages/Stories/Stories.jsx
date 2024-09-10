@@ -197,7 +197,7 @@ const Stories = () => {
                       />
                     </div>
                     <div className="flex mt-1">
-                      <p className="stories_date ms-3">Mahamud Pino</p>
+                      <p className="stories_date ms-3">Customer Name</p>
                       <p className="mx-4 stories_dot">.</p>
                       <p className="stories_date">5 min read</p>
                     </div>
@@ -252,11 +252,6 @@ const Stories = () => {
         <h2 className="text-xl font-bold mb-5 mt-12">Leisure</h2>
         <div className=" md:px-0 sm:px-6 ">
           <div className="image-overlay-container">
-            <img
-              className="image-overlay-img"
-              src="https://www.rukita.co/stories/wp-content/uploads/2023/01/Soompi.jpg"
-              alt="Overlay Image"
-            />
             <div className="image-overlay-text">
               <div className="sm:p-2 flex text-white">
                 <p className="layout_tag">Leisure</p>

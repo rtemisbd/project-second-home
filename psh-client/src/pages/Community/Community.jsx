@@ -165,7 +165,7 @@ const Community = () => {
                     </h2>
                     <p>
                       Hanging out at music events and watching films together at
-                      Rukita
+                      PSH
                     </p>
                   </div>
                 </div>

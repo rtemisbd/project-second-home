@@ -153,14 +153,14 @@ const About = () => {
               <div className="md:block flex justify-center">
                 <img
                   className="rounded-t-lg"
-                  src="https://images.rukita.co/web/static/img/landing-page/about-us/rukita_residence.png?tr=c-at_max%2Cw-400"
+                  src={forApartment}
                   style={{ width: "300px", height: "130px" }}
                   alt="psh residence"
                 />
               </div>
               <div className="text-center bg-[#faf9f6] pt-3 h-48  rounded-b-lg">
                 <h5 className="font-bold pt-7 pb-3">PSH Residence</h5>
-                <p className="text-sm">Comming Soon!</p>
+                <p className="text-sm">Coming Soon!</p>
               </div>
             </div>
             <div>
