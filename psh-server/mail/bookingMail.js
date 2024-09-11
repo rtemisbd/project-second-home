@@ -56,6 +56,8 @@ export function bookingMail(result) {
           <div class="booking-details">
           <p><strong>Booking Details:</strong></p>
 
+              <p><strong>Name:</strong> ${result?.fullName}</p>
+              <p><strong>Phone:</strong> ${result?.phone}</p>
               <p><strong>Booking Id:</strong> ${slicedObjectId}</p>
               <p><strong>Branch:</strong> ${result?.bookingInfo?.branch?.name}</p>
               <p><strong>Check-in Date:</strong> ${result?.bookingInfo?.rentDate?.bookStartDate}</p>
