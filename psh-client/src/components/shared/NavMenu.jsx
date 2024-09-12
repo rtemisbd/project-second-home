@@ -39,6 +39,7 @@ function ProfileMenu() {
   const handleLogOut = () => {
     logoutUser();
   };
+  // "proxy": "https://api.psh.com.bd"
 
   const dispatch = useDispatch();
   return (

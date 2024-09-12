@@ -7,7 +7,6 @@ import {
   TabsBody,
 } from "@material-tailwind/react";
 import Slider from "react-slick";
-import axios from "axios";
 
 import UseFetch from "../../hooks/useFetch";
 // import Header from "./Header";
@@ -15,13 +14,15 @@ import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
-import { serverBaseUrl } from "../../serverApi/baseUrl";
+// import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { removeSeatBooking } from "../../redux/reducers/seatBookingSlice";
+import { apiClient } from "../../services/axiosConfig";
 
 export default function HomePage() {
   const { data, error } = UseFetch(`property`);
+
   const dispatch = useDispatch();
   const [categories, setCategories] = useState({});
   const [activeTab, setActiveTab] = useState("All");
@@ -57,7 +58,7 @@ export default function HomePage() {
     dispatch(removeSeatBooking());
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get(`${serverBaseUrl}/category`, {
+        const { data } = await apiClient.get(`/category`, {
           mode: "cors",
         });
 
@@ -68,7 +69,7 @@ export default function HomePage() {
         });
         setCategories(categoryMap);
       } catch (error) {
-        console.log(error);
+        // console.log(error);
       }
     };
 
