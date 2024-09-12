@@ -10,13 +10,13 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print"], // Ensure this dependency is pre-bundled
   },
-  server: {
-    proxy: {
-      "/api": {
-        target: "https://api.psh.com.bd", // Target API URL
-        changeOrigin: true, // Modify the `Origin` header to the target URL
-        rewrite: (path) => path.replace(/^\/api/, "/api"), // Remove `/api` prefix before forwarding
-      },
-    },
-  },
+  // server: {
+  //   proxy: {
+  //     "/api": {
+  //       target: "https://api.psh.com.bd", // Target API URL
+  //       changeOrigin: true, // Modify the `Origin` header to the target URL
+  //       rewrite: (path) => path.replace(/^\/api/, "/api"), // Remove `/api` prefix before forwarding
+  //     },
+  //   },
+  // },
 });

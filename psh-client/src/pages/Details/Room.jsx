@@ -40,7 +40,6 @@ import RentVisitModal from "./RentVisitModal";
 import Skeleton from "react-loading-skeleton";
 import CardSkeleton from "../../components/CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { apiClient } from "../../services/axiosConfig";
 
 const Room = () => {
   const { id } = useParams();
@@ -64,18 +63,16 @@ const Room = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Using Axios to fetch data
-        const response = await apiClient.get(`/property/${id}`);
-        setData(response.data);
-        setLoading(false);
+        const response = await fetch(`${serverBaseUrl}/property/${id}`);
+        const data = await response.json();
+        setData(data);
       } catch (error) {
-        setError(error);
-        setLoading(false);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-  }, [id]); // Dependency array
+  }, [id]);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");
