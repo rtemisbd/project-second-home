@@ -107,7 +107,7 @@ export const sendOtp = async (req, res, next) => {
 
       const mailOptions = {
         from: "alaminbamna08@gmail.com",
-        to: `mohammad.alaminh08@gmail.com,${email}`,
+        to: `${email}`,
         subject: "Verify Your Email for Project Second Home",
         html: `  <div style="font-size: 16px; font-weight: normal;">
         <p>Dear User</p>
@@ -415,7 +415,7 @@ export const forgotPassword = async (req, res) => {
 
     const mailOptions = {
       from: "alaminbamna08@gmail.com",
-      to: `mohammad.alaminh08@gmail.com,${user.email}`,
+      to: `${user.email}`,
       subject: "Reset Password Link",
       text: `https://psh.com.bd/reset_password/${user._id}/${token}`,
     };
