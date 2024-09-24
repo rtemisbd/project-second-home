@@ -2,39 +2,20 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import pluginRewriteAll from "vite-plugin-rewrite-all";
 
-// https://vitejs.dev/config/
 export default defineConfig({
-  plugins: [react(), pluginRewriteAll()],
+  plugins: [
+    react(), // Use the React plugin with SWC for faster builds
+    pluginRewriteAll(), // Use the rewrite plugin if needed for URL rewriting
+  ],
   optimizeDeps: {
-    include: ["react-to-print"],
+    include: ["react-to-print"], // Ensure this dependency is pre-bundled
   },
-  // build: {
-  //   rollupOptions: {
-  //     external: ['sweetalert2'],
-  //   },
-  // },
-
   // server: {
   //   proxy: {
-  //     "/foo": "http://localhost:4567",
-
-  //     "^/fallback/.*": {
-  //       target: "https://api.psh.com.bd",
-  //       changeOrigin: true,
-  //       rewrite: (path) => path.replace(/^\/fallback/, ""),
-  //     },
-  //     // Using the proxy instance
   //     "/api": {
-  //       target: "https://api.psh.com.bd",
-  //       changeOrigin: true,
-  //       configure: (proxy, options) => {
-  //         // proxy will be an instance of 'http-proxy'
-  //       },
-  //     },
-
-  //     "/socket.io": {
-  //       target: "ws://localhost:5174",
-  //       ws: true,
+  //       target: "https://api.psh.com.bd", // Target API URL
+  //       changeOrigin: true, // Modify the `Origin` header to the target URL
+  //       rewrite: (path) => path.replace(/^\/api/, "/api"), // Remove `/api` prefix before forwarding
   //     },
   //   },
   // },
