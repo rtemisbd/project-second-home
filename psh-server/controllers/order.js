@@ -693,19 +693,6 @@ export const updateBooking = async (req, res, next) => {
             // { new: true }
           );
 
-          // Phone Sms for cancel
-
-          const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
-
-          bookingSms(bookingMessage)
-            .then((response) => {
-              console.log("Response from SMS API:", response);
-              // Handle response data as needed
-            })
-            .catch((error) => {
-              console.error("Error while sending SMS:", error);
-              // Handle error
-            });
           // Booking Cancelation Mail to customer
 
           if (req.body?.status === "Canceled") {
@@ -731,6 +718,19 @@ export const updateBooking = async (req, res, next) => {
                 // console.log("Email sent: " + info.response);
               }
             });
+
+            // Phone Sms for cancel
+
+            const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
+
+            bookingSms(bookingMessage)
+              .then((response) => {
+                // console.log("Response from SMS API:", response);
+                // Handle response data as needed
+              })
+              .catch((error) => {
+                // console.error("Error while sending SMS:", error);
+              });
           }
         }
       } else {
@@ -779,11 +779,11 @@ export const updateBooking = async (req, res, next) => {
 
           bookingSms(bookingMessage)
             .then((response) => {
-              console.log("Response from SMS API:", response);
+              // console.log("Response from SMS API:", response);
               // Handle response data as needed
             })
             .catch((error) => {
-              console.error("Error while sending SMS:", error);
+              // console.error("Error while sending SMS:", error);
               // Handle error
             });
 
@@ -846,18 +846,6 @@ export const updateBooking = async (req, res, next) => {
             }
             // { new: true }
           );
-          // Phone Sms for Cancel
-          const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
-
-          bookingSms(bookingMessage)
-            .then((response) => {
-              console.log("Response from SMS API:", response);
-              // Handle response data as needed
-            })
-            .catch((error) => {
-              console.error("Error while sending SMS:", error);
-              // Handle error
-            });
 
           // Booking Cancelation Mail to customer
 
@@ -884,6 +872,19 @@ export const updateBooking = async (req, res, next) => {
                 console.log("Email sent: " + info.response);
               }
             });
+
+            // Phone Sms for Cancel
+            const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
+
+            bookingSms(bookingMessage)
+              .then((response) => {
+                // console.log("Response from SMS API:", response);
+                // Handle response data as needed
+              })
+              .catch((error) => {
+                // console.error("Error while sending SMS:", error);
+                // Handle error
+              });
           }
         }
       }
