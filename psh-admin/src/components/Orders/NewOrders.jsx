@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
-import { toast } from "react-toastify";
+
 import useTransaction from "../../hooks/useTransaction";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import img from "../../img/new/style.png";
-import axios from "axios";
+
 import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
+import { getFromLocalStorage } from "../../utils/local-storage";
+import { authKey } from "../../utils/storageKey";
 
 const NewOrders = () => {
   const [transactions] = useTransaction();
@@ -53,10 +55,19 @@ const NewOrders = () => {
           size: 10,
         });
 
+        // Get the access token
+        const accessToken = getFromLocalStorage(authKey);
+        // Set the headers
+        const headers = {
+          Authorization: `${accessToken}`,
+          "Content-Type": "application/json",
+        };
+
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
+          `http://localhost:8000/api/order?${queryParams.toString()}`,
           {
             method: "GET",
+            headers: headers,
           }
         );
 

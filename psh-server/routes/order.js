@@ -8,12 +8,24 @@ import {
 } from "../controllers/order.js";
 
 import uploader from "../middleware/uploader.js";
+import auth from "../middleware/auth.js";
+import { ENUM_USER_ROLE } from "../enums/user.js";
 
 const router = express.Router();
 
 router.post("/", uploader, createOrder);
 
-router.get("/", getOrder);
+router.get(
+  "/",
+  auth(
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.MANAGER,
+    ENUM_USER_ROLE.SUB_ADMIN_1,
+    ENUM_USER_ROLE.SUB_ADMIN_2
+  ),
+  getOrder
+);
 router.route("/:user").get(getMyBooking);
 router.get("/:id", getSingleOrder);
 

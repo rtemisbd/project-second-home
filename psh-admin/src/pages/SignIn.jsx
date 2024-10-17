@@ -116,7 +116,7 @@ const SignIn = () => {
 
                       <div className="mb-5">
                         <button type="submit" className="form2_btn">
-                          Enter Password
+                          Login
                         </button>
                       </div>
                     </form>

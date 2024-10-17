@@ -42,6 +42,32 @@ app.use("/public/uploads", express.static("public/uploads"));
 
 dotenv.config();
 
+// Allowed origins for CORS
+// const allowedOrigins = [
+//   "http://localhost:3000",
+//   "http://localhost:3001",
+// ];
+
+// // CORS configuration
+// app.use(
+//   cors({
+//     origin: function (origin, callback) {
+//       if (!origin) return callback(null, true);
+//       if (allowedOrigins.includes(origin)) {
+//         callback(null, true);
+//       } else {
+//         callback(new Error("Not allowed by CORS"));
+//       }
+//     },
+//     credentials: true,
+//     methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+//     allowedHeaders: ["Content-Type", "Authorization"],
+//     optionsSuccessStatus: 200,
+//   })
+// );
+
+// app.options("*", cors());
+
 app.use(cors());
 app.use(cookieParser());
 app.use(express.json());

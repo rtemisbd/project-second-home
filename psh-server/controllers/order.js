@@ -635,7 +635,7 @@ export const updateBooking = async (req, res, next) => {
 
           const mailOptions = {
             from: "alaminbamna08@gmail.com",
-            to: `mohammad.alaminh08@gmail.com,${findSingleOrder?.email}`,
+            to: `${findSingleOrder?.email}`,
             subject:
               "Booking Confirmation: Your Reservation at Project Second Home",
             html: bookingConfirmMail(findSingleOrder),
@@ -706,7 +706,7 @@ export const updateBooking = async (req, res, next) => {
 
             const mailOptions = {
               from: "alaminbamna08@gmail.com",
-              to: `mohammad.alaminh08@gmail.com,${findSingleOrder?.email}`,
+              to: `${findSingleOrder?.email}`,
               subject: `Cancellation Confirmation: Booking ID [${slicedObjectId}]`,
               html: cancelBookingMail(findSingleOrder),
             };
@@ -798,7 +798,7 @@ export const updateBooking = async (req, res, next) => {
 
           const mailOptions = {
             from: "alaminbamna08@gmail.com",
-            to: `mohammad.alaminh08@gmail.com,${findSingleOrder?.email}`,
+            to: `${findSingleOrder?.email}`,
             subject: "Your Booking Details at Project Second Home",
             html: bookingConfirmMail(findSingleOrder),
           };
@@ -860,7 +860,7 @@ export const updateBooking = async (req, res, next) => {
 
             const mailOptions = {
               from: "alaminbamna08@gmail.com",
-              to: `mohammad.alaminh08@gmail.com,${findSingleOrder?.email}`,
+              to: `${findSingleOrder?.email}`,
               subject: `Cancellation Confirmation: Booking ID [${slicedObjectId}]`,
               html: cancelBookingMail(findSingleOrder),
             };

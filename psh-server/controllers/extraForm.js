@@ -46,7 +46,7 @@ export const createExtraForm = async (req, res) => {
 
     // const mailOptions = {
     //   from: "alaminbamna08@gmail.com",
-    //   to: `mohammad.alaminh08@gmail.com,${email}`,
+    //   to: `${email}`,
     //   subject: "PSH Order",
     //   html: "<h1>Welcome</h1><p>Thanks For Order!</p>",
     // };

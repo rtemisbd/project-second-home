@@ -51,7 +51,7 @@ export const createIssue = async (req, res, next) => {
 
     const mailOptions = {
       from: "alaminbamna08@gmail.com",
-      to: `mohammad.alaminh08@gmail.com,${email}`,
+      to: `${email}`,
       subject: "Problem",
       html: `
       <p>Sorry! for this issue, We will try to solve your problem as soon as possible.</p>`,

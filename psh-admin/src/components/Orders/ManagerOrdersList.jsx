@@ -22,6 +22,8 @@ import useBranch from "../../hooks/useBranch";
 import { useLocation } from "react-router-dom";
 import img from "../../img/new/style.png";
 import { Spinner } from "react-bootstrap";
+import { getFromLocalStorage } from "../../utils/local-storage";
+import { authKey } from "../../utils/storageKey";
 
 const ManagerOrdersList = () => {
   const MySwal = withReactContent(Swal);
@@ -69,10 +71,19 @@ const ManagerOrdersList = () => {
     [data, extraCharge, findManagerBranch?._id, allBranch?.length],
     async () => {
       try {
+        // Get the access token
+        const accessToken = getFromLocalStorage(authKey);
+        // Set the headers
+        const headers = {
+          Authorization: `${accessToken}`,
+          "Content-Type": "application/json",
+        };
+
         const response = await fetch(
           `https://api.psh.com.bd/api/order?branch=${findManagerBranch?._id}`,
           {
             method: "GET",
+            headers: headers,
           }
         );
 

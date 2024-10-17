@@ -6,6 +6,7 @@ import Branch from "../models/Branch.js";
 import Otp from "../models/Otp.js";
 import nodemailer from "nodemailer";
 import { bookingSms } from "../SMS/BookingSms.js";
+import config from "../config/index.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -60,8 +61,8 @@ export const createUser = async (req, res) => {
         name: user.firstName + " " + user.lastName,
         id: user._id,
       },
-      process.env.JWT_SECRET,
-      { expiresIn: "1h" }
+      config.jwt.secret,
+      { expiresIn: config.jwt.expires_in }
     );
 
     res.status(200).json({ user, token, message: "Registration successful" });
@@ -184,7 +185,10 @@ export const loginUser = async (req, res) => {
     };
 
     // Generate a JWT token
-    const token = jwt.sign({ userId: user._id }, "your-secret-key");
+    const token = jwt.sign(
+      { userId: user._id, role: user?.role },
+      config.jwt.secret
+    );
 
     // Return the token and user information
     res.status(200).json({ token, user: userData });
@@ -238,7 +242,10 @@ export const loginAdminUser = async (req, res) => {
     };
 
     // Generate a JWT token
-    const token = jwt.sign({ userId: user._id }, "your-secret-key");
+    const token = jwt.sign(
+      { userId: user._id, role: user?.role },
+      config.jwt.secret
+    );
 
     // Return the token and user information
     res.status(200).json({ token, user: userData });

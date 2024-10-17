@@ -29,6 +29,8 @@ import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import ExportToExcel from "./ExportToExcel";
 import { formatDate } from "../../utils/dateConvert";
+import { getFromLocalStorage } from "../../utils/local-storage";
+import { authKey } from "../../utils/storageKey";
 const TransactionAdmin = () => {
   const ref = useRef();
   const fromDateRef = useRef(null);
@@ -62,8 +64,16 @@ const TransactionAdmin = () => {
 
   const { refetch } = useQuery([data, allBranch?.length], async () => {
     try {
+      // Get the access token
+      const accessToken = getFromLocalStorage(authKey);
+      // Set the headers
+      const headers = {
+        Authorization: `${accessToken}`,
+        "Content-Type": "application/json",
+      };
       const response = await fetch(`https://api.psh.com.bd/api/transaction`, {
         method: "GET",
+        headers: headers,
       });
 
       if (!response.ok) {
@@ -141,6 +151,13 @@ const TransactionAdmin = () => {
       : "All";
 
     try {
+      // Get the access token
+      const accessToken = getFromLocalStorage(authKey);
+      // Set the headers
+      const headers = {
+        Authorization: `${accessToken}`,
+        "Content-Type": "application/json",
+      };
       const response = await axios.get(
         `https://api.psh.com.bd/api/transaction`,
         {
@@ -153,6 +170,7 @@ const TransactionAdmin = () => {
             paymentType: payementType,
             transactionId: transactionId,
           },
+          headers: headers,
         }
       );
 

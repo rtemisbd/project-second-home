@@ -55,7 +55,7 @@ export const updateContactUs = async (req, res, next) => {
 
     const mailOptions = {
       from: "alaminbamna08@gmail.com",
-      to: `mohammad.alaminh08@gmail.com,${req?.body?.email}`,
+      to: `${req?.body?.email}`,
       subject: "Contact",
       html: `
       <p>Thanks for contact us.</p>
