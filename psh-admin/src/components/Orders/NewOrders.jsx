@@ -64,7 +64,7 @@ const NewOrders = () => {
         };
 
         const response = await fetch(
-          `http://localhost:8000/api/order?${queryParams.toString()}`,
+          `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
           {
             method: "GET",
             headers: headers,
