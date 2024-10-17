@@ -99,7 +99,7 @@ const TransactionAdmin = () => {
   // Find User Booking By Filtering
   let totalBookingAmount = 0;
 
-  if (isFilter && bookings) {
+  if (isFilter) {
     const filterBookings = bookings?.filter((booking) =>
       filterData?.map((data) => data?.orderId).includes(booking?._id)
     );
