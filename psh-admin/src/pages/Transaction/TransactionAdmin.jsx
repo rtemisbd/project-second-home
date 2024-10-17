@@ -65,15 +65,15 @@ const TransactionAdmin = () => {
   const { refetch } = useQuery([data, allBranch?.length], async () => {
     try {
       // Get the access token
-      const accessToken = getFromLocalStorage(authKey);
+      // const accessToken = getFromLocalStorage(authKey);
       // Set the headers
-      const headers = {
-        Authorization: `${accessToken}`,
-        "Content-Type": "application/json",
-      };
+      // const headers = {
+      //   Authorization: `${accessToken}`,
+      //   "Content-Type": "application/json",
+      // };
       const response = await fetch(`https://api.psh.com.bd/api/transaction`, {
         method: "GET",
-        headers: headers,
+        // headers: headers,
       });
 
       if (!response.ok) {
@@ -98,17 +98,17 @@ const TransactionAdmin = () => {
   let totalBookingAmount = 0;
 
   if (isFilter) {
-    const filterBookings = bookings.filter((booking) =>
+    const filterBookings = bookings?.filter((booking) =>
       filterData?.map((data) => data?.orderId).includes(booking?._id)
     );
 
-    for (const item of filterBookings.filter(
+    for (const item of filterBookings?.filter(
       (booking) => booking && booking.status === "Approved"
     )) {
       totalBookingAmount += item.payableAmount;
     }
   } else {
-    for (const item of bookings.filter(
+    for (const item of bookings?.filter(
       (booking) => booking && booking.status === "Approved"
     )) {
       totalBookingAmount += item.payableAmount;
@@ -152,12 +152,12 @@ const TransactionAdmin = () => {
 
     try {
       // Get the access token
-      const accessToken = getFromLocalStorage(authKey);
+      // const accessToken = getFromLocalStorage(authKey);
       // Set the headers
-      const headers = {
-        Authorization: `${accessToken}`,
-        "Content-Type": "application/json",
-      };
+      // const headers = {
+      //   Authorization: `${accessToken}`,
+      //   "Content-Type": "application/json",
+      // };
       const response = await axios.get(
         `https://api.psh.com.bd/api/transaction`,
         {
@@ -170,7 +170,7 @@ const TransactionAdmin = () => {
             paymentType: payementType,
             transactionId: transactionId,
           },
-          headers: headers,
+          // headers: headers,
         }
       );
 
