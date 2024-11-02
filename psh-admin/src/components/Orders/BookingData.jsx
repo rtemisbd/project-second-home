@@ -7,7 +7,7 @@ import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
 import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
-import { PiWhatsappLogoDuotone } from "react-icons/pi";
+import { FaWhatsapp } from "react-icons/fa";
 
 // whats app ui
 const pulseEffect = {
@@ -231,12 +231,12 @@ const BookingData = ({
         {/* whats app contact */}
         <td>
           <a
-            href={`https://api.whatsapp.com/send?phone=88${booking.phone}`}
+            href={`https://api.whatsapp.com/send?phone=88${booking?.phone}`}
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button class="btn btn-light relative ">
-              <PiWhatsappLogoDuotone
+            <button class="btn btn-light position-relative">
+              <FaWhatsapp
                 style={{
                   width: "32px",
                   height: "32px",
@@ -245,8 +245,14 @@ const BookingData = ({
                 }}
               />
               <span
-                class="spinner-grow spinner-grow-sm text-success  "
+                class="spinner-grow spinner-grow-sm text-success "
                 aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  top: "-5px", // Adjust this value to move it higher or lower
+                  left: "70%",
+                  // transform: "translateX(-50%)",
+                }}
               ></span>
             </button>
           </a>
