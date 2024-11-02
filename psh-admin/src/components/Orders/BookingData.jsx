@@ -7,6 +7,25 @@ import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
 import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
+import { PiWhatsappLogoDuotone } from "react-icons/pi";
+
+// whats app ui
+const pulseEffect = {
+  position: "absolute",
+  height: "100%",
+  width: "100%",
+  borderRadius: "50%",
+  backgroundColor: "rgba(14, 192, 67, 0.75)",
+  animation: "ping 1s infinite",
+};
+
+const innerCircleStyle = {
+  borderRadius: "50%",
+  height: "12px",
+  width: "12px",
+  backgroundColor: "#00BBB4",
+  position: "relative",
+};
 
 const BookingData = ({
   booking,
@@ -74,6 +93,8 @@ const BookingData = ({
   useEffect(() => {
     setIsIncludeFood(booking?.isIncludeFood);
   }, []);
+
+  console.log(booking);
 
   return (
     <>
@@ -206,6 +227,29 @@ const BookingData = ({
               />
             )}
           </div>
+        </td>
+        {/* whats app contact */}
+        <td>
+          <a
+            href={`https://api.whatsapp.com/send?phone=88${booking.phone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button class="btn btn-light relative ">
+              <PiWhatsappLogoDuotone
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  cursor: "pointer",
+                  color: "#25D366",
+                }}
+              />
+              <span
+                class="spinner-grow spinner-grow-sm text-success  "
+                aria-hidden="true"
+              ></span>
+            </button>
+          </a>
         </td>
         <td>
           <div>

@@ -44,6 +44,7 @@ const BookingsTable = ({
             <th>Due Amount</th>
             <th>Total Receive</th>
             <th>Status</th>
+            <th>Contact</th>
             <th>Details</th>
             <th>Update Duration</th>
             <th>Action</th>
