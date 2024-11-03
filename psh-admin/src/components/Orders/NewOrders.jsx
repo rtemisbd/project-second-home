@@ -151,6 +151,8 @@ const NewOrders = () => {
     setBookingStatus(e.target.value);
   };
 
+  console.log("data", data);
+
   return (
     <div className="wrapper">
       <div>
@@ -250,6 +252,10 @@ const NewOrders = () => {
                   Pending Bookings : {data?.pendingCount}
                 </p>
                 <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p>
+                <p className="ms-2 text-blue">
+                  {" "}
+                  Running Bookings :{data?.runningBookingCount}
+                </p>
               </div>
             </div>
           </div>
