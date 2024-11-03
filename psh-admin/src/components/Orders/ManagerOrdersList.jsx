@@ -325,7 +325,7 @@ const ManagerOrdersList = () => {
     {
       text: "Contact",
       formatter: (cellContent, row, index) => {
-        return <span className=" fw-bold">Call</span>;
+        return <span className=" fw-bold">Contact</span>;
       },
     },
     {

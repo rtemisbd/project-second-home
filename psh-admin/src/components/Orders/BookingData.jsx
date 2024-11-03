@@ -35,6 +35,7 @@ const BookingData = ({
   extraCharge,
   isLoading,
   page,
+  size,
 }) => {
   // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
@@ -94,12 +95,10 @@ const BookingData = ({
     setIsIncludeFood(booking?.isIncludeFood);
   }, []);
 
-  console.log(booking);
-
   return (
     <>
       <tr className="bookings_data">
-        <td>{(page - 1) * 10 + index + 1}</td>
+        <td>{(page - 1) * size + index + 1}</td>
 
         <td
           style={{

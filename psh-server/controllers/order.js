@@ -466,6 +466,7 @@ export const getOrder = async (req, res, next) => {
 
     const results = await OrderModel.aggregate(pipeline);
     const orders = results[0]?.paginatedResults || [];
+    // console.log(orders);
 
     const {
       // bookingsTotalCount = 0,

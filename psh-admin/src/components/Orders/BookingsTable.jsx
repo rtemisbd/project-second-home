@@ -13,16 +13,8 @@ const BookingsTable = ({
   transactions,
   extraCharge,
   isLoading,
+  size,
 }) => {
-  const MAX_PAGE_BUTTONS = 5; // Define the maximum number of page buttons to show
-
-  // Calculate the range of page numbers to display
-  const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
-  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
-  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()].map(
-    (i) => startPage + i
-  );
-
   return (
     <div>
       <Table bordered>
@@ -61,6 +53,7 @@ const BookingsTable = ({
               extraCharge={extraCharge}
               transactions={transactions}
               isLoading={isLoading}
+              size={size}
             />
           ))}
         </tbody>
@@ -79,49 +72,6 @@ const BookingsTable = ({
           </div>
         ))}
       </div> */}
-      <div className="pagination d-flex justify-content-end gap-0">
-        <button
-          onClick={() => setPage(1)}
-          disabled={page === 1}
-          className="pagination-button"
-        >
-          First
-        </button>
-        <button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          className="pagination-button"
-        >
-          Previous
-        </button>
-        {visiblePageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => setPage(number)}
-            className={
-              page === number
-                ? "page-selected pagination-button"
-                : "pagination-button"
-            }
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={page === pageCount || pageCount === 0}
-          className="pagination-button"
-        >
-          Next
-        </button>
-        <button
-          onClick={() => setPage(pageCount)}
-          disabled={page === pageCount || pageCount === 0}
-          className="pagination-button"
-        >
-          Last
-        </button>
-      </div>
     </div>
   );
 };

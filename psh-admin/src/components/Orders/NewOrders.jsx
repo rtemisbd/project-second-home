@@ -19,6 +19,9 @@ const NewOrders = () => {
   const [pageCount, setPageCount] = useState(0);
 
   const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [pageSizeOptions, setPageSizeOptions] = useState([10, 20]);
+  const [prevLastData, setPrevLastData] = useState(10);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -30,6 +33,20 @@ const NewOrders = () => {
   const [data, setData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
+
+  const MAX_PAGE_BUTTONS = 5;
+
+  // Page range calculation
+  const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
+  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
+  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()].map(
+    (i) => startPage + i
+  );
+
+  // Update the `size` and reset to page 1
+  const handlePageSizeChange = (e) => {
+    setSize(Number(e.target.value));
+  };
 
   // Get all Bookings
   const { refetch } = useQuery(
@@ -52,7 +69,8 @@ const NewOrders = () => {
           paymentStatus: paymentStatus,
           status: bookingStatus,
           page: page,
-          size: 10,
+          size: size,
+          // prevLastData: prevLastData,
         });
 
         // Get the access token
@@ -64,7 +82,8 @@ const NewOrders = () => {
         };
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
+          // `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
+          `http://localhost:8000/api/order?${queryParams.toString()}`,
           {
             method: "GET",
             headers: headers,
@@ -81,8 +100,21 @@ const NewOrders = () => {
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
-        const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
+        const totalPageCount = Math.ceil(data?.bookingsTotalCount / size);
         setPageCount(totalPageCount);
+
+        // Dynamically set pageSizeOptions based on bookingsTotalCount
+        const totalCount = data?.bookingsTotalCount;
+        if (totalCount) {
+          const dynamicPageSizes = [];
+          for (let i = 10; i <= totalCount; i += 10) {
+            dynamicPageSizes.push(i);
+          }
+          if (!dynamicPageSizes.includes(totalCount)) {
+            dynamicPageSizes.push(totalCount); // Add totalCount as the largest option
+          }
+          setPageSizeOptions(dynamicPageSizes);
+        }
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -92,9 +124,15 @@ const NewOrders = () => {
     }
   );
 
+  // Re-fetch data whenever size changes
+  useEffect(() => {
+    refetch();
+  }, [size, refetch]);
+
   // Get All Branch
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/branch`)
+    // fetch(`https://api.psh.com.bd/api/branch`)
+    fetch(`http://localhost:8000/api/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
   }, []);
@@ -113,57 +151,6 @@ const NewOrders = () => {
     setBookingStatus(e.target.value);
   };
 
-  // const handleSearch = async () => {
-  //   setStatus(bookingStatus);
-  //   const withIdBooking = data?.find(
-  //     (booking) => booking?._id?.slice(-5) === bookingId.toLowerCase()
-  //   );
-  //   const withUserIdBooking = data?.filter(
-  //     (booking) => booking?.userId?.slice(-5) === userId.toLowerCase()
-  //   );
-
-  //   if (bookingId.toLowerCase() && !withIdBooking) {
-  //     return toast.error("Sorry! Wrong Id ");
-  //   }
-
-  //   setIsLoading(true);
-  //   setIsFilter(true);
-  //   const orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-  //   const bookingUserId = withUserIdBooking[0]?.userId
-  //     ? withUserIdBooking[0]?.userId
-  //     : "All";
-
-  //   try {
-  //     const response = await axios.get(`https://api.psh.com.bd/api/order`, {
-  //       params: {
-  //         orderId: orderId,
-  //         userId: bookingUserId,
-  //         fromDate: fromDate,
-  //         toDate: toDate,
-  //         branch: branch,
-  //         paymentStatus: paymentStatus,
-  //         status: bookingStatus,
-  //         page: page,
-  //         size: 10,
-  //       },
-  //     });
-
-  //     if (response.status !== 200) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = response.data;
-  //     setFilterData(data?.orders);
-  //     console.log(data);
-  //     const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
-  //     setPageCount2(totalPageCount);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
-
   return (
     <div className="wrapper">
       <div>
@@ -171,6 +158,7 @@ const NewOrders = () => {
           {/* Content Wrapper. Contains page content */}
 
           <div className="content-wrapper h-0" style={{ background: "unset" }}>
+            {/* booking details */}
             <h4 className="customize mx-lg-5 mb-3">Booking Deatails</h4>
             <div className="row customize mx-lg-5">
               <div className="col-md-3 home_card_m">
@@ -249,6 +237,7 @@ const NewOrders = () => {
                 </div>
               </div>
             </div>
+            {/* booking summery */}
             <div className="mx-lg-5 customize">
               <div className="d-flex mt-4 fw-bold ">
                 <p> Total Bookings : {data?.bookingsTotalCount}</p>
@@ -270,6 +259,7 @@ const NewOrders = () => {
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">
+            {/* search bar */}
             <div className="d-lg-flex justify-content-end gap-4 ">
               <div className="">
                 <label htmlFor="">From Date </label>
@@ -375,6 +365,7 @@ const NewOrders = () => {
             </div>
 
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
+            {/* booking table */}
             {isLoading ? (
               <p
                 style={{ margin: "150px 0" }}
@@ -394,6 +385,7 @@ const NewOrders = () => {
                     transactions={transactions}
                     refetch={refetch}
                     extraCharge={extraCharge}
+                    size={size}
                   />
                 </div>
               </div>
@@ -404,6 +396,64 @@ const NewOrders = () => {
             )}
           </div>
         </section>
+        <div className="pagination d-flex justify-content-end align-items-center gap-0">
+          <label id="size" className="mt-2">
+            Show row
+          </label>
+          <select
+            id="size"
+            value={size}
+            onChange={handlePageSizeChange}
+            className="btn border mx-2"
+          >
+            {pageSizeOptions?.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+          </select>
+          <button
+            onClick={() => setPage(1)}
+            disabled={page === 1}
+            className="pagination-button"
+          >
+            First
+          </button>
+          <button
+            onClick={() => setPage(page - 1)}
+            disabled={page === 1}
+            className="pagination-button"
+          >
+            Previous
+          </button>
+          {visiblePageNumbers.map((number) => (
+            <button
+              key={number}
+              onClick={() => setPage(number)}
+              className={
+                page === number
+                  ? "page-selected pagination-button"
+                  : "pagination-button"
+              }
+            >
+              {number}
+            </button>
+          ))}
+          <button
+            onClick={() => setPage(page + 1)}
+            disabled={page === pageCount || pageCount === 0}
+            className="pagination-button"
+          >
+            Next
+          </button>
+          <button
+            onClick={() => setPage(pageCount)}
+            disabled={page === pageCount || pageCount === 0}
+            className="pagination-button"
+          >
+            Last
+          </button>
+        </div>
       </div>
     </div>
   );
