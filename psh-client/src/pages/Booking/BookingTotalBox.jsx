@@ -100,9 +100,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   }, [user?._id]);
 
   useEffect(() => {
-    // set Extra Charge
-    // setAddmissionFee(extraCharge[0]?.admissionFee);
-    // setSecurityFee(extraCharge[0]?.securityFee);
     setDisCountTk(0);
     setPromoCodeCheck(false);
     setVatTaxt((subTotal * extraCharge[0]?.vatTax) / 100);
@@ -147,8 +144,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      // const minimum = data?.dAmountForDay * 3;
-      // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
       setMinimumPayment(500);
 
       setShowMinimumPayment(true);
@@ -198,7 +193,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
           : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
-      // setminimumPayment(addMissionFee);
     } else if (
       customerRent?.months === 0 &&
       customerRent?.years !== undefined
@@ -210,7 +204,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
           : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
-      // setminimumPayment(addMissionFee);
     } else {
       const totalAmountForDays =
         parseInt(subTotal + vatTax) +
@@ -219,7 +212,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
           : 0);
       setTotalRentAmount(parseInt(totalAmountForDays));
       setPayableAmount(parseInt(totalAmountForDays));
-      // setminimumPayment(0);
     }
   }, [
     isIncludeFood,
@@ -304,9 +296,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
       if (promoCode === userPromo?.promoCode && !promoCodeCheck) {
         const discount = userPromo?.promoDiscount / 100;
         setDisCountTk(totalRentAmount * discount);
-        // setTotalRentAmount(
-        //   parseInt(totalRentAmount - totalRentAmount * discount)
-        // );
+
         setPayableAmount(
           parseInt(totalRentAmount - totalRentAmount * discount)
         );

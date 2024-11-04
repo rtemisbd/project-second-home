@@ -10,10 +10,10 @@ const getOrderFromDB = async (queries) => {
     branch,
     paymentStatus,
     runningStatus,
+    guestType,
   } = queries;
   const today = new Date();
   const formattedDate = today.toISOString().split("T")[0];
-  console.log(typeof formattedDate);
 
   const bookingStatus = queries?.status;
   const page = parseInt(queries?.page) || 1;
@@ -34,15 +34,14 @@ const getOrderFromDB = async (queries) => {
       $lte: new Date(toDate),
     };
   }
-  // Running status filter
-  // if (runningStatus && runningStatus !== "All") {
-  //   matchStage.bookingInfo.rentDate.bookStartDate = { $lte: formattedDate };
-  //   matchStage.bookingInfo.rentDate.bookEndDate = { $gte: formattedDate };
-  // }
-  if (runningStatus && runningStatus !== "All") {
+  if (runningStatus && runningStatus === "Running") {
     matchStage["bookingInfo.rentDate.bookStartDate"] = { $lte: formattedDate };
     matchStage["bookingInfo.rentDate.bookEndDate"] = { $gte: formattedDate };
   }
+  if (runningStatus && runningStatus === "Closed") {
+    matchStage["bookingInfo.rentDate.bookEndDate"] = { $lt: formattedDate };
+  }
+  if (guestType && guestType !== "All") matchStage.customerType = guestType;
 
   const totalCountsPipeline = [
     { $match: matchStage },

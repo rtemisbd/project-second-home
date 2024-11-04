@@ -32,6 +32,7 @@ const NewOrders = () => {
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
   const [runningStatus, setRunningStatus] = useState("All");
+  const [guestType, setGuestType] = useState("All");
 
   const [data, setData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
@@ -63,6 +64,7 @@ const NewOrders = () => {
       fromDate,
       toDate,
       runningStatus,
+      guestType,
     ],
     async () => {
       try {
@@ -74,6 +76,7 @@ const NewOrders = () => {
           page,
           size,
           runningStatus,
+          guestType,
           status: bookingStatus,
         });
 
@@ -86,7 +89,6 @@ const NewOrders = () => {
         };
 
         const response = await fetch(
-          // `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
           `${baseUrl}/api/order?${queryParams.toString()}`,
           {
             method: "GET",
@@ -127,6 +129,7 @@ const NewOrders = () => {
       refetchOnWindowFocus: false,
     }
   );
+  console.log(data);
 
   // Re-fetch data whenever size changes
   useEffect(() => {
@@ -157,6 +160,10 @@ const NewOrders = () => {
 
   const handleRunningStatus = (e) => {
     setRunningStatus(e.target.value);
+  };
+
+  const handleGuestType = (e) => {
+    setGuestType(e.target.value);
   };
 
   return (
@@ -260,9 +267,7 @@ const NewOrders = () => {
                 <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p>
               </div>
             </div>
-            <div className="mx-lg-5 customize">
-              <ManageMeal />
-            </div>
+            <div className="mx-lg-5 customize">{/* <ManageMeal /> */}</div>
           </div>
         </div>
       </div>
@@ -337,15 +342,28 @@ const NewOrders = () => {
                 </select>
               </div>
               <div>
-                <label htmlFor="">Running Bookings </label> <br />
+                <label htmlFor="">Running / Closed </label> <br />
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handleRunningStatus}
                 >
                   <option>All</option>
-
                   <option>Running</option>
+                  <option>Closed</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="">Guest Type </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px", width: "120px" }}
+                  onChange={handleGuestType}
+                >
+                  <option>All</option>
+                  <option>Walk-in Guest</option>
+                  <option>Monthly</option>
+                  <option>Yearly</option>
                 </select>
               </div>
               {/* <div>

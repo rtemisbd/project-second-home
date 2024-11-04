@@ -155,7 +155,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
     { runValidators: true }
   );
 
-  // Create Transaction whent First booking only payment bkash or nagad
+  // Create Transaction when First booking only payment bkash or nagad
 
   if (result?.paymentType !== "cash") {
     const currentDate = new Date().toISOString().split("T")[0];
@@ -183,7 +183,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
     statusCode: 200,
     success: true,
     message:
-      "Thank Youe ! Your Booking Successfully Done, I will very soon Contact You",
+      "Thank You ! Your Booking Successfully Done, We will contact you very soon.",
   });
 });
 
