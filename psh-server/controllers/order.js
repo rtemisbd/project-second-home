@@ -77,6 +77,9 @@ export const createOrder = catchAsync(async (req, res, next) => {
     emergencyContact,
     ...bookingData,
   });
+  newOrder.customerType = newOrder.bookingInfo.customerRent?.daysDifference
+    ? "Walk-in Guest"
+    : "Monthly";
 
   // Booking Save to Database
   const result = await newOrder.save();

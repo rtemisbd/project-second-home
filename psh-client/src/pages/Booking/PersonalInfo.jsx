@@ -79,6 +79,8 @@ const PersonalInfo = () => {
       navigate("/");
     }
   }, []);
+  // console.log(bookingItem);
+
   // Get Single singleUser
   useEffect(() => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
@@ -152,7 +154,7 @@ const PersonalInfo = () => {
       emergencyContact?.length !== 11 ||
       emergencyContact?.substring(0, 2) !== "01"
     ) {
-      return toast.error("Sorry! you gave me wrong Gardian phone number");
+      return toast.error("Sorry! you gave me wrong Guardian phone number");
     }
     const formData = new FormData();
 

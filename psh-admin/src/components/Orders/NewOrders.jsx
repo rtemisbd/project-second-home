@@ -363,7 +363,6 @@ const NewOrders = () => {
                   <option>All</option>
                   <option>Walk-in Guest</option>
                   <option>Monthly</option>
-                  <option>Yearly</option>
                 </select>
               </div>
               {/* <div>

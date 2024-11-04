@@ -37,6 +37,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
+  console.log(customerRent);
 
   const [selectedCheckPayment, setSelectedPayment] = useState(null);
   const [promos] = usePromos();
@@ -584,7 +585,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
           </div>
           <div className=" mt-1.5 w-full px-1 py-[0.5px] sm:hidden md:block duration_large_screen">
             <p className="text-center font-bold mb-2 mt-[-5px]">Duration</p>
-            <p className=" duraion-count font-normal ps-1 text-sm ">
+            <p className=" duration-count font-normal ps-1 text-sm ">
               {customerRent?.daysDifference >= 0
                 ? `${customerRent?.daysDifference} days`
                 : "" ||
