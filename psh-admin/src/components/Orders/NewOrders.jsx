@@ -9,6 +9,8 @@ import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
+import ManageMeal from "./ManageMeal";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const NewOrders = () => {
   const [transactions] = useTransaction();
@@ -29,6 +31,7 @@ const NewOrders = () => {
   const [branch, setBranch] = useState("All");
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
+  const [runningStatus, setRunningStatus] = useState("All");
 
   const [data, setData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
@@ -59,18 +62,19 @@ const NewOrders = () => {
       bookingStatus,
       fromDate,
       toDate,
+      runningStatus,
     ],
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          fromDate: fromDate,
-          toDate: toDate,
-          branch: branch,
-          paymentStatus: paymentStatus,
+          fromDate,
+          toDate,
+          branch,
+          paymentStatus,
+          page,
+          size,
+          runningStatus,
           status: bookingStatus,
-          page: page,
-          size: size,
-          // prevLastData: prevLastData,
         });
 
         // Get the access token
@@ -83,7 +87,7 @@ const NewOrders = () => {
 
         const response = await fetch(
           // `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
-          `http://localhost:8000/api/order?${queryParams.toString()}`,
+          `${baseUrl}/api/order?${queryParams.toString()}`,
           {
             method: "GET",
             headers: headers,
@@ -132,7 +136,7 @@ const NewOrders = () => {
   // Get All Branch
   useEffect(() => {
     // fetch(`https://api.psh.com.bd/api/branch`)
-    fetch(`http://localhost:8000/api/branch`)
+    fetch(`${baseUrl}/api/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
   }, []);
@@ -151,7 +155,9 @@ const NewOrders = () => {
     setBookingStatus(e.target.value);
   };
 
-  console.log("data", data);
+  const handleRunningStatus = (e) => {
+    setRunningStatus(e.target.value);
+  };
 
   return (
     <div className="wrapper">
@@ -252,11 +258,10 @@ const NewOrders = () => {
                   Pending Bookings : {data?.pendingCount}
                 </p>
                 <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p>
-                <p className="ms-2 text-blue">
-                  {" "}
-                  Running Bookings :{data?.runningBookingCount}
-                </p>
               </div>
+            </div>
+            <div className="mx-lg-5 customize">
+              <ManageMeal />
             </div>
           </div>
         </div>
@@ -331,6 +336,18 @@ const NewOrders = () => {
                   <option>Processing</option>
                 </select>
               </div>
+              <div>
+                <label htmlFor="">Running Bookings </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px", width: "120px" }}
+                  onChange={handleRunningStatus}
+                >
+                  <option>All</option>
+
+                  <option>Running</option>
+                </select>
+              </div>
               {/* <div>
                 <label htmlFor="">User Id </label> <br />
                 <input
@@ -385,8 +402,6 @@ const NewOrders = () => {
                   <BookingsTable
                     data={data?.orders}
                     page={page}
-                    pageCount={pageCount}
-                    setPage={setPage}
                     isLoading={isLoading}
                     transactions={transactions}
                     refetch={refetch}

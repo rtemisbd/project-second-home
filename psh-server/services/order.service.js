@@ -2,7 +2,18 @@ import mongoose from "mongoose";
 import OrderModel from "../models/Order.js";
 
 const getOrderFromDB = async (queries) => {
-  const { orderId, userId, fromDate, toDate, branch, paymentStatus } = queries;
+  const {
+    orderId,
+    userId,
+    fromDate,
+    toDate,
+    branch,
+    paymentStatus,
+    runningStatus,
+  } = queries;
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0];
+  console.log(typeof formattedDate);
 
   const bookingStatus = queries?.status;
   const page = parseInt(queries?.page) || 1;
@@ -22,6 +33,15 @@ const getOrderFromDB = async (queries) => {
       $gte: new Date(fromDate),
       $lte: new Date(toDate),
     };
+  }
+  // Running status filter
+  // if (runningStatus && runningStatus !== "All") {
+  //   matchStage.bookingInfo.rentDate.bookStartDate = { $lte: formattedDate };
+  //   matchStage.bookingInfo.rentDate.bookEndDate = { $gte: formattedDate };
+  // }
+  if (runningStatus && runningStatus !== "All") {
+    matchStage["bookingInfo.rentDate.bookStartDate"] = { $lte: formattedDate };
+    matchStage["bookingInfo.rentDate.bookEndDate"] = { $gte: formattedDate };
   }
 
   const totalCountsPipeline = [

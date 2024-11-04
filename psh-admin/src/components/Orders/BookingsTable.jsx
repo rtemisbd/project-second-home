@@ -2,13 +2,12 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import BookingData from "./BookingData";
 import { ToastContainer } from "react-toastify";
-import "./BookingsTable.css";
+// import "./BookingsTable.css";
+import "./styles/BookingsTable.css";
 
 const BookingsTable = ({
   data,
-  setPage,
   page,
-  pageCount,
   refetch,
   transactions,
   extraCharge,
@@ -59,19 +58,6 @@ const BookingsTable = ({
         </tbody>
       </Table>
       <ToastContainer className="toast-position" position="top-center" />
-
-      {/* <div className="pagination d-flex justify-content-end">
-        {[...Array(pageCount).keys()].map((number, index) => (
-          <div key={index}>
-            <button
-              onClick={() => setPage(number)}
-              className={page === number ? "page-selected" : ""}
-            >
-              {number + 1}
-            </button>
-          </div>
-        ))}
-      </div> */}
     </div>
   );
 };

@@ -1,7 +1,7 @@
 import React from "react";
 
-import "./SeeOrderDetails.css";
-
+// import "./SeeOrderDetails.css";
+import "./styles/SeeOrderDetails.css";
 const ImageViewer = ({ data }) => {
   return (
     <div className="">
