@@ -129,7 +129,6 @@ const NewOrders = () => {
       refetchOnWindowFocus: false,
     }
   );
-  console.log(data);
 
   // Re-fetch data whenever size changes
   useEffect(() => {
