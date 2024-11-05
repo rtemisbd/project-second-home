@@ -39,6 +39,8 @@ const NewOrders = () => {
   const [data, setData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
+  const [findingStatement, setFindingStatement] = useState(true);
+  const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
   const MAX_PAGE_BUTTONS = 5;
 
@@ -204,7 +206,16 @@ const NewOrders = () => {
     setGuestType("All");
     document.getElementById("guestTypeId").value = "All";
   };
-  console.log(unknownQuery);
+
+  useEffect(() => {
+    if (data?.orders?.length === 0 && !hasTimeoutRun) {
+      const timeoutId = setTimeout(() => {
+        setFindingStatement(!findingStatement);
+        setHasTimeoutRun(true);
+      }, 5000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [data?.orders?.length, findingStatement, hasTimeoutRun]);
 
   return (
     <div className="wrapper">
@@ -504,10 +515,12 @@ const NewOrders = () => {
                   />
                 </div>
               </div>
-            ) : (
+            ) : findingStatement ? (
               <p className="text-center text-danger fw-bold">
                 Find Bookings... <Spinner size="sm" animation="grow" />
               </p>
+            ) : (
+              <p className="text-center text-danger fw-bold">No Data Found</p>
             )}
           </div>
         </section>

@@ -31,6 +31,7 @@ import ExportToExcel from "./ExportToExcel";
 import { formatDate } from "../../utils/dateConvert";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
+import { baseUrl } from "../../utils/getBaseURL";
 const TransactionAdmin = () => {
   const ref = useRef();
   const fromDateRef = useRef(null);
@@ -73,7 +74,7 @@ const TransactionAdmin = () => {
         "Content-Type": "application/json",
       };
 
-      const response = await fetch(`https://api.psh.com.bd/api/transaction`, {
+      const response = await fetch(`${baseUrl}/api/transaction`, {
         method: "GET",
         headers: headers,
       });
@@ -91,7 +92,7 @@ const TransactionAdmin = () => {
 
   // Get All Branch
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/branch`)
+    fetch(`${baseUrl}/api/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
   }, []);
@@ -163,21 +164,18 @@ const TransactionAdmin = () => {
       };
 
       // Make the Axios GET request
-      const response = await axios.get(
-        `https://api.psh.com.bd/api/transaction`,
-        {
-          params: {
-            orderId: orderId,
-            userId: bookingUserId,
-            fromDate: fromDate,
-            toDate: toDate,
-            branch: branch,
-            paymentType: payementType,
-            transactionId: transactionId,
-          },
-          headers: headers,
-        }
-      );
+      const response = await axios.get(`${baseUrl}/api/transaction`, {
+        params: {
+          orderId: orderId,
+          userId: bookingUserId,
+          fromDate: fromDate,
+          toDate: toDate,
+          branch: branch,
+          paymentType: payementType,
+          transactionId: transactionId,
+        },
+        headers: headers,
+      });
 
       if (!response.status === 200) {
         throw new Error("Network response was not ok");
@@ -421,7 +419,7 @@ const TransactionAdmin = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/transaction/${id}`;
+      const url = `${baseUrl}/api/transaction/${id}`;
       fetch(url, {
         method: "DELETE",
       })
