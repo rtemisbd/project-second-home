@@ -1,5 +1,79 @@
 import mongoose from "mongoose";
 import OrderModel from "../models/Order.js";
+import User from "../models/User.js";
+import { generateBookingId } from "../utils/generateBookingId.js";
+
+const createOrderIntoDB = async (payload) => {
+  const {
+    email,
+    bookingInfo,
+    fullName,
+    fatherName,
+    motherName,
+    phone,
+    address,
+    passport,
+    birthDate,
+    gender,
+    nid,
+    validityType,
+    validityNumber,
+    employeeStatus,
+    emplyeeIncome,
+    emergencyContactName,
+    emergencyRelationC,
+    emergencyContact,
+    ...bookingData
+  } = req.body;
+
+  const user = await User.findOne({ email: email });
+
+  const bookingInfoParse = JSON.parse(bookingInfo);
+
+  const gardianImg = req?.files?.gardianImg?.length
+    ? req?.files?.gardianImg[0]?.path
+    : user?.gardianImg;
+
+  const image = req?.files?.image?.length
+    ? req?.files?.image[0]?.path
+    : user?.cardImage;
+  const branch = bookingInfoParse?.branch;
+
+  const generateId = await generateBookingId();
+
+  const newOrder = new OrderModel({
+    bookingInfo: bookingInfoParse,
+    bookingId: generateId,
+    email,
+    branch,
+    image,
+    gardianImg,
+    fullName,
+    fatherName,
+    motherName,
+    phone,
+    address,
+    passport,
+    birthDate,
+    gender,
+    nid,
+    validityType,
+    validityNumber,
+    employeeStatus,
+    emplyeeIncome,
+    emergencyContactName,
+    emergencyRelationC,
+    emergencyContact,
+    ...bookingData,
+  });
+  newOrder.customerType = newOrder.bookingInfo.customerRent?.daysDifference
+    ? "Walk-in Guest"
+    : "Monthly";
+
+  // Booking Save to Database
+  const result = await newOrder.save();
+  return result;
+};
 
 const getOrderFromDB = async (queries) => {
   const {
@@ -153,5 +227,6 @@ const getOrderFromDB = async (queries) => {
 };
 
 export const orderServices = {
+  createOrderIntoDB,
   getOrderFromDB,
 };

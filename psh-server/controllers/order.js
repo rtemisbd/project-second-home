@@ -9,87 +9,17 @@ import { bookingConfirmMail } from "../mail/bookingConfirmMail.js";
 import { cancelBookingMail } from "../mail/cancelBookingMail.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import mongoose from "mongoose";
-import { generateBookingId } from "../utils/generateBookingId.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
 import config from "../config/index.js";
+
+// create booking
 export const createOrder = catchAsync(async (req, res, next) => {
-  const {
-    email,
-    bookingInfo,
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData
-  } = req.body;
+  const result = await orderServices.createOrderIntoDB(req);
+  const bookingId = result?.bookingId;
 
-  const user = await User.findOne({ email: email });
-
-  const bookingInfoParse = JSON.parse(bookingInfo);
-
-  const gardianImg = req?.files?.gardianImg?.length
-    ? req?.files?.gardianImg[0]?.path
-    : user?.gardianImg;
-
-  const image = req?.files?.image?.length
-    ? req?.files?.image[0]?.path
-    : user?.cardImage;
-  const branch = bookingInfoParse?.branch;
-
-  const generateId = await generateBookingId();
-
-  const newOrder = new OrderModel({
-    bookingInfo: bookingInfoParse,
-    bookingId: generateId,
-    email,
-    branch,
-    image,
-    gardianImg,
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData,
-  });
-  newOrder.customerType = newOrder.bookingInfo.customerRent?.daysDifference
-    ? "Walk-in Guest"
-    : "Monthly";
-
-  // Booking Save to Database
-  const result = await newOrder.save();
-  const objectIdString = result?._id ? result?._id.toString() : "";
-  const slicedObjectId = objectIdString.slice(19);
-  // Phone Sms For Booking
-  const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${slicedObjectId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
-
-  bookingSms(bookingMessage)
+  bookingSms(result?.phone, bookingId)
     .then((response) => {
       console.log("Response from SMS API:", response);
       // Handle response data as needed
@@ -102,20 +32,20 @@ export const createOrder = catchAsync(async (req, res, next) => {
   // User data Update
   const userUpdate = {
     firstName: fullName,
-    fatherName: fatherName,
-    motherName: motherName,
+    fatherName,
+    motherName,
     branch: user?.branch,
-    email: email,
-    phone: phone,
+    email,
+    phone,
     userAddress: address,
-    passport: passport,
+    passport,
     dateOfBirth: birthDate,
-    gender: gender,
+    gender,
     nationalId: nid,
-    validityType: validityType,
-    validityNumber: validityNumber,
+    validityType,
+    validityNumber,
     cardImage: image,
-    gardianImg: gardianImg,
+    gardianImg,
 
     employmentStatus: {
       workAs: employeeStatus,
@@ -132,11 +62,11 @@ export const createOrder = catchAsync(async (req, res, next) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "alaminbamna08@gmail.com",
-      pass: "qesfajhmrfhkfnbo",
+      user: config.nodemailer_auth_user_email,
+      pass: config.nodemailer_auth_user_pass,
     },
   });
-  const adminEmail = "psh.info2016@gmail.com";
+  const adminEmail = config.admin_email;
 
   const mailOptions = {
     from: "alaminbamna08@gmail.com",
@@ -154,7 +84,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
   });
 
   await User.updateOne(
-    { email: email },
+    { email },
     { $set: userUpdate },
     { runValidators: true }
   );
@@ -190,6 +120,8 @@ export const createOrder = catchAsync(async (req, res, next) => {
       "Thank You ! Your Booking Successfully Done, We will contact you very soon.",
   });
 });
+
+// get orders
 
 export const getOrder = async (req, res, next) => {
   try {
