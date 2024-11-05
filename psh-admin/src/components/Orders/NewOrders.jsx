@@ -9,8 +9,8 @@ import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
-import ManageMeal from "./ManageMeal";
 import { baseUrl } from "../../utils/getBaseURL";
+import { MdRefresh } from "react-icons/md";
 
 const NewOrders = () => {
   const [transactions] = useTransaction();
@@ -23,7 +23,6 @@ const NewOrders = () => {
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [pageSizeOptions, setPageSizeOptions] = useState([10, 20]);
-  const [prevLastData, setPrevLastData] = useState(10);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -33,6 +32,9 @@ const NewOrders = () => {
   const [bookingStatus, setBookingStatus] = useState("All");
   const [runningStatus, setRunningStatus] = useState("All");
   const [guestType, setGuestType] = useState("All");
+  const [unknownQuery, setUnknownQuery] = useState("");
+  const [filteredName, setFilteredName] = useState("");
+  const [filteredPhone, setFilteredPhone] = useState("");
 
   const [data, setData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
@@ -43,9 +45,11 @@ const NewOrders = () => {
   // Page range calculation
   const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
   const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
-  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()].map(
-    (i) => startPage + i
-  );
+
+  const visiblePageNumbers =
+    endPage >= startPage
+      ? [...Array(endPage - startPage + 1).keys()].map((i) => startPage + i)
+      : [];
 
   // Update the `size` and reset to page 1
   const handlePageSizeChange = (e) => {
@@ -65,6 +69,8 @@ const NewOrders = () => {
       toDate,
       runningStatus,
       guestType,
+      filteredName,
+      filteredPhone,
     ],
     async () => {
       try {
@@ -78,6 +84,8 @@ const NewOrders = () => {
           runningStatus,
           guestType,
           status: bookingStatus,
+          filteredName,
+          filteredPhone,
         });
 
         // Get the access token
@@ -101,7 +109,7 @@ const NewOrders = () => {
         }
 
         const data = await response.json();
-        setData(data);
+        setData(data.data);
 
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
@@ -164,6 +172,39 @@ const NewOrders = () => {
   const handleGuestType = (e) => {
     setGuestType(e.target.value);
   };
+
+  const handleUnknownQuery = (e) => {
+    const value = e.target.value;
+    setUnknownQuery(value);
+
+    if (!isNaN(Number(value) && value.length == 11)) {
+      setFilteredPhone(value);
+    }
+    //  else {
+    //   setFilteredName(value);
+    // }
+  };
+
+  const handleRefreshQuery = () => {
+    setUnknownQuery("");
+    setFilteredPhone("");
+    document.getElementById("unknownQueryId").value = "";
+    setFromDate("");
+    document.getElementById("fromDateId").value = "";
+    setToDate("");
+    document.getElementById("toDateId").value = "";
+    setBranch("All");
+    document.getElementById("branchId").value = "All";
+    setPaymentStatus("All");
+    document.getElementById("paymentStatusId").value = "All";
+    setBookingStatus("All");
+    document.getElementById("bookingStatusId").value = "All";
+    setRunningStatus("All");
+    document.getElementById("runningStatusId").value = "All";
+    setGuestType("All");
+    document.getElementById("guestTypeId").value = "All";
+  };
+  console.log(unknownQuery);
 
   return (
     <div className="wrapper">
@@ -266,7 +307,6 @@ const NewOrders = () => {
                 <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p>
               </div>
             </div>
-            <div className="mx-lg-5 customize">{/* <ManageMeal /> */}</div>
           </div>
         </div>
       </div>
@@ -275,7 +315,22 @@ const NewOrders = () => {
         <section className="content customize_list">
           <div className="container-fluid">
             {/* search bar */}
-            <div className="d-lg-flex justify-content-end gap-4 ">
+            <div className="d-lg-flex justify-content-end gap-2 ">
+              <div className="">
+                <label htmlFor=""> Phone </label>
+                <br />
+                <div>
+                  <input
+                    type="number"
+                    name="unknownQuery"
+                    id="unknownQueryId"
+                    onChange={handleUnknownQuery}
+                    placeholder="enter phone number"
+                    value={unknownQuery}
+                    disabled={unknownQuery.length >= 11}
+                  />
+                </div>
+              </div>
               <div className="">
                 <label htmlFor="">From Date </label>
                 <br />
@@ -284,7 +339,8 @@ const NewOrders = () => {
                     type="date"
                     onChange={(e) => setFromDate(e.target.value)}
                     name=""
-                    id=""
+                    id="fromDateId"
+                    value={fromDate}
                   />
                 </div>
               </div>
@@ -294,8 +350,9 @@ const NewOrders = () => {
                   <input
                     type="date"
                     name=""
-                    id=""
+                    id="toDateId"
                     onChange={(e) => setToDate(e.target.value)}
+                    value={toDate}
                   />
                 </div>
               </div>
@@ -305,6 +362,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px" }}
                   onChange={handleBranch}
+                  id="branchId"
+                  value={branch}
                 >
                   <option value="All">All</option>
                   {allBranch?.map((branch) => (
@@ -318,6 +377,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handlePaymentStatus}
+                  id="paymentStatusId"
+                  value={paymentStatus}
                 >
                   <option>All</option>
 
@@ -331,6 +392,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handleBookingStatus}
+                  id="bookingStatusId"
+                  value={bookingStatus}
                 >
                   <option>All</option>
 
@@ -346,6 +409,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handleRunningStatus}
+                  id="runningStatusId"
+                  value={runningStatus}
                 >
                   <option>All</option>
                   <option>Running</option>
@@ -358,12 +423,25 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handleGuestType}
+                  id="guestTypeId"
+                  value={guestType}
                 >
                   <option>All</option>
                   <option>Walk-in Guest</option>
                   <option>Monthly</option>
                 </select>
               </div>
+
+              {/* refresh */}
+              <button
+                type="button"
+                onClick={handleRefreshQuery}
+                style={{ marginTop: "18px" }}
+                aria-label="Refresh"
+                className="btn btn-sm"
+              >
+                <MdRefresh size={32} color="#00BBB4" />
+              </button>
               {/* <div>
                 <label htmlFor="">User Id </label> <br />
                 <input
