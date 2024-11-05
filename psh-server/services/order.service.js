@@ -85,6 +85,8 @@ const getOrderFromDB = async (queries) => {
     paymentStatus,
     runningStatus,
     guestType,
+    // filteredName,
+    filteredPhone,
   } = queries;
   const today = new Date();
   const formattedDate = today.toISOString().split("T")[0];
@@ -102,6 +104,8 @@ const getOrderFromDB = async (queries) => {
     matchStage.paymentStatus = paymentStatus;
   if (bookingStatus && bookingStatus !== "All")
     matchStage.status = bookingStatus;
+  // if (filteredName && filteredName !== "") matchStage.fullName = filteredName;
+  if (filteredPhone && filteredPhone !== "") matchStage.phone = filteredPhone;
   if (fromDate && toDate) {
     matchStage.createdAt = {
       $gte: new Date(fromDate),
