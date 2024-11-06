@@ -19,7 +19,9 @@ export const createOrder = catchAsync(async (req, res, next) => {
   const result = await orderServices.createOrderIntoDB(req);
   const bookingId = result?.bookingId;
 
-  bookingSms(result?.phone, bookingId)
+  // Phone Sms For Booking
+  const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+  bookingSms(bookingMessage)
     .then((response) => {
       console.log("Response from SMS API:", response);
       // Handle response data as needed
@@ -90,7 +92,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
   );
 
   // Create Transaction when First booking only payment bkash or nagad
-
   if (result?.paymentType !== "cash") {
     const currentDate = new Date().toISOString().split("T")[0];
     const transaction = new Transaction({
@@ -122,28 +123,26 @@ export const createOrder = catchAsync(async (req, res, next) => {
 });
 
 // get orders
+export const getOrder = catchAsync(async (req, res, next) => {
+  const { result, totalCount } = await orderServices.getOrderFromDB(req.query);
+  const orders = result[0]?.paginatedResults || [];
 
-export const getOrder = async (req, res, next) => {
-  try {
-    const { result, totalCount } = await orderServices.getOrderFromDB(
-      req.query
-    );
-    const orders = result[0]?.paginatedResults || [];
+  const {
+    // bookingsTotalCount = 0,
+    approvedCount = 0,
+    canceledCount = 0,
+    pendingCount = 0,
+    processingCount = 0,
+    totalBookingAmount = 0,
+    totalReceiveAmountFilter = 0,
+    totalDueAmount = 0,
+  } = result[0]?.totalCounts || {};
 
-    const {
-      // bookingsTotalCount = 0,
-      approvedCount = 0,
-      canceledCount = 0,
-      pendingCount = 0,
-      processingCount = 0,
-      totalBookingAmount = 0,
-      totalReceiveAmountFilter = 0,
-      totalDueAmount = 0,
-    } = result[0]?.totalCounts || {};
-
-    res.status(200).json({
-      status: "Success",
-      message: "Orders retrieved successfully",
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Orders retrieved successfully",
+    data: {
       orders,
       bookingsTotalCount: totalCount,
       approvedCount,
@@ -153,17 +152,11 @@ export const getOrder = async (req, res, next) => {
       totalBookingAmount,
       totalReceiveAmountFilter,
       totalDueAmount,
-    });
+    },
+  });
 
-    updateOrderPaymentStatus();
-  } catch (error) {
-    res.status(500).json({
-      status: "failed",
-      message: "Failed to retrieve orders",
-      error: error.message,
-    });
-  }
-};
+  updateOrderPaymentStatus();
+});
 
 // Separate function to update order payment status
 const updateOrderPaymentStatus = async () => {
@@ -276,7 +269,7 @@ export const updateBooking = async (req, res, next) => {
 
           // Phone Sms for Confirmation
 
-          const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+          const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${findSingleOrder?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
           bookingSms(bookingMessage)
             .then((response) => {

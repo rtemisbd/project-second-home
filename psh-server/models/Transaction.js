@@ -63,7 +63,6 @@ const TransactionSchema = new mongoose.Schema(
     userPhone: {
       type: String,
     },
-
     paymentStatus: {
       type: String,
     },
@@ -81,9 +80,9 @@ const TransactionSchema = new mongoose.Schema(
     receiverName: {
       type: String,
     },
-    unReceivedTk: {
-      type: Number,
-    },
+    // unReceivedTk: {
+    //   type: Number,
+    // },
     noteForTransaction: {
       type: String,
     },
