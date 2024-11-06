@@ -48,10 +48,9 @@ const NewOrders = () => {
   const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
   const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
 
-  const visiblePageNumbers =
-    endPage >= startPage
-      ? [...Array(endPage - startPage + 1).keys()].map((i) => startPage + i)
-      : [];
+  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()]?.map(
+    (i) => startPage + i
+  );
 
   // Update the `size` and reset to page 1
   const handlePageSizeChange = (e) => {
@@ -112,15 +111,14 @@ const NewOrders = () => {
 
         const data = await response.json();
         setData(data.data);
-
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
-        const totalPageCount = Math.ceil(data?.bookingsTotalCount / size);
+        const totalPageCount = Math.ceil(data?.data?.bookingsTotalCount / size);
         setPageCount(totalPageCount);
 
         // Dynamically set pageSizeOptions based on bookingsTotalCount
-        const totalCount = data?.bookingsTotalCount;
+        const totalCount = data?.data?.bookingsTotalCount;
         if (totalCount) {
           const dynamicPageSizes = [];
           for (let i = 10; i <= totalCount; i += 10) {
@@ -554,7 +552,7 @@ const NewOrders = () => {
           >
             Previous
           </button>
-          {visiblePageNumbers.map((number) => (
+          {visiblePageNumbers?.map((number) => (
             <button
               key={number}
               onClick={() => setPage(number)}

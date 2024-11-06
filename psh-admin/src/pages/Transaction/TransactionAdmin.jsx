@@ -60,9 +60,8 @@ const TransactionAdmin = () => {
   const [filterData, setFilterData] = useState([]);
   const [allBranch, setAllBranch] = useState([]);
   const [userAllBooking, setUserAllBooking] = useState([]);
-  // console.log(allBranch);
-  // Get All Transactions
 
+  // Get All Transactions
   const { refetch } = useQuery([data, allBranch?.length], async () => {
     try {
       // Get the access token
@@ -733,7 +732,6 @@ const TransactionAdmin = () => {
               </div>
             </div>
           </section>
-          {/* /.content */}
         </div>
       </div>
     </>

@@ -68,6 +68,7 @@ import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
 import StudySpace from "./components/StudySpace/StudySpace";
+import TransactionAdminDemo from "./pages/Transaction/TransactionAdminDemo";
 
 function App() {
   return (
@@ -130,6 +131,8 @@ function App() {
         <Route path="orders_m" element={<Orders />} />
         <Route path="orders" element={<AdminOrders />} />
         <Route path="transaction" element={<TransactionAdmin />} />
+        {/* demo */}
+        <Route path="transaction-demo" element={<TransactionAdminDemo />} />
         <Route path="transaction-m" element={<TransactionManager />} />
         <Route path="finance" element={<Finance />} />
         <Route path="corporate-housing" element={<RoomRent />} />
