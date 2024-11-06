@@ -60,17 +60,32 @@ function List({ type }) {
   const facilities = [facilityFilters]; // Replace with your list of facility names
   const commonfacilities = [commonFacilityFilters]; // Replace with your list of facility names
 
-  let url = `property?branch=${encodeURIComponent(
-    destination
-  )}&Furnished=${encodeURIComponent(furnitured)}&type=${encodeURIComponent(
-    gender
-  )}&category=${encodeURIComponent(category)}&min=${encodeURIComponent(
-    min
-  )}&max=${encodeURIComponent(max)}&facility=${encodeURIComponent(
-    facilities
-  )}&commonfacility=${encodeURIComponent(
-    commonfacilities
-  )}&sort=${sort}&page=${page}&pageSize=${itemsPerPage}`;
+  const queryParams = new URLSearchParams({
+    furnitured,
+    category,
+    max,
+    gender,
+    destination,
+    min,
+    facilities,
+    commonfacilities,
+    itemsPerPage,
+    page,
+    sort,
+  });
+
+  // let url = `property?branch=${encodeURIComponent(
+  //   destination
+  // )}&Furnished=${encodeURIComponent(furnitured)}&type=${encodeURIComponent(
+  //   gender
+  // )}&category=${encodeURIComponent(category)}&min=${encodeURIComponent(
+  //   min
+  // )}&max=${encodeURIComponent(max)}&facility=${encodeURIComponent(
+  //   facilities
+  // )}&commonfacility=${encodeURIComponent(
+  //   commonfacilities
+  // )}&sort=${sort}&page=${page}&pageSize=${itemsPerPage}`;
+  let url = `property?${queryParams.toString()}`;
 
   // Check if bedrooms are selected
   if (bedrooms.length > 0) {
@@ -188,6 +203,8 @@ function List({ type }) {
   const publishRandomProperty = filteredData.filter(
     (property) => property?.isPublished === "Published"
   );
+  console.log(publishRandomProperty);
+
   return (
     <div className="custom-container">
       <div className=" mt-3 flex justify-between items-center">

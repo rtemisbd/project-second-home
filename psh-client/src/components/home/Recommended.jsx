@@ -11,7 +11,7 @@ import UseFetch from "../../hooks/useFetch";
 import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
-import "./Recommended.css";
+import "./styles/Recommended.css";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 
 const Recommended = () => {

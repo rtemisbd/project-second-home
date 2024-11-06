@@ -13,7 +13,7 @@ import { GrLocation } from "react-icons/gr";
 import { SearchContext } from "../../contexts/SearchContext";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import UseFetch from "../../hooks/useFetch";
-import "./SearchBox.css";
+import "./styles/SearchBox.css";
 import { SyncLoader } from "react-spinners";
 
 const SearchBox = () => {
@@ -98,9 +98,6 @@ const SearchBox = () => {
     "Single Bed",
     "Queen Bed",
     "Semi-Double Bed",
-    // "1 BR",
-    // "2 BR",
-    // "3 BR",
   ];
   const [bedValue, setBedValue] = useState(0);
 

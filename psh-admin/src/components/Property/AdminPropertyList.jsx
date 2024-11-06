@@ -22,6 +22,7 @@ import { Spinner } from "react-bootstrap";
 import LoadingState from "../../pages/LoadingState/LoadingState";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const AdminPropertyList = (props) => {
   const MySwal = withReactContent(Swal);
@@ -43,7 +44,7 @@ const AdminPropertyList = (props) => {
 
   const { refetch: categoryList } = useQuery(["categoryList"], async () => {
     try {
-      const response = await axios.get(`https://api.psh.com.bd/api/category`, {
+      const response = await axios.get(`${baseUrl}/api/category`, {
         mode: "cors",
       });
 
@@ -54,7 +55,7 @@ const AdminPropertyList = (props) => {
   });
   const { refetch: branchList } = useQuery(["branchList"], async () => {
     try {
-      const response = await axios.get(`https://api.psh.com.bd/api/branch`, {
+      const response = await axios.get(`${baseUrl}/api/branch`, {
         mode: "cors",
       });
 
@@ -67,7 +68,7 @@ const AdminPropertyList = (props) => {
   // Get Properties
   const { refetch } = useQuery(["propertyList"], async () => {
     try {
-      const response = await axios.get("https://api.psh.com.bd/api/property", {
+      const response = await axios.get(`${baseUrl}/api/property`, {
         mode: "cors",
       });
 
@@ -85,7 +86,7 @@ const AdminPropertyList = (props) => {
     setIsFilter(true);
 
     try {
-      const response = await axios.get("https://api.psh.com.bd/api/property", {
+      const response = await axios.get(`${baseUrl}/api/property`, {
         params: {
           sCategory: selectCategory !== "All" ? selectCategory : undefined,
           sBranch: selectBranch !== "All" ? selectBranch : undefined,
@@ -311,7 +312,7 @@ const AdminPropertyList = (props) => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/property/${id}`;
+      const url = `${baseUrl}/api/property/${id}`;
       fetch(url, {
         method: "DELETE",
       })

@@ -16,7 +16,7 @@ import heart2 from "../../assets/img/Heart2.png";
 import locationIcon from "../../assets/img/branchLocationIcon.png";
 import { AuthContext } from "../../contexts/UserProvider";
 import UseFetch from "../../hooks/useFetch";
-import "./SingleCard.css";
+import "./styles/SingleCard.css";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const SingleCard = ({ item }) => {
@@ -210,7 +210,7 @@ const SingleCard = ({ item }) => {
                   alt=""
                 />
                 <p className="branch-location">
-                  <span className="text-[10px]">{item.branch?.name}</span>
+                  <span className="text-[10px]">{item?.branch?.name}</span>
                 </p>
               </div>
 

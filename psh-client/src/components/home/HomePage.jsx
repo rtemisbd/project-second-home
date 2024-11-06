@@ -29,6 +29,7 @@ export default function HomePage() {
   const [randomIndex, setRandomIndex] = useState([]);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const { pathname } = useLocation();
+  // console.log(data);
 
   // show Random index
   const getRandomData = () => {
