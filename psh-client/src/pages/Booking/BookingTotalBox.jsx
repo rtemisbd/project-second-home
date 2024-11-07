@@ -37,7 +37,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
-  console.log(customerRent);
 
   const [selectedCheckPayment, setSelectedPayment] = useState(null);
   const [promos] = usePromos();

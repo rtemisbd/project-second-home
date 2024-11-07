@@ -92,13 +92,7 @@ const SearchBox = () => {
   const [categoryQuery, setCategoryQuery] = useState("");
   const [categoryValue, setCategoryValue] = useState(0);
   const category = ["All", ...data.map((item) => item?.name)];
-  const beds = [
-    "All",
-    "Bunk Bed",
-    "Single Bed",
-    "Queen Bed",
-    "Semi-Double Bed",
-  ];
+  const beds = ["All", "Bunk Bed", "Bunk Bed & Single Bed", "King Size Bed"];
   const [bedValue, setBedValue] = useState(0);
 
   const handleFurnitureSelection = (index) => {
@@ -156,7 +150,7 @@ const SearchBox = () => {
     if (index === 0) {
       setBedrooms([]);
     } else {
-      setBedrooms([beds[index]]);
+      setBedrooms(beds[index]);
     }
     setBedValue(index);
   };
@@ -167,7 +161,7 @@ const SearchBox = () => {
     e.preventDefault();
     const payload = {
       destination,
-      bedrooms: bedrooms.length > 0 ? bedrooms : "Any",
+      bedrooms,
       furnitured: FurnishedQuery,
       gender: genderQuery,
       category: categoryQuery,

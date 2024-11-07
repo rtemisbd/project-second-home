@@ -1,22 +1,29 @@
 import Branch from "../models/Branch.js";
+import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 
 const getPropertiesFromDB = async (queries) => {
-  const { furnitured, category, gender, destination, bedrooms } = queries;
+  const { furnitured, category, gender, destination, bedType } = queries;
+  console.log(bedType);
 
   let query = {};
 
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
-  if (category && category !== "") query.category = category;
   if (gender && gender !== "") query.type = gender;
-  if (bedrooms && bedrooms !== "") query.bedroom = bedrooms;
+  if (bedType && bedType !== "") query.bedType = bedType;
+  console.log("query", query.bedType);
 
   if (destination && destination !== "") {
     const branch = await Branch.findOne({ name: destination });
     if (branch) query.branch = branch._id;
   }
+  if (category && category !== "") {
+    const selectedCategory = await Category.findOne({ name: category });
 
-  const properties = await Property.find(query).populate("branch");
+    if (selectedCategory) query.category = selectedCategory._id;
+  }
+
+  const properties = await Property.find(query).populate("branch category");
 
   return properties;
 };

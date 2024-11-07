@@ -25,10 +25,8 @@ function List({ type }) {
   const [gender, setGender] = useState(location.state?.gender || "");
   const [category, setCategory] = useState(location.state?.category || "");
 
-  const [bedrooms, setBedrooms] = useState(
-    Array.isArray(location.state.bedrooms) ? location.state.bedrooms : ""
-  );
-  const selectedBedrooms = bedrooms ? bedrooms.join(",") : "";
+  const [bedrooms, setBedrooms] = useState(location.state.bedrooms || "");
+  // const selectedBedrooms = bedrooms ? bedrooms.join(",") : "";
 
   const [openDate, setOpenDate] = useState(false);
   const [dates, setDates] = useState(location.state.dates);
@@ -66,6 +64,7 @@ function List({ type }) {
     max,
     gender,
     destination,
+    bedType: bedrooms,
     min,
     facilities,
     commonfacilities,
@@ -88,10 +87,10 @@ function List({ type }) {
   let url = `property?${queryParams.toString()}`;
 
   // Check if bedrooms are selected
-  if (bedrooms.length > 0) {
-    const selectedBedrooms = bedrooms.join(",");
-    url += `&bedType=${encodeURIComponent(selectedBedrooms)}`;
-  }
+  // if (bedrooms.length > 0) {
+  //   const selectedBedrooms = bedrooms.join(",");
+  //   url += `&bedType=${encodeURIComponent(selectedBedrooms)}`;
+  // }
 
   const { data, loading, error, reFetch } = UseFetch(url);
 
@@ -136,7 +135,7 @@ function List({ type }) {
     sort,
     min,
     max,
-    selectedBedrooms,
+    // selectedBedrooms,
   ]);
 
   useEffect(() => {
@@ -203,7 +202,6 @@ function List({ type }) {
   const publishRandomProperty = filteredData.filter(
     (property) => property?.isPublished === "Published"
   );
-  console.log(publishRandomProperty);
 
   return (
     <div className="custom-container">

@@ -230,8 +230,8 @@ const ListFilter = ({
         </div>
         {isFacility ? null : (
           <div className="mt-5">
-            {facilityToDisplay.map((facility) => (
-              <>
+            {facilityToDisplay.map((facility, ind) => (
+              <div key={ind}>
                 {facility?.photos[0] && (
                   <div key={facility._id} className="flex items-center mt-3">
                     <div>
@@ -255,7 +255,7 @@ const ListFilter = ({
                     </p>
                   </div>
                 )}
-              </>
+              </div>
             ))}
             {data.length > initialShowAllFacility && (
               <button
