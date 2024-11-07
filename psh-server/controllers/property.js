@@ -4,6 +4,7 @@ import Branch from "../models/Branch.js";
 import catchAsync from "../shared/cathAsync.js";
 import { propertyServices } from "../services/property.service.js";
 import sendResponse from "../shared/sendResponse.js";
+import RentRoom from "../models/RentRoom.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -334,11 +335,20 @@ export const getBookingReport = async (req, res, next) => {
 export const getSinglePropertys = async (req, res, next) => {
   try {
     const propertyId = req.params.id;
+    console.log("room id", propertyId);
+
+    const rentRooms = await RentRoom.find({
+      roomId: propertyId,
+      bookingStatus: { $in: ["Booked", "Reserved"] },
+    }).select({ bookStartDate: 1, bookEndDate: 1, bookingStatus: 1 });
+    // rentRooms.filter((room) => room.bookingStatus !== "Complete");
+    console.log(rentRooms);
 
     // Find the property by ID
     const property = await Property.findById(propertyId).populate(
       "category facility review branch"
     );
+    // console.log(property);
 
     if (!property) {
       return res.status(404).json({ error: "Property not found" });

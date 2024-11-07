@@ -3,15 +3,22 @@ import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 
 const getPropertiesFromDB = async (queries) => {
-  const { furnitured, category, gender, destination, bedType } = queries;
-  console.log(bedType);
+  const {
+    furnitured,
+    category,
+    gender,
+    destination,
+    bedType,
+    startDate,
+    endDate,
+  } = queries;
+  // console.log("start", startDate, "end", endDate);
 
   let query = {};
 
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
   if (gender && gender !== "") query.type = gender;
   if (bedType && bedType !== "") query.bedType = bedType;
-  console.log("query", query.bedType);
 
   if (destination && destination !== "") {
     const branch = await Branch.findOne({ name: destination });

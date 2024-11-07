@@ -26,10 +26,8 @@ function List({ type }) {
   const [category, setCategory] = useState(location.state?.category || "");
 
   const [bedrooms, setBedrooms] = useState(location.state.bedrooms || "");
-  // const selectedBedrooms = bedrooms ? bedrooms.join(",") : "";
-
-  const [openDate, setOpenDate] = useState(false);
-  const [dates, setDates] = useState(location.state.dates);
+  const [startDate, setStartDate] = useState(location.state?.startDate || "");
+  const [endDate, setEndDate] = useState(location.state?.endDate || "");
 
   const [facilityFilters, setFacilityFilters] = useState([]);
   const [commonFacilityFilters, setCommonFacilityFilters] = useState([]);
@@ -65,6 +63,8 @@ function List({ type }) {
     gender,
     destination,
     bedType: bedrooms,
+    startDate,
+    endDate,
     min,
     facilities,
     commonfacilities,

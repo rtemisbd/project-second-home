@@ -43,6 +43,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Room = () => {
   const { id } = useParams();
+  console.log(id);
   const [extraCharge] = useExtraCharge(id);
   const { user } = useContext(AuthContext);
 

@@ -86,7 +86,6 @@ const SearchBox = () => {
   const [genderQuery, setGenderQuery] = useState("female");
   const [genderValue, setGenderValue] = useState(0);
   const gender = ["Female", "Male"];
-  // const gender = ["All", "Male", "Female", "Others"];
 
   const [categoryDisplay, setCategoryDisplay] = useState("");
   const [categoryQuery, setCategoryQuery] = useState("");
@@ -165,6 +164,8 @@ const SearchBox = () => {
       furnitured: FurnishedQuery,
       gender: genderQuery,
       category: categoryQuery,
+      // startDate: startDate.toISOString().split("T")[0],
+      // endDate: endDate.toISOString().split("T")[0],
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
