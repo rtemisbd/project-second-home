@@ -4,7 +4,6 @@ import Branch from "../models/Branch.js";
 import catchAsync from "../shared/cathAsync.js";
 import { propertyServices } from "../services/property.service.js";
 import sendResponse from "../shared/sendResponse.js";
-import RentRoom from "../models/RentRoom.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -332,37 +331,19 @@ export const getBookingReport = async (req, res, next) => {
   }
 };
 
-export const getSinglePropertys = async (req, res, next) => {
-  try {
-    const propertyId = req.params.id;
-    console.log("room id", propertyId);
+export const getSinglePropertys = catchAsync(async (req, res, next) => {
+  const propertyId = req.params.id;
+  const { property, rentRooms } =
+    await propertyServices.getSinglePropertyFromDB(propertyId);
+  res.status(200).json({ property, rentRooms });
 
-    const rentRooms = await RentRoom.find({
-      roomId: propertyId,
-      bookingStatus: { $in: ["Booked", "Reserved"] },
-    }).select({ bookStartDate: 1, bookEndDate: 1, bookingStatus: 1 });
-    // rentRooms.filter((room) => room.bookingStatus !== "Complete");
-    console.log(rentRooms);
-
-    // Find the property by ID
-    const property = await Property.findById(propertyId).populate(
-      "category facility review branch"
-    );
-    // console.log(property);
-
-    if (!property) {
-      return res.status(404).json({ error: "Property not found" });
-    }
-
-    // Increment the view count by 1
-    property.views++;
-    await property.save();
-
-    res.status(200).json(property);
-  } catch (err) {
-    next(err);
-  }
-};
+  // sendResponse(res, {
+  //   statusCode: 200,
+  //   success: true,
+  //   message: "Properties retrieved successfully",
+  //   data: { property, rentRooms },
+  // });
+});
 
 export const deletePropertys = async (req, res, next) => {
   try {

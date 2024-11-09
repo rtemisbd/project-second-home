@@ -1,6 +1,7 @@
 import Branch from "../models/Branch.js";
 import Category from "../models/Category.js";
 import Property from "../models/Property.js";
+import RentRoom from "../models/RentRoom.js";
 
 const getPropertiesFromDB = async (queries) => {
   const {
@@ -35,6 +36,29 @@ const getPropertiesFromDB = async (queries) => {
   return properties;
 };
 
+const getSinglePropertyFromDB = async (propertyId) => {
+  const rentRooms = await RentRoom.find({
+    roomId: propertyId,
+    bookingStatus: { $in: ["Booked", "Reserved"] },
+  }).select({ bookStartDate: 1, bookEndDate: 1, bookingStatus: 1 });
+  // console.log(rentRooms);
+
+  // Find the property by ID
+  const property = await Property.findById(propertyId).populate(
+    "category facility review branch"
+  );
+
+  if (!property) {
+    return { error: "Property not found" };
+  }
+
+  // Increment the view count by 1
+  property.views++;
+  await property.save();
+  return { property, rentRooms };
+};
+
 export const propertyServices = {
   getPropertiesFromDB,
+  getSinglePropertyFromDB,
 };

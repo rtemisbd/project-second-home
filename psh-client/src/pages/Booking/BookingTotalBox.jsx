@@ -24,7 +24,7 @@ import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
 
-const BookingTotalBox = ({ data, seats, extraCharge }) => {
+const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
 
@@ -321,6 +321,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
     return lastDay;
   }
+  console.log(bookedDates);
 
   const bookingData = {
     data: data,
@@ -547,7 +548,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                 selected={new Date(startDate)}
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(leftDate(date))}
-                excludeDateIntervals={data?.rentDate?.map((rent) => {
+                excludeDateIntervals={bookedDates?.map((rent) => {
                   return {
                     start: subDays(new Date(rent?.bookStartDate), 1),
                     end: addDays(new Date(rent?.bookEndDate), -1),

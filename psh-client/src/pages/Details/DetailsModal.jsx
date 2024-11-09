@@ -65,16 +65,16 @@ const DetailsModal = ({ size, handleOpen, data }) => {
       >
         <DialogBody>
           <Splide options={mainOptions} ref={mainRef}>
-            {data.photos &&
-              data.photos.map((photo) => (
+            {data?.photos &&
+              data?.photos.map((photo) => (
                 <SplideSlide key={photo}>
                   <img src={photo} alt="" style={style} />
                 </SplideSlide>
               ))}
           </Splide>
           <ul style={thumbnailsstyle} className="gap-x-5">
-            {data.photos &&
-              data.photos.map((photo, index) => (
+            {data?.photos &&
+              data?.photos.map((photo, index) => (
                 <li key={photo}>
                   <button onClick={() => handleThumbs(index)}>
                     <img src={photo} alt="thumbnail" style={btn_img} />
