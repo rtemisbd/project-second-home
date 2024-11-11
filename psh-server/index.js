@@ -1,6 +1,7 @@
 import { Server } from "http";
 import mongoose from "mongoose";
 import app from "./app.js";
+import config from "./config/index.js";
 
 process.on("uncaughtException", (error) => {
   console.log(error);
@@ -8,23 +9,23 @@ process.on("uncaughtException", (error) => {
 });
 
 let server = Server;
-const options = {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-  serverSelectionTimeoutMS: 5000,
-  autoIndex: true,
-  maxPoolSize: 10,
-  serverSelectionTimeoutMS: 5000,
-  socketTimeoutMS: 45000,
-  family: 4,
-};
+// const options = {
+//   useNewUrlParser: true,
+//   useUnifiedTopology: true,
+//   serverSelectionTimeoutMS: 10000,
+//   socketTimeoutMS: 45000,
+//   maxPoolSize: 10,
+//   family: 4,
+// };
+
 async function databaseConnect() {
   try {
-    await mongoose.connect(process.env.MONGO_URL, options);
+    // await mongoose.connect(config.database_url, options);
+    await mongoose.connect(config.database_url);
     console.log(`🛢 Database is connected successfully`);
 
     server = app.listen(process.env.PORT, () => {
-      console.log(`Application  listening on port ${process.env.PORT}`);
+      console.log(`Application  listening on port ${config.port}`);
     });
   } catch (err) {
     console.log("Failed to connect database", err);

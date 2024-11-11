@@ -78,8 +78,7 @@ const ViewTransactionModal = ({ data, bookings }) => {
                   </label>
                   <p>{data?.userName}</p>
                 </div>
-                <div className="col-lg-3">
-                  {" "}
+                <div className="col-lg-4">
                   <label htmlFor="" className="fw-medium">
                     Customer Email
                   </label>
@@ -91,11 +90,11 @@ const ViewTransactionModal = ({ data, bookings }) => {
                   </label>
                   <p>{data?.userPhone}</p>
                 </div>
-                <div className="col-lg-3">
+                <div className="col-lg-2">
                   <label htmlFor="" className="fw-medium">
                     Branch
                   </label>
-                  <p>{data?.branch?.name}</p>
+                  <p>{data?.branchDetails?.name}</p>
                 </div>
               </div>
               {/* Room Details */}

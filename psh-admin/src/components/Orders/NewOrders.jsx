@@ -22,7 +22,7 @@ const NewOrders = () => {
 
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
-  const [pageSizeOptions, setPageSizeOptions] = useState([10, 20]);
+  const [pageSizeOptions, setPageSizeOptions] = useState([10]);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");

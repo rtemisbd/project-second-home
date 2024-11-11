@@ -10,7 +10,7 @@ export const CreateBranch = async (req, res, next) => {
 };
 export const getBranch = async (req, res, next) => {
   try {
-    const branch = await Branch.find({});
+    const branch = await Branch.find();
     res.status(200).json(branch);
   } catch (err) {
     next(err);

@@ -43,7 +43,6 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Room = () => {
   const { id } = useParams();
-  console.log(id);
   const [extraCharge] = useExtraCharge(id);
   const { user } = useContext(AuthContext);
 
@@ -78,7 +77,6 @@ const Room = () => {
 
     fetchData();
   }, [id]);
-  console.log(data, bookedDates);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");

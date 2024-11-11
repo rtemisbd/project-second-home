@@ -1,115 +1,37 @@
 import Transaction from "../models/Transaction.js";
 import OrderModel from "../models/Order.js";
-export const getTransaction = async (req, res, next) => {
-  try {
-    const orderId = req.query?.orderId;
-    const userId = req.query?.userId;
-    const fromDate = req.query?.fromDate;
-    const toDate = req.query?.toDate;
-    const branch = req.query?.branch;
-    const paymentType = req.query?.paymentType;
-    const transactionId = req.query?.transactionId;
+import catchAsync from "../shared/cathAsync.js";
+import sendResponse from "../shared/sendResponse.js";
+import { transactionServices } from "../services/transaction.service.js";
 
-    if (
-      !orderId &&
-      !fromDate &&
-      !toDate &&
-      !branch &&
-      !userId &&
-      !paymentType &&
-      !transactionId
-    ) {
-      const transaction = await Transaction.find({})
-        .populate("branch")
-        .sort({ createdAt: -1 });
+export const getTransaction = catchAsync(async (req, res, next) => {
+  const transactions = await transactionServices.getAllTransactionFromDB(
+    req.query
+  );
+  // console.log(transactions);
 
-      res.status(200).json({
-        status: "Success",
-        message: "Success",
-        transaction,
-      });
-    } else if (
-      !orderId &&
-      !fromDate &&
-      !toDate &&
-      branch &&
-      !userId &&
-      !paymentType &&
-      !transactionId
-    ) {
-      const transaction = await Transaction.find({ branch: branch })
-        .populate("branch")
-        .sort({ createdAt: -1 });
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Transactions retrieved successfully",
+    data: transactions,
+  });
+});
 
-      res.status(200).json({
-        status: "Success",
-        message: "Success",
-        transaction,
-      });
-    } else {
-      const query = {
-        branch: branch,
-        paymentType: paymentType,
-        transactionId: transactionId,
-        orderId: orderId,
-        userId: userId,
-        paymentDate: {
-          $gte: fromDate,
-          $lte: toDate,
-        },
-      };
+// get single transaction
+export const getTransactionById = catchAsync(async (req, res, next) => {
+  const result = await transactionServices.getTransactionByIdFromDB(
+    req.params.id
+  );
 
-      if (branch === "All") {
-        // Remove branch from the query object
-        delete query.branch;
-      }
-      if (paymentType === "All") {
-        // Remove branch from the query object
-        delete query.paymentType;
-      }
-      if (transactionId === "All") {
-        // Remove branch from the query object
-        delete query.transactionId;
-      }
-      if (orderId === "All") {
-        // Remove orderid from the query object
-        delete query.orderId;
-      }
-      if (userId === "All") {
-        // Remove userId from the query object
-        delete query.userId;
-      }
-      if (!fromDate || !toDate) {
-        // Remove paymentDate from the query object
-        delete query.paymentDate;
-      }
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Transaction retrieved successfully",
+    data: result,
+  });
+});
 
-      const transaction = await Transaction.find(query)
-        .populate("branch")
-        .sort({ createdAt: -1 });
-
-      res.status(200).json({
-        status: "Success",
-        message: "Success",
-        transaction,
-      });
-
-      // const transaction = await Transaction.find({}).populate("branch");
-
-      // res.status(200).json({
-      //   status: "Success",
-      //   message: "Success",
-      //   transaction,
-      // });
-    }
-  } catch (error) {
-    res.status(400).json({
-      status: "failed",
-      message: "Sorry Transaciton not found",
-      error: error.message,
-    });
-  }
-};
 export const getUserTransactions = async (req, res, next) => {
   try {
     const email = req.params.email;

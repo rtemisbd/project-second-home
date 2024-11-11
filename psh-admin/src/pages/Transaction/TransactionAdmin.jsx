@@ -2,16 +2,13 @@ import React, { useContext, useEffect, useRef, useState } from "react";
 
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import BootstrapTable from "react-bootstrap-table-next";
 
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { BiSolidEdit } from "react-icons/bi";
 
 import { useQuery } from "react-query";
 
-import { ToastContainer, toast } from "react-toastify";
+import { toast } from "react-toastify";
 
 import ViewTransactionModal from "./ViewTransactionModal";
 import UpdateTransaction from "./UpdateTransaction";
@@ -31,7 +28,10 @@ import ExportToExcel from "./ExportToExcel";
 import { formatDate } from "../../utils/dateConvert";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
+import useBranch from "../../hooks/useBranch";
 import { baseUrl } from "../../utils/getBaseURL";
+import { MdRefresh } from "react-icons/md";
+
 const TransactionAdmin = () => {
   const ref = useRef();
   const fromDateRef = useRef(null);
@@ -48,53 +48,102 @@ const TransactionAdmin = () => {
   const [error, setError] = useState(null);
   let orderId = "All";
   let bookingUserId = "All";
-  const [bookingId, setBookingId] = useState("");
-  const [userId, setUserId] = useState("");
-  const [transactionId, setTransactionId] = useState("All");
-  const [branch, setBranch] = useState("All");
-  const [payementType, setPaymentType] = useState("All");
+  // filter fields
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
+  const [branch, setBranch] = useState("All");
+  const [paymentType, setPaymentType] = useState("All");
+  const [userId, setUserId] = useState("");
+  const [bookingId, setBookingId] = useState("");
 
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
-  const [allBranch, setAllBranch] = useState([]);
   const [userAllBooking, setUserAllBooking] = useState([]);
 
-  // Get All Transactions
-  const { refetch } = useQuery([data, allBranch?.length], async () => {
-    try {
-      // Get the access token
-      const accessToken = getFromLocalStorage(authKey);
+  const [pageCount, setPageCount] = useState(0);
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(10);
+  const [pageSizeOptions, setPageSizeOptions] = useState([10]);
 
-      // Set the headers
-      const headers = {
-        Authorization: `${accessToken}`,
-        "Content-Type": "application/json",
-      };
+  // Page range calculation
+  const MAX_PAGE_BUTTONS = 5;
+  const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
+  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
 
-      const response = await fetch(`${baseUrl}/api/transaction`, {
-        method: "GET",
-        headers: headers,
-      });
+  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()]?.map(
+    (i) => startPage + i
+  );
 
-      if (!response.ok) {
-        throw new Error("Network Error");
-      }
-
-      const data = await response.json();
-      setData(data?.transaction);
-    } catch (error) {
-      // console.error("Error fetching data:", error);
-    }
-  });
+  // Update the `size` and reset to page 1
+  const handlePageSizeChange = (e) => {
+    setSize(Number(e.target.value));
+  };
 
   // Get All Branch
-  useEffect(() => {
-    fetch(`${baseUrl}/api/branch`)
-      .then((res) => res.json())
-      .then((data) => setAllBranch(data));
-  }, []);
+  const { allBranch, refetch: refetchBranches } = useBranch();
+
+  // Get All Transactions
+  const { refetch } = useQuery(
+    [data, page, fromDate, toDate, branch, paymentType, userId, bookingId],
+    async () => {
+      try {
+        const queryParams = new URLSearchParams({
+          page,
+          size,
+          fromDate,
+          toDate,
+          branch,
+          paymentType,
+          userId,
+          bookingId,
+        });
+        // Get the access token
+        const accessToken = getFromLocalStorage(authKey);
+
+        // Set the headers
+        const headers = {
+          Authorization: `${accessToken}`,
+          "Content-Type": "application/json",
+        };
+
+        const response = await fetch(
+          `${baseUrl}/api/transaction?${queryParams.toString()}`,
+          {
+            method: "GET",
+            headers: headers,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network Error");
+        }
+
+        const data = await response.json();
+
+        setData(data?.data?.transactions);
+
+        // dynamic page size
+        const totalPageCount = Math.ceil(data?.data?.totalCount / size);
+        setPageCount(totalPageCount);
+        const totalCount = data?.data?.totalCount;
+        if (totalCount) {
+          const dynamicPageSizes = [];
+          for (let i = 10; i <= totalCount; i += 10) {
+            dynamicPageSizes.push(i);
+          }
+          if (!dynamicPageSizes.includes(totalCount)) {
+            dynamicPageSizes.push(totalCount); // Add totalCount as the largest option
+          }
+          setPageSizeOptions(dynamicPageSizes);
+        }
+      } catch (error) {
+        // console.error("Error fetching data:", error);
+      }
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   // Find User Booking By Filtering
   let totalBookingAmount = 0;
@@ -130,63 +179,81 @@ const TransactionAdmin = () => {
     setPaymentType(e.target.value);
   };
 
-  const handleSearch = async () => {
-    const withIdBooking = bookings?.find(
-      (data) => data?._id?.slice(-5) === bookingId
-    );
-    const withUserIdBooking = bookings?.filter(
-      (data) => data?.userId?.slice(-5) === userId
-    );
+  // const handleSearch = async () => {
+  //   const withIdBooking = bookings?.find(
+  //     (data) => data?._id?.slice(-5) === bookingId
+  //   );
+  //   const withUserIdBooking = bookings?.filter(
+  //     (data) => data?.userId?.slice(-5) === userId
+  //   );
 
-    if (bookingId && !withIdBooking) {
-      return toast.error("Sorry! Wrong Id ");
-    }
-    // if (userId && !withUserIdBooking) {
-    //   return toast.error("Sorry! Wrong Id ");
-    // }
+  //   if (bookingId && !withIdBooking) {
+  //     return toast.error("Sorry! Wrong Id ");
+  //   }
+  //   // if (userId && !withUserIdBooking) {
+  //   //   return toast.error("Sorry! Wrong Id ");
+  //   // }
 
-    setIsLoading(true);
-    setIsFilter(true);
-    orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-    bookingUserId = withUserIdBooking[0]?.userId
-      ? withUserIdBooking[0]?.userId
-      : "All";
+  //   setIsLoading(true);
+  //   setIsFilter(true);
+  //   orderId = withIdBooking?._id ? withIdBooking?._id : "All";
+  //   bookingUserId = withUserIdBooking[0]?.userId
+  //     ? withUserIdBooking[0]?.userId
+  //     : "All";
 
-    try {
-      // Get the access token
-      const accessToken = getFromLocalStorage(authKey);
+  //   try {
+  //     // Get the access token
+  //     const accessToken = getFromLocalStorage(authKey);
 
-      // Set the headers
-      const headers = {
-        Authorization: `${accessToken}`,
-        "Content-Type": "application/json",
-      };
+  //     // Set the headers
+  //     const headers = {
+  //       Authorization: `${accessToken}`,
+  //       "Content-Type": "application/json",
+  //     };
 
-      // Make the Axios GET request
-      const response = await axios.get(`${baseUrl}/api/transaction`, {
-        params: {
-          orderId: orderId,
-          userId: bookingUserId,
-          fromDate: fromDate,
-          toDate: toDate,
-          branch: branch,
-          paymentType: payementType,
-          transactionId: transactionId,
-        },
-        headers: headers,
-      });
+  //     // Make the Axios GET request
+  //     const response = await axios.get(`${baseUrl}/api/transaction`, {
+  //       params: {
+  //         orderId: orderId,
+  //         userId: bookingUserId,
+  //         fromDate: fromDate,
+  //         toDate: toDate,
+  //         branch: branch,
+  //         paymentType: payementType,
+  //         transactionId: transactionId,
+  //       },
+  //       headers: headers,
+  //     });
 
-      if (!response.status === 200) {
-        throw new Error("Network response was not ok");
-      }
+  //     if (!response.status === 200) {
+  //       throw new Error("Network response was not ok");
+  //     }
 
-      const data = response.data;
-      setFilterData(data?.transaction);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
-    }
+  //     const data = response.data;
+  //     setFilterData(data?.data?.transactions);
+  //   } catch (error) {
+  //     setError(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
+
+  // Re-fetch data whenever size changes
+  useEffect(() => {
+    refetch();
+  }, [size, refetch, branch]);
+
+  const handleRefreshQuery = () => {
+    setFromDate("");
+    document.getElementById("fromDateId").value = "";
+    setToDate("");
+    document.getElementById("toDateId").value = "";
+    setBranch("All");
+    document.getElementById("branchId").value = "All";
+    setPaymentType("");
+    document.getElementById("paymentTypeId").value = "";
+    setUserId("");
+    document.getElementById("userId").value = "";
   };
 
   const columns = [
@@ -393,25 +460,6 @@ const TransactionAdmin = () => {
       },
     },
   ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      // console.log("page", page);
-      // console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      // console.log("page", page);
-      // console.log("sizePerPage", sizePerPage);
-    },
-  });
 
   //delete
   const [products, setProducts] = useState(data);
@@ -439,7 +487,6 @@ const TransactionAdmin = () => {
       <div className="wrapper">
         <LoadingState handleClose={handleClose} />
         <div className="wrapper">
-          {/* Content Wrapper. Contains page content */}
           <div className="content-wrapper h-0 " style={{ background: "unset" }}>
             <h4 className="customize mx-lg-5 mb-3">Transactions</h4>
             <div className="row customize mx-5">
@@ -467,18 +514,19 @@ const TransactionAdmin = () => {
         <div className="content-wrapper mt-3 " style={{ background: "unset" }}>
           <section className="content customize_list ">
             <div className="mx-4">
-              <div className=" d-lg-flex gap-4 ">
+              {/* search bar */}
+              <div className=" d-lg-flex justify-content-end gap-3 ">
                 <div className="">
                   <label htmlFor="">From Date </label>
                   <br />
                   <div>
                     <input
                       type="date"
-                      ref={fromDateRef}
+                      className="rounded"
                       onChange={(e) => setFromDate(e.target.value)}
                       name=""
-                      id=""
-                      onClick={() => fromDateRef.current?.showPicker()}
+                      id="fromDateId"
+                      value={fromDate}
                     />
                   </div>
                 </div>
@@ -487,11 +535,11 @@ const TransactionAdmin = () => {
                   <div>
                     <input
                       type="date"
-                      ref={toDateRef}
                       name=""
-                      id=""
+                      id="toDateId"
+                      className="rounded"
                       onChange={(e) => setToDate(e.target.value)}
-                      onClick={() => toDateRef.current?.showPicker()}
+                      value={toDate}
                     />
                   </div>
                 </div>
@@ -501,6 +549,8 @@ const TransactionAdmin = () => {
                     className="rounded"
                     style={{ height: "30px" }}
                     onChange={handleBranch}
+                    id="branchId"
+                    value={branch}
                   >
                     <option value="All">All</option>
                     {allBranch?.map((branch) => (
@@ -514,6 +564,8 @@ const TransactionAdmin = () => {
                     className="rounded"
                     style={{ height: "30px", width: "100px" }}
                     onChange={handlePaymentType}
+                    id="paymentTypeId"
+                    value={paymentType}
                   >
                     <option value="All">All</option>
                     <option value="bkash">Bkash</option>
@@ -524,18 +576,7 @@ const TransactionAdmin = () => {
                   </select>
                 </div>
 
-                <div>
-                  <label htmlFor="">Transaction Id </label> <br />
-                  <input
-                    type="text"
-                    list="transactionId"
-                    placeholder="Type Transaction Id"
-                    onChange={(e) => setTransactionId(e.target.value)}
-                    style={{
-                      width: "150px",
-                    }}
-                  />
-                  {/* <datalist id="transactionId">
+                {/* <datalist id="transactionId">
                       {bookings?.map((booking) => {
                         return (
                           <option key={booking._id}>
@@ -544,7 +585,6 @@ const TransactionAdmin = () => {
                         );
                       })}
                     </datalist> */}
-                </div>
 
                 <div>
                   <label htmlFor="">User Id </label> <br />
@@ -552,9 +592,12 @@ const TransactionAdmin = () => {
                     type="text"
                     list="userId"
                     placeholder="Type User Id"
+                    name="userId"
+                    id="userId"
+                    className="rounded"
                     onChange={(e) => setUserId(e.target.value)}
                     style={{
-                      width: "150px",
+                      width: "160px",
                     }}
                   />
                   {/* <datalist id="userId">
@@ -573,10 +616,13 @@ const TransactionAdmin = () => {
                   <input
                     type="text"
                     list="bookingId"
+                    name="bookingId"
+                    id="bookingId"
+                    className="rounded"
                     placeholder="Type Booking Id"
                     onChange={(e) => setBookingId(e.target.value)}
                     style={{
-                      width: "150px",
+                      width: "160px",
                     }}
                   />
                   {/* <datalist id="bookingId">
@@ -588,7 +634,7 @@ const TransactionAdmin = () => {
                         );
                       })}
                     </datalist> */}
-                  <button
+                  {/* <button
                     onClick={handleSearch}
                     className="btn text-white"
                     style={{
@@ -598,8 +644,18 @@ const TransactionAdmin = () => {
                     }}
                   >
                     Search
-                  </button>
+                  </button> */}
                 </div>
+                {/* refresh */}
+                <button
+                  type="button"
+                  onClick={handleRefreshQuery}
+                  style={{ marginTop: "18px" }}
+                  aria-label="Refresh"
+                  className="btn btn-sm"
+                >
+                  <MdRefresh size={32} color="#00BBB4" />
+                </button>
               </div>
 
               {isLoading ? (
@@ -643,50 +699,12 @@ const TransactionAdmin = () => {
                   <hr
                     style={{ height: "1px", background: "rgb(191 173 173)" }}
                   />
-                  {data?.length > 0 || filterData.length > 0 ? (
-                    <div className="card">
-                      <div className="card-body card_body_sm">
-                        <>
-                          <ToolkitProvider
-                            bootstrap4
-                            keyField="id"
-                            columns={columns}
-                            data={isFilter ? filterData : data}
-                            pagination={pagination}
-                          >
-                            {(props) => (
-                              <React.Fragment>
-                                <BootstrapTable
-                                  bootstrap4
-                                  keyField="id"
-                                  columns={columns}
-                                  data={isFilter ? filterData : data}
-                                  pagination={pagination}
-                                  {...props.baseProps}
-                                />
-                                <ToastContainer
-                                  className="toast-position"
-                                  position="top-center"
-                                />
-                              </React.Fragment>
-                            )}
-                          </ToolkitProvider>
-                        </>
-                      </div>
-                    </div>
-                  ) : (
-                    <p className="text-center text-danger fw-bold">
-                      Find Transctions...
-                      <Spinner size="sm" animation="grow" />
-                    </p>
-                  )}
                 </>
               )}
               {/* /.row (main row) */}
             </div>
-            <div className="d-none">
+            <div>
               <div ref={ref}>
-                <h4 className="mt-5 mb-4 ">Transaction History</h4>
                 <Table striped bordered responsive>
                   <thead>
                     <tr>
@@ -694,10 +712,12 @@ const TransactionAdmin = () => {
                       <th>Booking Id</th>
                       <th>Branch</th>
                       <th>Full Name</th>
-                      <th>Email</th>
+                      <th>User Id</th>
                       <th>Phone</th>
                       <th>Receive Amount</th>
                       <th>Payment Type</th>
+                      <th>Status</th>
+                      <th>Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -716,7 +736,7 @@ const TransactionAdmin = () => {
                         ))}
                   </tbody>
                 </Table>
-                <div
+                {/* <div
                   className="d-flex justify-content-end "
                   style={{ marginRight: "280px" }}
                 >
@@ -728,10 +748,69 @@ const TransactionAdmin = () => {
                       : 0}{" "}
                     Tk
                   </p>
-                </div>
+                </div> */}
               </div>
             </div>
           </section>
+          {/* pagination */}
+          <div className="pagination d-flex justify-content-end align-items-center gap-0">
+            <label id="size" className="mt-2">
+              Show row
+            </label>
+            <select
+              id="size"
+              value={size}
+              onChange={handlePageSizeChange}
+              className="btn border mx-2"
+            >
+              {pageSizeOptions?.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <button
+              onClick={() => setPage(1)}
+              disabled={page === 1}
+              className="pagination-button"
+            >
+              First
+            </button>
+            <button
+              onClick={() => setPage(page - 1)}
+              disabled={page === 1}
+              className="pagination-button"
+            >
+              Previous
+            </button>
+            {visiblePageNumbers?.map((number) => (
+              <button
+                key={number}
+                onClick={() => setPage(number)}
+                className={
+                  page === number
+                    ? "page-selected pagination-button"
+                    : "pagination-button"
+                }
+              >
+                {number}
+              </button>
+            ))}
+            <button
+              onClick={() => setPage(page + 1)}
+              disabled={page === pageCount || pageCount === 0}
+              className="pagination-button"
+            >
+              Next
+            </button>
+            <button
+              onClick={() => setPage(pageCount)}
+              disabled={page === pageCount || pageCount === 0}
+              className="pagination-button"
+            >
+              Last
+            </button>
+          </div>
         </div>
       </div>
     </>

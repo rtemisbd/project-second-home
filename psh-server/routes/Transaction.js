@@ -4,6 +4,7 @@ import {
   getUserTransactions,
   deleteTransaction,
   UpdateTransaction,
+  getTransactionById,
 } from "../controllers/transaction.js";
 import auth from "../middleware/auth.js";
 import { ENUM_USER_ROLE } from "../enums/user.js";
@@ -22,6 +23,7 @@ router.get(
   getTransaction
 );
 
+router.route("/:id").get(getTransactionById);
 router.route("/:email").get(getUserTransactions);
 router.route("/:id").delete(deleteTransaction);
 router.route("/:id").patch(UpdateTransaction);
