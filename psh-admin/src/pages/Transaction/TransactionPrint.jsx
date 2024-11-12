@@ -14,20 +14,15 @@ const TransactionPrint = ({ transaction }) => {
   const dispatch = useDispatch();
 
   const handleClose = () => dispatch(placeLoadingShow(false));
-  console.log(transaction);
 
   return (
-    <tr style={{ fontSize: "15px" }}>
-      <td
-      //  style={{ textAlign: "center", display: "block" }}
-      >
-        {formatDate(transaction?.paymentDate)}
-      </td>
-      <td>#{transaction?.orderId.slice(19)}</td>
+    <tr style={{ fontSize: "15px", border: "none" }}>
+      <td>{formatDate(transaction?.paymentDate)}</td>
+      <td>#{transaction?.orderDetails?.bookingId}</td>
       <td> {transaction?.branchDetails?.name}</td>
 
       <td>{transaction?.userName}</td>
-      <td>#{transaction?.userDetails.userId}</td>
+      {/* <td>#{transaction?.userDetails.userId}</td> */}
       <td>{transaction?.userPhone}</td>
       <td style={{ color: "#1d6f42", fontWeight: "bold" }}>
         {" "}

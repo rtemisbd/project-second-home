@@ -2,74 +2,96 @@ import mongoose from "mongoose";
 import Transaction from "../models/Transaction.js";
 
 const getAllTransactionFromDB = async (queries) => {
-  // Pagination parameters
-  const { fromDate, toDate, branch, paymentType, userId, bookingId } = queries;
+  const { fromDate, toDate, branch, paymentType, phone, bookingId, status } =
+    queries;
 
   let matchStage = {};
 
   const page = parseInt(queries.page) || 1;
   const size = parseInt(queries.size) || 10;
 
-  if (branch && branch !== "All")
+  if (branch && branch !== "All") {
     matchStage.branch = mongoose.Types.ObjectId(branch);
-  if (paymentType && paymentType !== "All")
+  }
+  if (paymentType && paymentType !== "All") {
     matchStage.paymentType = paymentType;
-
+  }
+  if (status && status !== "All") {
+    matchStage.acceptableStatus = status;
+  }
+  if (phone && phone !== "") matchStage.userPhone = phone;
   if (fromDate && toDate) {
-    matchStage.createdAt = {
-      $gt: new Date(fromDate),
+    matchStage.paymentDate = {
+      $gte: new Date(fromDate),
       $lte: new Date(toDate),
     };
   }
-  if (userId && userId !== "") matchStage["userDetails.userId"] = userId;
-
-  const totalCountsPipeline = [
-    { $match: matchStage },
-    {
-      $group: {
-        _id: null,
-        totalCount: { $sum: 1 },
-      },
-    },
-  ];
-  console.log(matchStage);
-
-  const totalCountsResult = await Transaction.aggregate(totalCountsPipeline);
-  const totalCount =
-    totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
 
   const pipeline = [
     { $match: matchStage },
+    {
+      $lookup: {
+        from: "branches",
+        localField: "branch",
+        foreignField: "_id",
+        as: "branchDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+              // location: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$branchDetails" },
+    {
+      $lookup: {
+        from: "orders",
+        localField: "orderId",
+        foreignField: "_id",
+        as: "orderDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              bookingId: 1,
+              // location: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$orderDetails" },
+    {
+      $match: {
+        ...(bookingId ? { "orderDetails.bookingId": bookingId } : {}),
+      },
+    },
+
     {
       $facet: {
         paginatedResults: [
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
-          {
-            $lookup: {
-              from: "branches",
-              localField: "branch",
-              foreignField: "_id",
-              as: "branchDetails",
-            },
-          },
-          { $unwind: "$branchDetails" },
-          {
-            $lookup: {
-              from: "users",
-              localField: "userId",
-              foreignField: "_id",
-              as: "userDetails",
-            },
-          },
-          { $unwind: "$userDetails" },
         ],
         totalCounts: [
           {
             $group: {
               _id: null,
               totalCount: { $sum: 1 },
+              totalReceivedAmount: {
+                $sum: {
+                  $cond: [
+                    { $eq: ["$acceptableStatus", "Accepted"] },
+                    "$receivedTk",
+                    0,
+                  ],
+                },
+              },
             },
           },
         ],
@@ -78,31 +100,43 @@ const getAllTransactionFromDB = async (queries) => {
     {
       $project: {
         paginatedResults: 1,
-        totalCounts: { $arrayElemAt: ["$totalCounts", 0] },
+        totalCount: {
+          $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
+        },
+        totalReceivedAmount: {
+          $ifNull: [
+            { $arrayElemAt: ["$totalCounts.totalReceivedAmount", 0] },
+            0,
+          ],
+        },
       },
     },
-    { $sort: { paymentDate: -1 } },
+    {
+      $sort: { paymentDate: -1 },
+    },
   ];
 
   const transactions = await Transaction.aggregate(pipeline);
   const paginatedResults = transactions[0]?.paginatedResults || [];
-  // const totalCount = transactions[0]?.totalCounts || 0;
+  const totalCount = transactions[0]?.totalCount || 0;
+  const totalReceivedAmount = transactions[0]?.totalReceivedAmount || 0;
 
   return {
     transactions: paginatedResults,
     totalCount: totalCount,
+    totalReceivedAmount: totalReceivedAmount,
     currentPage: page,
     pageSize: size,
   };
 };
 
-// get transaction by id
+// Function to get transaction by ID
 const getTransactionByIdFromDB = async (id) => {
   const result = await Transaction.findById(id);
-
   return result;
 };
 
+// Exporting the transaction services
 export const transactionServices = {
   getAllTransactionFromDB,
   getTransactionByIdFromDB,

@@ -43,7 +43,6 @@ const TransactionAdmin = () => {
   const handleClose = () => dispatch(placeLoadingShow(false));
   const MySwal = withReactContent(Swal);
   const [bookings] = useBooking();
-  const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
   const [error, setError] = useState(null);
   let orderId = "All";
@@ -52,18 +51,24 @@ const TransactionAdmin = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [branch, setBranch] = useState("All");
+  const [status, setStatus] = useState("All");
   const [paymentType, setPaymentType] = useState("All");
-  const [userId, setUserId] = useState("");
+  const [phone, setPhone] = useState("");
   const [bookingId, setBookingId] = useState("");
 
   const [data, setData] = useState([]);
   const [filterData, setFilterData] = useState([]);
   const [userAllBooking, setUserAllBooking] = useState([]);
+  const [totalReceviedAmount, setTotalReceivedAmount] = useState(0);
 
   const [pageCount, setPageCount] = useState(0);
   const [page, setPage] = useState(1);
   const [size, setSize] = useState(10);
   const [pageSizeOptions, setPageSizeOptions] = useState([10]);
+
+  const [isLoading, setIsLoading] = useState(false);
+  const [findingStatement, setFindingStatement] = useState(true);
+  const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
   // Page range calculation
   const MAX_PAGE_BUTTONS = 5;
@@ -84,7 +89,17 @@ const TransactionAdmin = () => {
 
   // Get All Transactions
   const { refetch } = useQuery(
-    [data, page, fromDate, toDate, branch, paymentType, userId, bookingId],
+    [
+      data,
+      page,
+      fromDate,
+      toDate,
+      branch,
+      paymentType,
+      phone,
+      bookingId,
+      status,
+    ],
     async () => {
       try {
         const queryParams = new URLSearchParams({
@@ -94,8 +109,9 @@ const TransactionAdmin = () => {
           toDate,
           branch,
           paymentType,
-          userId,
+          phone,
           bookingId,
+          status,
         });
         // Get the access token
         const accessToken = getFromLocalStorage(authKey);
@@ -119,8 +135,8 @@ const TransactionAdmin = () => {
         }
 
         const data = await response.json();
-
         setData(data?.data?.transactions);
+        setTotalReceivedAmount(data?.data?.totalReceivedAmount);
 
         // dynamic page size
         const totalPageCount = Math.ceil(data?.data?.totalCount / size);
@@ -145,32 +161,7 @@ const TransactionAdmin = () => {
     }
   );
 
-  // Find User Booking By Filtering
-  let totalBookingAmount = 0;
-
-  if (isFilter) {
-    const filterBookings = bookings?.filter((booking) =>
-      filterData?.map((data) => data?.orderId).includes(booking?._id)
-    );
-
-    for (const item of filterBookings.filter(
-      (booking) => booking && booking.status === "Approved"
-    )) {
-      totalBookingAmount += item.payableAmount;
-    }
-  } else {
-    for (const item of bookings?.filter(
-      (booking) => booking && booking.status === "Approved"
-    )) {
-      totalBookingAmount += item.payableAmount;
-    }
-  }
-
-  let mytotalReceiveTk = 0;
-
-  for (const item of isFilter ? filterData : data) {
-    mytotalReceiveTk += item.receivedTk;
-  }
+  // }
 
   const handleBranch = (e) => {
     setBranch(e.target.value);
@@ -178,65 +169,13 @@ const TransactionAdmin = () => {
   const handlePaymentType = (e) => {
     setPaymentType(e.target.value);
   };
-
-  // const handleSearch = async () => {
-  //   const withIdBooking = bookings?.find(
-  //     (data) => data?._id?.slice(-5) === bookingId
-  //   );
-  //   const withUserIdBooking = bookings?.filter(
-  //     (data) => data?.userId?.slice(-5) === userId
-  //   );
-
-  //   if (bookingId && !withIdBooking) {
-  //     return toast.error("Sorry! Wrong Id ");
-  //   }
-  //   // if (userId && !withUserIdBooking) {
-  //   //   return toast.error("Sorry! Wrong Id ");
-  //   // }
-
-  //   setIsLoading(true);
-  //   setIsFilter(true);
-  //   orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-  //   bookingUserId = withUserIdBooking[0]?.userId
-  //     ? withUserIdBooking[0]?.userId
-  //     : "All";
-
-  //   try {
-  //     // Get the access token
-  //     const accessToken = getFromLocalStorage(authKey);
-
-  //     // Set the headers
-  //     const headers = {
-  //       Authorization: `${accessToken}`,
-  //       "Content-Type": "application/json",
-  //     };
-
-  //     // Make the Axios GET request
-  //     const response = await axios.get(`${baseUrl}/api/transaction`, {
-  //       params: {
-  //         orderId: orderId,
-  //         userId: bookingUserId,
-  //         fromDate: fromDate,
-  //         toDate: toDate,
-  //         branch: branch,
-  //         paymentType: payementType,
-  //         transactionId: transactionId,
-  //       },
-  //       headers: headers,
-  //     });
-
-  //     if (!response.status === 200) {
-  //       throw new Error("Network response was not ok");
-  //     }
-
-  //     const data = response.data;
-  //     setFilterData(data?.data?.transactions);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  const handleStatus = (e) => {
+    setStatus(e.target.value);
+  };
+  const handlePhone = (e) => {
+    const value = e.target.value;
+    setPhone(value);
+  };
 
   // Re-fetch data whenever size changes
   useEffect(() => {
@@ -252,214 +191,11 @@ const TransactionAdmin = () => {
     document.getElementById("branchId").value = "All";
     setPaymentType("");
     document.getElementById("paymentTypeId").value = "";
-    setUserId("");
-    document.getElementById("userId").value = "";
+    setBookingId("");
+    document.getElementById("bookingId").value = "";
+    setPhone("");
+    document.getElementById("phoneId").value = "";
   };
-
-  const columns = [
-    {
-      text: "Date",
-      formatter: (cellContent, row, index) => {
-        // const formattedDate = new Date(row?.paymentDate)
-        //   .toISOString()
-        //   .split("T")[0];
-        // const formattedTime = new Date(row?.createdAt)
-        //   ?.toLocaleString()
-        //   ?.split(",")[1];
-
-        return (
-          <>
-            {" "}
-            <p style={{ width: "140px" }}>{formatDate(row?.paymentDate)}</p>
-            {/* <p>{formattedTime}</p> */}
-          </>
-        );
-      },
-    },
-
-    {
-      text: "Booking Id",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            <p> #{row?.orderId.slice(-5)}</p>
-          </>
-        );
-      },
-    },
-    {
-      text: "Branch",
-      formatter: (cellContent, row, index) => {
-        return <p>{row?.branch?.name}</p>;
-      },
-    },
-    {
-      dataField: `userName`,
-      text: "Full Name",
-    },
-    // {
-    //   dataField: `userEmail`,
-    //   text: "Email",
-    // },
-    {
-      text: "User Id",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            <p> #{row?.userId?.slice(-5)}</p>
-          </>
-        );
-      },
-    },
-    {
-      dataField: `userPhone`,
-      text: "Phone",
-    },
-
-    {
-      text: "Receive Amount",
-      formatter: (cellContent, row, index) => {
-        return (
-          <span className=" fw-bold" style={{ color: "green" }}>
-            {" "}
-            Tk {row?.receivedTk?.toLocaleString()}
-          </span>
-        );
-      },
-    },
-
-    {
-      text: "Payment info",
-      formatter: (cellContent, row) => {
-        return (
-          <>
-            <div>
-              {row?.paymentType === "bkash" || row?.paymentType === "nagad" ? (
-                <span className="fw-bold">
-                  {" "}
-                  {row?.paymentType}, {row?.paymentNumber}, Trx :{" "}
-                  {row?.transactionId}
-                </span>
-              ) : (
-                row?.paymentType
-              )}
-              {row?.paymentType === "bank" ? (
-                <span>
-                  {" "}
-                  {row?.paymentType}, {row?.bankName},{row?.bankHoldingName}
-                </span>
-              ) : (
-                ""
-              )}
-            </div>
-          </>
-        );
-      },
-    },
-    {
-      text: "Status",
-      formatter: (cellContent, row) => {
-        return (
-          <>
-            <div className="d-flex justify-content-center gap-3">
-              <p
-                style={{
-                  color:
-                    row?.acceptableStatus === "Accepted" ? "#35b0a7" : "red",
-                  fontWeight: 700,
-                }}
-              >
-                {row?.acceptableStatus}
-              </p>
-              {user?.role === "SuperAdmin" || user?.role === "subAdmin1" ? (
-                <button
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target={`#transactionStatus${row._id}`}
-                  className="d-flex bg-white mt-2"
-                >
-                  <BiSolidEdit style={{ width: "30px", height: "30px" }} />
-                </button>
-              ) : (
-                ""
-              )}
-            </div>
-            <div>
-              <TransactionStatusUpdate
-                data={row}
-                refetch={refetch}
-                handleClose={handleClose}
-              />
-            </div>
-          </>
-        );
-      },
-    },
-    {
-      text: "Action",
-      formatter: (cellContent, row) => {
-        return (
-          <>
-            <div className="d-flex justify-content-center gap-3">
-              {user?.role === "SuperAdmin" ? (
-                <button
-                  type="button"
-                  data-bs-toggle="modal"
-                  data-bs-target={`#transaction${row._id}`}
-                  className="d-flex bg-white mt-2"
-                >
-                  <BiSolidEdit style={{ width: "30px", height: "30px" }} />
-                </button>
-              ) : (
-                ""
-              )}
-
-              <button
-                type="button"
-                className="bg-white"
-                data-bs-toggle="modal"
-                data-bs-target={`#details${row._id}`}
-              >
-                <span>
-                  <AiOutlineEye style={{ width: "30px", height: "30px" }} />
-                </span>
-              </button>
-
-              {user?.role === "SuperAdmin" ? (
-                <div>
-                  <AiOutlineDelete
-                    onClick={() => handleDelete(row._id)}
-                    style={{
-                      width: "30px",
-                      height: "30px",
-                      marginTop: "10px",
-                      cursor: "pointer",
-                    }}
-                  />
-                </div>
-              ) : (
-                ""
-              )}
-            </div>
-
-            <UpdateTransaction
-              data={row}
-              refetch={refetch}
-              transactions={data}
-              bookings={bookings}
-              setUserAllBooking={setUserAllBooking}
-            />
-            {/* Modal Transaction Details */}
-            <ViewTransactionModal
-              data={row}
-              bookings={bookings}
-              userAllBooking={userAllBooking}
-            />
-          </>
-        );
-      },
-    },
-  ];
 
   //delete
   const [products, setProducts] = useState(data);
@@ -500,8 +236,8 @@ const TransactionAdmin = () => {
                       <p>Total Cash Amount</p>
                       <p className="fw-bold">
                         Tk{" "}
-                        {data?.length > 0 || filterData.length > 0
-                          ? mytotalReceiveTk?.toLocaleString()
+                        {data?.length > 0
+                          ? totalReceviedAmount?.toLocaleString()
                           : 0}
                       </p>
                     </div>
@@ -559,6 +295,21 @@ const TransactionAdmin = () => {
                   </select>
                 </div>
                 <div>
+                  <label htmlFor="">Status </label> <br />
+                  <select
+                    className="rounded"
+                    style={{ height: "30px", width: "100px" }}
+                    onChange={handleStatus}
+                    id="statusId"
+                    value={status}
+                  >
+                    <option value="All">All</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Accepted">Accepted</option>
+                    <option value="Rejected">Rejected</option>
+                  </select>
+                </div>
+                <div>
                   <label htmlFor="">Payment Type </label> <br />
                   <select
                     className="rounded"
@@ -576,39 +327,19 @@ const TransactionAdmin = () => {
                   </select>
                 </div>
 
-                {/* <datalist id="transactionId">
-                      {bookings?.map((booking) => {
-                        return (
-                          <option key={booking._id}>
-                            {booking?.userId?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
-
                 <div>
-                  <label htmlFor="">User Id </label> <br />
+                  <label htmlFor=""> Phone </label>
+                  <br />
                   <input
-                    type="text"
-                    list="userId"
-                    placeholder="Type User Id"
-                    name="userId"
-                    id="userId"
+                    type="number"
+                    name="phone"
+                    id="phoneId"
+                    onChange={handlePhone}
+                    placeholder="Enter phone number"
                     className="rounded"
-                    onChange={(e) => setUserId(e.target.value)}
-                    style={{
-                      width: "160px",
-                    }}
+                    value={phone}
+                    disabled={phone.length >= 11}
                   />
-                  {/* <datalist id="userId">
-                      {bookings?.map((booking) => {
-                        return (
-                          <option key={booking._id}>
-                            {booking?.userId?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
                 </div>
 
                 <div className=" ">
@@ -625,26 +356,6 @@ const TransactionAdmin = () => {
                       width: "160px",
                     }}
                   />
-                  {/* <datalist id="bookingId">
-                      {bookings?.map((booking) => {
-                        return (
-                          <option key={booking._id} style={{ display: "none" }}>
-                            {booking?._id?.slice(-5)}
-                          </option>
-                        );
-                      })}
-                    </datalist> */}
-                  {/* <button
-                    onClick={handleSearch}
-                    className="btn text-white"
-                    style={{
-                      backgroundColor: "#35b0a7",
-                      height: "35px",
-                      padding: "0 10px",
-                    }}
-                  >
-                    Search
-                  </button> */}
                 </div>
                 {/* refresh */}
                 <button
@@ -658,99 +369,83 @@ const TransactionAdmin = () => {
                 </button>
               </div>
 
-              {isLoading ? (
-                <p
-                  style={{ margin: "150px 0" }}
-                  className="text-center text-danger fw-bold"
-                >
-                  Please Wait...
-                  <Spinner size="sm" animation="grow" />
-                </p>
-              ) : (
-                <>
-                  <div className="d-flex gap-2 justify-content-end justify-items-center mt-3">
-                    {data.length > 0 || filterData.length > 0 ? (
-                      <>
-                        <div className="">
-                          <ReactToPrint
-                            trigger={() => (
-                              <button
-                                className=" px-3 rounded text-white font-medium"
-                                style={{ backgroundColor: "#35b0a7" }}
-                              >
-                                Print
-                              </button>
-                            )}
-                            content={() => ref.current}
-                          />
-                        </div>
-                        <div>
-                          {isFilter ? (
-                            <ExportToExcel data={filterData} />
-                          ) : (
-                            <ExportToExcel data={data} />
-                          )}
-                        </div>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                  </div>
-                  <hr
-                    style={{ height: "1px", background: "rgb(191 173 173)" }}
-                  />
-                </>
-              )}
-              {/* /.row (main row) */}
+              <div className="d-flex gap-2 justify-content-end justify-items-center mt-3">
+                {data.length > 0 ? (
+                  <>
+                    <div className="">
+                      <ReactToPrint
+                        trigger={() => (
+                          <button
+                            className=" px-3 rounded text-white font-medium"
+                            style={{ backgroundColor: "#35b0a7" }}
+                          >
+                            Print
+                          </button>
+                        )}
+                        content={() => ref.current}
+                      />
+                    </div>
+                    <div>
+                      {isFilter ? (
+                        <ExportToExcel data={data} />
+                      ) : (
+                        <ExportToExcel data={data} />
+                      )}
+                    </div>
+                  </>
+                ) : (
+                  ""
+                )}
+              </div>
+              <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
             </div>
-            <div>
-              <div ref={ref}>
-                <Table striped bordered responsive>
-                  <thead>
-                    <tr>
-                      <th>Date</th>
-                      <th>Booking Id</th>
-                      <th>Branch</th>
-                      <th>Full Name</th>
-                      <th>User Id</th>
-                      <th>Phone</th>
-                      <th>Receive Amount</th>
-                      <th>Payment Type</th>
-                      <th>Status</th>
-                      <th>Actions</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {isFilter
-                      ? filterData.map((transaction) => (
+            {/* /.row (main row) */}
+            {isLoading ? (
+              <p
+                style={{ margin: "150px 0" }}
+                className="text-center text-danger fw-bold"
+              >
+                Please Wait... <Spinner size="sm" animation="grow" />
+              </p>
+            ) : data?.length > 0 ? (
+              <div className="card">
+                <div ref={ref} className="card-body card_body_sm">
+                  <Table striped bordered>
+                    <thead>
+                      <tr>
+                        <th>Date</th>
+                        <th>Booking Id</th>
+                        <th>Branch</th>
+                        <th>Full Name</th>
+                        <th>Phone</th>
+                        <th>Receive Amount</th>
+                        <th>Payment Type</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {data?.length ? (
+                        data.map((transaction) => (
                           <TransactionPrint
                             transaction={transaction}
                             key={transaction?._id}
                           />
                         ))
-                      : data.map((transaction) => (
-                          <TransactionPrint
-                            transaction={transaction}
-                            key={transaction?._id}
-                          />
-                        ))}
-                  </tbody>
-                </Table>
-                {/* <div
-                  className="d-flex justify-content-end "
-                  style={{ marginRight: "280px" }}
-                >
-                  <p style={{ color: "green" }} className="fw-bold">
-                    {" "}
-                    Total Cash ={" "}
-                    {data?.length > 0 || filterData?.length > 0
-                      ? mytotalReceiveTk?.toLocaleString()
-                      : 0}{" "}
-                    Tk
-                  </p>
-                </div> */}
+                      ) : (
+                        <p></p>
+                      )}
+                    </tbody>
+                  </Table>
+                </div>
               </div>
-            </div>
+            ) : findingStatement ? (
+              <p className="text-center text-danger fw-bold">
+                Finding Transactions... <Spinner size="sm" animation="grow" />
+              </p>
+            ) : (
+              <p className="text-center text-danger fw-bold">No Data Found</p>
+            )}
           </section>
           {/* pagination */}
           <div className="pagination d-flex justify-content-end align-items-center gap-0">

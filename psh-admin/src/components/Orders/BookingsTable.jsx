@@ -16,7 +16,7 @@ const BookingsTable = ({
 }) => {
   return (
     <div>
-      <Table bordered>
+      <Table striped bordered>
         <thead>
           <tr
             style={{

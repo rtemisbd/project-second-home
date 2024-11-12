@@ -205,6 +205,8 @@ const NewOrders = () => {
     document.getElementById("guestTypeId").value = "All";
   };
 
+  console.log(data?.orders);
+
   useEffect(() => {
     if (data?.orders?.length === 0 && !hasTimeoutRun) {
       const timeoutId = setTimeout(() => {
@@ -213,7 +215,7 @@ const NewOrders = () => {
       }, 5000);
       return () => clearTimeout(timeoutId);
     }
-  }, [data?.orders?.length, findingStatement, hasTimeoutRun]);
+  }, [data?.orders?.length, findingStatement, hasTimeoutRun, refetch]);
 
   return (
     <div className="wrapper">
@@ -334,7 +336,7 @@ const NewOrders = () => {
                     name="unknownQuery"
                     id="unknownQueryId"
                     onChange={handleUnknownQuery}
-                    placeholder="enter phone number"
+                    placeholder="Enter phone number"
                     value={unknownQuery}
                     disabled={unknownQuery.length >= 11}
                   />
