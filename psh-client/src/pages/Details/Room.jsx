@@ -1318,6 +1318,7 @@ const Room = () => {
                 {data?.seats && data?.seats.length > 0 ? (
                   <BookingSeatTotal
                     data={data}
+                    bookedDates={bookedDates}
                     seats={data?.seats}
                     extraCharge={extraCharge}
                   />

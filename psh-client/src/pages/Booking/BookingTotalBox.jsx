@@ -321,7 +321,6 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
     const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
     return lastDay;
   }
-  console.log(bookedDates);
 
   const bookingData = {
     data: data,

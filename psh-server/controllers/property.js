@@ -197,13 +197,6 @@ export const CreatePropertys = async (req, res, next) => {
 export const getPropertys = catchAsync(async (req, res, next) => {
   const result = await propertyServices.getPropertiesFromDB(req.query);
   res.status(200).json(result);
-
-  // sendResponse(res, {
-  //   statusCode: 200,
-  //   success: true,
-  //   message: "Properties retrieved successfully",
-  //   data: result,
-  // });
 });
 
 // Get Booking Report

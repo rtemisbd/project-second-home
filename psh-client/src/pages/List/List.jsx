@@ -73,26 +73,10 @@ function List({ type }) {
     sort,
   });
 
-  // let url = `property?branch=${encodeURIComponent(
-  //   destination
-  // )}&Furnished=${encodeURIComponent(furnitured)}&type=${encodeURIComponent(
-  //   gender
-  // )}&category=${encodeURIComponent(category)}&min=${encodeURIComponent(
-  //   min
-  // )}&max=${encodeURIComponent(max)}&facility=${encodeURIComponent(
-  //   facilities
-  // )}&commonfacility=${encodeURIComponent(
-  //   commonfacilities
-  // )}&sort=${sort}&page=${page}&pageSize=${itemsPerPage}`;
   let url = `property?${queryParams.toString()}`;
 
-  // Check if bedrooms are selected
-  // if (bedrooms.length > 0) {
-  //   const selectedBedrooms = bedrooms.join(",");
-  //   url += `&bedType=${encodeURIComponent(selectedBedrooms)}`;
-  // }
-
   const { data, loading, error, reFetch } = UseFetch(url);
+  console.log(data);
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);

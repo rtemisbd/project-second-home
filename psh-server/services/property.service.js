@@ -15,6 +15,9 @@ const getPropertiesFromDB = async (queries) => {
   } = queries;
   // console.log("start", startDate, "end", endDate);
 
+  const page = parseInt(queries.page) || 1;
+  const size = parseInt(queries.size) || 10;
+
   let query = {};
 
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
@@ -31,16 +34,93 @@ const getPropertiesFromDB = async (queries) => {
     if (selectedCategory) query.category = selectedCategory._id;
   }
 
-  const properties = await Property.find(query).populate("branch category");
+  const pipeline = [
+    { $match: query },
+    {
+      $lookup: {
+        from: "branches",
+        localField: "branch",
+        foreignField: "_id",
+        as: "branchDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$branchDetails" },
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "categoryDetails",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              name: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$categoryDetails" },
+    {
+      $facet: {
+        paginatedResults: [
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * size },
+          { $limit: size },
+        ],
+        totalCounts: [
+          {
+            $group: {
+              _id: null,
+              totalCount: { $sum: 1 },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        paginatedResults: 1,
+        totalCount: {
+          $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
+        },
+      },
+    },
+  ];
 
-  return properties;
+  const properties = await Property.aggregate(pipeline);
+  const paginatedResults = properties[0]?.paginatedResults || [];
+  const totalCount = properties[0]?.totalCount || 0;
+
+  return {
+    properties: paginatedResults,
+    totalCount: totalCount,
+    currentPage: page,
+    pageSize: size,
+  };
 };
 
 const getSinglePropertyFromDB = async (propertyId) => {
   const rentRooms = await RentRoom.find({
     roomId: propertyId,
     bookingStatus: { $in: ["Booked", "Reserved"] },
-  }).select({ bookStartDate: 1, bookEndDate: 1, bookingStatus: 1 });
+  }).select({
+    bookStartDate: 1,
+    bookEndDate: 1,
+    bookingStatus: 1,
+    roomType: 1,
+    seatId: 1,
+    seatNumber: 1,
+  });
   // console.log(rentRooms);
 
   // Find the property by ID

@@ -23,11 +23,10 @@ import FinalLoginModal from "../../components/shared/FinalLoginModal";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
 
-const BookingSeatTotal = ({ data, seats, extraCharge }) => {
+const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   const navigate = useNavigate();
-
   // date handle
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
@@ -79,6 +78,17 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
   const [totalRentAmount, setTotalRentAmount] = useState(0);
   const [payableAmount, setPayableAmount] = useState(0);
   const [singleUser, setSingleUser] = useState({});
+  const [filteredBookedDates, setFilteredBookedDate] = useState([]);
+
+  // filter bookedDates based on selected seat
+  useEffect(() => {
+    if (seatBooking) {
+      setFilteredBookedDate(
+        bookedDates.filter((date) => seatBooking.seatNumber === date.seatNumber)
+      );
+    }
+  }, [seatBooking]);
+
   // Get Single User
   useEffect(() => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
@@ -455,6 +465,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
       setIsScrolled(false);
     }
   }, [scrollY]);
+
   return (
     <div
       style={{
@@ -566,7 +577,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
               selected={new Date(startDate)}
               dateFormat="dd/MM/yyyy"
               onChange={(date) => dispatch(leftDate(date))}
-              excludeDateIntervals={seatBooking?.rentDate?.map((rent) => {
+              excludeDateIntervals={filteredBookedDates?.map((rent) => {
                 return {
                   start: subDays(new Date(rent?.bookStartDate), 1),
                   end: addDays(new Date(rent?.bookEndDate), -1),
@@ -589,7 +600,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
               selected={new Date(endDate)}
               dateFormat="dd/MM/yyyy"
               onChange={(date) => dispatch(rightDate(date))}
-              excludeDateIntervals={seatBooking?.rentDate?.map((rent) => {
+              excludeDateIntervals={filteredBookedDates?.map((rent) => {
                 return {
                   start: subDays(new Date(rent?.bookStartDate), 1),
                   end: addDays(new Date(rent?.bookEndDate), 0),

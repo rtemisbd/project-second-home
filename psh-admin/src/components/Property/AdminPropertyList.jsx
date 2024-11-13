@@ -20,27 +20,33 @@ import PropertyUpdate2 from "../../pages/edit/PropertyUpdate2";
 import { ToastContainer } from "react-toastify";
 import { Spinner } from "react-bootstrap";
 import LoadingState from "../../pages/LoadingState/LoadingState";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import { baseUrl } from "../../utils/getBaseURL";
+import useBranch from "../../hooks/useBranch";
+import Pagination from "../Pagination/Pagination";
 
 const AdminPropertyList = (props) => {
   const MySwal = withReactContent(Swal);
   const dispatch = useDispatch();
-
   const handleClose = () => dispatch(placeLoadingShow(false));
+  const { page, size } = useSelector((state) => state.pagination);
   //sub stream
   const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
   const [filterData, setFilterData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
 
   const [categories, setCategories] = useState([]);
 
-  const [branches, setBranches] = useState([]);
+  // const [branches, setBranches] = useState([]);
   const [selectCategory, setSelectCategory] = useState("All");
   const [selectBranch, setSelectBranch] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
+
+  // Get All Branch
+  const { allBranch: branches, refetch: refetchBranches } = useBranch();
 
   const { refetch: categoryList } = useQuery(["categoryList"], async () => {
     try {
@@ -53,31 +59,30 @@ const AdminPropertyList = (props) => {
       console.error(error);
     }
   });
-  const { refetch: branchList } = useQuery(["branchList"], async () => {
-    try {
-      const response = await axios.get(`${baseUrl}/api/branch`, {
-        mode: "cors",
-      });
-
-      setBranches(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  });
 
   // Get Properties
-  const { refetch } = useQuery(["propertyList"], async () => {
+  const { refetch } = useQuery(["propertyList", page, size], async () => {
     try {
-      const response = await axios.get(`${baseUrl}/api/property`, {
-        mode: "cors",
+      const queryParams = new URLSearchParams({
+        page,
+        size,
       });
+      const response = await axios.get(
+        `${baseUrl}/api/property?${queryParams.toString()}`,
+        {
+          mode: "cors",
+        }
+      );
+      console.log(response);
 
-      setData(response.data); // Return data from the async function
+      setData(response?.data?.properties);
+      setTotalDataCount(response?.data?.totalCount);
     } catch (error) {
       console.error(error);
-      throw error; // Throw the error to handle it in the caller
+      throw error;
     }
   });
+  console.log(totalDataCount);
 
   // Handle Search
 
@@ -137,8 +142,8 @@ const AdminPropertyList = (props) => {
       dataField: "roomNumber",
       text: "Room No.",
     },
-    { dataField: "category.name", text: "Category" },
-    { dataField: "branch.name", text: "Branch" },
+    { dataField: "categoryDetails.name", text: "Category" },
+    { dataField: "branchDetails.name", text: "Branch" },
 
     {
       text: "Per Day",
@@ -287,25 +292,25 @@ const AdminPropertyList = (props) => {
       },
     },
   ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-  });
+  // const pagination = paginationFactory({
+  //   page: 1,
+  //   sizePerPage: 10,
+  //   style: { width: 60 },
+  //   lastPageText: "Last",
+  //   firstPageText: "First",
+  //   nextPageText: "Next",
+  //   prePageText: "Previous",
+  //   showTotal: true,
+  //   alwaysShowAllBtns: true,
+  //   onPageChange: function (page, sizePerPage) {
+  //     console.log("page", page);
+  //     console.log("sizePerPage", sizePerPage);
+  //   },
+  //   onSizePerPageChange: function (page, sizePerPage) {
+  //     console.log("page", page);
+  //     console.log("sizePerPage", sizePerPage);
+  //   },
+  // });
 
   //delete
   const [products, setProducts] = useState(data);
@@ -448,7 +453,6 @@ const AdminPropertyList = (props) => {
                       keyField="_id"
                       columns={columns}
                       data={isFilter ? filterData : data}
-                      pagination={pagination}
                     >
                       {(props) => (
                         <React.Fragment>
@@ -457,7 +461,6 @@ const AdminPropertyList = (props) => {
                             keyField="_id"
                             columns={columns}
                             data={isFilter ? filterData : data}
-                            pagination={pagination}
                             {...props.baseProps}
                           />
                           <ToastContainer
@@ -477,6 +480,7 @@ const AdminPropertyList = (props) => {
               </p>
             )}
           </div>
+          <Pagination totalDataCount={totalDataCount} />
         </section>
       </div>
     </div>

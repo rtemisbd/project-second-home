@@ -19,9 +19,10 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { removeSeatBooking } from "../../redux/reducers/seatBookingSlice";
+import { useQuery } from "react-query";
 
 export default function HomePage() {
-  const { data, error } = UseFetch(`property`);
+  // const { data, error } = UseFetch(`property`);
   const dispatch = useDispatch();
   const [categories, setCategories] = useState({});
   const [activeTab, setActiveTab] = useState("All");
@@ -29,13 +30,27 @@ export default function HomePage() {
   const [randomIndex, setRandomIndex] = useState([]);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const { pathname } = useLocation();
-  // console.log(data);
+  const [data, setData] = useState([]);
+
+  // Get Properties
+  const { refetch, error } = useQuery(["propertyList"], async () => {
+    try {
+      const queryParams = new URLSearchParams({});
+      const response = await axios.get(`${serverBaseUrl}/property`);
+      console.log(response);
+
+      setData(response?.data?.properties);
+    } catch (error) {
+      // console.error(error);
+    }
+  });
+  console.log(data);
 
   // show Random index
   const getRandomData = () => {
     const shuffledData = [...data];
 
-    for (let i = shuffledData.length - 1; i > 0; i--) {
+    for (let i = shuffledData?.length - 1; i > 0; i--) {
       const random = Math.floor(Math.random() * (i + 1));
       [shuffledData[i], shuffledData[random]] = [
         shuffledData[random],
@@ -64,7 +79,7 @@ export default function HomePage() {
 
         const categoryMap = {};
 
-        data.forEach((category) => {
+        data?.forEach((category) => {
           categoryMap[category?._id] = category?.name;
         });
         setCategories(categoryMap);
@@ -77,7 +92,7 @@ export default function HomePage() {
   }, [pathname]);
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (data?.length > 0) {
       // setActiveTab(uniqueValues[0]);
       getRandomData();
       setIsLoaded(true); // Mark data as loaded
@@ -99,10 +114,10 @@ export default function HomePage() {
   }
 
   const uniqueValues = Array.from(
-    new Set(data.map((item) => item?.category?._id))
+    new Set(data?.map((item) => item?.category?._id))
   );
 
-  const filteredData = data.filter(
+  const filteredData = data?.filter(
     (item) =>
       item.category?._id === activeTab &&
       item?.isPublished === "Published" &&
@@ -227,7 +242,7 @@ export default function HomePage() {
               Featured
             </Tab>
             {uniqueValues.map((type, index) => {
-              const item = data.find((item) => item?.category?._id === type);
+              const item = data?.find((item) => item?.category?._id === type);
               if (!item) return null;
 
               const categoryName = categories[item?.category?._id]; // Get the category name using the ID
@@ -255,7 +270,7 @@ export default function HomePage() {
               ? publishRandomProperty?.map((item) => (
                   <SingleCard key={item._id} item={item} />
                 ))
-              : filteredData.map((item) => (
+              : filteredData?.map((item) => (
                   <SingleCard key={item._id} item={item} />
                 ))}
           </Slider>
