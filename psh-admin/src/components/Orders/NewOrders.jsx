@@ -11,22 +11,19 @@ import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
 import { baseUrl } from "../../utils/getBaseURL";
 import { MdRefresh } from "react-icons/md";
+import Pagination from "../Pagination/Pagination";
+import { useDispatch, useSelector } from "react-redux";
 
 const NewOrders = () => {
+  const dispatch = useDispatch();
+  const { page, size } = useSelector((state) => state.pagination);
+
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
-
   const [isLoading, setIsLoading] = useState(false);
-
-  const [pageCount, setPageCount] = useState(0);
-
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [pageSizeOptions, setPageSizeOptions] = useState([10]);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
   const [branch, setBranch] = useState("All");
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
@@ -37,25 +34,11 @@ const NewOrders = () => {
   const [filteredPhone, setFilteredPhone] = useState("");
 
   const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
   const [allBranch, setAllBranch] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
-
-  const MAX_PAGE_BUTTONS = 5;
-
-  // Page range calculation
-  const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
-  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
-
-  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()]?.map(
-    (i) => startPage + i
-  );
-
-  // Update the `size` and reset to page 1
-  const handlePageSizeChange = (e) => {
-    setSize(Number(e.target.value));
-  };
 
   // Get all Bookings
   const { refetch } = useQuery(
@@ -114,21 +97,7 @@ const NewOrders = () => {
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
-        const totalPageCount = Math.ceil(data?.data?.bookingsTotalCount / size);
-        setPageCount(totalPageCount);
-
-        // Dynamically set pageSizeOptions based on bookingsTotalCount
-        const totalCount = data?.data?.bookingsTotalCount;
-        if (totalCount) {
-          const dynamicPageSizes = [];
-          for (let i = 10; i <= totalCount; i += 10) {
-            dynamicPageSizes.push(i);
-          }
-          if (!dynamicPageSizes.includes(totalCount)) {
-            dynamicPageSizes.push(totalCount); // Add totalCount as the largest option
-          }
-          setPageSizeOptions(dynamicPageSizes);
-        }
+        setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -204,8 +173,6 @@ const NewOrders = () => {
     setGuestType("All");
     document.getElementById("guestTypeId").value = "All";
   };
-
-  console.log(data?.orders);
 
   useEffect(() => {
     if (data?.orders?.length === 0 && !hasTimeoutRun) {
@@ -339,6 +306,7 @@ const NewOrders = () => {
                     placeholder="Enter phone number"
                     value={unknownQuery}
                     disabled={unknownQuery.length >= 11}
+                    className="rounded"
                   />
                 </div>
               </div>
@@ -352,6 +320,7 @@ const NewOrders = () => {
                     name=""
                     id="fromDateId"
                     value={fromDate}
+                    className="rounded"
                   />
                 </div>
               </div>
@@ -364,6 +333,7 @@ const NewOrders = () => {
                     id="toDateId"
                     onChange={(e) => setToDate(e.target.value)}
                     value={toDate}
+                    className="rounded"
                   />
                 </div>
               </div>
@@ -524,64 +494,7 @@ const NewOrders = () => {
             )}
           </div>
         </section>
-        <div className="pagination d-flex justify-content-end align-items-center gap-0">
-          <label id="size" className="mt-2">
-            Show row
-          </label>
-          <select
-            id="size"
-            value={size}
-            onChange={handlePageSizeChange}
-            className="btn border mx-2"
-          >
-            {pageSizeOptions?.map((option) => (
-              <option key={option} value={option}>
-                {option}
-              </option>
-            ))}
-          </select>
-          <button
-            onClick={() => setPage(1)}
-            disabled={page === 1}
-            className="pagination-button"
-          >
-            First
-          </button>
-          <button
-            onClick={() => setPage(page - 1)}
-            disabled={page === 1}
-            className="pagination-button"
-          >
-            Previous
-          </button>
-          {visiblePageNumbers?.map((number) => (
-            <button
-              key={number}
-              onClick={() => setPage(number)}
-              className={
-                page === number
-                  ? "page-selected pagination-button"
-                  : "pagination-button"
-              }
-            >
-              {number}
-            </button>
-          ))}
-          <button
-            onClick={() => setPage(page + 1)}
-            disabled={page === pageCount || pageCount === 0}
-            className="pagination-button"
-          >
-            Next
-          </button>
-          <button
-            onClick={() => setPage(pageCount)}
-            disabled={page === pageCount || pageCount === 0}
-            className="pagination-button"
-          >
-            Last
-          </button>
-        </div>
+        <Pagination totalDataCount={totalDataCount} />
       </div>
     </div>
   );

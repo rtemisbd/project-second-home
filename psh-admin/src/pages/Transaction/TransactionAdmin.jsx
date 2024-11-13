@@ -1,52 +1,33 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
-
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
-
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
-import { BiSolidEdit } from "react-icons/bi";
-
 import { useQuery } from "react-query";
-
-import { toast } from "react-toastify";
-
-import ViewTransactionModal from "./ViewTransactionModal";
-import UpdateTransaction from "./UpdateTransaction";
-import useBooking from "../../hooks/useBooking";
-
 import ReactToPrint from "react-to-print";
 import { Spinner, Table } from "react-bootstrap";
 import TransactionPrint from "./TransactionPrint";
 import { AuthContext } from "../../contexts/UserProvider";
 import img from "../../img/new/style.png";
-import TransactionStatusUpdate from "./TransactionStatusUpdate";
-import axios from "axios";
 import LoadingState from "../LoadingState/LoadingState";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import ExportToExcel from "./ExportToExcel";
-import { formatDate } from "../../utils/dateConvert";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
 import useBranch from "../../hooks/useBranch";
 import { baseUrl } from "../../utils/getBaseURL";
 import { MdRefresh } from "react-icons/md";
+import Pagination from "../../components/Pagination/Pagination";
 
 const TransactionAdmin = () => {
   const ref = useRef();
-  const fromDateRef = useRef(null);
-  const toDateRef = useRef(null);
-
   const { user } = useContext(AuthContext);
-  const dispatch = useDispatch();
 
+  const dispatch = useDispatch();
   const handleClose = () => dispatch(placeLoadingShow(false));
+  const { page, size } = useSelector((state) => state.pagination);
+
   const MySwal = withReactContent(Swal);
-  const [bookings] = useBooking();
   const [isFilter, setIsFilter] = useState(false);
-  const [error, setError] = useState(null);
-  let orderId = "All";
-  let bookingUserId = "All";
   // filter fields
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -57,32 +38,13 @@ const TransactionAdmin = () => {
   const [bookingId, setBookingId] = useState("");
 
   const [data, setData] = useState([]);
-  const [filterData, setFilterData] = useState([]);
-  const [userAllBooking, setUserAllBooking] = useState([]);
   const [totalReceviedAmount, setTotalReceivedAmount] = useState(0);
 
-  const [pageCount, setPageCount] = useState(0);
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(10);
-  const [pageSizeOptions, setPageSizeOptions] = useState([10]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
 
   const [isLoading, setIsLoading] = useState(false);
   const [findingStatement, setFindingStatement] = useState(true);
-  const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
-
-  // Page range calculation
-  const MAX_PAGE_BUTTONS = 5;
-  const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
-  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
-
-  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()]?.map(
-    (i) => startPage + i
-  );
-
-  // Update the `size` and reset to page 1
-  const handlePageSizeChange = (e) => {
-    setSize(Number(e.target.value));
-  };
+  // const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
   // Get All Branch
   const { allBranch, refetch: refetchBranches } = useBranch();
@@ -136,22 +98,8 @@ const TransactionAdmin = () => {
 
         const data = await response.json();
         setData(data?.data?.transactions);
+        setTotalDataCount(data?.data?.totalCount);
         setTotalReceivedAmount(data?.data?.totalReceivedAmount);
-
-        // dynamic page size
-        const totalPageCount = Math.ceil(data?.data?.totalCount / size);
-        setPageCount(totalPageCount);
-        const totalCount = data?.data?.totalCount;
-        if (totalCount) {
-          const dynamicPageSizes = [];
-          for (let i = 10; i <= totalCount; i += 10) {
-            dynamicPageSizes.push(i);
-          }
-          if (!dynamicPageSizes.includes(totalCount)) {
-            dynamicPageSizes.push(totalCount); // Add totalCount as the largest option
-          }
-          setPageSizeOptions(dynamicPageSizes);
-        }
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -448,64 +396,7 @@ const TransactionAdmin = () => {
             )}
           </section>
           {/* pagination */}
-          <div className="pagination d-flex justify-content-end align-items-center gap-0">
-            <label id="size" className="mt-2">
-              Show row
-            </label>
-            <select
-              id="size"
-              value={size}
-              onChange={handlePageSizeChange}
-              className="btn border mx-2"
-            >
-              {pageSizeOptions?.map((option) => (
-                <option key={option} value={option}>
-                  {option}
-                </option>
-              ))}
-            </select>
-            <button
-              onClick={() => setPage(1)}
-              disabled={page === 1}
-              className="pagination-button"
-            >
-              First
-            </button>
-            <button
-              onClick={() => setPage(page - 1)}
-              disabled={page === 1}
-              className="pagination-button"
-            >
-              Previous
-            </button>
-            {visiblePageNumbers?.map((number) => (
-              <button
-                key={number}
-                onClick={() => setPage(number)}
-                className={
-                  page === number
-                    ? "page-selected pagination-button"
-                    : "pagination-button"
-                }
-              >
-                {number}
-              </button>
-            ))}
-            <button
-              onClick={() => setPage(page + 1)}
-              disabled={page === pageCount || pageCount === 0}
-              className="pagination-button"
-            >
-              Next
-            </button>
-            <button
-              onClick={() => setPage(pageCount)}
-              disabled={page === pageCount || pageCount === 0}
-              className="pagination-button"
-            >
-              Last
-            </button>
-          </div>
+          <Pagination totalDataCount={totalDataCount} />
         </div>
       </div>
     </>
