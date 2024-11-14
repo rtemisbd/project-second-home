@@ -1297,6 +1297,28 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
           </div>
         </div>
       )}
+      <div
+        style={{
+          backgroundColor: "#FDF6B1",
+          borderLeft: "4px solid #02625a",
+          fontSize: "14px",
+          color: "#02625a",
+          fontWeight: "bolder",
+        }}
+        className="px-3 py-2"
+      >
+        <span
+          style={{
+            fontSize: "18px",
+          }}
+        >
+          Attention :
+        </span>
+        <span>
+          {" "}
+          Please bring two passport-size photos and one copy of your NID card
+        </span>
+      </div>
     </div>
   );
 };

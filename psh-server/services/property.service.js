@@ -5,6 +5,8 @@ import RentRoom from "../models/RentRoom.js";
 
 const getPropertiesFromDB = async (queries) => {
   const {
+    Featured,
+    isPublished,
     furnitured,
     category,
     gender,
@@ -13,26 +15,28 @@ const getPropertiesFromDB = async (queries) => {
     startDate,
     endDate,
   } = queries;
-  // console.log("start", startDate, "end", endDate);
+  // console.log("start", startDate, "end", endDate);;
 
-  const page = parseInt(queries.page) || 1;
-  const size = parseInt(queries.size) || 10;
+  const page = parseInt(queries.page) || 0;
+  const size = parseInt(queries.size) || 0;
 
   let query = {};
 
+  if (Featured && Featured !== "no") query.Featured = Featured;
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
   if (gender && gender !== "") query.type = gender;
   if (bedType && bedType !== "") query.bedType = bedType;
-
-  if (destination && destination !== "") {
-    const branch = await Branch.findOne({ name: destination });
-    if (branch) query.branch = branch._id;
+  if (isPublished && isPublished !== "") {
+    query.isPublished = isPublished;
+  } else {
+    query.isPublished = "Published";
   }
-  if (category && category !== "") {
-    const selectedCategory = await Category.findOne({ name: category });
 
-    if (selectedCategory) query.category = selectedCategory._id;
-  }
+  // if (destination && destination !== "") {
+  //   const branch = await Branch.findOne({ name: destination });
+  //   if (branch) query.branch = branch._id;
+  // }
+  // if (category && category === "All") query.Featured = "Yes";
 
   const pipeline = [
     { $match: query },
@@ -47,12 +51,18 @@ const getPropertiesFromDB = async (queries) => {
             $project: {
               _id: 1,
               name: 1,
+              foodAmount: 1,
             },
           },
         ],
       },
     },
     { $unwind: "$branchDetails" },
+    {
+      $match: {
+        ...(destination ? { "branchDetails.name": destination } : {}),
+      },
+    },
     {
       $lookup: {
         from: "categories",
@@ -71,11 +81,17 @@ const getPropertiesFromDB = async (queries) => {
     },
     { $unwind: "$categoryDetails" },
     {
+      $match: {
+        ...(category !== "" ? { "categoryDetails.name": category } : {}),
+      },
+    },
+    {
       $facet: {
         paginatedResults: [
           { $sort: { createdAt: -1 } },
-          { $skip: (page - 1) * size },
-          { $limit: size },
+          ...(page > 0 && size > 0
+            ? [{ $skip: (page - 1) * size }, { $limit: size }]
+            : []),
         ],
         totalCounts: [
           {

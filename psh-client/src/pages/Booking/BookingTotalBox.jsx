@@ -23,6 +23,7 @@ import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
+import { GrAnnounce } from "react-icons/gr";
 
 const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
@@ -436,6 +437,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   return (
     <>
       <FinalLoginModal />
+
       <div
         style={{
           // height: "650px",
@@ -1199,8 +1201,9 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
             </>
           )}
         </div>
+
         <div
-          className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a] mt-2 ${
+          className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a]  ${
             data?.endDate === endDate ||
             data?.endDate > endDate ||
             data?.endDate > startDate
@@ -1252,6 +1255,28 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
             </div>
           </div>
         )}
+        <div
+          style={{
+            backgroundColor: "#FDF6B1",
+            borderLeft: "4px solid #02625a",
+            fontSize: "14px",
+            color: "#02625a",
+            fontWeight: "bolder",
+          }}
+          className="px-3 py-2"
+        >
+          <span
+            style={{
+              fontSize: "18px",
+            }}
+          >
+            Attention :
+          </span>
+          <span>
+            {" "}
+            Please bring two passport-size photos and one copy of your NID card
+          </span>
+        </div>
       </div>
     </>
   );

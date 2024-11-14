@@ -14,9 +14,14 @@ import ListFilter from "./ListFilter";
 import SingleCard from "../../components/home/SingleCard";
 import "./List.css";
 import { PropagateLoader } from "react-spinners";
+import { useQuery } from "react-query";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
+import axios from "axios";
 
 function List({ type }) {
   const location = useLocation();
+  const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
   const [destination, setDestination] = useState(location.state.destination);
   const [furnitured, setRecommended] = useState(
     location.state?.furnitured || ""
@@ -56,27 +61,58 @@ function List({ type }) {
   const facilities = [facilityFilters]; // Replace with your list of facility names
   const commonfacilities = [commonFacilityFilters]; // Replace with your list of facility names
 
-  const queryParams = new URLSearchParams({
-    furnitured,
-    category,
-    max,
-    gender,
-    destination,
-    bedType: bedrooms,
-    startDate,
-    endDate,
-    min,
-    facilities,
-    commonfacilities,
-    itemsPerPage,
-    page,
-    sort,
+  // Get Properties
+  const { refetch, loading } = useQuery(["propertyList"], async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        furnitured,
+        category,
+        isPublished: "Published",
+        max,
+        gender,
+        destination,
+        bedType: bedrooms,
+        startDate,
+        endDate,
+        min,
+        facilities,
+        commonfacilities,
+        itemsPerPage,
+        page,
+        sort,
+      });
+      const response = await axios.get(
+        `${serverBaseUrl}/property?${queryParams.toString()}`
+      );
+
+      setData(response?.data?.properties);
+      setTotalDataCount(response?.data?.totalCount);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
   });
 
-  let url = `property?${queryParams.toString()}`;
+  // const queryParams = new URLSearchParams({
+  //   furnitured,
+  //   category,
+  //   max,
+  //   gender,
+  //   destination,
+  //   bedType: bedrooms,
+  //   startDate,
+  //   endDate,
+  //   min,
+  //   facilities,
+  //   commonfacilities,
+  //   itemsPerPage,
+  //   page,
+  //   sort,
+  // });
 
-  const { data, loading, error, reFetch } = UseFetch(url);
-  console.log(data);
+  // let url = `property?${queryParams.toString()}`;
+
+  // const { data, loading, error, reFetch } = UseFetch(url);
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
@@ -110,7 +146,7 @@ function List({ type }) {
 
   useEffect(() => {
     // Call reFetch whenever facilityFilters or itemsPerPage state changes
-    reFetch(true);
+    refetch(true);
   }, [
     page,
     itemsPerPage,
@@ -130,12 +166,12 @@ function List({ type }) {
     }
   }, [data, itemsPerPage]);
 
-  const paginatedData = data.slice(
+  const paginatedData = data?.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
   // ... rest of your component code
-  const filteredData = paginatedData.filter((item) => {
+  const filteredData = paginatedData?.filter((item) => {
     if (category !== "" && item.category.name !== category) {
       return false;
     }
@@ -183,14 +219,14 @@ function List({ type }) {
   const handleOpen = (value) => setSize(value);
 
   // find Published Property
-  const publishRandomProperty = filteredData.filter(
+  const publishRandomProperty = filteredData?.filter(
     (property) => property?.isPublished === "Published"
   );
 
   return (
     <div className="custom-container">
       <div className=" mt-3 flex justify-between items-center">
-        <p>{publishRandomProperty?.length} Results Found</p>
+        <p>{totalDataCount} Results Found</p>
         <p className="md:mr-[420px] ">
           Search Number{" "}
           <select
@@ -291,10 +327,10 @@ function List({ type }) {
                   color="#36d7b7"
                 />{" "}
               </p>
-            ) : publishRandomProperty?.length > 0 ? (
+            ) : data?.length > 0 ? (
               <>
                 <div className="grid lg:grid-cols-3 md:grid-cols-3 lg:gap-x-5 md:gap-x-7 sm:grid-cols-1 mt-2 sm:gap-x-0 z-0 sm:mx-auto md:mx-0">
-                  {publishRandomProperty?.map((item) => (
+                  {data?.map((item) => (
                     <div key={item._id}>
                       <SingleCard item={item} />
                     </div>

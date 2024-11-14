@@ -117,31 +117,6 @@ const Recommended = () => {
 
       {publishedData?.length > 0 ? (
         <div className="all_recommended mt-4 slider_margin card-slider">
-          {/* <Splide
-            options={{
-              // type: "loop",
-              arrows: publishedData?.length > 5 ? true : false,
-              rewind: true,
-              drag: "free",
-              autoplay: true,
-              gap: "1rem",
-              perPage: 5,
-              height: "22rem",
-              pagination: false,
-              breakpoints: {
-                1200: { arrows: true, perPage: 4 },
-                800: { arrows: true, perPage: 2 },
-                640: { arrows: true, perPage: 1 },
-              },
-            }}
-          >
-            {publishedData.map((item, i) => (
-              <SplideSlide>
-                <SingleCard item={item} key={i} />
-              </SplideSlide>
-            ))}
-          </Splide> */}
-
           <Slider {...settings}>
             {publishedData?.map((item, i) => (
               <SingleCard item={item} key={i} />

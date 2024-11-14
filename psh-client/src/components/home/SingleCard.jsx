@@ -65,7 +65,7 @@ const SingleCard = ({ item }) => {
               ""
             )} */}
 
-            {item.branch?.name === "Bashundhara" ? (
+            {item.branchDetails?.name === "Bashundhara" ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
                 <span>Already Booked</span>
               </div>
@@ -95,7 +95,7 @@ const SingleCard = ({ item }) => {
             ) : (
               ""
             )} */}
-            {item?.category?.name === "Shared Room" ? (
+            {item?.categoryDetails?.name === "Shared Room" ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
                 <span>{item?.seats?.length} Seat Room</span>
               </div>
@@ -111,7 +111,7 @@ const SingleCard = ({ item }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-sm font-medium bg-[#FCA22A] text-white px-2 py-1 rounded">
-                    {item?.category?.name}({item.type.toUpperCase()})
+                    {item?.categoryDetails?.name}({item.type.toUpperCase()})
                   </span>
                 </div>
                 <div>
@@ -122,7 +122,7 @@ const SingleCard = ({ item }) => {
                   )}
                 </div>
                 <div>
-                  {item?.branch?.foodAmount === 0 && (
+                  {item?.branchDetails?.foodAmount === 0 && (
                     <span className="text-sm font-medium bg-[#27B3B1] text-white px-2 py-1 rounded">
                       With Food
                     </span>
@@ -137,7 +137,9 @@ const SingleCard = ({ item }) => {
                   alt=""
                 />
                 <p className="branch-location">
-                  <span className="text-[10px]">{item?.branch?.name}</span>
+                  <span className="text-[10px]">
+                    {item?.branchDetails?.name}
+                  </span>
                 </p>
               </div>
 
@@ -156,7 +158,7 @@ const SingleCard = ({ item }) => {
               className="card-price flex gap-x-3 px-2 mb-2 hover:text-black"
             >
               <div>
-                {item?.category?.name === "Shared Room" ? (
+                {item?.categoryDetails?.name === "Shared Room" ? (
                   <>
                     <div className="flex gap-x-2">
                       {item?.seats[0]?.perDay ===
