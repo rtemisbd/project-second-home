@@ -65,10 +65,11 @@ const MobileBanking = ({ bookingItem }) => {
               that transaction Attach the number/id in the box below.
             </p>
             <p className="text-left font-bold">
-              bKash Personal Number :{" "}
+              bkash Payment :{" "}
               {bookingItem?.branch?.branchBkashNumber
                 ? bookingItem?.branch?.branchBkashNumber
-                : "01622738449"}
+                : ""}{" "}
+              (Merchant)
             </p>
             <div className=" mt-5">
               <div>
