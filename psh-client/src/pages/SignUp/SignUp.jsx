@@ -19,9 +19,17 @@ const SignUp = () => {
   const { registerUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const onSubmitRegister = async (data) => {
+    console.log(data);
     const { firstName, email, phone, password, refferCode, photos } = data;
 
-    await registerUser(firstName, email, phone, password, refferCode, photos);
+    await registerUser(
+      firstName,
+      email || "",
+      phone,
+      password,
+      refferCode,
+      photos
+    );
     navigate("/");
   };
   // const onSubmitLogin = async (data) => {
@@ -49,40 +57,36 @@ const SignUp = () => {
   };
 
   return (
-    <div>
-      <div className="grid grid-cols-12 ">
-        <div className="flex flex-col items-start col-span-12  sm:col-span-12 lg:col-span-7 sm:hidden md:inline-block">
+    <div className=" h-[100vh] flex justify-center items-center ">
+      <div className="flex w-[85%] rounded-3xl shadow-2xl">
+        <div className="w-1/2 min-h-full ">
           <div>
             <img
               src="https://i.ibb.co/VBhC76Y/Untitled-design-1.png"
               alt="pharmacy"
-              className="img-fluid h-[1020px]"
+              className="img-fluid min-h-[88vh] w-full rounded-l-3xl object-fill"
             />
           </div>
         </div>
-        <div className="flex flex-col items-start col-span-12 sm:col-span-12 lg:col-span-5 left_side mt-[-30px]">
-          <div className="  w-full mt-12 px-4 mb-5">
+        <div className="w-1/2">
+          <div className="w-full">
             <div>
-              <div className="flex justify-center mb-5">
+              <div className="flex justify-center mt-2 ">
                 <Link to={"/"}>
                   <img
                     src={"https://i.ibb.co/RNJjy5X/Layer-1.png"}
                     alt="pharmacy"
-                    className="img-fluid"
+                    className="img-fluid h-24"
                   />
                 </Link>
               </div>
-              <form
-                className="infoForm authForm card_signup"
-                onSubmit={handleSubmit(onSubmitRegister)}
-              >
-                <div className="form md:px-8 ">
-                  <h2 className="text-[36px] font-[600]">Sing Up</h2>
-                  <p className="my-2">
-                    Welcome Back To{" "}
-                    <span className="font-bold">Project Second Home</span>
-                  </p>
-                  <label htmlFor="Email">Full Name</label>
+              <form className="" onSubmit={handleSubmit(onSubmitRegister)}>
+                <div className="form md:px-8 space-y-4  ">
+                  <h2 className="text-2xl text-center my-4 font-[600]">
+                    Sign Up To <span>Project Second Home</span>
+                  </h2>
+
+                  <label htmlFor="Name">Full Name</label>
                   <input
                     type="text"
                     className="infoInput"
@@ -100,9 +104,7 @@ const SignUp = () => {
                     type="email"
                     className="infoInput"
                     placeholder="Email Address"
-                    {...register("email", {
-                      required: true,
-                    })}
+                    {...register("email")}
                   />
                   {errors.email && (
                     <p className="text-red-500">{errors.email.message}</p>
@@ -120,7 +122,7 @@ const SignUp = () => {
                     <p className="text-red-500">{errors.phone.message}</p>
                   )}
 
-                  <label htmlFor="Email">Password</label>
+                  <label htmlFor="Password">Password</label>
                   <input
                     type="password"
                     className="infoInput"
@@ -142,7 +144,7 @@ const SignUp = () => {
                   {errors.password && (
                     <p className="text-red-500">{errors.password.message}</p>
                   )}
-                  <label htmlFor="Email">Confirm Password</label>
+                  <label htmlFor="Confirm Password">Confirm Password</label>
                   <input
                     type="password"
                     className="infoInput"
@@ -163,16 +165,10 @@ const SignUp = () => {
                   {errors.password && (
                     <p className="text-red-500">{errors.password.message}</p>
                   )}
-                  <label htmlFor="Email">Refers Code</label>
-                  <input
-                    type="text"
-                    className="infoInput"
-                    placeholder="Enter Refer Code"
-                    {...register("refferCode", {})}
-                  />
 
-                  <div>
-                    <span className="text-[12px]">
+                  <div className="flex items-center gap-2 pb-4">
+                    <input type="checkbox" name="terms" required id="" />
+                    <span>
                       By Signing up, you agree the Terms and Conditions and
                       Privacy Policy.
                     </span>
@@ -184,47 +180,8 @@ const SignUp = () => {
                     Sign Up
                   </button>
                 </div>
-                <div className="flex divider px-8">
-                  <div>
-                    <img src={line} alt="" />
-                  </div>
-                  <div>
-                    <span className="text-sm">OR SIGN UP WITH</span>
-                  </div>
-                  <div>
-                    <img src={line} alt="" />
-                  </div>
-                </div>
 
-                <div className="md:flex social-media-signUp ">
-                  <div
-                    className="flex px-16 py-5 rounded-lg cursor-pointer"
-                    style={{ boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)" }}
-                  >
-                    <div>
-                      <img src={facebookIcon} alt="" />
-                    </div>
-                    <div className="ml-3">
-                      <span>Facebook</span>
-                    </div>
-                  </div>
-                  <div>
-                    <div
-                      className="flex px-16 py-5 rounded-lg cursor-pointer"
-                      style={{
-                        boxShadow: "0px 4px 4px 0px rgba(0, 0, 0, 0.25)",
-                      }}
-                    >
-                      <div>
-                        <img src={googleIcon} alt="" />
-                      </div>
-                      <div className="ml-3">
-                        <span>Google</span>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="flex text-[18px]">
+                <div className="flex text-[18px] justify-center py-4 text-center">
                   <div>
                     <span>Do you have an account?</span>
                   </div>
@@ -239,11 +196,11 @@ const SignUp = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#35B0A7] text-white">
+      {/* <div className="bg-[#35B0A7] text-white">
         <span className="text-sm px-5">
           Copyrights &copy; Project Second Home 2023.  All rights reserved.
         </span>
-      </div>
+      </div> */}
     </div>
   );
 };

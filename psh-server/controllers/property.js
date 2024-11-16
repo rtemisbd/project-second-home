@@ -196,6 +196,8 @@ export const CreatePropertys = async (req, res, next) => {
 
 export const getPropertys = catchAsync(async (req, res, next) => {
   const result = await propertyServices.getPropertiesFromDB(req.query);
+  // console.log("from controller", result);
+
   res.status(200).json(result);
 });
 

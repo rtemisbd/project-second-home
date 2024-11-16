@@ -186,7 +186,7 @@ const SignIn = () => {
                   </div>
                   <div>
                     <Link to="/signup">
-                      <span className="text-[#00A1FF]">Signup</span>
+                      <span className="text-[#00A1FF]">Sign Up</span>
                     </Link>
                   </div>
                 </div>

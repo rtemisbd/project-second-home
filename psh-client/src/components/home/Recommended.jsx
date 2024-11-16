@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "@splidejs/react-splide/css";
 import "@splidejs/react-splide/css/skyblue";
 import "@splidejs/react-splide/css/sea-green";
@@ -13,12 +13,49 @@ import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import "./styles/Recommended.css";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
+import { useQuery } from "react-query";
+import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Recommended = () => {
-  const { data } = UseFetch(`property/properties/recommended`);
-  const publishedData = data.filter(
-    (property) => property?.isPublished === "Published"
-  );
+  const [recommended, setRecommended] = useState("yes");
+  const [data, setData] = useState([]);
+  // Get Properties
+  // const { refetch, loading } = useQuery(["propertyList"], async () => {
+  //   try {
+  //     const queryParams = new URLSearchParams({
+  //       recommended,
+  //     });
+  //     const response = await axios.get(
+  //       `${serverBaseUrl}/property?${queryParams.toString()}`
+  //     );
+  //     console.log(response);
+
+  //     setData(response?.data?.properties);
+  //   } catch (error) {
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // });
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        // const queryParams = new URLSearchParams({ recommended: "yes" });
+        const response = await axios.get(`${serverBaseUrl}/property`);
+        console.log(response);
+
+        setData(response?.data?.properties || []);
+      } catch (error) {
+        console.error("Failed to fetch data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  console.log(data);
+
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {
@@ -29,7 +66,7 @@ const Recommended = () => {
   };
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === publishedData?.length - 5) {
+    if (lastSlideIndex === data?.length - 5) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
@@ -47,7 +84,7 @@ const Recommended = () => {
     adaptiveHeight: true,
     infinite: false,
     speed: 400,
-    arrows: publishedData?.length > 4 ? true : false,
+    arrows: data?.length > 4 ? true : false,
     autoplay: false,
     swipeToSlide: true,
     prevArrow: <SlickArrowLeft />,
@@ -78,7 +115,7 @@ const Recommended = () => {
         breakpoint: 640,
         settings: {
           className: `center ms-[-8px] ${
-            lastSlideIndex >= publishedData?.length - 1 ? "only-forMobile" : ""
+            lastSlideIndex >= data?.length - 1 ? "only-forMobile" : ""
           }`,
           afterChange: (index) => {
             setLastSlideIndex(index);
@@ -115,10 +152,10 @@ const Recommended = () => {
         </p>
       </div>
 
-      {publishedData?.length > 0 ? (
+      {data?.length > 0 ? (
         <div className="all_recommended mt-4 slider_margin card-slider">
           <Slider {...settings}>
-            {publishedData?.map((item, i) => (
+            {data?.map((item, i) => (
               <SingleCard item={item} key={i} />
             ))}
           </Slider>

@@ -1268,13 +1268,14 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
           <span
             style={{
               fontSize: "18px",
+              color: "red",
             }}
           >
             Attention :
           </span>
           <span>
             {" "}
-            Please bring two passport-size photos and one copy of your NID card
+            Please bring two passport-size photos and one copy of your NID card.
           </span>
         </div>
       </div>

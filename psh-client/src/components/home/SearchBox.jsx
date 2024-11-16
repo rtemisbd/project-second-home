@@ -26,22 +26,18 @@ const SearchBox = () => {
 
   const { data: branch } = UseFetch(`branch`);
   const [query, setQuery] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
   const inputRef = useRef(null);
   const [destination, setDestination] = useState("");
   const [bedrooms, setBedrooms] = useState([]);
 
-  const [FurnishedDisplay, setFurnishedDisplay] = useState("");
   const [FurnishedQuery, setFurnishedQuery] = useState("");
   const [FurnishedValue, setFurnishedValue] = useState(0);
   const furnitures = ["All", "Furnished", "Unfurnished"];
 
-  const [genderDisplay, setGenderDisplay] = useState("");
   const [genderQuery, setGenderQuery] = useState("female");
   const [genderValue, setGenderValue] = useState(0);
   const gender = ["Female", "Male"];
 
-  const [categoryDisplay, setCategoryDisplay] = useState("");
   const [categoryQuery, setCategoryQuery] = useState("");
   const [categoryValue, setCategoryValue] = useState(0);
   const category = ["All", ...data.map((item) => item?.name)];
@@ -385,12 +381,6 @@ const SearchBox = () => {
                       bed !== "Single Bed" &&
                       bed !== "Bunk Bed & Single Bed" &&
                       bed !== "King Size Bed")
-                    // ||
-                    // (categoryValue === 3 &&
-                    //   bed !== "All" &&
-                    //   bed !== "1 BR" &&
-                    //   bed !== "2 BR" &&
-                    //   bed !== "3 BR")
                   ) {
                     return null; // Skip rendering
                   }

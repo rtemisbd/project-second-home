@@ -14,6 +14,7 @@ const getPropertiesFromDB = async (queries) => {
     bedType,
     startDate,
     endDate,
+    recommended,
   } = queries;
   // console.log("start", startDate, "end", endDate);;
 
@@ -21,7 +22,6 @@ const getPropertiesFromDB = async (queries) => {
   const size = parseInt(queries.size) || 0;
 
   let query = {};
-
   if (Featured && Featured !== "no") query.Featured = Featured;
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
   if (gender && gender !== "") query.type = gender;
@@ -31,12 +31,8 @@ const getPropertiesFromDB = async (queries) => {
   } else {
     query.isPublished = "Published";
   }
-
-  // if (destination && destination !== "") {
-  //   const branch = await Branch.findOne({ name: destination });
-  //   if (branch) query.branch = branch._id;
-  // }
-  // if (category && category === "All") query.Featured = "Yes";
+  // if (recommended) query.recommended = recommended;
+  console.log(query);
 
   const pipeline = [
     { $match: query },

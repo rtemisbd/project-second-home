@@ -400,12 +400,20 @@ export default function Navmenu() {
                     ) : (
                       <>
                         <div className="md:block">
-                          <button
+                          {/* <button
                             className="sign_btn sm:text-[14px] md:text-[16px]"
                             onClick={() => dispatch(placeModalShow(true))}
                           >
                             Sign Up/Login
-                          </button>
+                          </button> */}
+                          <Link to="/signup">
+                            <button
+                              className="sign_btn sm:text-[14px] md:text-[16px]"
+                              // onClick={() => dispatch(placeModalShow(true))}
+                            >
+                              Sign Up/Login
+                            </button>
+                          </Link>
                         </div>
                         <>
                           {/* <LoginModal handleOpen={handleOpen} open={open} /> */}
@@ -640,12 +648,14 @@ export default function Navmenu() {
                   ) : (
                     <>
                       <div className="md:block">
-                        <button
-                          className="sign_btn sm:text-[14px] md:text-[16px]"
-                          onClick={() => dispatch(placeModalShow(true))}
-                        >
-                          Sign Up/Login
-                        </button>
+                        <Link to="/signup">
+                          <button
+                            className="sign_btn sm:text-[14px] md:text-[16px]"
+                            // onClick={() => dispatch(placeModalShow(true))}
+                          >
+                            Sign Up/Login
+                          </button>
+                        </Link>
                       </div>
                       <>
                         {/* <LoginModal handleOpen={handleOpen} open={open} /> */}
@@ -665,12 +675,14 @@ export default function Navmenu() {
                       ""
                     ) : (
                       <div className="md:block">
-                        <button
-                          className="sign_btn uppercase"
-                          onClick={() => dispatch(placeModalShow(true))}
-                        >
-                          Sign Up/Login
-                        </button>
+                        <Link to="/signup">
+                          <button
+                            className="sign_btn uppercase"
+                            // onClick={() => dispatch(placeModalShow(true))}
+                          >
+                            Sign Up/Login
+                          </button>
+                        </Link>
                       </div>
                     )}
                   </div>
