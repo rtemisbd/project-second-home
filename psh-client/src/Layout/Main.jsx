@@ -25,16 +25,12 @@ const Main = () => {
 
   return (
     <div>
-      {isProfileMenu ? "" : noHeaderFooter || <Navmenu></Navmenu>}
-      {/* <Navmenu /> */}
+      {isProfileMenu ? "" : noHeaderFooter || <Navmenu />}
       <div className="">
         <Outlet></Outlet>
       </div>
 
-      <div>
-        {isProfileMenu ? "" : noHeaderFooter || <Footer></Footer>}
-        {/* <Footer /> */}
-      </div>
+      <div>{isProfileMenu ? "" : noHeaderFooter || <Footer />}</div>
     </div>
   );
 };

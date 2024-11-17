@@ -14,6 +14,7 @@ export const UserProvider = ({ children }) => {
   );
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
@@ -58,10 +59,10 @@ export const UserProvider = ({ children }) => {
     firstName,
     email,
     phone,
-    password,
-    refferCode,
-    photos,
-    role
+    password
+    // refferCode,
+    // photos,
+    // role
   ) => {
     try {
       const response = await axios.post(`${serverBaseUrl}/users`, {
@@ -69,13 +70,16 @@ export const UserProvider = ({ children }) => {
         email,
         phone,
         password,
-        refferCode,
-        photos,
+        // refferCode,
+        // photos,
       });
+      console.log(response);
 
       if (response.status === 200) {
         toast.success("Congratulations! Your account has been created.");
         const { data } = response;
+        console.log(data);
+
         setUser(data.user);
         setToken(data.token);
 
@@ -83,22 +87,23 @@ export const UserProvider = ({ children }) => {
         setTimeout(() => {
           dispatch(placeModalShow(false));
         }, 1000);
+      } else if (response.status === 400) {
+        setErrorMessage("User already exists for this phone or email");
       } else {
-        throw new Error("Registration failed");
+        setErrorMessage("Registration failed");
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        const errorMessage = error.response.data.message;
-
-        toast.error(errorMessage);
+        setErrorMessage(error.response.data.message);
+      } else if (error.response && error.response.status === 400) {
+        setErrorMessage("User already exists for this phone or email");
       } else if (error.response && error.response.status === 404) {
-        const errorMessage = error.response.data.message;
-
-        toast.error(errorMessage);
+        setErrorMessage(error.response.data.message);
       } else {
-        toast.error("An error occurred. Please try again later.");
+        setErrorMessage("An error occurred. Please try again later.");
       }
     }
+    return { user, errorMessage };
   };
 
   const logoutUser = () => {

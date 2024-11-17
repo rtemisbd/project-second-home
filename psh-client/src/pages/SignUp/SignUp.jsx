@@ -1,74 +1,59 @@
 import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-
-import line from "../../assets/img/Line 127.png";
-import facebookIcon from "../../assets/img/facebook.svg";
-import googleIcon from "../../assets/img/google.png";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/UserProvider";
 import "./SignUp.css";
+import { IoEye, IoEyeOff } from "react-icons/io5";
+import LoadingState from "../LoadingState/LoadingState";
+import toast, { Toaster } from "react-hot-toast";
 
 const SignUp = () => {
+  const { registerUser } = useContext(AuthContext);
+  const location = useLocation();
+  const navigate = useNavigate();
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
   const {
     register,
     formState: { errors },
     handleSubmit,
+    watch,
   } = useForm();
 
-  const [loginError, setLoginError] = useState("");
-  const { registerUser } = useContext(AuthContext);
-  const navigate = useNavigate();
+  // Watch the password field
+  const password = watch("password");
+
   const onSubmitRegister = async (data) => {
-    console.log(data);
-    const { firstName, email, phone, password, refferCode, photos } = data;
-
-    await registerUser(
+    const { firstName, email, phone, password } = data;
+    const { user, errorMessage } = await registerUser(
       firstName,
-      email || "",
+      email,
       phone,
-      password,
-      refferCode,
-      photos
+      password
     );
-    navigate("/");
-  };
-  // const onSubmitLogin = async (data) => {
-  //   const { email, password } = data;
-
-  //   await loginUser(email, password);
-  //   navigate("/");
-  // };
-
-  // const onSubmitRegister = async (data) => {
-  //   const { name, address, email, phone, password } = data;
-
-  //   await registerUser(name, address, email, phone, password);
-  //   navigate("/");
-  // };
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
-
-  const handlePasswordChange = (event) => {
-    setPassword(event.target.value);
+    if (user) {
+      toast.success("Congratulations! Your account has been created.");
+      navigate(location.state?.from || "/");
+    } else {
+      toast.error(errorMessage);
+    }
   };
 
   return (
-    <div className=" h-[100vh] flex justify-center items-center ">
-      <div className="flex w-[85%] rounded-3xl shadow-2xl">
-        <div className="w-1/2 min-h-full ">
+    <div className=" h-[100vh] flex justify-center items-center">
+      <div className="flex flex-col md:flex-row lg:w-[86%] lg:h-[94vh] md:rounded-3xl md:shadow-2xl">
+        <div className="w-1/2 min-h-full hidden lg:block">
           <div>
             <img
               src="https://i.ibb.co/VBhC76Y/Untitled-design-1.png"
               alt="pharmacy"
-              className="img-fluid min-h-[88vh] w-full rounded-l-3xl object-fill"
+              className="img-fluid lg:h-[94vh] w-full lg:rounded-l-3xl object-fill"
             />
           </div>
         </div>
-        <div className="w-1/2">
+        <div className="w-full lg:w-1/2 p-6">
           <div className="w-full">
             <div>
               <div className="flex justify-center mt-2 ">
@@ -76,120 +61,163 @@ const SignUp = () => {
                   <img
                     src={"https://i.ibb.co/RNJjy5X/Layer-1.png"}
                     alt="pharmacy"
-                    className="img-fluid h-24"
+                    className="img-fluid h-20"
                   />
                 </Link>
               </div>
-              <form className="" onSubmit={handleSubmit(onSubmitRegister)}>
-                <div className="form md:px-8 space-y-4  ">
-                  <h2 className="text-2xl text-center my-4 font-[600]">
-                    Sign Up To <span>Project Second Home</span>
-                  </h2>
+              <form
+                onSubmit={handleSubmit(onSubmitRegister)}
+                className="form px-4 lg:px-8"
+              >
+                <h2 className="text-xl lg:text-2xl text-center my-4 font-[600]">
+                  Sign Up To <span>Project Second Home</span>
+                </h2>
 
-                  <label htmlFor="Name">Full Name</label>
-                  <input
-                    type="text"
-                    className="infoInput"
-                    placeholder="Full Name"
-                    {...register("firstName", {
-                      required: "Name is Required",
-                    })}
-                  />
-                  {errors.firstName && (
-                    <p className="text-red-500">{errors.firstName.message}</p>
-                  )}
+                {/* Full Name */}
+                <label htmlFor="Name" className="text-xs mt-4">
+                  Full Name
+                </label>
+                <input
+                  type="text"
+                  className="infoInput"
+                  placeholder="Full Name"
+                  {...register("firstName", {
+                    required: "Name is required",
+                  })}
+                />
+                {errors.firstName && (
+                  <p className="text-red-500">{errors.firstName.message}</p>
+                )}
 
-                  <label htmlFor="Email">Email Address</label>
-                  <input
-                    type="email"
-                    className="infoInput"
-                    placeholder="Email Address"
-                    {...register("email")}
-                  />
-                  {errors.email && (
-                    <p className="text-red-500">{errors.email.message}</p>
-                  )}
-                  <label htmlFor="Email">Phone Number</label>
-                  <input
-                    type="text"
-                    className="infoInput"
-                    placeholder="Phone Number"
-                    {...register("phone", {
-                      required: true,
-                    })}
-                  />
-                  {errors.phone && (
-                    <p className="text-red-500">{errors.phone.message}</p>
-                  )}
+                {/* Email Address */}
+                <label htmlFor="Email" className="text-xs mt-4">
+                  Email Address
+                </label>
+                <input
+                  type="email"
+                  className="infoInput"
+                  placeholder="Email Address"
+                  {...register("email", {
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Invalid email address",
+                    },
+                  })}
+                />
+                {errors.email && (
+                  <p className="text-red-500">{errors.email.message}</p>
+                )}
 
-                  <label htmlFor="Password">Password</label>
+                {/* Phone Number */}
+                <label htmlFor="Phone" className="text-xs mt-4">
+                  Phone Number
+                </label>
+                <input
+                  type="text"
+                  className="infoInput"
+                  placeholder="Phone Number"
+                  {...register("phone", {
+                    required: "Phone number is required",
+                  })}
+                />
+                {errors.phone && (
+                  <p className="text-red-500">{errors.phone.message}</p>
+                )}
+
+                {/* Password */}
+                <label htmlFor="Password" className="text-xs mt-4">
+                  Password
+                </label>
+                <div className="flex form relative">
                   <input
-                    type="password"
-                    className="infoInput"
+                    type={showPassword ? "text" : "password"}
+                    className="infoInput "
                     placeholder="Password"
                     {...register("password", {
                       required: "Password is required",
                       minLength: {
                         value: 6,
-                        message: "Password must be 6 characters long",
+                        message: "Password must be at least 6 characters long",
                       },
                       pattern: {
                         value: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z0-9]+$/,
                         message:
-                          "Password must contain at least one uppercase letter and can have both uppercase and lowercase letters and numbers",
+                          "Password must contain at least one uppercase letter , one lowercase letter and one digit",
                       },
                     })}
                   />
-
-                  {errors.password && (
-                    <p className="text-red-500">{errors.password.message}</p>
-                  )}
-                  <label htmlFor="Confirm Password">Confirm Password</label>
-                  <input
-                    type="password"
-                    className="infoInput"
-                    placeholder="Password"
-                    {...register("password", {
-                      required: "Password is required",
-                      minLength: {
-                        value: 6,
-                        message: "Password must be 6 characters long",
-                      },
-                      pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z0-9]+$/,
-                        message:
-                          "Password must contain at least one uppercase letter and can have both uppercase and lowercase letters and numbers",
-                      },
-                    })}
-                  />
-                  {errors.password && (
-                    <p className="text-red-500">{errors.password.message}</p>
-                  )}
-
-                  <div className="flex items-center gap-2 pb-4">
-                    <input type="checkbox" name="terms" required id="" />
-                    <span>
-                      By Signing up, you agree the Terms and Conditions and
-                      Privacy Policy.
-                    </span>
-                  </div>
-                </div>
-
-                <div className="px-8">
-                  <button className="w-full p-3 border-0 rounded uppercase bg-[#00BBB4] text-white">
-                    Sign Up
+                  <button
+                    type="button"
+                    onClick={() => setShowPassword(!showPassword)}
+                    className="absolute right-4 top-2"
+                  >
+                    {showPassword ? <IoEye /> : <IoEyeOff />}
                   </button>
                 </div>
+                {errors.password && (
+                  <p className="text-red-500">{errors.password.message}</p>
+                )}
 
-                <div className="flex text-[18px] justify-center py-4 text-center">
-                  <div>
-                    <span>Do you have an account?</span>
-                  </div>
-                  <div>
-                    <Link to="/signin">
-                      <span className="text-[#00A1FF]">Log in </span>
+                {/* Confirm Password */}
+                <label htmlFor="ConfirmPassword" className="text-xs mt-4">
+                  Confirm Password
+                </label>
+                <div className="flex form relative">
+                  <input
+                    type={showConfirmPassword ? "text" : "password"}
+                    className="infoInput"
+                    placeholder="Confirm Password"
+                    {...register("confirmPassword", {
+                      required: "Please confirm your password",
+                      validate: (value) =>
+                        value === password || "Passwords do not match",
+                    })}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                    className="absolute right-4 top-2"
+                  >
+                    {showConfirmPassword ? <IoEye /> : <IoEyeOff />}
+                  </button>
+                </div>
+                {errors.confirmPassword && (
+                  <p className="text-red-500">
+                    {errors.confirmPassword.message}
+                  </p>
+                )}
+
+                {/* Terms and Conditions */}
+                <div className="flex items-center gap-2 pb-4 mt-4">
+                  <input type="checkbox" name="terms" required />
+                  <span className="sm:text-xs md:text-sm">
+                    By Signing up, you agree to the{" "}
+                    <Link to="/terms" className="underline">
+                      Terms and Conditions
+                    </Link>{" "}
+                    and{" "}
+                    <Link to="/privacy" className="underline">
+                      {" "}
+                      Privacy Policy
                     </Link>
-                  </div>
+                    .
+                  </span>
+                </div>
+
+                {/* Submit Button */}
+                <button
+                  type="submit"
+                  className="w-full p-3 border-0 rounded uppercase bg-[#00BBB4] text-white"
+                >
+                  Sign Up
+                </button>
+
+                {/* Login Link */}
+                <div className="flex text-[16px] justify-center py-4 text-center">
+                  <span>Do you have an account?</span>
+                  <Link to="/signin" className="text-[#00A1FF] ml-1">
+                    Log in
+                  </Link>
                 </div>
               </form>
             </div>
@@ -201,6 +229,11 @@ const SignUp = () => {
           Copyrights &copy; Project Second Home 2023.  All rights reserved.
         </span>
       </div> */}
+      <Toaster
+        containerStyle={{ top: 200, zIndex: "100000" }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
+      <LoadingState />
     </div>
   );
 };
