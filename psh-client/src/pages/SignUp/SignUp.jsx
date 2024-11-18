@@ -2,7 +2,7 @@ import React, { useContext, useState } from "react";
 import { useForm } from "react-hook-form";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/UserProvider";
-import "./SignUp.css";
+// import "./SignUp.css";
 import { IoEye, IoEyeOff } from "react-icons/io5";
 import LoadingState from "../LoadingState/LoadingState";
 import toast, { Toaster } from "react-hot-toast";
@@ -14,6 +14,7 @@ const SignUp = () => {
 
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [showSignUp] = useState(false);
 
   const {
     register,
@@ -43,17 +44,17 @@ const SignUp = () => {
 
   return (
     <div className=" h-[100vh] flex justify-center items-center">
-      <div className="flex flex-col md:flex-row lg:w-[86%] lg:h-[94vh] md:rounded-3xl md:shadow-2xl">
+      <div className="flex flex-col lg:flex-row lg:w-[94%] lg:h-[90vh] md:rounded-3xl md:shadow-2xl">
         <div className="w-1/2 min-h-full hidden lg:block">
           <div>
             <img
               src="https://i.ibb.co/VBhC76Y/Untitled-design-1.png"
               alt="pharmacy"
-              className="img-fluid lg:h-[94vh] w-full lg:rounded-l-3xl object-fill"
+              className="img-fluid lg:h-[90vh] w-full lg:rounded-l-3xl object-fill"
             />
           </div>
         </div>
-        <div className="w-full lg:w-1/2 p-6">
+        <div className="w-full lg:w-1/2 p-4">
           <div className="w-full">
             <div>
               <div className="flex justify-center mt-2 ">
@@ -61,26 +62,26 @@ const SignUp = () => {
                   <img
                     src={"https://i.ibb.co/RNJjy5X/Layer-1.png"}
                     alt="pharmacy"
-                    className="img-fluid h-20"
+                    className="img-fluid h-16"
                   />
                 </Link>
               </div>
+
               <form
                 onSubmit={handleSubmit(onSubmitRegister)}
-                className="form px-4 lg:px-8"
+                className="px-4 lg:px-12 w-[98%] lg:w-[86%] mx-auto mt-4 shadow-md rounded-md"
               >
-                <h2 className="text-xl lg:text-2xl text-center my-4 font-[600]">
+                <h2 className="text-xl text-center my-5 font-[600]">
                   Sign Up To <span>Project Second Home</span>
                 </h2>
-
                 {/* Full Name */}
-                <label htmlFor="Name" className="text-xs mt-4">
-                  Full Name
-                </label>
+
+                <span className="text-sm">Full Name</span>
+                <br />
                 <input
                   type="text"
-                  className="infoInput"
                   placeholder="Full Name"
+                  className="mt-1 border w-full p-2 rounded-md shadow-sm mb-2"
                   {...register("firstName", {
                     required: "Name is required",
                   })}
@@ -90,13 +91,12 @@ const SignUp = () => {
                 )}
 
                 {/* Email Address */}
-                <label htmlFor="Email" className="text-xs mt-4">
-                  Email Address
-                </label>
+                <span className="text-sm">Email Address</span>
+                <br />
                 <input
                   type="email"
-                  className="infoInput"
                   placeholder="Email Address"
+                  className="mt-1 border w-full p-2 rounded-md shadow-sm mb-2"
                   {...register("email", {
                     pattern: {
                       value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
@@ -109,12 +109,11 @@ const SignUp = () => {
                 )}
 
                 {/* Phone Number */}
-                <label htmlFor="Phone" className="text-xs mt-4">
-                  Phone Number
-                </label>
+                <span className="text-sm">Phone Number</span>
+                <br />
                 <input
                   type="text"
-                  className="infoInput"
+                  className="mt-1 border w-full p-2 rounded-md shadow-sm mb-2"
                   placeholder="Phone Number"
                   {...register("phone", {
                     required: "Phone number is required",
@@ -125,13 +124,11 @@ const SignUp = () => {
                 )}
 
                 {/* Password */}
-                <label htmlFor="Password" className="text-xs mt-4">
-                  Password
-                </label>
-                <div className="flex form relative">
+                <span className="text-sm">Password</span>
+                <div className="flex  relative">
                   <input
                     type={showPassword ? "text" : "password"}
-                    className="infoInput "
+                    className="mt-1 border w-full p-2 rounded-md shadow-sm mb-2"
                     placeholder="Password"
                     {...register("password", {
                       required: "Password is required",
@@ -140,7 +137,8 @@ const SignUp = () => {
                         message: "Password must be at least 6 characters long",
                       },
                       pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z0-9]+$/,
+                        // value: /^(?=.*[a-z])(?=.*[A-Z])[A-Za-z0-9]+$/,
+                        value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).+$/,
                         message:
                           "Password must contain at least one uppercase letter , one lowercase letter and one digit",
                       },
@@ -149,7 +147,7 @@ const SignUp = () => {
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-4 top-2"
+                    className="absolute right-4 top-5"
                   >
                     {showPassword ? <IoEye /> : <IoEyeOff />}
                   </button>
@@ -159,13 +157,11 @@ const SignUp = () => {
                 )}
 
                 {/* Confirm Password */}
-                <label htmlFor="ConfirmPassword" className="text-xs mt-4">
-                  Confirm Password
-                </label>
-                <div className="flex form relative">
+                <span className="text-sm">Confirm Password</span>
+                <div className="flex relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
-                    className="infoInput"
+                    className="mt-1 border w-full p-2 rounded-md shadow-sm mb-2"
                     placeholder="Confirm Password"
                     {...register("confirmPassword", {
                       required: "Please confirm your password",
@@ -176,7 +172,7 @@ const SignUp = () => {
                   <button
                     type="button"
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute right-4 top-2"
+                    className="absolute right-4 top-5"
                   >
                     {showConfirmPassword ? <IoEye /> : <IoEyeOff />}
                   </button>
@@ -191,7 +187,7 @@ const SignUp = () => {
                 <div className="flex items-center gap-2 pb-4 mt-4">
                   <input type="checkbox" name="terms" required />
                   <span className="sm:text-xs md:text-sm">
-                    By Signing up, you agree to the{" "}
+                    I agree to the{" "}
                     <Link to="/terms" className="underline">
                       Terms and Conditions
                     </Link>{" "}
@@ -207,14 +203,14 @@ const SignUp = () => {
                 {/* Submit Button */}
                 <button
                   type="submit"
-                  className="w-full p-3 border-0 rounded uppercase bg-[#00BBB4] text-white"
+                  className="w-full p-2 border-0 rounded uppercase bg-[#00BBB4] text-white"
                 >
                   Sign Up
                 </button>
 
                 {/* Login Link */}
                 <div className="flex text-[16px] justify-center py-4 text-center">
-                  <span>Do you have an account?</span>
+                  <span className="text-sm">Do you have an account?</span>
                   <Link to="/signin" className="text-[#00A1FF] ml-1">
                     Log in
                   </Link>

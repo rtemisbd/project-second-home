@@ -21,10 +21,10 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("token", token);
   }, [user, token]);
 
-  const loginUser = async (email, password) => {
+  const loginUser = async (phone, password) => {
     try {
       const response = await axios.post(`${serverBaseUrl}/users/login`, {
-        email,
+        phone,
         password,
       });
 
@@ -38,7 +38,7 @@ export const UserProvider = ({ children }) => {
           dispatch(placeModalShow(false));
         }, 1000);
       } else {
-        throw new Error("Invalid email or password");
+        throw new Error("Invalid phone or password");
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -53,6 +53,7 @@ export const UserProvider = ({ children }) => {
         toast.error("An error occurred. Please try again later.");
       }
     }
+    return user;
   };
 
   const registerUser = async (
@@ -78,7 +79,6 @@ export const UserProvider = ({ children }) => {
       if (response.status === 200) {
         toast.success("Congratulations! Your account has been created.");
         const { data } = response;
-        console.log(data);
 
         setUser(data.user);
         setToken(data.token);

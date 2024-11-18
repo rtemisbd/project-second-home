@@ -18,40 +18,25 @@ import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Recommended = () => {
-  const [recommended, setRecommended] = useState("yes");
   const [data, setData] = useState([]);
-  // Get Properties
-  // const { refetch, loading } = useQuery(["propertyList"], async () => {
-  //   try {
-  //     const queryParams = new URLSearchParams({
-  //       recommended,
-  //     });
-  //     const response = await axios.get(
-  //       `${serverBaseUrl}/property?${queryParams.toString()}`
-  //     );
-  //     console.log(response);
 
-  //     setData(response?.data?.properties);
-  //   } catch (error) {
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // });
+  const { refetch } = useQuery(["propertyList"], async () => {
+    try {
+      const queryParams = new URLSearchParams({ recommended: "yes" });
+      const response = await axios.get(
+        `${serverBaseUrl}/property?${queryParams.toString()}`
+      );
+      console.log(response);
+
+      setData(response?.data?.properties);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  });
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        // const queryParams = new URLSearchParams({ recommended: "yes" });
-        const response = await axios.get(`${serverBaseUrl}/property`);
-        console.log(response);
-
-        setData(response?.data?.properties || []);
-      } catch (error) {
-        console.error("Failed to fetch data:", error);
-      }
-    };
-
-    fetchData();
+    refetch();
   }, []);
 
   console.log(data);

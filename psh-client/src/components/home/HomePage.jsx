@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Tabs,
-  TabsHeader,
-  Tab,
-  Spinner,
-  TabsBody,
-} from "@material-tailwind/react";
+import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import Slider from "react-slick";
 import axios from "axios";
 
@@ -18,11 +12,9 @@ import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { removeSeatBooking } from "../../redux/reducers/seatBookingSlice";
 import { useQuery } from "react-query";
 
 export default function HomePage() {
-  // const { data, error } = UseFetch(`property`);
   const dispatch = useDispatch();
 
   const [data, setData] = useState([]);
@@ -48,6 +40,7 @@ export default function HomePage() {
       );
 
       setData(response?.data?.properties);
+      setRandomIndex(data);
       setTotalDataCount(response?.data?.totalCount);
     } catch (error) {
       console.error(error);
@@ -81,69 +74,22 @@ export default function HomePage() {
     setRandomIndex([...shuffledData]);
   };
 
-  // find Published Property
-  // const publishRandomProperty = randomIndex?.filter(
-  //   (property) =>
-  //     property?.isPublished === "Published" && property?.Featured === "yes"
-  // );
-  // console.log(publishRandomProperty);
-
-  // useEffect(() => {
-  //   localStorage.removeItem("seatItem");
-  //   localStorage.removeItem("bookingItem");
-  //   dispatch(removeSeatBooking());
-  //   const fetchCategories = async () => {
-  //     try {
-  //       const { data } = await axios.get(`${serverBaseUrl}/category`, {
-  //         mode: "cors",
-  //       });
-
-  //       const categoryMap = {};
-
-  //       data.forEach((category) => {
-  //         categoryMap[category?._id] = category?.name;
-  //       });
-  //       setCategories(categoryMap);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-
-  //   fetchCategories();
-  // }, [pathname]);
+  useEffect(() => {
+    if (activeTab === "") {
+      setData(randomIndex);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (data.length > 0) {
-      // setActiveTab(uniqueValues[0]);
       getRandomData();
-      setIsLoaded(true); // Mark data as loaded
+      setIsLoaded(true);
     }
   }, [data]);
-
-  // if (!isLoaded) {
-  //   return (
-  //     <div className="flex justify-center mt-5">
-  //       <div>
-  //         <Spinner color="green" className="h-10 w-10" />
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   if (error) {
     return <div>Error occurred: {error.message}</div>; // Placeholder for error state
   }
-
-  // const uniqueValues = Array.from(
-  //   new Set(data?.map((item) => item?.categoryDetails?._id))
-  // );
-
-  // const filteredData = data.filter(
-  //   (item) =>
-  //     item.categoryDetails?._id === activeTab &&
-  //     item?.isPublished === "Published" &&
-  //     item?.Featured === "yes"
-  // );
 
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {
@@ -162,6 +108,7 @@ export default function HomePage() {
   };
   useEffect(() => {
     refetch();
+    getRandomData();
   }, [activeTab, Featured]);
 
   const settings = {
@@ -255,7 +202,7 @@ export default function HomePage() {
                 setFeatured("yes");
                 setActiveTab("");
               }}
-              className="w-fit  md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4] "
+              className="w-fit md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4]"
             >
               Featured
             </Tab>
@@ -279,7 +226,7 @@ export default function HomePage() {
       {data?.length ? (
         <div className="mt-3 all_recommended slider_margin card-slider ">
           <Slider {...settings}>
-            {data?.map((item) => (
+            {randomIndex?.map((item) => (
               <SingleCard key={item._id} item={item} />
             ))}
           </Slider>

@@ -39,6 +39,7 @@ import EventDetails from "../pages/Details/EventDetails";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
 import StudySpace from "../pages/StudySpace/StudySpace";
+import UserAuthentication from "../pages/SignUp/UserAuthentication";
 
 export const router = createBrowserRouter([
   {
@@ -98,6 +99,7 @@ export const router = createBrowserRouter([
         path: "/signup",
         element: <SignUp></SignUp>,
       },
+
       {
         path: "/profile",
         element: <Profile></Profile>,
@@ -164,6 +166,10 @@ export const router = createBrowserRouter([
         element: <ExtraForm />,
       },
     ],
+  },
+  {
+    path: "/authentication",
+    element: <UserAuthentication />,
   },
   {
     path: "*",
