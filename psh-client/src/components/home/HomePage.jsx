@@ -13,6 +13,8 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useQuery } from "react-query";
+import SharedRoom from "./SharedRoom";
+import useSeat from "../../hooks/useSeat";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -25,6 +27,7 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [randomIndex, setRandomIndex] = useState([]);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
+  const [showSharedRoom, setSharedRoom] = useState(false);
   const { pathname } = useLocation();
 
   // Get Properties
@@ -59,6 +62,8 @@ export default function HomePage() {
     }
   });
 
+  // get all seats
+  const seats = useSeat();
   // show Random index
   const getRandomData = () => {
     const shuffledData = [...data];
@@ -109,7 +114,15 @@ export default function HomePage() {
   useEffect(() => {
     refetch();
     getRandomData();
-  }, [activeTab, Featured]);
+  }, [Featured]);
+
+  useEffect(() => {
+    if (activeTab === "Shared Room") {
+      setSharedRoom(true);
+    } else {
+      setSharedRoom(false);
+    }
+  }, [activeTab]);
 
   const settings = {
     dots: false,
@@ -182,6 +195,7 @@ export default function HomePage() {
       },
     ],
   };
+  console.log(seats);
 
   return (
     <div className="category-item ">
@@ -226,9 +240,11 @@ export default function HomePage() {
       {data?.length ? (
         <div className="mt-3 all_recommended slider_margin card-slider ">
           <Slider {...settings}>
-            {randomIndex?.map((item) => (
-              <SingleCard key={item._id} item={item} />
-            ))}
+            {showSharedRoom
+              ? seats?.map((item) => <SharedRoom key={item._id} item={item} />)
+              : randomIndex?.map((item) => (
+                  <SingleCard key={item._id} item={item} />
+                ))}
           </Slider>
         </div>
       ) : (
