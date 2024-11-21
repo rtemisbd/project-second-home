@@ -29,14 +29,14 @@ export const UserProvider = ({ children }) => {
       });
 
       if (response.status === 200) {
-        toast.success("Login Success");
         const { data } = response;
         setUser(data?.user);
         setToken(data?.token);
         setLoading(false);
-        setTimeout(() => {
-          dispatch(placeModalShow(false));
-        }, 1000);
+        toast.success("Login Success");
+        // setTimeout(() => {
+        //   dispatch(placeModalShow(false));
+        // }, 1000);
       } else {
         throw new Error("Invalid phone or password");
       }

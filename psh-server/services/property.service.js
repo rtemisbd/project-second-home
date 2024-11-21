@@ -31,7 +31,7 @@ const getPropertiesFromDB = async (queries) => {
   } else {
     query.isPublished = "Published";
   }
-  // if (recommended) query.recommended = recommended;
+  if (recommended) query.recommended = recommended;
   console.log(query);
 
   const pipeline = [
@@ -110,6 +110,8 @@ const getPropertiesFromDB = async (queries) => {
   ];
 
   const properties = await Property.aggregate(pipeline);
+  // console.log(properties);
+
   const paginatedResults = properties[0]?.paginatedResults || [];
   const totalCount = properties[0]?.totalCount || 0;
 

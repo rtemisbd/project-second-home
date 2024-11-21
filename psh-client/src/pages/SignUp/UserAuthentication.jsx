@@ -13,7 +13,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 const UserAuthentication = () => {
   const dispatch = useDispatch();
 
-  const isModalShow = useSelector((state) => state?.profileMenu?.isModalShow);
+  // const isModalShow = useSelector((state) => state?.profileMenu?.isModalShow);
   const [showSignIn, setShowSignIn] = useState(true);
   const [showSignUp, setShowSignUp] = useState(false);
   const [showOtpPage, setShowOtpPage] = useState(false);
@@ -26,23 +26,23 @@ const UserAuthentication = () => {
   const [randomCode, setRandomCode] = useState(null);
   const navigate = useNavigate();
   const location = useLocation();
-  const [loginError, setLoginError] = useState("");
+
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [message, setMessage] = useState("");
   const [userMessage, setUserMessage] = useState("");
 
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+
   const [seconds, setSeconds] = useState(120);
   const { loginUser, registerUser } = useContext(AuthContext);
+  const [user, setUser] = useState(null);
 
   const generateRandomCode = () => {
     // Generate a random 6-digit number
     const newRandomCode = Math.floor(10000 + Math.random() * 90000);
     setRandomCode(newRandomCode);
-    // const parseToJson = JSON.parse(localStorage.getItem("otp"));
-    // if (parseToJson) {
-    //   localStorage.removeItem("otp");
-    // }
-    // localStorage.setItem("otp", JSON.stringify(newRandomCode));
   };
 
   // Format the remaining seconds as minutes:seconds
@@ -103,16 +103,24 @@ const UserAuthentication = () => {
     handleSubmit,
   } = useForm();
 
-  const onSubmit = async (data) => {
+  const onSubmit = (data) => {
     const { phone, password } = data;
 
-    try {
-      const user = await loginUser(phone, password);
+    const user = loginUser(phone, password);
+    if (user) {
+      console.log(user);
+      return navigate(location?.state || "/");
+    }
+  };
 
-      // handleClose();
-      if (user) navigate(location.state?.from || "/");
-    } catch (error) {
-      // handleOpen(true);
+  // Password Validation
+  const passwordCheck = (e) => {
+    const password = e.target.value;
+    setPassord(password);
+    if (password.length < 6) {
+      setErrorMessage("Password must have at least 6 characters.");
+    } else {
+      setErrorMessage("");
     }
   };
 
@@ -177,11 +185,6 @@ const UserAuthentication = () => {
     toast.success("Please Check Your Phone Number");
   };
 
-  const [showPassword, setShowPassword] = useState(false);
-
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
   return (
     <div className="relative h-[100vh]">
       <div className="flex flex-col lg:flex-row md:shadow-xl">
@@ -251,7 +254,7 @@ const UserAuthentication = () => {
                           />
                           <button
                             type="button"
-                            onClick={toggleShowPassword}
+                            onClick={() => setShowPassword(!showPassword)}
                             style={{
                               border: "none",
                               marginLeft: -40,
@@ -370,12 +373,13 @@ const UserAuthentication = () => {
                         className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
                         placeholder="Password"
                         required
-                        onChange={(e) => setPassord(e.target.value)}
+                        value={password}
+                        onChange={passwordCheck}
                         defaultValue={password}
                       />
                       <button
                         type="button"
-                        onClick={toggleShowPassword}
+                        onClick={() => setShowPassword(!showPassword)}
                         style={{
                           border: "none",
                           marginLeft: -40,
@@ -388,12 +392,15 @@ const UserAuthentication = () => {
                           <i className="fa-solid fa-eye-slash"></i>
                         )}
                       </button>
+                      {errorMessage && (
+                        <p className="text-sm text-red-600">{errorMessage}</p>
+                      )}
                     </div>
                     <div>
                       <span>Confirm Password</span>
 
                       <input
-                        type={showPassword ? "text" : "password"}
+                        type={showConfirmPassword ? "text" : "password"}
                         className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
                         placeholder="Password"
                         required
@@ -402,14 +409,14 @@ const UserAuthentication = () => {
                       />
                       <button
                         type="button"
-                        onClick={toggleShowPassword}
+                        onClick={() => setConfirmPassword(!showConfirmPassword)}
                         style={{
                           border: "none",
                           marginLeft: -40,
                           width: 40,
                         }}
                       >
-                        {showPassword ? (
+                        {showConfirmPassword ? (
                           <i className="fa-solid fa-eye"></i>
                         ) : (
                           <i className="fa-solid fa-eye-slash"></i>

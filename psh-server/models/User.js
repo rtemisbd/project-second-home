@@ -188,7 +188,16 @@ const UserSchema = new mongoose.Schema(
     },
     usedPromo: [promoSchema],
     userSubscription: [userSubscriptionSchema],
+    otp: {
+      type: String,
+      required: false,
+    },
+    otpExpiration: {
+      type: Date,
+      required: false,
+    },
   },
+
   { timestamps: true }
 );
 

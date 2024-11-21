@@ -2,7 +2,6 @@ import express from "express";
 import {
   createUser,
   deleteUser,
-  forgotPassword,
   getAdmin,
   getJWT,
   getUser,
@@ -11,9 +10,11 @@ import {
   loginUser,
   resetPassword,
   sendOtp,
+  sendOtpForForget,
   updatePassword,
   updateUser,
   updateUserAdmin,
+  verifyOtp,
 } from "../controllers/user.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
 
@@ -32,8 +33,9 @@ router.post("/", createUser);
 router.post("/login", loginUser);
 router.post("/login-admin", loginAdminUser);
 router.post("/send-otp", sendOtp);
-router.post("/forgot-password", forgotPassword);
-router.post("/reset_password/:id/:token", resetPassword);
+router.post("/send-password-recover-otp", sendOtpForForget);
+router.post("/verify-otp", verifyOtp);
+router.post("/reset_password/:id/", resetPassword);
 router.patch("/:id", updateUser);
 router.patch("/admin/:id", updateUserAdmin);
 router.put("/:email", updatePassword);

@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Typography, Tooltip } from "@material-tailwind/react";
 import DatePicker from "react-datepicker";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
@@ -23,13 +23,13 @@ import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
-import { GrAnnounce } from "react-icons/gr";
 
 const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
 
   const navigate = useNavigate();
+  const location = useLocation();
 
   // date handle
   const dispatch = useDispatch();
@@ -303,7 +303,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
         );
         setPromoCodeCheck(true);
       } else {
-        toast.error("Sorry! You have Gived the wrong promo code");
+        toast.error("Sorry! You gave a wrong promo code");
       }
     } else {
       toast.error(
@@ -357,6 +357,9 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   // const [open, setOpen] = React.useState(false);
   // const handleOpen = () => setOpen((cur) => !cur);
   const handleAddItem = () => {
+    if (!user) {
+      return navigate("/authentication", { state: location?.pathname });
+    }
     // If show minimum payment and full Payment Option
 
     let bookingDataUpdate = {};
@@ -1215,7 +1218,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
         >
           <div>
             <button
-              className={`text-[16px] p-2 text-white bg-transparent   cursor-pointer  ${
+              className={`text-[16px] p-2 text-white bg-transparent cursor-pointer  ${
                 data?.endDate === endDate ||
                 data?.endDate > endDate ||
                 data?.endDate > startDate
@@ -1275,7 +1278,10 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
           </span>
           <span>
             {" "}
-            Please bring two passport-size photos and one copy of your NID card.
+            Please bring two{" "}
+            <span className="text-black">Passport-Size Photos</span> and one
+            copy of your <span className="text-black"> NID Card</span> at the
+            time of check-in.
           </span>
         </div>
       </div>

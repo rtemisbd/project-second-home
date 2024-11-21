@@ -67,7 +67,7 @@ const SearchBox = () => {
   }, [inputActive]);
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
+    // setSelectedItem(item);
     setQuery(item.name);
     setInputActive(false);
     setDestination(item.name);

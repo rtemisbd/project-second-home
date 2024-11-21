@@ -79,14 +79,19 @@ export const sendOtp = async (req, res, next) => {
     const user = await User.findOne({ email });
     const phoneNumberCheck = await User.findOne({ phone });
 
-    if (user || phoneNumberCheck) {
+    if (user) {
       return res.status(400).json({
-        status: "Faild",
-        message: "Sorry! This Number or Email Already Exist",
+        status: "Failed",
+        message: "Sorry! This Email Already Exist",
+      });
+    } else if (phoneNumberCheck) {
+      return res.status(400).json({
+        status: "Failed",
+        message: "Sorry! This Number Already Exist",
       });
     } else {
       // Account Verification Mail and sms to user
-      const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${phone}&senderid=8809617617196&message=For%20Project%20Second%20Home(PSH)%20your%20OTP%20for%20account%20verification%20is%3A%20${customerOtp}.%20Enter%20this%20code%20to%20complete%20your%20Signup%20process.%20Thank%20you`;
+      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=For%20Project%20Second%20Home(PSH)%20your%20OTP%20for%20account%20verification%20is%3A%20${customerOtp}.%20Enter%20this%20code%20to%20complete%20your%20Signup%20process.%20Thank%20you`;
 
       bookingSms(bookingMessage)
         .then((response) => {
@@ -97,48 +102,6 @@ export const sendOtp = async (req, res, next) => {
           console.error("Error while sending SMS:", error);
           // Handle error
         });
-      // Mail
-      const transporter = nodemailer.createTransport({
-        service: "gmail",
-        auth: {
-          user: "alaminbamna08@gmail.com",
-          pass: "qesfajhmrfhkfnbo",
-        },
-      });
-
-      const mailOptions = {
-        from: "alaminbamna08@gmail.com",
-        to: `${email}`,
-        subject: "Verify Your Email for Project Second Home",
-        html: `  <div style="font-size: 16px; font-weight: normal;">
-        <p>Dear User</p>
-        <p>
-          To activate your account, please enter the OTP (One-Time Password) below:
-        </p>
-        <p>
-          OTP: ${customerOtp}
-        </p>
-        <p>
-          If you didn't request this OTP, you can ignore this email.
-        </p>
-        <p>
-          Thank you,
-        </p>
-        <p>
-          Project Second Home Team
-        </p>
-      </div>
-    
-        `,
-      };
-
-      transporter.sendMail(mailOptions, function (error, info) {
-        if (error) {
-          console.log(error);
-        } else {
-          console.log("Email sent: " + info.response);
-        }
-      });
 
       res.status(200).json({ status: "success" });
     }
@@ -148,10 +111,10 @@ export const sendOtp = async (req, res, next) => {
 };
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    const { phone, password } = req.body;
 
-    // Find the user by email and populate the branch field
-    const user = await User.findOne({ email }).populate("branch");
+    // Find the user by phone and populate the branch field
+    const user = await User.findOne({ phone }).populate("branch");
 
     // If the user does not exist, return an error message
     if (!user) {
@@ -181,6 +144,7 @@ export const loginUser = async (req, res) => {
       firstName: user?.firstName,
       lastName: user?.lastName,
       email: user?.email,
+      phone: user?.phone,
       role: user?.role,
     };
 
@@ -399,78 +363,78 @@ export const updatePassword = async (req, res) => {
   }
 };
 
-export const forgotPassword = async (req, res) => {
-  try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
+export const sendOtpForForget = async (req, res) => {
+  const { phone } = req.body;
 
+  try {
+    const user = await User.findOne({ phone });
     if (!user) {
       return res.status(404).json({ status: "User not found" });
     }
+    // Generate OTP
+    const otp = crypto.randomInt(10000, 99999).toString();
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET);
-    user.resetPasswordToken = token;
-    user.resetPasswordExpires = Date.now() + 3600000;
-    await user.save();
-    const transporter = nodemailer.createTransport({
-      service: "gmail",
-      auth: {
-        user: "alaminbamna08@gmail.com",
-        pass: "qesfajhmrfhkfnbo",
-      },
-    });
+    // set expiration time 3 minutes
+    const expirationTime = Date.now() + 10 * 60 * 1000;
 
-    const mailOptions = {
-      from: "alaminbamna08@gmail.com",
-      to: `${user.email}`,
-      subject: "Reset Password Link",
-      text: `https://psh.com.bd/reset_password/${user._id}/${token}`,
-    };
+    await User.updateOne({ phone }, { otp, otpExpiration: expirationTime });
 
-    transporter.sendMail(mailOptions, (error, info) => {
-      if (error) {
-        console.error(error);
-        return res
-          .status(500)
-          .json({ message: "Failed to send reset password email" });
-      }
-      console.log("Reset password email sent: " + info.response);
-      res
-        .status(200)
-        .json({ message: "Reset password email sent successfully" });
-    });
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=You%20have%20requested%20to%20reset%20your%20password%20for%20Project%20Second%20Home(PSH).%20Your%20OTP%20is%20${otp}.%20If%20this%20wasn't%20you,%20please%20contact%20our%20support%20team%20immediately.%20Call%2001647647404`;
+
+    bookingSms(bookingMessage)
+      .then((response) => {
+        console.log("Response from SMS API:", response);
+        // Handle response data as needed
+      })
+      .catch((error) => {
+        console.error("Error while sending SMS:", error);
+        // Handle error
+      });
+
+    res.status(200).json({ status: "success" });
   } catch (err) {
     res.status(500).json(err);
   }
 };
-export const resetPassword = async (req, res, next) => {
+
+export const verifyOtp = async (req, res) => {
+  const { phone, otp } = req.body;
+
   try {
-    const { id, token } = req.params;
-    const { newPassword } = req.body;
+    const verifiedUser = await User.findOne({ phone });
 
-    const user = await User.findByIdAndUpdate({
-      _id: id,
-      resetPasswordToken: token,
-      resetPasswordExpires: { $gt: Date.now() },
-    });
-
-    if (!user) {
-      return res
-        .status(400)
-        .json({ message: "Invalid or expired reset token" });
+    if (
+      !verifiedUser ||
+      verifiedUser.otp !== otp.join("") ||
+      Date.now() > verifiedUser.otpExpiration
+    ) {
+      return res.status(404).json({ message: "Invalid or expired OTP" });
     }
 
-    const hashedPassword = await bcrypt.hash(newPassword, 10);
-    user.password = hashedPassword;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpires = undefined;
+    return res.status(200).json({ verifiedUser });
+  } catch (err) {
+    res.status(500).json({ message: "Server error", error: err });
+  }
+};
 
-    await user.save();
+export const resetPassword = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { newPassword } = req.body;
+    const hashedPassword = await bcrypt.hash(
+      newPassword,
+      Number(config.bcrypt_salt_rounds)
+    );
 
+    await User.findByIdAndUpdate(
+      { _id: id },
+      { password: hashedPassword, otp: null, otpExpiration: null }
+    );
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "An error occurred", error });
+    console.log(error);
+
+    res.status(500).json({ message: "An error occurred" });
   }
 };
 

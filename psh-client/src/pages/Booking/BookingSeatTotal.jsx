@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Typography, Tooltip } from "@material-tailwind/react";
 import DatePicker from "react-datepicker";
 import { FaBed } from "react-icons/fa";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { toast } from "react-hot-toast";
@@ -27,6 +27,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
   // date handle
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
@@ -391,6 +392,9 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
   // const [open, setOpen] = React.useState(false);
   // const handleOpen = () => setOpen((cur) => !cur);
   const handleAddItem = () => {
+    if (!user) {
+      return navigate("/authentication", { state: location?.pathname });
+    }
     // If show minimum payment and full Payment Option
 
     let bookingDataUpdate = {};

@@ -20,7 +20,6 @@ import axios from "axios";
 
 function List({ type }) {
   const location = useLocation();
-  console.log(location.state);
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [destination, setDestination] = useState(location.state.destination);
@@ -93,28 +92,6 @@ function List({ type }) {
       throw error;
     }
   });
-
-  // const queryParams = new URLSearchParams({
-  //   furnitured,
-  //   category,
-  //   max,
-  //   gender,
-  //   destination,
-  //   bedType: bedrooms,
-  //   startDate,
-  //   endDate,
-  //   min,
-  //   facilities,
-  //   commonfacilities,
-  //   itemsPerPage,
-  //   page,
-  //   sort,
-  // });
-
-  // let url = `property?${queryParams.toString()}`;
-
-  // const { data, loading, error, reFetch } = UseFetch(url);
-  console.log(data);
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
