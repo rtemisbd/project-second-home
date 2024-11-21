@@ -462,17 +462,23 @@ export const updatePropertys = async (req, res, next) => {
   }
 };
 
-export const getRecommendedPropertys = async (req, res, next) => {
-  try {
-    const properties = await Property.find({ recommended: "yes" })
-      .populate("category review branch")
-      .limit(req.query.limit);
+// export const getRecommendedPropertys = async (req, res, next) => {
+//   try {
+//     const properties = await Property.find({ recommended: "yes" })
+//       .populate("category review branch")
+//       .limit(req.query.limit);
 
-    res.status(200).json(properties);
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.status(200).json(properties);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+export const getRecommendedPropertys = catchAsync(async (req, res, next) => {
+  const result = await propertyServices.getRecommendedPropertiesFromDB();
+  res.status(200).json(result);
+});
+
 export const featuredRoom = async (req, res, next) => {
   try {
     // Update Featured: "yes" for specified IDs

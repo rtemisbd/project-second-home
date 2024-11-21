@@ -103,21 +103,12 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
             {checkWishListIds?.some((wish) => wish === data?._id) ? (
               <img src={heart2} alt="wishlist" onClick={handleRemoveSubmit} />
             ) : (
-              // <span>
-              //   <FaHeart style={{ color: "red" }} />
-              // </span>
               <span>
                 <img src={whislistIcon} alt="wishlist" onClick={handleSubmit} />
               </span>
             )}
           </div>
-          {/* {isIntoDate ? (
-                <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
-                  <span>Already Booked</span>
-                </div>
-              ) : (
-                ""
-              )} */}
+
           {isSeatIntoDate &&
           item?.category?.name === "Shared Room" &&
           isAlreadySeatBook?.length > 0 ? (

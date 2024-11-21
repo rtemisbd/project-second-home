@@ -16,31 +16,10 @@ import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import useRecommended from "../../hooks/useRecommended";
 
 const Recommended = () => {
-  const [data, setData] = useState([]);
-
-  const { refetch } = useQuery(["propertyList"], async () => {
-    try {
-      const queryParams = new URLSearchParams({ recommended: "yes" });
-      const response = await axios.get(
-        `${serverBaseUrl}/property?${queryParams.toString()}`
-      );
-      console.log(response);
-
-      setData(response?.data?.properties);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  });
-
-  useEffect(() => {
-    refetch();
-  }, []);
-
-  console.log(data);
-
+  const data = useRecommended();
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {

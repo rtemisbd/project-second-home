@@ -206,7 +206,7 @@ export default function HomePage() {
             >
               Featured
             </Tab>
-            {categories.map((category, index) => (
+            {[...categories].reverse().map((category, index) => (
               <Tab
                 value={index}
                 key={index}

@@ -16,7 +16,6 @@ const getPropertiesFromDB = async (queries) => {
     endDate,
     recommended,
   } = queries;
-  // console.log("start", startDate, "end", endDate);;
 
   const page = parseInt(queries.page) || 0;
   const size = parseInt(queries.size) || 0;
@@ -31,7 +30,9 @@ const getPropertiesFromDB = async (queries) => {
   } else {
     query.isPublished = "Published";
   }
-  if (recommended) query.recommended = recommended;
+  if (recommended && recommended !== "no") {
+    query.recommended = recommended;
+  }
   console.log(query);
 
   const pipeline = [
@@ -123,6 +124,42 @@ const getPropertiesFromDB = async (queries) => {
   };
 };
 
+const getRecommendedPropertiesFromDB = async () => {
+  const properties = await Property.aggregate([
+    { $match: { recommended: "yes", isPublished: "Published" } },
+
+    {
+      $lookup: {
+        from: "branches",
+        localField: "branch",
+        foreignField: "_id",
+        as: "branchDetails",
+      },
+    },
+    { $unwind: "$branchDetails" },
+
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "categoryDetails",
+      },
+    },
+    { $unwind: "$categoryDetails" },
+    // {
+    //   $lookup: {
+    //     from: "review",
+    //     localField: "review",
+    //     foreignField: "_id",
+    //     as: "review",
+    //   },
+    // },
+    // { $unwind: "$review" },
+  ]);
+  return properties;
+};
+
 const getSinglePropertyFromDB = async (propertyId) => {
   const rentRooms = await RentRoom.find({
     roomId: propertyId,
@@ -154,5 +191,6 @@ const getSinglePropertyFromDB = async (propertyId) => {
 
 export const propertyServices = {
   getPropertiesFromDB,
+  getRecommendedPropertiesFromDB,
   getSinglePropertyFromDB,
 };

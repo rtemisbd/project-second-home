@@ -41,6 +41,7 @@ function List({ type }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(Number.MAX_VALUE);
   const [totalPages, setTotalPages] = useState(1);
   const handleItemsPerPageChange = (event) => {
@@ -62,8 +63,9 @@ function List({ type }) {
   const commonfacilities = [commonFacilityFilters]; // Replace with your list of facility names
 
   // Get Properties
-  const { refetch, loading } = useQuery(["propertyList"], async () => {
+  const { refetch } = useQuery(["propertyList"], async () => {
     try {
+      setLoading(true);
       const queryParams = new URLSearchParams({
         furnitured,
         category,
@@ -87,6 +89,7 @@ function List({ type }) {
 
       setData(response?.data?.properties);
       setTotalDataCount(response?.data?.totalCount);
+      setLoading(false);
     } catch (error) {
       console.error(error);
       throw error;
