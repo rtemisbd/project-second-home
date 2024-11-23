@@ -337,7 +337,6 @@ const UserAuthentication = () => {
                     className="w-[90%] lg:w-[75%] mx-auto shadow-md px-6 lg:px-0 lg:shadow-none mt-8"
                   >
                     <span>Full Name</span>
-
                     <input
                       type="text"
                       className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
@@ -346,8 +345,8 @@ const UserAuthentication = () => {
                       onChange={(e) => setFirstName(e.target.value)}
                       defaultValue={firstName}
                     />
-                    <span>Email Address</span>
-
+                    <span>Email</span>{" "}
+                    <span className="text-sm text-gray-600"> [Optional]</span>
                     <input
                       type="email"
                       className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
@@ -356,7 +355,6 @@ const UserAuthentication = () => {
                       defaultValue={email}
                     />
                     <span>Phone Number</span>
-
                     <input
                       type="text"
                       className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
@@ -452,13 +450,11 @@ const UserAuthentication = () => {
                         </Link>
                       </p>
                     </div>
-
                     <div onClick={generateRandomCode}>
                       <button className="w-full py-2 mb-4 sm:mt-1 border-0 font-bold rounded uppercase bg-[#00BBB4] text-white text-sm">
                         Sign Up
                       </button>
                     </div>
-
                     <div className="flex justify-center w-full text-center pb-2 mb-4">
                       <div>
                         <span className="text-sm">Do you have an account?</span>

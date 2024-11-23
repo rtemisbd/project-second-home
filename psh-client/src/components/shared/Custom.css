@@ -11,7 +11,10 @@
   border-radius: 5px;
   color: white;
 }
-
+.sign_btn:hover {
+  background: #017c78;
+  color: white;
+}
 .project {
   font-weight: 500;
   font-size: 60px;
