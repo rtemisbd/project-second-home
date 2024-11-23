@@ -2,30 +2,21 @@ import React from "react";
 import { Table } from "react-bootstrap";
 import BookingData from "./BookingData";
 import { ToastContainer } from "react-toastify";
-import "./BookingsTable.css";
+// import "./BookingsTable.css";
+import "./styles/BookingsTable.css";
 
 const BookingsTable = ({
   data,
-  setPage,
   page,
-  pageCount,
   refetch,
   transactions,
   extraCharge,
   isLoading,
+  size,
 }) => {
-  const MAX_PAGE_BUTTONS = 5; // Define the maximum number of page buttons to show
-
-  // Calculate the range of page numbers to display
-  const startPage = Math.max(1, page - Math.floor(MAX_PAGE_BUTTONS / 2));
-  const endPage = Math.min(startPage + MAX_PAGE_BUTTONS - 1, pageCount);
-  const visiblePageNumbers = [...Array(endPage - startPage + 1).keys()].map(
-    (i) => startPage + i
-  );
-
   return (
     <div>
-      <Table bordered>
+      <Table striped bordered>
         <thead>
           <tr
             style={{
@@ -44,6 +35,7 @@ const BookingsTable = ({
             <th>Due Amount</th>
             <th>Total Receive</th>
             <th>Status</th>
+            <th>Contact</th>
             <th>Details</th>
             <th>Update Duration</th>
             <th>Action</th>
@@ -60,67 +52,12 @@ const BookingsTable = ({
               extraCharge={extraCharge}
               transactions={transactions}
               isLoading={isLoading}
+              size={size}
             />
           ))}
         </tbody>
       </Table>
       <ToastContainer className="toast-position" position="top-center" />
-
-      {/* <div className="pagination d-flex justify-content-end">
-        {[...Array(pageCount).keys()].map((number, index) => (
-          <div key={index}>
-            <button
-              onClick={() => setPage(number)}
-              className={page === number ? "page-selected" : ""}
-            >
-              {number + 1}
-            </button>
-          </div>
-        ))}
-      </div> */}
-      <div className="pagination d-flex justify-content-end gap-0">
-        <button
-          onClick={() => setPage(1)}
-          disabled={page === 1}
-          className="pagination-button"
-        >
-          First
-        </button>
-        <button
-          onClick={() => setPage(page - 1)}
-          disabled={page === 1}
-          className="pagination-button"
-        >
-          Previous
-        </button>
-        {visiblePageNumbers.map((number) => (
-          <button
-            key={number}
-            onClick={() => setPage(number)}
-            className={
-              page === number
-                ? "page-selected pagination-button"
-                : "pagination-button"
-            }
-          >
-            {number}
-          </button>
-        ))}
-        <button
-          onClick={() => setPage(page + 1)}
-          disabled={page === pageCount || pageCount === 0}
-          className="pagination-button"
-        >
-          Next
-        </button>
-        <button
-          onClick={() => setPage(pageCount)}
-          disabled={page === pageCount || pageCount === 0}
-          className="pagination-button"
-        >
-          Last
-        </button>
-      </div>
     </div>
   );
 };

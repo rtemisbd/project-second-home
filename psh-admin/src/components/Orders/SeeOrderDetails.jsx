@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useRef } from "react";
 import { useState } from "react";
 import { useEffect } from "react";
-import "./SeeOrderDetails.css";
+import "./styles/SeeOrderDetails.css";
 import { Table } from "react-bootstrap";
 
 import ReactToPrint from "react-to-print";
@@ -11,7 +11,6 @@ import { BlobProvider, View } from "@react-pdf/renderer";
 import DownlaodInvoice from "../Invoice/DownlaodInvoice";
 import ImageViewer from "./ImageViewer";
 import { formatDate } from "../../utils/dateConvert";
-// import styles from "./SeeBooking.module.css";
 
 const SeeOrderDetails = ({
   transactions,

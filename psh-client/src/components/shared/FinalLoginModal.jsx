@@ -404,7 +404,7 @@ const FinalLoginModal = () => {
                               setShowSignUp(true);
                             }}
                           >
-                            Signup
+                            Sign Up
                           </button>
                         </div>
                       </div>

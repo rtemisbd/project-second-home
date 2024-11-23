@@ -24,7 +24,7 @@ const UseFetch = (path) => {
     setLoading(true);
     try {
       const res = await axios.get(`${serverBaseUrl}/${path}`);
-      setData(res.data);
+      setData(res.data.properties);
     } catch (err) {
       setError(err);
     }

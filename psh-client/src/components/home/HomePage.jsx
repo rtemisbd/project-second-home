@@ -1,11 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Tabs,
-  TabsHeader,
-  Tab,
-  Spinner,
-  TabsBody,
-} from "@material-tailwind/react";
+import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import Slider from "react-slick";
 import axios from "axios";
 
@@ -18,17 +12,52 @@ import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { removeSeatBooking } from "../../redux/reducers/seatBookingSlice";
+import { useQuery } from "react-query";
 
 export default function HomePage() {
-  const { data, error } = UseFetch(`property`);
   const dispatch = useDispatch();
-  const [categories, setCategories] = useState({});
-  const [activeTab, setActiveTab] = useState("All");
-  const [isLoaded, setIsLoaded] = useState(false); // Track the loading status
+
+  const [data, setData] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [Featured, setFeatured] = useState("yes");
+  const [totalDataCount, setTotalDataCount] = useState(0);
+  const [activeTab, setActiveTab] = useState("");
+  const [isLoaded, setIsLoaded] = useState(false);
   const [randomIndex, setRandomIndex] = useState([]);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const { pathname } = useLocation();
+
+  // Get Properties
+  const { refetch, loading, error } = useQuery(["propertyList"], async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        Featured,
+        category: activeTab,
+        isPublished: "Published",
+      });
+      const response = await axios.get(
+        `${serverBaseUrl}/property?${queryParams.toString()}`
+      );
+
+      setData(response?.data?.properties);
+      setRandomIndex(data);
+      setTotalDataCount(response?.data?.totalCount);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  });
+
+  // Get categories
+  const { refetch: refetchCategories } = useQuery(["categories"], async () => {
+    try {
+      const response = await axios.get(`${serverBaseUrl}/category`);
+      setCategories(response?.data);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  });
 
   // show Random index
   const getRandomData = () => {
@@ -45,68 +74,22 @@ export default function HomePage() {
     setRandomIndex([...shuffledData]);
   };
 
-  // find Published Property
-  const publishRandomProperty = randomIndex?.filter(
-    (property) =>
-      property?.isPublished === "Published" && property?.Featured === "yes"
-  );
-
   useEffect(() => {
-    localStorage.removeItem("seatItem");
-    localStorage.removeItem("bookingItem");
-    dispatch(removeSeatBooking());
-    const fetchCategories = async () => {
-      try {
-        const { data } = await axios.get(`${serverBaseUrl}/category`, {
-          mode: "cors",
-        });
-
-        const categoryMap = {};
-
-        data.forEach((category) => {
-          categoryMap[category?._id] = category?.name;
-        });
-        setCategories(categoryMap);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchCategories();
-  }, [pathname]);
+    if (activeTab === "") {
+      setData(randomIndex);
+    }
+  }, [activeTab]);
 
   useEffect(() => {
     if (data.length > 0) {
-      // setActiveTab(uniqueValues[0]);
       getRandomData();
-      setIsLoaded(true); // Mark data as loaded
+      setIsLoaded(true);
     }
   }, [data]);
-
-  // if (!isLoaded) {
-  //   return (
-  //     <div className="flex justify-center mt-5">
-  //       <div>
-  //         <Spinner color="green" className="h-10 w-10" />
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   if (error) {
     return <div>Error occurred: {error.message}</div>; // Placeholder for error state
   }
-
-  const uniqueValues = Array.from(
-    new Set(data.map((item) => item?.category?._id))
-  );
-
-  const filteredData = data.filter(
-    (item) =>
-      item.category?._id === activeTab &&
-      item?.isPublished === "Published" &&
-      item?.Featured === "yes"
-  );
 
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {
@@ -117,15 +100,16 @@ export default function HomePage() {
   };
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (
-      lastSlideIndex === publishRandomProperty?.length - 5 ||
-      lastSlideIndex === filteredData?.length - 5
-    ) {
+    if (lastSlideIndex === data?.length - 4) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
     }
   };
+  useEffect(() => {
+    refetch();
+    getRandomData();
+  }, [activeTab, Featured]);
 
   const settings = {
     dots: false,
@@ -142,10 +126,7 @@ export default function HomePage() {
     draggable: true, // Enable free dragging
     swipeToSlide: true,
     className: `center mx-[-15px] `,
-    arrows:
-      publishRandomProperty?.length > 4 || filteredData?.length > 4
-        ? true
-        : false,
+    arrows: data?.length > 4 ? true : false,
     autoplay: false,
 
     prevArrow: <SlickArrowLeft />,
@@ -176,11 +157,11 @@ export default function HomePage() {
         breakpoint: 640,
         settings: {
           className: `center ms-[-8px] ${
-            activeTab === "All"
-              ? lastSlideIndex >= publishRandomProperty?.length - 1
+            activeTab === ""
+              ? lastSlideIndex >= data?.length - 1
                 ? "only-forMobile"
                 : ""
-              : lastSlideIndex >= filteredData?.length - 1
+              : lastSlideIndex >= data?.length - 1
               ? "only-forMobile"
               : ""
           }`,
@@ -205,7 +186,6 @@ export default function HomePage() {
   return (
     <div className="category-item ">
       {/* <Header /> */}
-
       <div className=" text-left mt-3">
         <Tabs value={activeTab} className=" ">
           <TabsHeader
@@ -219,44 +199,36 @@ export default function HomePage() {
               value="All"
               onClick={() => {
                 getRandomData();
-                setActiveTab("All");
+                setFeatured("yes");
+                setActiveTab("");
               }}
-              className="w-fit  md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4] "
+              className="w-fit md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4]"
             >
               Featured
             </Tab>
-            {uniqueValues.map((type, index) => {
-              const item = data.find((item) => item?.category?._id === type);
-              if (!item) return null;
-
-              const categoryName = categories[item?.category?._id]; // Get the category name using the ID
-
-              return (
-                <Tab
-                  value={index}
-                  key={index}
-                  onClick={() => setActiveTab(type)}
-                  className="w-fit md:text-[20px] sm:text-[12px] category-type px-0 z-0"
-                >
-                  {categoryName}
-                </Tab>
-              );
-            })}
+            {[...categories].reverse().map((category, index) => (
+              <Tab
+                value={index}
+                key={index}
+                onClick={() => {
+                  setFeatured("no");
+                  setActiveTab(category.name);
+                }}
+                className="w-fit md:text-[20px] sm:text-[12px] category-type px-0 z-0"
+              >
+                {category.name}
+              </Tab>
+            ))}
           </TabsHeader>
         </Tabs>
-        {/* card start */}
       </div>
-
-      {publishRandomProperty?.length > 0 ? (
+      {/* card start */}
+      {data?.length ? (
         <div className="mt-3 all_recommended slider_margin card-slider ">
           <Slider {...settings}>
-            {activeTab === "All"
-              ? publishRandomProperty?.map((item) => (
-                  <SingleCard key={item._id} item={item} />
-                ))
-              : filteredData.map((item) => (
-                  <SingleCard key={item._id} item={item} />
-                ))}
+            {randomIndex?.map((item) => (
+              <SingleCard key={item._id} item={item} />
+            ))}
           </Slider>
         </div>
       ) : (

@@ -3,7 +3,10 @@ import { Link } from "react-router-dom";
 
 import UseFetch from "../../hooks/useFetch";
 import AllRecoondedSingle from "./AllRecoondedSingle";
-import "./SingleCard.css";
+import "./styles/SingleCard.css";
+import useRecommended from "../../hooks/useRecommended";
+import SingleCard from "./SingleCard";
+import { PropagateLoader } from "react-spinners";
 
 const AllRecomonded = ({ item }) => {
   const [page, setPage] = useState(1);
@@ -21,18 +24,21 @@ const AllRecomonded = ({ item }) => {
     setPage(selectedPage);
   };
 
-  const {
-    data: recomendedData,
-    loading,
-    error,
-    reFetch,
-  } = UseFetch(
-    `property/properties/recommended?page=${page}&pageSize=${itemsPerPage}`
-  );
-  // find Published Recommended Property
-  const publishedData = recomendedData.filter(
-    (property) => property?.isPublished === "Published"
-  );
+  // const {
+  //   data: recomendedData,
+  //   loading,
+  //   error,
+  //   reFetch,
+  // } = UseFetch(
+  //   `property/properties/recommended?page=${page}&pageSize=${itemsPerPage}`
+  // );
+  // // find Published Recommended Property
+  // const publishedData = recomendedData.filter(
+  //   (property) => property?.isPublished === "Published"
+  // );
+
+  const publishedData = useRecommended();
+
   useEffect(() => {
     if (publishedData && publishedData.length > 0) {
       setTotalPages(Math.ceil(publishedData.length / itemsPerPage));
@@ -100,16 +106,19 @@ const AllRecomonded = ({ item }) => {
                 className="single-card "
                 key={item?._id}
               >
-                <AllRecoondedSingle
+                {/* <AllRecoondedSingle
                   item={item}
                   isSeatIntoDate={isSeatIntoDate}
-                />
+                /> */}
+                <SingleCard item={item} />
               </Link>
             );
           })}
         </div>
       ) : (
-        <p className="text-center mt-20 mb-20"> Loading...</p>
+        <p className="flex justify-center py-96">
+          <PropagateLoader size={13} speedMultiplier={0.8} color="#36d7b7" />{" "}
+        </p>
       )}
       <div className="mt-10 flex justify-center items-center mb-10">
         <div className="bg-[#399] text-white rounded px-2 py-2">

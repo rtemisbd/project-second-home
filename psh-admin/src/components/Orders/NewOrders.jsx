@@ -9,27 +9,36 @@ import { Spinner } from "react-bootstrap";
 import BookingsTable from "./BookingsTable";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
+import { baseUrl } from "../../utils/getBaseURL";
+import { MdRefresh } from "react-icons/md";
+import Pagination from "../Pagination/Pagination";
+import { useDispatch, useSelector } from "react-redux";
 
 const NewOrders = () => {
+  const dispatch = useDispatch();
+  const { page, size } = useSelector((state) => state.pagination);
+
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
-
   const [isLoading, setIsLoading] = useState(false);
-
-  const [pageCount, setPageCount] = useState(0);
-
-  const [page, setPage] = useState(1);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-
   const [branch, setBranch] = useState("All");
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
+  const [runningStatus, setRunningStatus] = useState("All");
+  const [guestType, setGuestType] = useState("All");
+  const [unknownQuery, setUnknownQuery] = useState("");
+  const [filteredName, setFilteredName] = useState("");
+  const [filteredPhone, setFilteredPhone] = useState("");
 
   const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
   const [allBranch, setAllBranch] = useState([]);
   const [allBookings, setAllBookings] = useState([]);
+  const [findingStatement, setFindingStatement] = useState(true);
+  const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
   // Get all Bookings
   const { refetch } = useQuery(
@@ -42,17 +51,25 @@ const NewOrders = () => {
       bookingStatus,
       fromDate,
       toDate,
+      runningStatus,
+      guestType,
+      filteredName,
+      filteredPhone,
     ],
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          fromDate: fromDate,
-          toDate: toDate,
-          branch: branch,
-          paymentStatus: paymentStatus,
+          fromDate,
+          toDate,
+          branch,
+          paymentStatus,
+          page,
+          size,
+          runningStatus,
+          guestType,
           status: bookingStatus,
-          page: page,
-          size: 10,
+          filteredName,
+          filteredPhone,
         });
 
         // Get the access token
@@ -64,7 +81,7 @@ const NewOrders = () => {
         };
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?${queryParams.toString()}`,
+          `${baseUrl}/api/order?${queryParams.toString()}`,
           {
             method: "GET",
             headers: headers,
@@ -76,13 +93,11 @@ const NewOrders = () => {
         }
 
         const data = await response.json();
-        setData(data);
-
+        setData(data.data);
         setAllBookings(
           data?.orders?.filter((booking) => booking?.status === "Approved")
         );
-        const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
-        setPageCount(totalPageCount);
+        setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -92,9 +107,15 @@ const NewOrders = () => {
     }
   );
 
+  // Re-fetch data whenever size changes
+  useEffect(() => {
+    refetch();
+  }, [size, refetch]);
+
   // Get All Branch
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/branch`)
+    // fetch(`https://api.psh.com.bd/api/branch`)
+    fetch(`${baseUrl}/api/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
   }, []);
@@ -113,56 +134,55 @@ const NewOrders = () => {
     setBookingStatus(e.target.value);
   };
 
-  // const handleSearch = async () => {
-  //   setStatus(bookingStatus);
-  //   const withIdBooking = data?.find(
-  //     (booking) => booking?._id?.slice(-5) === bookingId.toLowerCase()
-  //   );
-  //   const withUserIdBooking = data?.filter(
-  //     (booking) => booking?.userId?.slice(-5) === userId.toLowerCase()
-  //   );
+  const handleRunningStatus = (e) => {
+    setRunningStatus(e.target.value);
+  };
 
-  //   if (bookingId.toLowerCase() && !withIdBooking) {
-  //     return toast.error("Sorry! Wrong Id ");
-  //   }
+  const handleGuestType = (e) => {
+    setGuestType(e.target.value);
+  };
 
-  //   setIsLoading(true);
-  //   setIsFilter(true);
-  //   const orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-  //   const bookingUserId = withUserIdBooking[0]?.userId
-  //     ? withUserIdBooking[0]?.userId
-  //     : "All";
+  const handleUnknownQuery = (e) => {
+    const value = e.target.value;
+    setUnknownQuery(value);
 
-  //   try {
-  //     const response = await axios.get(`https://api.psh.com.bd/api/order`, {
-  //       params: {
-  //         orderId: orderId,
-  //         userId: bookingUserId,
-  //         fromDate: fromDate,
-  //         toDate: toDate,
-  //         branch: branch,
-  //         paymentStatus: paymentStatus,
-  //         status: bookingStatus,
-  //         page: page,
-  //         size: 10,
-  //       },
-  //     });
+    if (!isNaN(Number(value) && value.length == 11)) {
+      setFilteredPhone(value);
+    }
+    //  else {
+    //   setFilteredName(value);
+    // }
+  };
 
-  //     if (response.status !== 200) {
-  //       throw new Error("Network response was not ok");
-  //     }
+  const handleRefreshQuery = () => {
+    setUnknownQuery("");
+    setFilteredPhone("");
+    document.getElementById("unknownQueryId").value = "";
+    setFromDate("");
+    document.getElementById("fromDateId").value = "";
+    setToDate("");
+    document.getElementById("toDateId").value = "";
+    setBranch("All");
+    document.getElementById("branchId").value = "All";
+    setPaymentStatus("All");
+    document.getElementById("paymentStatusId").value = "All";
+    setBookingStatus("All");
+    document.getElementById("bookingStatusId").value = "All";
+    setRunningStatus("All");
+    document.getElementById("runningStatusId").value = "All";
+    setGuestType("All");
+    document.getElementById("guestTypeId").value = "All";
+  };
 
-  //     const data = response.data;
-  //     setFilterData(data?.orders);
-  //     console.log(data);
-  //     const totalPageCount = Math.ceil(data?.bookingsTotalCount / 10);
-  //     setPageCount2(totalPageCount);
-  //   } catch (error) {
-  //     setError(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
+  useEffect(() => {
+    if (data?.orders?.length === 0 && !hasTimeoutRun) {
+      const timeoutId = setTimeout(() => {
+        setFindingStatement(!findingStatement);
+        setHasTimeoutRun(true);
+      }, 5000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [data?.orders?.length, findingStatement, hasTimeoutRun, refetch]);
 
   return (
     <div className="wrapper">
@@ -171,6 +191,7 @@ const NewOrders = () => {
           {/* Content Wrapper. Contains page content */}
 
           <div className="content-wrapper h-0" style={{ background: "unset" }}>
+            {/* booking details */}
             <h4 className="customize mx-lg-5 mb-3">Booking Deatails</h4>
             <div className="row customize mx-lg-5">
               <div className="col-md-3 home_card_m">
@@ -249,6 +270,7 @@ const NewOrders = () => {
                 </div>
               </div>
             </div>
+            {/* booking summery */}
             <div className="mx-lg-5 customize">
               <div className="d-flex mt-4 fw-bold ">
                 <p> Total Bookings : {data?.bookingsTotalCount}</p>
@@ -270,7 +292,24 @@ const NewOrders = () => {
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">
-            <div className="d-lg-flex justify-content-end gap-4 ">
+            {/* search bar */}
+            <div className="d-lg-flex justify-content-end gap-2 ">
+              <div className="">
+                <label htmlFor=""> Phone </label>
+                <br />
+                <div>
+                  <input
+                    type="number"
+                    name="unknownQuery"
+                    id="unknownQueryId"
+                    onChange={handleUnknownQuery}
+                    placeholder="Enter phone number"
+                    value={unknownQuery}
+                    disabled={unknownQuery.length >= 11}
+                    className="rounded"
+                  />
+                </div>
+              </div>
               <div className="">
                 <label htmlFor="">From Date </label>
                 <br />
@@ -279,7 +318,9 @@ const NewOrders = () => {
                     type="date"
                     onChange={(e) => setFromDate(e.target.value)}
                     name=""
-                    id=""
+                    id="fromDateId"
+                    value={fromDate}
+                    className="rounded"
                   />
                 </div>
               </div>
@@ -289,8 +330,10 @@ const NewOrders = () => {
                   <input
                     type="date"
                     name=""
-                    id=""
+                    id="toDateId"
                     onChange={(e) => setToDate(e.target.value)}
+                    value={toDate}
+                    className="rounded"
                   />
                 </div>
               </div>
@@ -300,6 +343,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px" }}
                   onChange={handleBranch}
+                  id="branchId"
+                  value={branch}
                 >
                   <option value="All">All</option>
                   {allBranch?.map((branch) => (
@@ -313,6 +358,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handlePaymentStatus}
+                  id="paymentStatusId"
+                  value={paymentStatus}
                 >
                   <option>All</option>
 
@@ -326,6 +373,8 @@ const NewOrders = () => {
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
                   onChange={handleBookingStatus}
+                  id="bookingStatusId"
+                  value={bookingStatus}
                 >
                   <option>All</option>
 
@@ -335,6 +384,45 @@ const NewOrders = () => {
                   <option>Processing</option>
                 </select>
               </div>
+              <div>
+                <label htmlFor="">Running / Closed </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px", width: "120px" }}
+                  onChange={handleRunningStatus}
+                  id="runningStatusId"
+                  value={runningStatus}
+                >
+                  <option>All</option>
+                  <option>Running</option>
+                  <option>Closed</option>
+                </select>
+              </div>
+              <div>
+                <label htmlFor="">Guest Type </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px", width: "120px" }}
+                  onChange={handleGuestType}
+                  id="guestTypeId"
+                  value={guestType}
+                >
+                  <option>All</option>
+                  <option>Walk-in Guest</option>
+                  <option>Monthly</option>
+                </select>
+              </div>
+
+              {/* refresh */}
+              <button
+                type="button"
+                onClick={handleRefreshQuery}
+                style={{ marginTop: "18px" }}
+                aria-label="Refresh"
+                className="btn btn-sm"
+              >
+                <MdRefresh size={32} color="#00BBB4" />
+              </button>
               {/* <div>
                 <label htmlFor="">User Id </label> <br />
                 <input
@@ -375,6 +463,7 @@ const NewOrders = () => {
             </div>
 
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
+            {/* booking table */}
             {isLoading ? (
               <p
                 style={{ margin: "150px 0" }}
@@ -388,22 +477,24 @@ const NewOrders = () => {
                   <BookingsTable
                     data={data?.orders}
                     page={page}
-                    pageCount={pageCount}
-                    setPage={setPage}
                     isLoading={isLoading}
                     transactions={transactions}
                     refetch={refetch}
                     extraCharge={extraCharge}
+                    size={size}
                   />
                 </div>
               </div>
-            ) : (
+            ) : findingStatement ? (
               <p className="text-center text-danger fw-bold">
                 Find Bookings... <Spinner size="sm" animation="grow" />
               </p>
+            ) : (
+              <p className="text-center text-danger fw-bold">No Data Found</p>
             )}
           </div>
         </section>
+        <Pagination totalDataCount={totalDataCount} />
       </div>
     </div>
   );

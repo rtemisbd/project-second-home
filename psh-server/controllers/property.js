@@ -1,6 +1,9 @@
 import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 import Branch from "../models/Branch.js";
+import catchAsync from "../shared/cathAsync.js";
+import { propertyServices } from "../services/property.service.js";
+import sendResponse from "../shared/sendResponse.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -42,154 +45,161 @@ export const CreatePropertys = async (req, res, next) => {
   }
 };
 
-export const getPropertys = async (req, res, next) => {
-  const {
-    min,
-    max,
-    bedroom,
-    recommended,
-    furnitured,
-    type,
-    commonfacility,
-    facility,
-    branch,
-    category,
-    sCategory,
-    sBranch,
-    sort,
-    roomNumber,
-    bedType,
-    ...others
-  } = req.query;
+// export const getPropertys = async (req, res, next) => {
+//   const {
+//     min,
+//     max,
+//     bedroom,
+//     recommended,
+//     furnitured,
+//     type,
+//     commonfacility,
+//     facility,
+//     branch,
+//     category,
+//     sCategory,
+//     sBranch,
+//     sort,
+//     roomNumber,
+//     bedType,
+//     ...others
+//   } = req.query;
 
-  try {
-    let query = Property.find({ ...others });
+//   try {
+//     let query = Property.find({ ...others });
 
-    if (branch) {
-      // Assuming "branch" is the branch name you want to filter by
-      const branchId = await Branch.findOne({ name: branch }).select("_id");
-      query = query.where("branch").equals(branchId);
-    }
-    if (bedroom) {
-      query = query.where("bedroom").in(bedroom.split(","));
-    }
+//     if (branch) {
+//       // Assuming "branch" is the branch name you want to filter by
+//       const branchId = await Branch.findOne({ name: branch }).select("_id");
+//       query = query.where("branch").equals(branchId);
+//     }
+//     if (bedroom) {
+//       query = query.where("bedroom").in(bedroom.split(","));
+//     }
 
-    if (min && max) {
-      query = query.where({
-        $or: [
-          { perMonth: { $gte: min, $lte: max } },
-          { "seats.0.perMonth": { $gte: min, $lte: max } },
-        ],
-      });
-    } else if (min) {
-      query = query.where("perMonth").gte(min);
-    } else if (max) {
-      query = query.where("perMonth").lte(max);
-    }
-    // Handle sorting based on perDay price
-    if (sort === "asc") {
-      query = query.sort({ perMonth: 1 }); // Ascending order
-    } else if (sort === "desc") {
-      query = query.sort({ perMonth: -1 }); // Descending order
-    }
-    if (furnitured === "yes" || furnitured === "no") {
-      query = query.where("furnitured").equals(furnitured);
-    }
-    if (type === "male" || type === "female" || type === "both") {
-      query = query.where("type").equals(type);
-    }
-    if (category) {
-      // Assuming "category" is a string representing the category name
-      query = query.populate({
-        path: "category",
-        match: { name: category },
-      });
-    }
-    if (sCategory) {
-      const categoryId = await Category.findOne({ name: sCategory }).select(
-        "_id"
-      );
-      query = query.where("category").equals(categoryId);
-    }
-    if (sBranch) {
-      const branchId = await Branch.findOne({ name: sBranch }).select("_id");
-      query = query.where("branch").equals(branchId);
-    }
-    if (roomNumber) {
-      query = query.where("roomNumber").equals(roomNumber);
-    }
-    if (bedType) {
-      query = query.where("bedType").equals(bedType);
-    }
+//     if (min && max) {
+//       query = query.where({
+//         $or: [
+//           { perMonth: { $gte: min, $lte: max } },
+//           { "seats.0.perMonth": { $gte: min, $lte: max } },
+//         ],
+//       });
+//     } else if (min) {
+//       query = query.where("perMonth").gte(min);
+//     } else if (max) {
+//       query = query.where("perMonth").lte(max);
+//     }
+//     // Handle sorting based on perDay price
+//     if (sort === "asc") {
+//       query = query.sort({ perMonth: 1 }); // Ascending order
+//     } else if (sort === "desc") {
+//       query = query.sort({ perMonth: -1 }); // Descending order
+//     }
+//     if (furnitured === "yes" || furnitured === "no") {
+//       query = query.where("furnitured").equals(furnitured);
+//     }
+//     if (type === "male" || type === "female" || type === "both") {
+//       query = query.where("type").equals(type);
+//     }
+//     if (category) {
+//       // Assuming "category" is a string representing the category name
+//       query = query.populate({
+//         path: "category",
+//         match: { name: category },
+//       });
+//     }
+//     if (sCategory) {
+//       const categoryId = await Category.findOne({ name: sCategory }).select(
+//         "_id"
+//       );
+//       query = query.where("category").equals(categoryId);
+//     }
+//     if (sBranch) {
+//       const branchId = await Branch.findOne({ name: sBranch }).select("_id");
+//       query = query.where("branch").equals(branchId);
+//     }
+//     if (roomNumber) {
+//       query = query.where("roomNumber").equals(roomNumber);
+//     }
+//     if (bedType) {
+//       query = query.where("bedType").equals(bedType);
+//     }
 
-    if (facility) {
-      // Assuming "facilities" is an array of facility names
-      query = query.populate({
-        path: "facility",
-        match: { name: { $in: facility } },
-      });
-    }
-    if (commonfacility) {
-      // Assuming "facilities" is an array of facility names
-      query = query.populate({
-        path: "commonfacility",
-        match: { name: { $in: commonfacility } },
-      });
-    }
+//     if (facility) {
+//       // Assuming "facilities" is an array of facility names
+//       query = query.populate({
+//         path: "facility",
+//         match: { name: { $in: facility } },
+//       });
+//     }
+//     if (commonfacility) {
+//       // Assuming "facilities" is an array of facility names
+//       query = query.populate({
+//         path: "commonfacility",
+//         match: { name: { $in: commonfacility } },
+//       });
+//     }
 
-    if (
-      !bedroom &&
-      !min &&
-      !max &&
-      !others.city &&
-      !furnitured &&
-      !type &&
-      !category &&
-      !sCategory &&
-      !sBranch &&
-      !facility &&
-      !roomNumber &&
-      !bedType
-    ) {
-      // If no search parameters are specified, return all properties
-      query = Property.find();
-    }
+//     if (
+//       !bedroom &&
+//       !min &&
+//       !max &&
+//       !others.city &&
+//       !furnitured &&
+//       !type &&
+//       !category &&
+//       !sCategory &&
+//       !sBranch &&
+//       !facility &&
+//       !roomNumber &&
+//       !bedType
+//     ) {
+//       // If no search parameters are specified, return all properties
+//       query = Property.find();
+//     }
 
-    const properties = await query
-      .populate("category review branch facility commonfacility")
-      .limit(req.query.limit);
+//     const properties = await query
+//       .populate("category review branch facility commonfacility")
+//       .limit(req.query.limit);
 
-    // If Current Date === Booking End date? then auto delete booking
-    // const currentDate = new Date().toISOString().split("T")[0];
-    // const condition = { bookEndDate: currentDate };
+//     // If Current Date === Booking End date? then auto delete booking
+//     // const currentDate = new Date().toISOString().split("T")[0];
+//     // const condition = { bookEndDate: currentDate };
 
-    // await Property.updateMany(
-    //   {
-    //     rentDate: { $elemMatch: condition },
-    //   },
-    //   {
-    //     $pull: {
-    //       rentDate: condition,
-    //     },
-    //   },
+//     // await Property.updateMany(
+//     //   {
+//     //     rentDate: { $elemMatch: condition },
+//     //   },
+//     //   {
+//     //     $pull: {
+//     //       rentDate: condition,
+//     //     },
+//     //   },
 
-    //   { new: true }
-    // );
-    // If Current Date === Booking Seat End date? then auto delete booking Seat
-    // await Property.updateMany(
-    //   { "seats.rentDate.bookEndDate": currentDate },
-    //   {
-    //     $pull: {
-    //       "seats.$[].rentDate": { bookEndDate: currentDate },
-    //     },
-    //   }
-    // );
+//     //   { new: true }
+//     // );
+//     // If Current Date === Booking Seat End date? then auto delete booking Seat
+//     // await Property.updateMany(
+//     //   { "seats.rentDate.bookEndDate": currentDate },
+//     //   {
+//     //     $pull: {
+//     //       "seats.$[].rentDate": { bookEndDate: currentDate },
+//     //     },
+//     //   }
+//     // );
 
-    res.status(200).json(properties);
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.status(200).json(properties);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+export const getPropertys = catchAsync(async (req, res, next) => {
+  const result = await propertyServices.getPropertiesFromDB(req.query);
+  // console.log("from controller", result);
+
+  res.status(200).json(result);
+});
 
 // Get Booking Report
 
@@ -316,28 +326,19 @@ export const getBookingReport = async (req, res, next) => {
   }
 };
 
-export const getSinglePropertys = async (req, res, next) => {
-  try {
-    const propertyId = req.params.id;
+export const getSinglePropertys = catchAsync(async (req, res, next) => {
+  const propertyId = req.params.id;
+  const { property, rentRooms } =
+    await propertyServices.getSinglePropertyFromDB(propertyId);
+  res.status(200).json({ property, rentRooms });
 
-    // Find the property by ID
-    const property = await Property.findById(propertyId).populate(
-      "category facility review branch"
-    );
-
-    if (!property) {
-      return res.status(404).json({ error: "Property not found" });
-    }
-
-    // Increment the view count by 1
-    property.views++;
-    await property.save();
-
-    res.status(200).json(property);
-  } catch (err) {
-    next(err);
-  }
-};
+  // sendResponse(res, {
+  //   statusCode: 200,
+  //   success: true,
+  //   message: "Properties retrieved successfully",
+  //   data: { property, rentRooms },
+  // });
+});
 
 export const deletePropertys = async (req, res, next) => {
   try {
@@ -461,17 +462,23 @@ export const updatePropertys = async (req, res, next) => {
   }
 };
 
-export const getRecommendedPropertys = async (req, res, next) => {
-  try {
-    const properties = await Property.find({ recommended: "yes" })
-      .populate("category review branch")
-      .limit(req.query.limit);
+// export const getRecommendedPropertys = async (req, res, next) => {
+//   try {
+//     const properties = await Property.find({ recommended: "yes" })
+//       .populate("category review branch")
+//       .limit(req.query.limit);
 
-    res.status(200).json(properties);
-  } catch (err) {
-    next(err);
-  }
-};
+//     res.status(200).json(properties);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
+
+export const getRecommendedPropertys = catchAsync(async (req, res, next) => {
+  const result = await propertyServices.getRecommendedPropertiesFromDB();
+  res.status(200).json(result);
+});
+
 export const featuredRoom = async (req, res, next) => {
   try {
     // Update Featured: "yes" for specified IDs

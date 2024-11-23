@@ -14,9 +14,14 @@ import ListFilter from "./ListFilter";
 import SingleCard from "../../components/home/SingleCard";
 import "./List.css";
 import { PropagateLoader } from "react-spinners";
+import { useQuery } from "react-query";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
+import axios from "axios";
 
 function List({ type }) {
   const location = useLocation();
+  const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
   const [destination, setDestination] = useState(location.state.destination);
   const [furnitured, setRecommended] = useState(
     location.state?.furnitured || ""
@@ -25,13 +30,9 @@ function List({ type }) {
   const [gender, setGender] = useState(location.state?.gender || "");
   const [category, setCategory] = useState(location.state?.category || "");
 
-  const [bedrooms, setBedrooms] = useState(
-    Array.isArray(location.state.bedrooms) ? location.state.bedrooms : ""
-  );
-  const selectedBedrooms = bedrooms ? bedrooms.join(",") : "";
-
-  const [openDate, setOpenDate] = useState(false);
-  const [dates, setDates] = useState(location.state.dates);
+  const [bedrooms, setBedrooms] = useState(location.state.bedrooms || "");
+  const [startDate, setStartDate] = useState(location.state?.startDate || "");
+  const [endDate, setEndDate] = useState(location.state?.endDate || "");
 
   const [facilityFilters, setFacilityFilters] = useState([]);
   const [commonFacilityFilters, setCommonFacilityFilters] = useState([]);
@@ -40,6 +41,7 @@ function List({ type }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [page, setPage] = useState(1);
+  const [loading, setLoading] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(Number.MAX_VALUE);
   const [totalPages, setTotalPages] = useState(1);
   const handleItemsPerPageChange = (event) => {
@@ -60,25 +62,39 @@ function List({ type }) {
   const facilities = [facilityFilters]; // Replace with your list of facility names
   const commonfacilities = [commonFacilityFilters]; // Replace with your list of facility names
 
-  let url = `property?branch=${encodeURIComponent(
-    destination
-  )}&Furnished=${encodeURIComponent(furnitured)}&type=${encodeURIComponent(
-    gender
-  )}&category=${encodeURIComponent(category)}&min=${encodeURIComponent(
-    min
-  )}&max=${encodeURIComponent(max)}&facility=${encodeURIComponent(
-    facilities
-  )}&commonfacility=${encodeURIComponent(
-    commonfacilities
-  )}&sort=${sort}&page=${page}&pageSize=${itemsPerPage}`;
+  // Get Properties
+  const { refetch } = useQuery(["propertyList"], async () => {
+    try {
+      setLoading(true);
+      const queryParams = new URLSearchParams({
+        furnitured,
+        category,
+        isPublished: "Published",
+        max,
+        gender,
+        destination,
+        bedType: bedrooms,
+        // startDate,
+        // endDate,
+        min,
+        facilities,
+        commonfacilities,
+        itemsPerPage,
+        page,
+        sort,
+      });
+      const response = await axios.get(
+        `${serverBaseUrl}/property?${queryParams.toString()}`
+      );
 
-  // Check if bedrooms are selected
-  if (bedrooms.length > 0) {
-    const selectedBedrooms = bedrooms.join(",");
-    url += `&bedType=${encodeURIComponent(selectedBedrooms)}`;
-  }
-
-  const { data, loading, error, reFetch } = UseFetch(url);
+      setData(response?.data?.properties);
+      setTotalDataCount(response?.data?.totalCount);
+      setLoading(false);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  });
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
@@ -112,7 +128,7 @@ function List({ type }) {
 
   useEffect(() => {
     // Call reFetch whenever facilityFilters or itemsPerPage state changes
-    reFetch(true);
+    refetch(true);
   }, [
     page,
     itemsPerPage,
@@ -121,7 +137,7 @@ function List({ type }) {
     sort,
     min,
     max,
-    selectedBedrooms,
+    // selectedBedrooms,
   ]);
 
   useEffect(() => {
@@ -132,12 +148,12 @@ function List({ type }) {
     }
   }, [data, itemsPerPage]);
 
-  const paginatedData = data.slice(
+  const paginatedData = data?.slice(
     (page - 1) * itemsPerPage,
     page * itemsPerPage
   );
   // ... rest of your component code
-  const filteredData = paginatedData.filter((item) => {
+  const filteredData = paginatedData?.filter((item) => {
     if (category !== "" && item.category.name !== category) {
       return false;
     }
@@ -185,14 +201,15 @@ function List({ type }) {
   const handleOpen = (value) => setSize(value);
 
   // find Published Property
-  const publishRandomProperty = filteredData.filter(
+  const publishRandomProperty = filteredData?.filter(
     (property) => property?.isPublished === "Published"
   );
+
   return (
     <div className="custom-container">
-      <div className=" mt-3 flex justify-between items-center">
-        <p>{publishRandomProperty?.length} Results Found</p>
-        <p className="md:mr-[420px] ">
+      <div className=" mt-3 ml-2 flex justify-between items-center">
+        <p>{totalDataCount} Results Found</p>
+        <p className="">
           Search Number{" "}
           <select
             className="border border-black rounded ml-2"
@@ -211,7 +228,7 @@ function List({ type }) {
       </div>
       {/* <Header type="list" /> */}
       <div className="mt-5">
-        <div className="listFilterSm">
+        {/* <div className="listFilterSm">
           <div
             className="flex justify-center mb-4 fixed bottom-0 filterZindex"
             style={{ zIndex: 9999, width: "95%" }}
@@ -281,9 +298,9 @@ function List({ type }) {
               </div>
             </DialogBody>
           </Dialog>
-        </div>
+        </div> */}
         <div className="grid grid-cols-12">
-          <div className="flex flex-col col-span-12 sm:col-span-12 lg:col-span-8">
+          <div className="flex flex-col col-span-12 sm:col-span-12 lg:col-span-12">
             {loading ? (
               <p className="flex justify-center py-96">
                 <PropagateLoader
@@ -292,10 +309,10 @@ function List({ type }) {
                   color="#36d7b7"
                 />{" "}
               </p>
-            ) : publishRandomProperty?.length > 0 ? (
+            ) : data?.length > 0 ? (
               <>
-                <div className="grid lg:grid-cols-3 md:grid-cols-3 lg:gap-x-5 md:gap-x-7 sm:grid-cols-1 mt-2 sm:gap-x-0 z-0 sm:mx-auto md:mx-0">
-                  {publishRandomProperty?.map((item) => (
+                <div className="grid lg:grid-cols-4 md:grid-cols-3 lg:gap-x-5 md:gap-x-7 sm:grid-cols-1 mt-2 sm:gap-x-0 z-0 sm:mx-auto md:mx-0">
+                  {data?.map((item) => (
                     <div key={item._id}>
                       <SingleCard item={item} />
                     </div>
@@ -335,7 +352,7 @@ function List({ type }) {
               </>
             )}
           </div>
-          <div className="flex flex-col items-start col-span-12  sm:col-span-12 right-side lg:col-span-4">
+          {/* <div className="flex flex-col items-start col-span-12  sm:col-span-12 right-side lg:col-span-4">
             <div className="filter_card w-full text-start px-5 mt-2 listFilterLg">
               <ListFilter
                 handleFacilityFilterChange={handleFacilityFilterChange}
@@ -351,7 +368,7 @@ function List({ type }) {
                 max={max}
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center mb-10">

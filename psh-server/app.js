@@ -36,6 +36,7 @@ import teachingForm from "./routes/teachingForm.js";
 
 import cookieParser from "cookie-parser";
 import cors from "cors";
+import seatsRoute from "./routes/seats.js";
 
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
@@ -88,6 +89,7 @@ app.use("/api/facility", facilityRoute);
 app.use("/api/commonfacility", commonfacilityRoute);
 app.use("/api/branch", branchRoute);
 app.use("/api/property", propertyRoute);
+app.use("/api/seats", seatsRoute);
 
 app.use("/api/issue", IssueRouter);
 app.use("/api/review", reviewRouter);

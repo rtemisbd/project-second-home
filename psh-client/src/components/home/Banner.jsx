@@ -3,7 +3,7 @@ import { Splide, SplideSlide } from "@splidejs/react-splide";
 
 import UseFetch from "../../hooks/useFetch";
 
-import "./Banner.css";
+import "./styles/Banner.css";
 import Skeleton from "react-loading-skeleton";
 // import PopUp from "./PopUp";
 

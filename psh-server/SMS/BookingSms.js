@@ -1,4 +1,6 @@
 import pkg from "follow-redirects";
+import config from "../config/index.js";
+
 const { http } = pkg;
 
 export function bookingSms(bookingMessage) {

@@ -1,36 +1,18 @@
-import React, { useContext, useState, useEffect } from "react";
+import React from "react";
 import {
   Card,
   CardHeader,
   CardBody,
   CardFooter,
-  Typography,
 } from "@material-tailwind/react";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
-import axios from "axios";
+
 import { Link } from "react-router-dom";
 
-import whislistIcon from "../../assets/img/Wishlist.png";
-import heart2 from "../../assets/img/Heart2.png";
 import locationIcon from "../../assets/img/branchLocationIcon.png";
-import { AuthContext } from "../../contexts/UserProvider";
-import UseFetch from "../../hooks/useFetch";
-import "./SingleCard.css";
-import { serverBaseUrl } from "../../serverApi/baseUrl";
+
+import "./styles/SingleCard.css";
 
 const SingleCard = ({ item }) => {
-  const { user } = useContext(AuthContext);
-  const userName = user?.firstName;
-  const email = user?.email;
-  const [data, setData] = useState([]);
-
-  useEffect(() => {
-    fetch(`${serverBaseUrl}/property/${item._id}`)
-      .then((res) => res.json())
-      .then((data) => setData(data));
-  }, [item?._id]);
-
   // Checking Booking Dates for privet room and apartment
   const currentDate = new Date().toISOString().split("T")[0];
   // Check if the target date falls within any of the date ranges
@@ -51,56 +33,10 @@ const SingleCard = ({ item }) => {
       isAlreadySeatBook.push(rentDate);
       if (currentDate <= rentDate.bookEndDate) {
         isSeatIntoDate = true;
-        break; // No need to continue checking once a match is found
+        break;
       }
     }
   }
-  const propertyId = data?._id;
-  const MySwal = withReactContent(Swal);
-  const { data: wishlist, reFetch: wishlistRefetch } = UseFetch(`wishlist`);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const product = {
-        userName,
-        propertyId,
-        email,
-      };
-      await axios.post(`${serverBaseUrl}/wishlist`, product);
-      // MySwal.fire("Thanks ! wishlisted");
-      wishlistRefetch();
-    } catch (err) {
-      MySwal.fire("Already Added!");
-    }
-  };
-
-  const exactWishList = wishlist?.filter(
-    (wishList) => wishList?.property?._id == data?._id
-  );
-  const userWishList = exactWishList?.find(
-    (wishList) => wishList?.email === email
-  );
-  const checkWishLists = wishlist?.filter((pd) => pd?.email === email);
-  const checkWishListIds = checkWishLists?.map((item) => item?.property?._id);
-  const handleRemoveSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const product = {
-        userName,
-        propertyId,
-        email,
-      };
-      await axios.delete(
-        `${serverBaseUrl}/wishlist/${userWishList._id}`,
-        product
-      );
-      // MySwal.fire("Successfullt Remove ! wishlisted");
-      wishlistRefetch();
-    } catch (err) {
-      MySwal.fire("Wrong!");
-    }
-  };
 
   return (
     <>
@@ -120,16 +56,7 @@ const SingleCard = ({ item }) => {
                 alt="Room Picture"
               />
             </Link>
-            <div className="absolute top-2 right-2">
-              {checkWishListIds?.some((item) => item === data?._id) ? (
-                <img src={heart2} alt="wishlist" onClick={handleRemoveSubmit} />
-              ) : (
-                // <span>
-                //   <FaHeart style={{ color: "red" }} />
-                // </span>
-                <img src={whislistIcon} alt="wishlist" onClick={handleSubmit} />
-              )}
-            </div>
+
             {/* {isIntoDate ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
                 <span>Already Booked</span>
@@ -138,7 +65,7 @@ const SingleCard = ({ item }) => {
               ""
             )} */}
 
-            {item.branch?.name === "Bashundhara" ? (
+            {item.branchDetails?.name === "Bashundhara" ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
                 <span>Already Booked</span>
               </div>
@@ -168,7 +95,7 @@ const SingleCard = ({ item }) => {
             ) : (
               ""
             )} */}
-            {item?.category?.name === "Shared Room" ? (
+            {item?.categoryDetails?.name === "Shared Room" ? (
               <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
                 <span>{item?.seats?.length} Seat Room</span>
               </div>
@@ -184,7 +111,7 @@ const SingleCard = ({ item }) => {
               <div className="flex items-center justify-between">
                 <div>
                   <span className="text-sm font-medium bg-[#FCA22A] text-white px-2 py-1 rounded">
-                    {item?.category?.name}({item.type.toUpperCase()})
+                    {item?.categoryDetails?.name}({item.type.toUpperCase()})
                   </span>
                 </div>
                 <div>
@@ -195,7 +122,7 @@ const SingleCard = ({ item }) => {
                   )}
                 </div>
                 <div>
-                  {item?.branch?.foodAmount === 0 && (
+                  {item?.branchDetails?.foodAmount === 0 && (
                     <span className="text-sm font-medium bg-[#27B3B1] text-white px-2 py-1 rounded">
                       With Food
                     </span>
@@ -210,7 +137,9 @@ const SingleCard = ({ item }) => {
                   alt=""
                 />
                 <p className="branch-location">
-                  <span className="text-[10px]">{item.branch?.name}</span>
+                  <span className="text-[10px]">
+                    {item?.branchDetails?.name}
+                  </span>
                 </p>
               </div>
 
@@ -229,7 +158,7 @@ const SingleCard = ({ item }) => {
               className="card-price flex gap-x-3 px-2 mb-2 hover:text-black"
             >
               <div>
-                {item?.category?.name === "Shared Room" ? (
+                {item?.categoryDetails?.name === "Shared Room" ? (
                   <>
                     <div className="flex gap-x-2">
                       {item?.seats[0]?.perDay ===

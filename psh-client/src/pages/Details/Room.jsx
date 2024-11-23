@@ -59,13 +59,17 @@ const Room = () => {
   const email = user?.email;
 
   const [data, setData] = useState([]);
+  const [bookedDates, setBookDates] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await fetch(`${serverBaseUrl}/property/${id}`);
-        const data = await response.json();
-        setData(data);
+        const { property, rentRooms } = await response.json();
+        // console.log(data);
+
+        setData(property);
+        setBookDates(rentRooms);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -448,11 +452,11 @@ const Room = () => {
                         <div>
                           <img src="/images/icon/marker-02.png" alt="" />
                         </div>
-                        <p className="ms-1"> {data.branch?.name} -</p>
+                        <p className="ms-1"> {data?.branch?.name} -</p>
                       </div>
                       {/* 
                       <p className="text-xl font-bold mt-1">
-                        {data.branch?.name}
+                        {data?.branch?.name}
                       </p> */}
 
                       <div className="flex text-[#9A9A9A] items-center mt-2">
@@ -490,7 +494,7 @@ const Room = () => {
                             <div>
                               <img src={homeIcon} alt="" />
                             </div>
-                            {data.furnitured === "yes" ? (
+                            {data?.furnitured === "yes" ? (
                               <div className="ms-1 ">
                                 <span>Full Furnished</span>
                               </div>
@@ -543,7 +547,7 @@ const Room = () => {
                               <img src="/images/icon/Bath.png" alt="" />
                             </div>
 
-                            <p className="ms-1">{data.bathroom} Bathroom</p>
+                            <p className="ms-1">{data?.bathroom} Bathroom</p>
                           </div>
                         </div>
                       </div>
@@ -617,7 +621,7 @@ const Room = () => {
                   <div className="grid grid-cols-12 gap-x-4 md:gap-y-16 sm:gap-y-4 py-5 text-sm">
                     <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                       <p className="font-bold">Type</p>
-                      <p>{data.category?.name}</p>
+                      <p>{data?.category?.name}</p>
                     </div>
                     <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                       <p className="font-bold">Bed Type</p>
@@ -625,20 +629,20 @@ const Room = () => {
                     </div>
                     <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                       <p className="font-bold">Floor</p>
-                      <p>{data.floor}th Floor</p>
+                      <p>{data?.floor}th Floor</p>
                     </div>
                     <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                       <p className="font-bold">Room Size</p>
-                      <p>{data.area} SQ Feet</p>
+                      <p>{data?.area} SQ Feet</p>
                     </div>
                     <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                       <p className="font-bold">Furnishing</p>
-                      {data.furnitured === "yes" ? <p>Yes</p> : <p>No</p>}
+                      {data?.furnitured === "yes" ? <p>Yes</p> : <p>No</p>}
                     </div>
                     {keyDetails ? (
                       <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                         <p className="font-bold">Balcony</p>
-                        <p>{data.balcony}</p>
+                        <p>{data?.balcony}</p>
                       </div>
                     ) : (
                       ""
@@ -660,11 +664,11 @@ const Room = () => {
                     <div className="grid grid-cols-12 gap-x-4 md:gap-y-16 sm:gap-y-4 md:py-5">
                       <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3 ">
                         <p className="font-bold"> Wi-Fi</p>
-                        {data.WiFi === "yes" ? <p>Yes</p> : <p>No</p>}
+                        {data?.WiFi === "yes" ? <p>Yes</p> : <p>No</p>}
                       </div>
                       <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2">
                         <p className="font-bold"> CCTV</p>
-                        {data.CCTV === "yes" ? <p>Yes</p> : <p>No</p>}
+                        {data?.CCTV === "yes" ? <p>Yes</p> : <p>No</p>}
                       </div>
                       <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
                         <p className="font-bold">Meal</p>
@@ -1092,7 +1096,7 @@ const Room = () => {
                     ""
                   ) : (
                     <div className="mb-5 w-full">
-                      {data.seats && data.seats.length > 0 ? (
+                      {data?.seats && data?.seats.length > 0 ? (
                         <Seats data={data} handleSubmit={handleSubmit} />
                       ) : (
                         ""
@@ -1103,7 +1107,7 @@ const Room = () => {
                 {data?.category?.name === "Shared Room" ? (
                   <div id="seatTypes">
                     <div className="mb-5 w-full" id="seat">
-                      {data.seats && data.seats.length > 0 ? (
+                      {data?.seats && data?.seats.length > 0 ? (
                         <Seats data={data} handleSubmit={handleSubmit} />
                       ) : (
                         ""
@@ -1172,7 +1176,7 @@ const Room = () => {
                   )}
 
                   <div>
-                    {data.branch?.nearLocation1 ? (
+                    {data?.branch?.nearLocation1 ? (
                       <div className="facility_h1 p-2 mt-5">
                         <h2 className="text-xl font-bold text-gray-900">
                           Around the Building
@@ -1183,52 +1187,52 @@ const Room = () => {
                     )}
 
                     <div className="grid grid-cols-2 sm:text-sm ">
-                      {data.branch?.nearLocation1 ? (
+                      {data?.branch?.nearLocation1 ? (
                         <div className="flex mt-3">
                           <img src={arroundIcon} alt="" />
-                          <p className="ms-4">{data.branch?.nearLocation1}</p>
+                          <p className="ms-4">{data?.branch?.nearLocation1}</p>
                         </div>
                       ) : (
                         ""
                       )}
 
-                      {data.branch?.nearLocation2 ? (
+                      {data?.branch?.nearLocation2 ? (
                         <div className="flex mt-3">
                           <img src={arroundIcon} alt="" />
-                          <p className="ms-4">{data.branch?.nearLocation2}</p>
+                          <p className="ms-4">{data?.branch?.nearLocation2}</p>
                         </div>
                       ) : (
                         ""
                       )}
-                      {data.branch?.nearLocation3 ? (
+                      {data?.branch?.nearLocation3 ? (
                         <div className="flex mt-3">
                           <img src={arroundIcon} alt="" />
-                          <p className="ms-4">{data.branch?.nearLocation3}</p>
+                          <p className="ms-4">{data?.branch?.nearLocation3}</p>
                         </div>
                       ) : (
                         ""
                       )}
 
-                      {data.branch?.nearLocation4 ? (
+                      {data?.branch?.nearLocation4 ? (
                         <div className="flex mt-3">
                           <img src={arroundIcon} alt="" />
-                          <p className="ms-4">{data.branch?.nearLocation4}</p>
+                          <p className="ms-4">{data?.branch?.nearLocation4}</p>
                         </div>
                       ) : (
                         ""
                       )}
-                      {data.branch?.nearLocation5 ? (
+                      {data?.branch?.nearLocation5 ? (
                         <div className="flex mt-3">
                           <img src={arroundIcon} alt="" />
-                          <p className="ms-4">{data.branch?.nearLocation5}</p>
+                          <p className="ms-4">{data?.branch?.nearLocation5}</p>
                         </div>
                       ) : (
                         ""
                       )}
-                      {data.branch?.nearLocation6 ? (
+                      {data?.branch?.nearLocation6 ? (
                         <div className="flex mt-3">
                           <img src={arroundIcon} alt="" />
-                          <p className="ms-4">{data.branch?.nearLocation6}</p>
+                          <p className="ms-4">{data?.branch?.nearLocation6}</p>
                         </div>
                       ) : (
                         ""
@@ -1311,15 +1315,17 @@ const Room = () => {
               {/* Total Box */}
 
               <div className="flex flex-col items-start space-y-3 sm:col-span-12 md:col-span-6 lg:col-span-4 ">
-                {data.seats && data.seats.length > 0 ? (
+                {data?.seats && data?.seats.length > 0 ? (
                   <BookingSeatTotal
                     data={data}
+                    bookedDates={bookedDates}
                     seats={data?.seats}
                     extraCharge={extraCharge}
                   />
                 ) : (
                   <BookingTotalBox
                     data={data}
+                    bookedDates={bookedDates}
                     seats={data?.seats}
                     extraCharge={extraCharge}
                   />

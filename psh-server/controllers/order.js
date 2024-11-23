@@ -14,6 +14,8 @@ import { generateBookingId } from "../utils/generateBookingId.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 export const createOrder = catchAsync(async (req, res, next) => {
+  console.log(req.body);
+
   const {
     email,
     bookingInfo,
@@ -36,7 +38,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
     ...bookingData
   } = req.body;
 
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ phone: phone });
 
   const bookingInfoParse = JSON.parse(bookingInfo);
 
@@ -149,7 +151,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
   });
 
   await User.updateOne(
-    { email: email },
+    { phone: phone },
     { $set: userUpdate },
     { runValidators: true }
   );
@@ -538,7 +540,7 @@ export const getMyBooking = async (req, res, next) => {
   try {
     // const email = req.query.email;
     const user = req.params.user;
-    const order = await OrderModel.find({ email: user }).populate("branch");
+    const order = await OrderModel.find({ phone: user }).populate("branch");
     res.status(200).json(order);
   } catch (err) {
     next(err);

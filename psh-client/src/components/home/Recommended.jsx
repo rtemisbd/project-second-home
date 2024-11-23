@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "@splidejs/react-splide/css";
 import "@splidejs/react-splide/css/skyblue";
 import "@splidejs/react-splide/css/sea-green";
@@ -11,14 +11,15 @@ import UseFetch from "../../hooks/useFetch";
 import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
-import "./Recommended.css";
+import "./styles/Recommended.css";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
+import { useQuery } from "react-query";
+import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
+import useRecommended from "../../hooks/useRecommended";
 
 const Recommended = () => {
-  const { data } = UseFetch(`property/properties/recommended`);
-  const publishedData = data.filter(
-    (property) => property?.isPublished === "Published"
-  );
+  const data = useRecommended();
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {
@@ -29,7 +30,7 @@ const Recommended = () => {
   };
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === publishedData?.length - 5) {
+    if (lastSlideIndex === data?.length - 5) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
@@ -47,7 +48,7 @@ const Recommended = () => {
     adaptiveHeight: true,
     infinite: false,
     speed: 400,
-    arrows: publishedData?.length > 4 ? true : false,
+    arrows: data?.length > 4 ? true : false,
     autoplay: false,
     swipeToSlide: true,
     prevArrow: <SlickArrowLeft />,
@@ -78,7 +79,7 @@ const Recommended = () => {
         breakpoint: 640,
         settings: {
           className: `center ms-[-8px] ${
-            lastSlideIndex >= publishedData?.length - 1 ? "only-forMobile" : ""
+            lastSlideIndex >= data?.length - 1 ? "only-forMobile" : ""
           }`,
           afterChange: (index) => {
             setLastSlideIndex(index);
@@ -115,35 +116,10 @@ const Recommended = () => {
         </p>
       </div>
 
-      {publishedData?.length > 0 ? (
+      {data?.length > 0 ? (
         <div className="all_recommended mt-4 slider_margin card-slider">
-          {/* <Splide
-            options={{
-              // type: "loop",
-              arrows: publishedData?.length > 5 ? true : false,
-              rewind: true,
-              drag: "free",
-              autoplay: true,
-              gap: "1rem",
-              perPage: 5,
-              height: "22rem",
-              pagination: false,
-              breakpoints: {
-                1200: { arrows: true, perPage: 4 },
-                800: { arrows: true, perPage: 2 },
-                640: { arrows: true, perPage: 1 },
-              },
-            }}
-          >
-            {publishedData.map((item, i) => (
-              <SplideSlide>
-                <SingleCard item={item} key={i} />
-              </SplideSlide>
-            ))}
-          </Splide> */}
-
           <Slider {...settings}>
-            {publishedData?.map((item, i) => (
+            {data?.map((item, i) => (
               <SingleCard item={item} key={i} />
             ))}
           </Slider>

@@ -13,7 +13,7 @@ import { GrLocation } from "react-icons/gr";
 import { SearchContext } from "../../contexts/SearchContext";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import UseFetch from "../../hooks/useFetch";
-import "./SearchBox.css";
+import "./styles/SearchBox.css";
 import { SyncLoader } from "react-spinners";
 
 const SearchBox = () => {
@@ -26,11 +26,26 @@ const SearchBox = () => {
 
   const { data: branch } = UseFetch(`branch`);
   const [query, setQuery] = useState("");
-  const [selectedItem, setSelectedItem] = useState(null);
   const inputRef = useRef(null);
   const [destination, setDestination] = useState("");
+  const [bedrooms, setBedrooms] = useState([]);
+
+  const [FurnishedQuery, setFurnishedQuery] = useState("");
+  const [FurnishedValue, setFurnishedValue] = useState(0);
+  const furnitures = ["All", "Furnished", "Unfurnished"];
+
+  const [genderQuery, setGenderQuery] = useState("female");
+  const [genderValue, setGenderValue] = useState(0);
+  const gender = ["Female", "Male"];
+
+  const [categoryQuery, setCategoryQuery] = useState("");
+  const [categoryValue, setCategoryValue] = useState(0);
+  const category = ["All", ...data.map((item) => item?.name)];
+  const beds = ["All", "Bunk Bed", "Bunk Bed & Single Bed", "King Size Bed"];
+  const [bedValue, setBedValue] = useState(0);
 
   const [inputActive, setInputActive] = useState(false);
+
   const filteredData = branch.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
@@ -52,7 +67,7 @@ const SearchBox = () => {
   }, [inputActive]);
 
   const handleItemClick = (item) => {
-    setSelectedItem(item);
+    // setSelectedItem(item);
     setQuery(item.name);
     setInputActive(false);
     setDestination(item.name);
@@ -74,35 +89,6 @@ const SearchBox = () => {
     const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
     return lastDay;
   }
-
-  const [bedrooms, setBedrooms] = useState([]);
-
-  const [FurnishedDisplay, setFurnishedDisplay] = useState("");
-  const [FurnishedQuery, setFurnishedQuery] = useState("");
-  const [FurnishedValue, setFurnishedValue] = useState(0);
-  const furnitures = ["All", "Furnished", "Unfurnished"];
-
-  const [genderDisplay, setGenderDisplay] = useState("");
-  const [genderQuery, setGenderQuery] = useState("female");
-  const [genderValue, setGenderValue] = useState(0);
-  const gender = ["Female", "Male"];
-  // const gender = ["All", "Male", "Female", "Others"];
-
-  const [categoryDisplay, setCategoryDisplay] = useState("");
-  const [categoryQuery, setCategoryQuery] = useState("");
-  const [categoryValue, setCategoryValue] = useState(0);
-  const category = ["All", ...data.map((item) => item?.name)];
-  const beds = [
-    "All",
-    "Bunk Bed",
-    "Single Bed",
-    "Queen Bed",
-    "Semi-Double Bed",
-    // "1 BR",
-    // "2 BR",
-    // "3 BR",
-  ];
-  const [bedValue, setBedValue] = useState(0);
 
   const handleFurnitureSelection = (index) => {
     setFurnishedValue(index);
@@ -128,19 +114,17 @@ const SearchBox = () => {
     } else if (selectedGender === "Male") {
       setGenderQuery("male");
     }
-    // } else if (selectedGender === "Others") {
-    //   setGenderQuery("both");
-    // }
   };
 
   const handleCategorySelection = (index) => {
     setCategoryValue(index);
     const selectedCategory = category[index];
-    setCategoryDisplay(selectedCategory);
+    // setCategoryDisplay(selectedCategory);
+    console.log(selectedCategory);
 
     // Map category values to query values
     if (selectedCategory === "All") {
-      setCategoryQuery(""); // Empty string means no specific category filter
+      setCategoryQuery("");
     } else {
       setCategoryQuery(selectedCategory);
     }
@@ -148,7 +132,6 @@ const SearchBox = () => {
     // Handle bed selection based on category
     if (selectedCategory === "Private Room") {
     } else if (selectedCategory === "Shared Room") {
-    } else if (selectedCategory === "Apartment") {
     } else {
       setBedValue(0); // Reset bed selection to "All" for other categories
       setBedrooms([]);
@@ -159,7 +142,7 @@ const SearchBox = () => {
     if (index === 0) {
       setBedrooms([]);
     } else {
-      setBedrooms([beds[index]]);
+      setBedrooms(beds[index]);
     }
     setBedValue(index);
   };
@@ -170,10 +153,12 @@ const SearchBox = () => {
     e.preventDefault();
     const payload = {
       destination,
-      bedrooms: bedrooms.length > 0 ? bedrooms : "Any",
+      bedrooms,
       furnitured: FurnishedQuery,
       gender: genderQuery,
       category: categoryQuery,
+      // startDate: startDate.toISOString().split("T")[0],
+      // endDate: endDate.toISOString().split("T")[0],
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
@@ -229,7 +214,19 @@ const SearchBox = () => {
             </li>
           </ul>
           <ul className="flex title-search" style={{ marginTop: "10px" }}>
-            <li>
+            {category.map((categoryItem, index) => (
+              <li>
+                <span
+                  className={`tab  ${
+                    categoryValue === index ? "selected" : ""
+                  }`}
+                  onClick={() => handleCategorySelection(index)}
+                >
+                  {categoryItem}
+                </span>
+              </li>
+            ))}
+            {/* <li>
               <span
                 className={`tab ${categoryValue === 0 ? "selected" : ""}`}
                 onClick={() => handleCategorySelection(0)}
@@ -238,7 +235,7 @@ const SearchBox = () => {
               </span>
             </li>
             {data.map((rent, index) => (
-              <li key={index + 1}>
+              <li key={index}>
                 <span
                   className={`tab  ${
                     categoryValue === index + 1 ? "selected" : ""
@@ -248,7 +245,7 @@ const SearchBox = () => {
                   {rent?.property?.length > 0 ? rent?.name : ""}
                 </span>
               </li>
-            ))}
+            ))} */}
           </ul>
           <div className="input-filed-area" ref={inputRef}>
             <input
@@ -392,16 +389,11 @@ const SearchBox = () => {
                   if (
                     (categoryValue === 1 &&
                       bed !== "Bunk Bed" &&
-                      bed !== "Single Bed") ||
+                      bed !== "Bunk Bed & Single Bed") ||
                     (categoryValue === 2 &&
                       bed !== "Single Bed" &&
-                      bed !== "Semi-Double Bed" &&
-                      bed !== "Queen Bed") ||
-                    (categoryValue === 3 &&
-                      bed !== "All" &&
-                      bed !== "1 BR" &&
-                      bed !== "2 BR" &&
-                      bed !== "3 BR")
+                      bed !== "Bunk Bed & Single Bed" &&
+                      bed !== "King Size Bed")
                   ) {
                     return null; // Skip rendering
                   }

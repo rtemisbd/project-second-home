@@ -11,7 +11,7 @@ import Slider from "react-slick";
 import UseFetch from "../../hooks/useFetch";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
-import "./AllBranch.css";
+import "./styles/AllBranch.css";
 
 const AllBranch = () => {
   const { data } = UseFetch(`branch`);

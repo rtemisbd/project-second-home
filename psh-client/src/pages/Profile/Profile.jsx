@@ -83,12 +83,12 @@ export default function Profile() {
     },
 
     {
-      label: "Issu Deatails",
+      label: "Issue Details",
       value: "list",
       icon: <TbReport style={{ width: "24px", height: "24px" }} />,
     },
     {
-      label: "Personal Deatils",
+      label: "Personal Details",
       value: "info",
       icon: <BsPerson style={{ width: "24px", height: "24px" }} />,
     },

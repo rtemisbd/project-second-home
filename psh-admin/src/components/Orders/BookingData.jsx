@@ -7,6 +7,25 @@ import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
 import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
+import { FaWhatsapp } from "react-icons/fa";
+
+// whats app ui
+const pulseEffect = {
+  position: "absolute",
+  height: "100%",
+  width: "100%",
+  borderRadius: "50%",
+  backgroundColor: "rgba(14, 192, 67, 0.75)",
+  animation: "ping 1s infinite",
+};
+
+const innerCircleStyle = {
+  borderRadius: "50%",
+  height: "12px",
+  width: "12px",
+  backgroundColor: "#00BBB4",
+  position: "relative",
+};
 
 const BookingData = ({
   booking,
@@ -16,6 +35,7 @@ const BookingData = ({
   extraCharge,
   isLoading,
   page,
+  size,
 }) => {
   // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
@@ -78,7 +98,7 @@ const BookingData = ({
   return (
     <>
       <tr className="bookings_data">
-        <td>{(page - 1) * 10 + index + 1}</td>
+        <td>{(page - 1) * size + index + 1}</td>
 
         <td
           style={{
@@ -206,6 +226,35 @@ const BookingData = ({
               />
             )}
           </div>
+        </td>
+        {/* whats app contact */}
+        <td>
+          <a
+            href={`https://api.whatsapp.com/send?phone=88${booking?.phone}`}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <button class="btn btn-light position-relative">
+              <FaWhatsapp
+                style={{
+                  width: "32px",
+                  height: "32px",
+                  cursor: "pointer",
+                  color: "#25D366",
+                }}
+              />
+              <span
+                class="spinner-grow spinner-grow-sm text-success "
+                aria-hidden="true"
+                style={{
+                  position: "absolute",
+                  top: "-5px", // Adjust this value to move it higher or lower
+                  left: "70%",
+                  // transform: "translateX(-50%)",
+                }}
+              ></span>
+            </button>
+          </a>
         </td>
         <td>
           <div>

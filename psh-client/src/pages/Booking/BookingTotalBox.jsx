@@ -366,6 +366,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   // const [open, setOpen] = React.useState(false);
   // const handleOpen = () => setOpen((cur) => !cur);
   const handleAddItem = () => {
+    if (!user) {
+      return navigate("/authentication", { state: location?.pathname });
+    }
     // If show minimum payment and full Payment Option
 
     let bookingDataUpdate = {};
@@ -1262,6 +1265,32 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
             </div>
           </div>
         )}
+        <div
+          style={{
+            backgroundColor: "#FDF6B1",
+            borderLeft: "4px solid #02625a",
+            fontSize: "14px",
+            color: "#02625a",
+            fontWeight: "bolder",
+          }}
+          className="px-3 py-2"
+        >
+          <span
+            style={{
+              fontSize: "18px",
+              color: "red",
+            }}
+          >
+            Attention :
+          </span>
+          <span>
+            {" "}
+            Please bring two{" "}
+            <span className="text-black">Passport-Size Photos</span> and one
+            copy of your <span className="text-black"> NID Card</span> at the
+            time of check-in.
+          </span>
+        </div>
       </div>
     </>
   );

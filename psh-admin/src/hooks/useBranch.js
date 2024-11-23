@@ -1,10 +1,11 @@
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { baseUrl } from "../utils/getBaseURL";
 
 const useBranch = () => {
   const [allBranch, setAllBranch] = useState([]);
-  const { isLoading, refetch } = useQuery([allBranch], () =>
-    fetch(`https://api.psh.com.bd/api/branch`, {
+  const { isLoading, refetch } = useQuery("branches", () =>
+    fetch(`${baseUrl}/api/branch`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -13,10 +14,15 @@ const useBranch = () => {
       })
   );
 
-  setTimeout(() => {
-    refetch();
-  }, 5000);
-  return [allBranch, refetch];
+  // setTimeout(() => {
+  //   refetch();
+  // }, 5000);
+
+  return {
+    allBranch,
+    isLoading,
+    refetch,
+  };
 };
 
 export default useBranch;

@@ -14,30 +14,31 @@ export const UserProvider = ({ children }) => {
   );
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);
   }, [user, token]);
 
-  const loginUser = async (email, password) => {
+  const loginUser = async (phone, password) => {
     try {
       const response = await axios.post(`${serverBaseUrl}/users/login`, {
-        email,
+        phone,
         password,
       });
 
       if (response.status === 200) {
-        toast.success("Login Success");
         const { data } = response;
         setUser(data?.user);
         setToken(data?.token);
         setLoading(false);
-        setTimeout(() => {
-          dispatch(placeModalShow(false));
-        }, 1000);
+        toast.success("Login Success");
+        // setTimeout(() => {
+        //   dispatch(placeModalShow(false));
+        // }, 1000);
       } else {
-        throw new Error("Invalid email or password");
+        throw new Error("Invalid phone or password");
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
@@ -52,16 +53,17 @@ export const UserProvider = ({ children }) => {
         toast.error("An error occurred. Please try again later.");
       }
     }
+    return user;
   };
 
   const registerUser = async (
     firstName,
     email,
     phone,
-    password,
-    refferCode,
-    photos,
-    role
+    password
+    // refferCode,
+    // photos,
+    // role
   ) => {
     try {
       const response = await axios.post(`${serverBaseUrl}/users`, {
@@ -69,13 +71,15 @@ export const UserProvider = ({ children }) => {
         email,
         phone,
         password,
-        refferCode,
-        photos,
+        // refferCode,
+        // photos,
       });
+      console.log(response);
 
       if (response.status === 200) {
         toast.success("Congratulations! Your account has been created.");
         const { data } = response;
+
         setUser(data.user);
         setToken(data.token);
 
@@ -83,22 +87,23 @@ export const UserProvider = ({ children }) => {
         setTimeout(() => {
           dispatch(placeModalShow(false));
         }, 1000);
+      } else if (response.status === 400) {
+        setErrorMessage("User already exists for this phone or email");
       } else {
-        throw new Error("Registration failed");
+        setErrorMessage("Registration failed");
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
-        const errorMessage = error.response.data.message;
-
-        toast.error(errorMessage);
+        setErrorMessage(error.response.data.message);
+      } else if (error.response && error.response.status === 400) {
+        setErrorMessage("User already exists for this phone or email");
       } else if (error.response && error.response.status === 404) {
-        const errorMessage = error.response.data.message;
-
-        toast.error(errorMessage);
+        setErrorMessage(error.response.data.message);
       } else {
-        toast.error("An error occurred. Please try again later.");
+        setErrorMessage("An error occurred. Please try again later.");
       }
     }
+    return { user, errorMessage };
   };
 
   const logoutUser = () => {

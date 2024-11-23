@@ -2,7 +2,7 @@ import React from "react";
 
 import healthyMealIcon from "../../assets/img/healthy-meal.png";
 import security24 from "../../assets/img/security-24.svg";
-import "./Facility.css";
+import "./styles/Facility.css";
 
 const Facility = () => {
   return (

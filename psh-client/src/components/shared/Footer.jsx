@@ -319,12 +319,9 @@ const Footer = () => {
                     </div>
                     <div>
                       <div className="mt-6">
-                        <button
-                          className="footer_btn"
-                          onClick={() => dispatch(placeModalShow(true))}
-                        >
+                        <Link to="/authentication" className="footer_btn">
                           <p className="mt-2 text-[14px]"> Login / Signup</p>
-                        </button>
+                        </Link>
                       </div>
                       <div className="mt-6 ">
                         <button className="footer_btn ">

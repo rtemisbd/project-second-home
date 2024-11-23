@@ -111,6 +111,8 @@ const OrderSchema = new mongoose.Schema(
     },
     customerType: {
       type: String,
+      // enum: ["Walk-in Guest", "Monthly", "Yearly"],
+      // default: "Walk-in Guest",
     },
     whichOfMonthPayment: {
       type: String,
@@ -154,9 +156,9 @@ const OrderSchema = new mongoose.Schema(
       type: Boolean,
     },
 
-    unReceivedTk: {
-      type: Number,
-    },
+    // unReceivedTk: {
+    //   type: Number,
+    // },
     paymentStatus: {
       type: String,
     },

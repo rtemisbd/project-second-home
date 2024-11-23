@@ -117,6 +117,7 @@ const PersonalInfo = () => {
   const bookingOrder = async (e) => {
     e.preventDefault();
 
+    console.log(bookingItem);
     // const fatherName = e.target.fatherName.value;
     // const motherName = e.target.motherName.value;
     const phone = e.target.phone.value;
@@ -289,6 +290,8 @@ const PersonalInfo = () => {
     formData.append("paymentStatus", paymentStatus);
     formData.append("bookingExtend", bookingExtend);
 
+    console.log();
+
     // save order information to the database
     try {
       dispatch(placeLoadingShow(true));
@@ -307,6 +310,8 @@ const PersonalInfo = () => {
       navigate("/booking-now");
     } catch (error) {
       dispatch(placeLoadingShow(false));
+      console.log(error);
+
       toast.error("Something is wrong");
     }
     e.target.reset();
@@ -420,22 +425,20 @@ const PersonalInfo = () => {
                   />
                 </div> */}
 
-                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Email">Email</label>
                   <input
                     type="email"
-                    placeholder="Email *"
+                    placeholder="Email"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="email"
-                    required
-                    disabled
                     defaultValue={singleUser ? singleUser.email : ""}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
                   />
-                </div>
+                </div> */}
 
                 {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Gender">Gender</label>

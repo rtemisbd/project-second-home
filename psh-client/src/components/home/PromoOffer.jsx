@@ -6,7 +6,7 @@ import { IoIosArrowForward } from "react-icons/io";
 import UseFetch from "../../hooks/useFetch";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
-import "./AllPromo.css";
+import "./styles/AllPromo.css";
 
 const PromoOffer = () => {
   const { data } = UseFetch(`promo`);
