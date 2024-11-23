@@ -168,7 +168,7 @@ export const loginAdminUser = async (req, res) => {
     const { email, password } = req.body;
 
     // Find the user by email and populate the branch field
-    const user = await User.findOne({ email }).populate("branch");
+    const user = await User.findOne({ email });
 
     // If the user does not exist, return an error message
     if (user.role === "user") {
