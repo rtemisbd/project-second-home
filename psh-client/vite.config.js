@@ -12,7 +12,7 @@ export default defineConfig({
   },
   build: {
     rollupOptions: {
-      external: ["sweetalert2"], // Remove this line
+      // external: ["sweetalert2"],
     },
   },
   // server: {
