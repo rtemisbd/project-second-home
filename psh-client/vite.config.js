@@ -8,11 +8,11 @@ export default defineConfig({
     pluginRewriteAll(), // Use the rewrite plugin if needed for URL rewriting
   ],
   optimizeDeps: {
-    include: ["react-to-print", "sweetalert2"], // Ensure this dependency is pre-bundled
+    include: ["react-to-print"], // Ensure this dependency is pre-bundled
   },
   build: {
     rollupOptions: {
-      // external: ["sweetalert2"],
+      external: ["sweetalert2"],
     },
   },
   // server: {
