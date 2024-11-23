@@ -291,7 +291,19 @@ const SearchBoxWithNav = () => {
 
                 <hr style={{ margin: "5px 0" }} />
                 <ul className="flex " style={{ marginTop: "23px" }}>
-                  <li className="sm:text-[12px] ">
+                  {category.map((categoryItem, index) => (
+                    <li>
+                      <span
+                        className={`tab  ${
+                          categoryValue === index ? "selected" : ""
+                        }`}
+                        onClick={() => handleCategorySelection(index)}
+                      >
+                        {categoryItem}
+                      </span>
+                    </li>
+                  ))}
+                  {/* <li className="sm:text-[12px] ">
                     <span
                       className={`tab ${categoryValue === 0 ? "selected" : ""}`}
                       onClick={() => handleCategorySelection(0)}
@@ -310,7 +322,7 @@ const SearchBoxWithNav = () => {
                         {rent?.property?.length > 0 ? rent?.name : ""}
                       </span>
                     </li>
-                  ))}
+                  ))} */}
                 </ul>
                 {/* Search filed */}
                 <div className="input-filed-area mb-6" ref={inputRef}>

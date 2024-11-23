@@ -562,17 +562,25 @@ export default function Navmenu() {
                       {user ? (
                         ""
                       ) : (
-                        <div
-                          className="md:block"
-                          onClick={() => {
-                            setOpenNav(!openNav);
-                            dispatch(placeModalShow(true));
-                          }}
-                        >
-                          <button className="sign_btn uppercase">
+                        <div className="md:block">
+                          <Link
+                            to="/authentication"
+                            className="sign_btn sm:text-[14px] md:text-[16px]"
+                          >
                             Sign Up/Login
-                          </button>
+                          </Link>
                         </div>
+                        // <div
+                        //   className="md:block"
+                        //   onClick={() => {
+                        //     setOpenNav(!openNav);
+                        //     dispatch(placeModalShow(true));
+                        //   }}
+                        // >
+                        //   <button className="sign_btn uppercase">
+                        //     Sign Up/Login
+                        //   </button>
+                        // </div>
                       )}
                     </div>
                   </div>

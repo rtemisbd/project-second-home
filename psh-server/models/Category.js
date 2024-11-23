@@ -9,12 +9,12 @@ const CategorySchema = new mongoose.Schema(
       type: [String],
     },
 
-    property: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Property",
-      },
-    ],
+    // property: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Property",
+    //   },
+    // ],
     position: {
       type: String,
       // required: true,

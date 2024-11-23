@@ -207,9 +207,9 @@ function List({ type }) {
 
   return (
     <div className="custom-container">
-      <div className=" mt-3 flex justify-between items-center">
+      <div className=" mt-3 ml-2 flex justify-between items-center">
         <p>{totalDataCount} Results Found</p>
-        <p className="md:mr-[420px] ">
+        <p className="">
           Search Number{" "}
           <select
             className="border border-black rounded ml-2"
@@ -228,7 +228,7 @@ function List({ type }) {
       </div>
       {/* <Header type="list" /> */}
       <div className="mt-5">
-        <div className="listFilterSm">
+        {/* <div className="listFilterSm">
           <div
             className="flex justify-center mb-4 fixed bottom-0 filterZindex"
             style={{ zIndex: 9999, width: "95%" }}
@@ -298,9 +298,9 @@ function List({ type }) {
               </div>
             </DialogBody>
           </Dialog>
-        </div>
+        </div> */}
         <div className="grid grid-cols-12">
-          <div className="flex flex-col col-span-12 sm:col-span-12 lg:col-span-8">
+          <div className="flex flex-col col-span-12 sm:col-span-12 lg:col-span-12">
             {loading ? (
               <p className="flex justify-center py-96">
                 <PropagateLoader
@@ -311,7 +311,7 @@ function List({ type }) {
               </p>
             ) : data?.length > 0 ? (
               <>
-                <div className="grid lg:grid-cols-3 md:grid-cols-3 lg:gap-x-5 md:gap-x-7 sm:grid-cols-1 mt-2 sm:gap-x-0 z-0 sm:mx-auto md:mx-0">
+                <div className="grid lg:grid-cols-4 md:grid-cols-3 lg:gap-x-5 md:gap-x-7 sm:grid-cols-1 mt-2 sm:gap-x-0 z-0 sm:mx-auto md:mx-0">
                   {data?.map((item) => (
                     <div key={item._id}>
                       <SingleCard item={item} />
@@ -352,7 +352,7 @@ function List({ type }) {
               </>
             )}
           </div>
-          <div className="flex flex-col items-start col-span-12  sm:col-span-12 right-side lg:col-span-4">
+          {/* <div className="flex flex-col items-start col-span-12  sm:col-span-12 right-side lg:col-span-4">
             <div className="filter_card w-full text-start px-5 mt-2 listFilterLg">
               <ListFilter
                 handleFacilityFilterChange={handleFacilityFilterChange}
@@ -368,7 +368,7 @@ function List({ type }) {
                 max={max}
               />
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center mb-10">

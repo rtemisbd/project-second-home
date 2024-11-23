@@ -10,7 +10,7 @@ export const CreateCategory = async (req, res, next) => {
 };
 export const getCategory = async (req, res, next) => {
   try {
-    const category = await Category.find({}).populate("property");
+    const category = await Category.find({});
     res.status(200).json(category);
   } catch (err) {
     next(err);

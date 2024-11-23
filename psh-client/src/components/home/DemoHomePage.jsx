@@ -3,8 +3,6 @@ import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import Slider from "react-slick";
 import axios from "axios";
 
-import UseFetch from "../../hooks/useFetch";
-// import Header from "./Header";
 import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
@@ -13,8 +11,10 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useQuery } from "react-query";
+import SharedRoom from "./SharedRoom";
+import useSeat from "../../hooks/useSeat";
 
-export default function HomePage() {
+export default function DemoHomePage() {
   const dispatch = useDispatch();
 
   const [data, setData] = useState([]);
@@ -25,6 +25,8 @@ export default function HomePage() {
   const [isLoaded, setIsLoaded] = useState(false);
   const [randomIndex, setRandomIndex] = useState([]);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
+  const [showSharedRoom, setSharedRoom] = useState(false);
+  const [showOtherRoom, setShowOtherRoom] = useState(true);
   const { pathname } = useLocation();
 
   // Get Properties
@@ -59,6 +61,8 @@ export default function HomePage() {
     }
   });
 
+  // get all seats
+  const seats = useSeat();
   // show Random index
   const getRandomData = () => {
     const shuffledData = [...data];
@@ -109,7 +113,17 @@ export default function HomePage() {
   useEffect(() => {
     refetch();
     getRandomData();
-  }, [activeTab, Featured]);
+  }, [Featured]);
+
+  useEffect(() => {
+    if (activeTab === "Shared Room") {
+      setShowOtherRoom(false);
+      setSharedRoom(true);
+    } else {
+      setSharedRoom(false);
+      setShowOtherRoom(true);
+    }
+  }, [activeTab]);
 
   const settings = {
     dots: false,
@@ -182,6 +196,7 @@ export default function HomePage() {
       },
     ],
   };
+  console.log(data);
 
   return (
     <div className="category-item ">
@@ -223,11 +238,19 @@ export default function HomePage() {
         </Tabs>
       </div>
       {/* card start */}
-      {data?.length ? (
+      {showOtherRoom && data?.length ? (
         <div className="mt-3 all_recommended slider_margin card-slider ">
           <Slider {...settings}>
             {randomIndex?.map((item) => (
               <SingleCard key={item._id} item={item} />
+            ))}
+          </Slider>
+        </div>
+      ) : showSharedRoom && seats?.length ? (
+        <div className="mt-3 all_recommended slider_margin card-slider ">
+          <Slider {...settings}>
+            {seats?.map((item) => (
+              <SharedRoom key={item._id} item={item} />
             ))}
           </Slider>
         </div>

@@ -443,7 +443,7 @@ const UserAuthentication = () => {
                           <span className="underline hover:text-[#00bbb4] cursor-pointer">
                             Terms of Use
                           </span>
-                        </Link>
+                        </Link>{" "}
                         &{" "}
                         <Link to="/privacy" target="_blank">
                           <span className="underline hover:text-[#00bbb4] cursor-pointer">
@@ -543,7 +543,7 @@ const UserAuthentication = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#35B0A7] text-white text-center md:absolute bottom-0 w-full">
+      <div className="bg-[#35B0A7] text-white text-center md:absolute bottom-0 w-full py-1 md:py-2">
         <span className="text-[10px] md:text-sm px-5 ">
           Copyrights &copy; Project Second Home 2023.  All rights reserved.
         </span>

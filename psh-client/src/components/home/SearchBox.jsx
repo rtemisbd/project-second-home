@@ -119,7 +119,8 @@ const SearchBox = () => {
   const handleCategorySelection = (index) => {
     setCategoryValue(index);
     const selectedCategory = category[index];
-    setCategoryDisplay(selectedCategory);
+    // setCategoryDisplay(selectedCategory);
+    console.log(selectedCategory);
 
     // Map category values to query values
     if (selectedCategory === "All") {
@@ -213,7 +214,19 @@ const SearchBox = () => {
             </li>
           </ul>
           <ul className="flex title-search" style={{ marginTop: "10px" }}>
-            <li>
+            {category.map((categoryItem, index) => (
+              <li>
+                <span
+                  className={`tab  ${
+                    categoryValue === index ? "selected" : ""
+                  }`}
+                  onClick={() => handleCategorySelection(index)}
+                >
+                  {categoryItem}
+                </span>
+              </li>
+            ))}
+            {/* <li>
               <span
                 className={`tab ${categoryValue === 0 ? "selected" : ""}`}
                 onClick={() => handleCategorySelection(0)}
@@ -232,7 +245,7 @@ const SearchBox = () => {
                   {rent?.property?.length > 0 ? rent?.name : ""}
                 </span>
               </li>
-            ))}
+            ))} */}
           </ul>
           <div className="input-filed-area" ref={inputRef}>
             <input
