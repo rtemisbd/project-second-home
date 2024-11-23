@@ -10,7 +10,7 @@ const userEndOrder = () => {
     isLoading,
     refetch,
   } = useQuery([user], () =>
-    fetch(`${serverBaseUrl}/order/${user?.email}`, {
+    fetch(`${serverBaseUrl}/order/${user?.phone}`, {
       method: "GET",
     }).then((res) => res.json())
   );

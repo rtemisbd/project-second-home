@@ -40,13 +40,13 @@ const BookNow = () => {
           </p>
           <p>{endOrder?.fullName}</p>
         </div>
-        <hr className="mt-2" />
-        <div className="flex justify-between mt-4">
+        {/* <hr className="mt-2" /> */}
+        {/* <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Email</span> <span className="md:ml-[130px] sm:ml-2">:</span>
           </p>
           <p>{endOrder?.email}</p>
-        </div>
+        </div> */}
         <hr className="mt-2" />
         <div className="flex justify-between mt-4">
           <p className="flex ">

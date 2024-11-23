@@ -3,7 +3,7 @@ import { useContext } from "react";
 import { Typography, Tooltip } from "@material-tailwind/react";
 import DatePicker from "react-datepicker";
 import { FaBed } from "react-icons/fa";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { toast } from "react-hot-toast";
@@ -23,11 +23,11 @@ import FinalLoginModal from "../../components/shared/FinalLoginModal";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
 
-const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
+const BookingSeatTotal = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   const navigate = useNavigate();
-  const location = useLocation();
+
   // date handle
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
@@ -79,17 +79,6 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
   const [totalRentAmount, setTotalRentAmount] = useState(0);
   const [payableAmount, setPayableAmount] = useState(0);
   const [singleUser, setSingleUser] = useState({});
-  const [filteredBookedDates, setFilteredBookedDate] = useState([]);
-
-  // filter bookedDates based on selected seat
-  useEffect(() => {
-    if (seatBooking) {
-      setFilteredBookedDate(
-        bookedDates.filter((date) => seatBooking.seatNumber === date.seatNumber)
-      );
-    }
-  }, [seatBooking]);
-
   // Get Single User
   useEffect(() => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
@@ -469,7 +458,6 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
       setIsScrolled(false);
     }
   }, [scrollY]);
-
   return (
     <div
       style={{
@@ -581,7 +569,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
               selected={new Date(startDate)}
               dateFormat="dd/MM/yyyy"
               onChange={(date) => dispatch(leftDate(date))}
-              excludeDateIntervals={filteredBookedDates?.map((rent) => {
+              excludeDateIntervals={seatBooking?.rentDate?.map((rent) => {
                 return {
                   start: subDays(new Date(rent?.bookStartDate), 1),
                   end: addDays(new Date(rent?.bookEndDate), -1),
@@ -604,7 +592,7 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
               selected={new Date(endDate)}
               dateFormat="dd/MM/yyyy"
               onChange={(date) => dispatch(rightDate(date))}
-              excludeDateIntervals={filteredBookedDates?.map((rent) => {
+              excludeDateIntervals={seatBooking?.rentDate?.map((rent) => {
                 return {
                   start: subDays(new Date(rent?.bookStartDate), 1),
                   end: addDays(new Date(rent?.bookEndDate), 0),
@@ -1321,7 +1309,10 @@ const BookingSeatTotal = ({ data, seats, extraCharge, bookedDates }) => {
         </span>
         <span>
           {" "}
-          Please bring two passport-size photos and one copy of your NID card.
+          Please bring two{" "}
+          <span className="text-black">Passport-Size Photos</span> and one copy
+          of your <span className="text-black"> NID Card</span> at the time of
+          check-in.
         </span>
       </div>
     </div>

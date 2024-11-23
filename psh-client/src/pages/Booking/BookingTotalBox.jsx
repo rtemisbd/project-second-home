@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Typography, Tooltip } from "@material-tailwind/react";
 import DatePicker from "react-datepicker";
-import { Link, useLocation, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
@@ -24,12 +24,11 @@ import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
 
-const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
+const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const { user } = useContext(AuthContext);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
 
   const navigate = useNavigate();
-  const location = useLocation();
 
   // date handle
   const dispatch = useDispatch();
@@ -101,6 +100,9 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   }, [user?._id]);
 
   useEffect(() => {
+    // set Extra Charge
+    // setAddmissionFee(extraCharge[0]?.admissionFee);
+    // setSecurityFee(extraCharge[0]?.securityFee);
     setDisCountTk(0);
     setPromoCodeCheck(false);
     setVatTaxt((subTotal * extraCharge[0]?.vatTax) / 100);
@@ -145,6 +147,8 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
+      // const minimum = data?.dAmountForDay * 3;
+      // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
       setMinimumPayment(500);
 
       setShowMinimumPayment(true);
@@ -194,6 +198,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
           : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
+      // setminimumPayment(addMissionFee);
     } else if (
       customerRent?.months === 0 &&
       customerRent?.years !== undefined
@@ -205,6 +210,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
           : 0);
       setTotalRentAmount(parseInt(totalAmountForMonths));
       setPayableAmount(parseInt(totalAmountForMonths));
+      // setminimumPayment(addMissionFee);
     } else {
       const totalAmountForDays =
         parseInt(subTotal + vatTax) +
@@ -213,6 +219,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
           : 0);
       setTotalRentAmount(parseInt(totalAmountForDays));
       setPayableAmount(parseInt(totalAmountForDays));
+      // setminimumPayment(0);
     }
   }, [
     isIncludeFood,
@@ -297,13 +304,15 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
       if (promoCode === userPromo?.promoCode && !promoCodeCheck) {
         const discount = userPromo?.promoDiscount / 100;
         setDisCountTk(totalRentAmount * discount);
-
+        // setTotalRentAmount(
+        //   parseInt(totalRentAmount - totalRentAmount * discount)
+        // );
         setPayableAmount(
           parseInt(totalRentAmount - totalRentAmount * discount)
         );
         setPromoCodeCheck(true);
       } else {
-        toast.error("Sorry! You gave a wrong promo code");
+        toast.error("Sorry! You have Gived the wrong promo code");
       }
     } else {
       toast.error(
@@ -440,7 +449,6 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
   return (
     <>
       <FinalLoginModal />
-
       <div
         style={{
           // height: "650px",
@@ -552,7 +560,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
                 selected={new Date(startDate)}
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(leftDate(date))}
-                excludeDateIntervals={bookedDates?.map((rent) => {
+                excludeDateIntervals={data?.rentDate?.map((rent) => {
                   return {
                     start: subDays(new Date(rent?.bookStartDate), 1),
                     end: addDays(new Date(rent?.bookEndDate), -1),
@@ -589,7 +597,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
           </div>
           <div className=" mt-1.5 w-full px-1 py-[0.5px] sm:hidden md:block duration_large_screen">
             <p className="text-center font-bold mb-2 mt-[-5px]">Duration</p>
-            <p className=" duration-count font-normal ps-1 text-sm ">
+            <p className=" duraion-count font-normal ps-1 text-sm ">
               {customerRent?.daysDifference >= 0
                 ? `${customerRent?.daysDifference} days`
                 : "" ||
@@ -1204,9 +1212,8 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
             </>
           )}
         </div>
-
         <div
-          className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a]  ${
+          className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a] mt-2 ${
             data?.endDate === endDate ||
             data?.endDate > endDate ||
             data?.endDate > startDate
@@ -1218,7 +1225,7 @@ const BookingTotalBox = ({ data, bookedDates, seats, extraCharge }) => {
         >
           <div>
             <button
-              className={`text-[16px] p-2 text-white bg-transparent cursor-pointer  ${
+              className={`text-[16px] p-2 text-white bg-transparent   cursor-pointer  ${
                 data?.endDate === endDate ||
                 data?.endDate > endDate ||
                 data?.endDate > startDate

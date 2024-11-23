@@ -24,9 +24,9 @@ const createOrderIntoDB = async (payload) => {
     emergencyRelationC,
     emergencyContact,
     ...bookingData
-  } = req.body;
+  } = payload;
 
-  const user = await User.findOne({ email: email });
+  const user = await User.findOne({ phone });
 
   const bookingInfoParse = JSON.parse(bookingInfo);
 

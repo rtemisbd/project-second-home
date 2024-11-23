@@ -111,8 +111,8 @@ const OrderSchema = new mongoose.Schema(
     },
     customerType: {
       type: String,
-      enum: ["Walk-in Guest", "Monthly", "Yearly"],
-      default: "Walk-in Guest",
+      // enum: ["Walk-in Guest", "Monthly", "Yearly"],
+      // default: "Walk-in Guest",
     },
     whichOfMonthPayment: {
       type: String,

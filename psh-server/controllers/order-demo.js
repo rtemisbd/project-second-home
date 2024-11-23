@@ -9,83 +9,18 @@ import { bookingConfirmMail } from "../mail/bookingConfirmMail.js";
 import { cancelBookingMail } from "../mail/cancelBookingMail.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import mongoose from "mongoose";
-import { generateBookingId } from "../utils/generateBookingId.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
+import { orderServices } from "../services/order.service.js";
+import config from "../config/index.js";
+
+// create booking
 export const createOrder = catchAsync(async (req, res, next) => {
-  console.log(req.body);
+  const result = await orderServices.createOrderIntoDB(req.body);
+  const bookingId = result?.bookingId;
 
-  const {
-    email,
-    bookingInfo,
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData
-  } = req.body;
-
-  const user = await User.findOne({ phone: phone });
-
-  const bookingInfoParse = JSON.parse(bookingInfo);
-
-  const gardianImg = req?.files?.gardianImg?.length
-    ? req?.files?.gardianImg[0]?.path
-    : user?.gardianImg;
-
-  const image = req?.files?.image?.length
-    ? req?.files?.image[0]?.path
-    : user?.cardImage;
-  const branch = bookingInfoParse?.branch;
-
-  const generateId = await generateBookingId();
-
-  const newOrder = new OrderModel({
-    bookingInfo: bookingInfoParse,
-    bookingId: generateId,
-    email,
-    branch,
-    image,
-    gardianImg,
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData,
-  });
-
-  // Booking Save to Database
-  const result = await newOrder.save();
-  const objectIdString = result?._id ? result?._id.toString() : "";
-  const slicedObjectId = objectIdString.slice(19);
   // Phone Sms For Booking
-  const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${slicedObjectId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
-
+  const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
   bookingSms(bookingMessage)
     .then((response) => {
       console.log("Response from SMS API:", response);
@@ -95,24 +30,24 @@ export const createOrder = catchAsync(async (req, res, next) => {
       console.error("Error while sending SMS:", error);
       // Handle error
     });
-
+  const user = await User.findOne({ phone: req.body.phone });
   // User data Update
   const userUpdate = {
     firstName: fullName,
-    fatherName: fatherName,
-    motherName: motherName,
+    fatherName,
+    motherName,
     branch: user?.branch,
-    email: email,
-    phone: phone,
+    email,
+    phone,
     userAddress: address,
-    passport: passport,
+    passport,
     dateOfBirth: birthDate,
-    gender: gender,
+    gender,
     nationalId: nid,
-    validityType: validityType,
-    validityNumber: validityNumber,
+    validityType,
+    validityNumber,
     cardImage: image,
-    gardianImg: gardianImg,
+    gardianImg,
 
     employmentStatus: {
       workAs: employeeStatus,
@@ -129,11 +64,11 @@ export const createOrder = catchAsync(async (req, res, next) => {
   const transporter = nodemailer.createTransport({
     service: "gmail",
     auth: {
-      user: "alaminbamna08@gmail.com",
-      pass: "qesfajhmrfhkfnbo",
+      user: config.nodemailer_auth_user_email,
+      pass: config.nodemailer_auth_user_pass,
     },
   });
-  const adminEmail = "psh.info2016@gmail.com";
+  const adminEmail = config.admin_email;
 
   const mailOptions = {
     from: "alaminbamna08@gmail.com",
@@ -151,13 +86,12 @@ export const createOrder = catchAsync(async (req, res, next) => {
   });
 
   await User.updateOne(
-    { phone: phone },
+    { phone },
     { $set: userUpdate },
     { runValidators: true }
   );
 
-  // Create Transaction whent First booking only payment bkash or nagad
-
+  // Create Transaction when First booking only payment bkash or nagad
   if (result?.paymentType !== "cash") {
     const currentDate = new Date().toISOString().split("T")[0];
     const transaction = new Transaction({
@@ -184,305 +118,31 @@ export const createOrder = catchAsync(async (req, res, next) => {
     statusCode: 200,
     success: true,
     message:
-      "Thank Youe ! Your Booking Successfully Done, I will very soon Contact You",
+      "Thank You ! Your Booking Successfully Done, We will contact you very soon.",
   });
 });
-// export const getOrder = async (req, res, next) => {
-//   try {
-//     const orderId = req.query?.orderId;
-//     const userId = req.query?.userId;
-//     const fromDate = req.query?.fromDate;
-//     const toDate = req.query?.toDate;
-//     const branch = req.query?.branch;
-//     const paymentStatus = req?.query?.paymentStatus;
-//     const bookingStatus = req?.query?.status;
-//     const page = parseInt(req.query?.page) || 1;
-//     const size = parseInt(req.query?.size) || 10;
 
-//     if (
-//       !orderId &&
-//       !fromDate &&
-//       !toDate &&
-//       !branch &&
-//       !paymentStatus &&
-//       !bookingStatus
-//     ) {
-//       const orders = await OrderModel.find({})
-//         .populate("branch")
-//         .sort({ createdAt: -1 })
-//         .skip(page * size)
-//         .limit(size);
-//       const bookingsTotalCount = await OrderModel.countDocuments({});
+// get orders
+export const getOrder = catchAsync(async (req, res, next) => {
+  const { result, totalCount } = await orderServices.getOrderFromDB(req.query);
+  const orders = result[0]?.paginatedResults || [];
 
-//       res.status(200).json({
-//         status: "Success",
-//         message: "Success",
-//         orders,
-//         bookingsTotalCount,
-//       });
-//     } else if (
-//       !orderId &&
-//       !fromDate &&
-//       !toDate &&
-//       branch &&
-//       !paymentStatus &&
-//       !bookingStatus
-//     ) {
-//       const orders = await OrderModel.find({ branch: branch })
-//         .populate("branch")
-//         .sort({ createdAt: -1 })
-//         .skip(page * size)
-//         .limit(size);
-//       const bookingsTotalCount = await OrderModel.countDocuments({
-//         branch: branch,
-//       });
-//       res.status(200).json({
-//         status: "Success",
-//         message: "Success",
-//         orders,
-//         bookingsTotalCount,
-//       });
-//     } else {
-//       const query = {
-//         branch: branch,
-//         _id: orderId,
-//         userId: userId,
-//         createdAt: {
-//           $gte: fromDate,
-//           $lte: toDate,
-//         },
-//         paymentStatus: paymentStatus,
-//         status: bookingStatus,
-//       };
-//       if (paymentStatus === "All") {
-//         // Remove paymentStatus from the query object
-//         delete query.paymentStatus;
-//       }
+  const {
+    // bookingsTotalCount = 0,
+    approvedCount = 0,
+    canceledCount = 0,
+    pendingCount = 0,
+    processingCount = 0,
+    totalBookingAmount = 0,
+    totalReceiveAmountFilter = 0,
+    totalDueAmount = 0,
+  } = result[0]?.totalCounts || {};
 
-//       if (bookingStatus === "All") {
-//         // Remove status from the query object
-//         delete query.status;
-//       }
-//       if (branch === "All") {
-//         // Remove status from the query object
-//         delete query.branch;
-//       }
-//       if (orderId === "All") {
-//         // Remove orderId from the query object
-//         delete query._id;
-//       }
-//       if (userId === "All") {
-//         // Remove userId from the query object
-//         delete query.userId;
-//       }
-//       if (!fromDate || !toDate) {
-//         // Remove createdAt from the query object
-//         delete query.createdAt;
-//       }
-
-//       const orders = await OrderModel.find(query)
-//         .populate("branch")
-//         .sort({ createdAt: -1 })
-//         .skip(page * size)
-//         .limit(size);
-//       const bookingsTotalCount = await OrderModel.countDocuments(query);
-//       res.status(200).json({
-//         status: "Success",
-//         message: "Success",
-//         orders,
-//         bookingsTotalCount,
-//       });
-//     }
-
-//     // if totalAmount equal totalReceiveTk
-//     await OrderModel.updateMany(
-//       {
-//         $expr: {
-//           $eq: ["$payableAmount", "$totalReceiveTk"],
-//         },
-//       },
-//       {
-//         $set: {
-//           paymentStatus: "Paid",
-//         },
-//       },
-//       { new: true }
-//     );
-//     // if not Match Total Receive Tk
-//     await OrderModel.updateMany(
-//       {
-//         $expr: {
-//           $ne: ["$payableAmount", "$totalReceiveTk"],
-//         },
-//       },
-//       {
-//         $set: {
-//           paymentStatus: "Unpaid",
-//         },
-//       },
-//       { new: true }
-//     );
-//     // res.status(200).json({
-//     //   orders,
-//     // });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: "failed",
-//       message: "Sorry Order not found",
-//       error: error.message,
-//     });
-//   }
-// };
-
-export const getOrder = async (req, res, next) => {
-  try {
-    const orderId = req.query?.orderId;
-    const userId = req.query?.userId;
-    const fromDate = req.query?.fromDate;
-    const toDate = req.query?.toDate;
-    const branch = req.query?.branch;
-    const paymentStatus = req.query?.paymentStatus;
-    const bookingStatus = req.query?.status;
-    const page = parseInt(req.query?.page) || 1;
-    const size = parseInt(req.query?.size) || 10;
-    let matchStage = {};
-
-    if (orderId && orderId !== "All") matchStage._id = orderId;
-    if (userId && userId !== "All") matchStage.userId = userId;
-    if (branch && branch !== "All")
-      matchStage.branch = mongoose.Types.ObjectId(branch);
-    if (paymentStatus && paymentStatus !== "All")
-      matchStage.paymentStatus = paymentStatus;
-    if (bookingStatus && bookingStatus !== "All")
-      matchStage.status = bookingStatus;
-    if (fromDate && toDate) {
-      matchStage.createdAt = {
-        $gte: new Date(fromDate),
-        $lte: new Date(toDate),
-      };
-    }
-
-    const totalCountsPipeline = [
-      { $match: matchStage },
-      {
-        $group: {
-          _id: null,
-          totalCount: { $sum: 1 },
-        },
-      },
-    ];
-
-    const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
-    const totalCount =
-      totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
-
-    const pipeline = [
-      { $match: matchStage },
-      {
-        $facet: {
-          paginatedResults: [
-            { $sort: { createdAt: -1 } },
-            { $skip: (page - 1) * size },
-            { $limit: size },
-            {
-              $lookup: {
-                from: "branches",
-                localField: "branch",
-                foreignField: "_id",
-                as: "branchDetails",
-              },
-            },
-            { $unwind: "$branchDetails" },
-          ],
-          totalCounts: [
-            {
-              $group: {
-                _id: null,
-                bookingsTotalCount: { $sum: 1 },
-                approvedCount: {
-                  $sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },
-                },
-                canceledCount: {
-                  $sum: { $cond: [{ $eq: ["$status", "Canceled"] }, 1, 0] },
-                },
-                pendingCount: {
-                  $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
-                },
-                processingCount: {
-                  $sum: { $cond: [{ $eq: ["$status", "Processing"] }, 1, 0] },
-                },
-                totalBookingAmount: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: [
-                          "$status",
-                          bookingStatus === "All" ? "Approved" : bookingStatus,
-                        ],
-                      },
-                      "$payableAmount",
-                      0,
-                    ],
-                  },
-                },
-                totalReceiveAmountFilter: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: [
-                          "$status",
-                          bookingStatus === "All" ? "Approved" : bookingStatus,
-                        ],
-                      },
-                      "$totalReceiveTk",
-                      0,
-                    ],
-                  },
-                },
-                totalDueAmount: {
-                  $sum: {
-                    $cond: [
-                      {
-                        $eq: [
-                          "$status",
-                          bookingStatus === "All" ? "Approved" : bookingStatus,
-                        ],
-                      },
-                      "$dueAmount",
-                      0,
-                    ],
-                  },
-                },
-              },
-            },
-          ],
-        },
-      },
-      {
-        $project: {
-          paginatedResults: 1,
-          totalCounts: { $arrayElemAt: ["$totalCounts", 0] },
-        },
-      },
-    ];
-
-    const results = await OrderModel.aggregate(pipeline);
-    const orders = results[0]?.paginatedResults || [];
-
-    const {
-      // bookingsTotalCount = 0,
-      approvedCount = 0,
-      canceledCount = 0,
-      pendingCount = 0,
-      processingCount = 0,
-      totalBookingAmount = 0,
-      totalReceiveAmountFilter = 0,
-      totalDueAmount = 0,
-    } = results[0]?.totalCounts || {};
-
-    res.status(200).json({
-      status: "Success",
-      message: "Orders retrieved successfully",
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Orders retrieved successfully",
+    data: {
       orders,
       bookingsTotalCount: totalCount,
       approvedCount,
@@ -492,17 +152,11 @@ export const getOrder = async (req, res, next) => {
       totalBookingAmount,
       totalReceiveAmountFilter,
       totalDueAmount,
-    });
+    },
+  });
 
-    updateOrderPaymentStatus();
-  } catch (error) {
-    res.status(500).json({
-      status: "failed",
-      message: "Failed to retrieve orders",
-      error: error.message,
-    });
-  }
-};
+  updateOrderPaymentStatus();
+});
 
 // Separate function to update order payment status
 const updateOrderPaymentStatus = async () => {
@@ -540,12 +194,13 @@ export const getMyBooking = async (req, res, next) => {
   try {
     // const email = req.query.email;
     const user = req.params.user;
-    const order = await OrderModel.find({ phone: user }).populate("branch");
+    const order = await OrderModel.find({ email: user }).populate("branch");
     res.status(200).json(order);
   } catch (err) {
     next(err);
   }
 };
+
 export const updateBooking = async (req, res, next) => {
   try {
     const findSingleOrder = await OrderModel.findOne({ _id: req.params.id });
@@ -614,7 +269,7 @@ export const updateBooking = async (req, res, next) => {
 
           // Phone Sms for Confirmation
 
-          const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+          const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${findSingleOrder?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
           bookingSms(bookingMessage)
             .then((response) => {

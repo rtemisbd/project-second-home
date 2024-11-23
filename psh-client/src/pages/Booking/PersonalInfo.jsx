@@ -79,8 +79,6 @@ const PersonalInfo = () => {
       navigate("/");
     }
   }, []);
-  // console.log(bookingItem);
-
   // Get Single singleUser
   useEffect(() => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
@@ -119,13 +117,23 @@ const PersonalInfo = () => {
   const bookingOrder = async (e) => {
     e.preventDefault();
 
+    console.log(bookingItem);
+    // const fatherName = e.target.fatherName.value;
+    // const motherName = e.target.motherName.value;
     const phone = e.target.phone.value;
     const address = e.target.address.value;
+    // const gender = e.target.gender.value;
+    // const birthDate = e.target.birthDate.value;
     const birthDate = birthDay?.toISOString()?.split("T")[0];
     const emergencyContactName = e.target.ecName.value;
     const emergencyRelationC = e.target.ecRelation.value;
     const emergencyContact = e.target.ecNumber.value;
+    // const employeeStatus = e.target.employeeStatus.value;
+    // const emplyeeIncome = e.target.emplyeeIncome.value;
+    // const nid = e.target.nid.value;
     const validityNumber = e.target.validityNumber.value;
+
+    // const passport = e.target.passport.value;
     const arrivalTime = e.target.arrivalTime.value;
     const request = e.target.request.value;
     const paymentType = e.target?.payment?.value;
@@ -135,6 +143,8 @@ const PersonalInfo = () => {
     const nagadTrx = e.target?.nagadTrx?.value;
     const dutchNumber = e.target?.dutchNumber?.value;
     const dutchTrx = e.target?.dutchTrx?.value;
+
+    const customerType = "";
     const whichOfMonthPayment = "";
     const adjustmentAmount = 0;
     const receivedTk = Number(e.target?.receivedTk?.value)
@@ -148,13 +158,21 @@ const PersonalInfo = () => {
     if (validityType === "Select One") {
       return toast.error("Sorry! Please Select Verification Type");
     }
+
+    // Check NID
+    // if (nid) {
+    //   if (nid?.length !== 10 && nid?.length !== 13) {
+    //     return toast.error("Sorry! you gave me the wrong NID number");
+    //   }
+    // }
+
     // Check Parent Phone Number
 
     if (
       emergencyContact?.length !== 11 ||
       emergencyContact?.substring(0, 2) !== "01"
     ) {
-      return toast.error("Sorry! you gave me wrong Guardian phone number");
+      return toast.error("Sorry! you gave me wrong Gardian phone number");
     }
     const formData = new FormData();
 
@@ -173,20 +191,67 @@ const PersonalInfo = () => {
       return validExtensions.includes(fileExtension);
     };
 
+    // Customer Nid
+    // if (image?.length > 0) {
+    //   if (image?.length > 1) {
+    //     return toast.error("please provide 1 Nid File");
+    //   }
+    //   const file = image[0];
+    //   if (file?.size > 5000000) {
+    //     return toast.error("NID size 5MB more than not allowed");
+    //   } else {
+    //     if (isValidFileUploaded(file)) {
+    //       Array.from(image).forEach((item) => {
+    //         formData.append("image", item);
+    //       });
+    //     } else {
+    //       return toast.error("NID is not valid");
+    //     }
+    //   }
+    // }
+
+    // Gardian Image
+    // if (gardianImg.length > 0) {
+    //   if (gardianImg.length > 1) {
+    //     return toast.error("please provide one pdf file");
+    //   }
+
+    //   const gardinaNid = gardianImg[0];
+
+    //   if (gardinaNid?.size > 5000000) {
+    //     return toast.error("File size 5MB more than not allowed");
+    //   } else {
+    //     if (isValidFileUploaded(gardinaNid)) {
+    //       Array.from(gardianImg)?.forEach((item) => {
+    //         formData.append("gardianImg", item);
+    //       });
+    //     } else {
+    //       return toast.error("Gardian file is not valid");
+    //     }
+    //   }
+    // }
+
     // Booking Data Append
 
     formData.append("bookingInfo", JSON.stringify(bookingItem));
     formData.append("fullName", singleUser?.firstName);
+    // formData.append("fatherName", fatherName);
+    // formData.append("motherName", motherName);
     formData.append("userId", singleUser?._id);
     formData.append("email", singleUser?.email);
     formData.append("phone", singleUser?.phone);
     formData.append("address", address);
+    // formData.append("gender", gender);
     formData.append("birthDate", birthDate);
     formData.append("emergencyContactName", emergencyContactName);
     formData.append("emergencyRelationC", emergencyRelationC);
     formData.append("emergencyContact", emergencyContact);
+    // formData.append("employeeStatus", employeeStatus);
+    // formData.append("emplyeeIncome", emplyeeIncome);
+    // formData.append("nid", nid);
     formData.append("validityType", validityType);
     formData.append("validityNumber", validityNumber);
+    // formData.append("passport", passport);
     formData.append("arrivalTime", arrivalTime);
     formData.append("request", request);
     formData.append("paymentType", paymentType);
@@ -211,6 +276,7 @@ const PersonalInfo = () => {
         : ""
     );
 
+    formData.append("customerType", customerType);
     formData.append("whichOfMonthPayment", whichOfMonthPayment);
     formData.append("adjustmentAmount", adjustmentAmount);
     formData.append("receivedTk", receivedTk);
@@ -223,6 +289,8 @@ const PersonalInfo = () => {
     formData.append("dueAmount", bookingItem?.payableAmount - totalReceiveTk);
     formData.append("paymentStatus", paymentStatus);
     formData.append("bookingExtend", bookingExtend);
+
+    console.log();
 
     // save order information to the database
     try {
@@ -242,6 +310,8 @@ const PersonalInfo = () => {
       navigate("/booking-now");
     } catch (error) {
       dispatch(placeLoadingShow(false));
+      console.log(error);
+
       toast.error("Something is wrong");
     }
     e.target.reset();
@@ -324,23 +394,68 @@ const PersonalInfo = () => {
                     }}
                   />
                 </div>
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <label htmlFor="Father Name">Father Name</label>
+                  <input
+                    placeholder="Your Father Name *"
+                    type="text"
+                    className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
+                    name="fatherName"
+                    required
+                    defaultValue={singleUser?.fatherName}
+                    style={{
+                      height: "45px",
+                      padding: "0px 10px",
+                    }}
+                  />
+                </div> */}
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <label htmlFor="Mother Name">Mother Name</label>
+                  <input
+                    placeholder="Your Mother Name *"
+                    type="text"
+                    className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
+                    name="motherName"
+                    required
+                    defaultValue={singleUser?.motherName}
+                    style={{
+                      height: "45px",
+                      padding: "0px 10px",
+                    }}
+                  />
+                </div> */}
 
-                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Email">Email</label>
                   <input
                     type="email"
-                    placeholder="Email *"
+                    placeholder="Email"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="email"
-                    required
-                    disabled
                     defaultValue={singleUser ? singleUser.email : ""}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
                   />
-                </div>
+                </div> */}
+
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <label htmlFor="Gender">Gender</label>
+                  <select
+                    className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
+                    style={{
+                      height: "45px",
+                      padding: "0px 10px",
+                    }}
+                    defaultValue={singleUser?.gender}
+                    name="gender"
+                    required
+                  >
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                  </select>
+                </div> */}
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Phone Number">Mobile Number</label>
                   <input
@@ -358,6 +473,32 @@ const PersonalInfo = () => {
                   />
                 </div>
 
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <label htmlFor="Birth Day">Birth Day</label>
+           
+                  <DatePicker
+                    selected={new Date(birthDay)}
+                    dateFormat="dd/MM/yyyy"
+                    onChange={(date) => setBirthDay(date)}
+                    className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full h-[45px] ps-2"
+                  />
+                </div> */}
+
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <label htmlFor="Passport">Passport</label>
+                  <input
+                    type="text"
+                    placeholder="if you have Passport "
+                    className="text-black personal-info rounded 
+                  lg:w-[350px] md:w-[300px] sm:w-full"
+                    name="passport"
+                    defaultValue={singleUser?.passport}
+                    style={{
+                      height: "45px",
+                      padding: "0px 10px",
+                    }}
+                  />
+                </div> */}
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Address">Address</label>
 
@@ -373,6 +514,19 @@ const PersonalInfo = () => {
                       padding: "0px 10px",
                     }}
                   />
+                  {/* <textarea
+                    placeholder="Details Address *"
+                    className="text-black personal-info rounded 
+                  w-full"
+                    name="address"
+                    defaultValue={singleUser ? singleUser.singleUserAddress : ""}
+                    cols="20"
+                    rows="2"
+                    maxLength={100}
+                    style={{
+                      padding: "2px 10px",
+                    }}
+                  /> */}
                 </div>
 
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
@@ -418,6 +572,22 @@ const PersonalInfo = () => {
                     required
                   />
                 </div>
+
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <label htmlFor="">Upload</label>
+                  <input
+                    multiple
+                    onChange={(e) => {
+                      setImage(e.target.files);
+                    }}
+                    type="file"
+                    className=" personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full py-2 px-2"
+                    required={singleUser?.cardImage ? false : true}
+                    name="image"
+                    style={{ height: "45px" }}
+                    id=""
+                  />
+                </div> */}
               </div>
             </div>
 
@@ -475,7 +645,81 @@ const PersonalInfo = () => {
                 </div>
               </div>
             </div>
+            {/* <div>
+              <p className="text-black flex justify-left mt-5 font-bold">
+                Gardian Verification
+              </p>
+            </div>
 
+            <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-x-36 gap-y-3 mt-5">
+              <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                <select className="personal-info lg:w-[350px] md:w-[300px] sm:w-full h-[45px] rounded">
+                  <option>National Id Card</option>
+                  <option>Passport</option>
+                  <option>Driving Licence</option>
+                  <option>Birth Certificate</option>
+                </select>
+              </div>
+              <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                <input
+                  multiple
+                  onChange={(e) => {
+                    setGardianImg(e.target.files);
+                  }}
+                  type="file"
+                  className=" personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full px-2 py-2"
+                  required={singleUser?.gardianImg ? false : true}
+                  name="gardianImg"
+                  id=""
+                  style={{ height: "45px" }}
+                />
+              </div>
+            </div> */}
+
+            {/* Employment details*/}
+            {/* <div>
+              <div className="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-x-36  mt-5">
+                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <p className="text-black flex justify-left mt-5 font-bold">
+                    Employment details
+                  </p>
+                  <select
+                    name="employeeStatus"
+                    className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full mt-2"
+                    style={{
+                      height: "45px",
+                      padding: "0px 10px",
+                    }}
+                    defaultValue={singleUser?.employmentStatus?.workAs}
+                  >
+                    <option>Student</option>
+                    <option>Job</option>
+                    <option>Business</option>
+                    <option>UnEmpolyee</option>
+                  </select>
+                </div>
+                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                  <p className="text-black flex justify-left mt-5 font-bold">
+                    Income Range
+                  </p>
+                  <select
+                    name="emplyeeIncome"
+                    className="mt-2 text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
+                    style={{
+                      height: "45px",
+                      padding: "0px 10px",
+                    }}
+                    defaultValue={singleUser?.employmentStatus?.monthlyIncome}
+                  >
+                    <option>0-10000</option>
+                    <option>10001-20000</option>
+                    <option>20001-30000</option>
+                    <option>30001-40000</option>
+                    <option>Upto 500000+</option>
+                  </select>
+                </div>
+              </div>
+            </div> */}
             <div>
               <p className="text-black flex justify-left mt-5 font-bold">
                 Arrival information
@@ -815,7 +1059,55 @@ const PersonalInfo = () => {
                     </div>
                   </div>
                 </div>
+                {/* <hr className="my-1 ml-5 text-black mr-5" /> */}
+                {/* <div className="md:flex mx-5  mt-1 mb-2 total-area relative">
+                <div>
+                  <input
+                    className="sm:px-10 md:px-12"
+                    type="text"
+                    style={{ height: "27px" }}
+                    placeholder="Pormo Code"
+                    disabled
+                  />
+                  <div className="absolute top-2 left-3">
+                    <img src={promoIcon} alt="" />
+                  </div>
+                </div>
+                <div className="sm:flex sm:justify-center md:mt-0 sm:mt-3">
+                  <button
+                    style={{
+                      border: "1px solid #399",
+                      backgroundColor: "#35B0A7 ",
+                      color: "white",
+                      borderRadius: "0px 2px 2px 0px",
+                      padding: "1px 10px",
+                    }}
+                    disabled
+                  >
+                    Confirm
+                  </button>
+                </div>
+              </div> */}
 
+                {/* <div className="text-black font-bold text-lg pr-5">
+              <div className="flex justify-between ">
+                <p className="ml-16">Sub-Total</p>
+                <p>BDT {bookingItem?.subTotal}</p>
+              </div>
+              <div className="flex justify-between">
+                <p className="ml-16">Promo Code</p>
+                <p> - BDT {bookingItem?.promoCodeDiscount}</p>
+              </div>
+              <div className="flex justify-between">
+                <p className="ml-16">VAT & TAX</p>
+                <p> + BDT {bookingItem?.vatTax}</p>
+              </div>
+              <hr className="mt-3 ml-5 text-black" />
+              <div className="flex justify-between mt-2">
+                <p className="ml-16">Total Amount</p>
+                <p>BDT {bookingItem?.totalAmount}</p>
+              </div>
+            </div> */}
                 <div className="text-black text-sm pr-5 mt-5">
                   <div className="flex justify-between ">
                     <div className="ml-16 flex items-center">
@@ -1201,6 +1493,17 @@ const PersonalInfo = () => {
                   ) : (
                     ""
                   )}
+                  {/* {promoCodeCheck ? (
+                <div className="flex justify-between">
+                  <div className="ml-16 flex items-center">
+                    <p>Promo Code</p>
+               
+                  </div>
+                  <p> - BDT {promoCodeDiscount}</p>
+                </div>
+              ) : (
+                ""
+              )} */}
 
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
@@ -1440,6 +1743,11 @@ const PersonalInfo = () => {
             </div>
           </div>
         )}
+
+        {/* <Toaster
+          containerStyle={{ top: 300 }}
+          toastOptions={{ position: "top-center" }}
+        ></Toaster> */}
       </form>
     </div>
   );
