@@ -10,6 +10,11 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print", "sweetalert2"], // Ensure this dependency is pre-bundled
   },
+  build: {
+    rollupOptions: {
+      external: ["sweetalert2"], // Remove this line
+    },
+  },
   // server: {
   //   proxy: {
   //     "/api": {
