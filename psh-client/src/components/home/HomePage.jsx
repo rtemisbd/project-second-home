@@ -63,7 +63,7 @@ export default function HomePage() {
   const getRandomData = () => {
     const shuffledData = [...data];
 
-    for (let i = shuffledData.length - 1; i > 0; i--) {
+    for (let i = shuffledData?.length - 1; i > 0; i--) {
       const random = Math.floor(Math.random() * (i + 1));
       [shuffledData[i], shuffledData[random]] = [
         shuffledData[random],
@@ -81,7 +81,7 @@ export default function HomePage() {
   }, [activeTab]);
 
   useEffect(() => {
-    if (data.length > 0) {
+    if (data?.length > 0) {
       getRandomData();
       setIsLoaded(true);
     }

@@ -108,7 +108,6 @@ const UserAuthentication = () => {
 
     const user = loginUser(phone, password);
     if (user) {
-      console.log(user);
       return navigate(location?.state || "/");
     }
   };

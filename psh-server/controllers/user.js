@@ -20,10 +20,10 @@ export const createUser = async (req, res) => {
       photos,
       branch: branchId,
     } = req.body;
-    const existingUser = await User.findOne({ email });
+
     const existingMobile = await User.findOne({ phone });
 
-    if (existingUser || existingMobile) {
+    if (existingMobile) {
       return res.status(400).json({ message: "User already exists" });
     }
 
@@ -73,18 +73,12 @@ export const createUser = async (req, res) => {
 
 export const sendOtp = async (req, res, next) => {
   try {
-    const { email, customerOtp, phone } = req.body;
+    const { customerOtp, phone } = req.body;
 
     // Find the user by email and populate the branch field
-    const user = await User.findOne({ email });
     const phoneNumberCheck = await User.findOne({ phone });
 
-    if (user) {
-      return res.status(400).json({
-        status: "Failed",
-        message: "Sorry! This Email Already Exist",
-      });
-    } else if (phoneNumberCheck) {
+    if (phoneNumberCheck) {
       return res.status(400).json({
         status: "Failed",
         message: "Sorry! This Number Already Exist",
