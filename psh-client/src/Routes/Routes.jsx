@@ -8,7 +8,6 @@ import Contact from "../pages/Contact/Contact";
 import About from "../pages/About/About";
 import SignIn from "../pages/SignUp/SignIn";
 import Room from "../pages/Details/Room";
-import Checkout from "../pages/Checkout/Checkout";
 
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
@@ -233,21 +232,6 @@ export const router = createBrowserRouter([
       {
         path: "/profile",
         element: <Profile></Profile>,
-      },
-    ],
-  },
-  {
-    path: "/checkout",
-    element: (
-      <PrivateRoute>
-        <Checkout></Checkout>
-      </PrivateRoute>
-    ),
-
-    children: [
-      {
-        path: "/checkout",
-        element: <Checkout></Checkout>,
       },
     ],
   },
