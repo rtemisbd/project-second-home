@@ -2,8 +2,6 @@ import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import React, { useRef, useContext } from "react";
 import { Link } from "react-router-dom";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
@@ -13,7 +11,6 @@ import LoadingState from "../LoadingState/LoadingState";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const PartnerModal = ({ handleOpen }) => {
-  const MySwal = withReactContent(Swal);
   const dispatch = useDispatch();
   const formRef = useRef(null);
   const { user } = useContext(AuthContext);

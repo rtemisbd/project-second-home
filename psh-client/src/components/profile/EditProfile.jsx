@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import { Toaster, toast } from "react-hot-toast";
 
 import { AuthContext } from "../../contexts/UserProvider";
@@ -10,7 +9,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 function EditProfile() {
   const { user } = useContext(AuthContext);
-  const MySwal = withReactContent(Swal);
+
   const [image, setImage] = useState([]);
   const [files, setFiles] = useState("");
 
@@ -109,12 +108,7 @@ function EditProfile() {
                 finalUserData
               );
               localStorage.setItem("user", JSON.stringify(finalUserData));
-              MySwal.fire({
-                icon: "success",
-                title: "User Update successfully done",
-                showConfirmButton: false,
-                timer: 1500,
-              });
+              toast.success("User Update successfully done");
             } catch (error) {
               console.log(error);
             }
@@ -126,12 +120,7 @@ function EditProfile() {
                 userUpdate
               );
               localStorage.setItem("user", JSON.stringify(userUpdate));
-              MySwal.fire({
-                icon: "success",
-                title: "User Update successfully done",
-                showConfirmButton: false,
-                timer: 1500,
-              });
+              toast.success("User Update successfully done");
             } catch (error) {
               console.log(error);
             }
@@ -160,12 +149,7 @@ function EditProfile() {
         };
         await axios.patch(`${serverBaseUrl}/users/${user?._id}`, product);
 
-        MySwal.fire({
-          icon: "success",
-          title: "User Update successfully done",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        toast.success("User Update successfully done");
       } catch (error) {
         console.log(error);
       }

@@ -1,13 +1,11 @@
 import React, { useState } from "react";
 import { Button, Input } from "@material-tailwind/react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+
 import toast, { Toaster } from "react-hot-toast";
 
 import "./Referral.css";
 
 const Referral = () => {
-  const MySwal = withReactContent(Swal);
   const [inviteLink, setInviteLink] = useState(
     "https://www.pshbd.com.com/user/ref/12535"
   ); // State to store invite link

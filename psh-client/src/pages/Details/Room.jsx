@@ -11,8 +11,7 @@ import { AiFillStar } from "react-icons/ai";
 import { useState } from "react";
 import Slider from "react-slick";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import axios from "axios";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { IoCallOutline } from "react-icons/io5";
@@ -40,6 +39,7 @@ import RentVisitModal from "./RentVisitModal";
 import Skeleton from "react-loading-skeleton";
 import CardSkeleton from "../../components/CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import toast from "react-hot-toast";
 
 const Room = () => {
   const { id } = useParams();
@@ -135,7 +135,7 @@ const Room = () => {
     (item) => item.status === "active"
   );
   const propertyId = data?._id;
-  const MySwal = withReactContent(Swal);
+
   const { data: wishlist, reFetch: wishlistRefetch } = UseFetch(`wishlist`);
 
   const handleSubmit = async (event) => {
@@ -150,7 +150,7 @@ const Room = () => {
       // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
-      MySwal.fire("Already Added!");
+      toast.error("Already Added!");
     }
   };
 
@@ -178,7 +178,7 @@ const Room = () => {
       // MySwal.fire("Successfullt Remove ! wishlisted");
       wishlistRefetch();
     } catch (err) {
-      MySwal.fire("Wrong!");
+      toast.error("Wrong!");
     }
   };
   const [detailsShow, setDetailsShow] = useState(false);

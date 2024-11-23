@@ -1,7 +1,6 @@
 import React, { useContext, useState } from "react";
 import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import {
   Accordion,
   AccordionHeader,
@@ -17,8 +16,6 @@ function Setting() {
   const handleOpen = (value) => setOpen(open === value ? 0 : value);
   const { user } = useContext(AuthContext);
 
-  const MySwal = withReactContent(Swal);
-
   const handlePasswordUpdate = async (e) => {
     e.preventDefault();
     const currentPassword = e.target.currentPassword.value;
@@ -29,11 +26,8 @@ function Setting() {
 
     // Check if the new password matches the confirmation
     if (newPassword !== confirmNewPassword) {
-      MySwal.fire({
-        icon: "error",
-        title: "Passwords do not match",
-        text: "Please make sure the new passwords match.",
-      });
+      toast.success("Please make sure the new passwords match.");
+
       return;
     }
 
@@ -47,21 +41,12 @@ function Setting() {
         email,
       });
 
-      MySwal.fire({
-        icon: "success",
-        title: "Password updated successfully",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+      toast.success("Password updated successfully");
 
       // Clear the form fields
       e.target.reset();
     } catch (error) {
-      MySwal.fire({
-        icon: "error",
-        title: "Password update failed",
-        text: "Please check your old password and try again.",
-      });
+      toast.success("Please check your old password and try again.");
     }
   };
   return (

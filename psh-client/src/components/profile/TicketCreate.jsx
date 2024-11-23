@@ -1,19 +1,19 @@
 import { Input, Radio } from "@material-tailwind/react";
 import React, { useState, useRef, useEffect, useContext } from "react";
-import Swal from "sweetalert2";
+
 import axios from "axios";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
-import withReactContent from "sweetalert2-react-content";
 
 import { AuthContext } from "../../contexts/UserProvider";
 import "./Ticket.css";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import toast from "react-hot-toast";
 
 const TicketCreate = ({ handleOpen, open }) => {
   const [category, setCategory] = useState("my-room");
   const { user } = useContext(AuthContext);
-  const MySwal = withReactContent(Swal);
+
   const [branch, SetBranch] = useState([]);
   const [selectedSubCategory, setSelectedSubCategory] = useState(null);
 
@@ -51,7 +51,8 @@ const TicketCreate = ({ handleOpen, open }) => {
       };
 
       await axios.post(`${serverBaseUrl}/issue`, product);
-      MySwal.fire("Good job!", "successfully added", "success");
+
+      toast.success("successfully added");
       formRef.current.reset();
     } catch (err) {
       // MySwal.fire("Something Error Found.", "warning");

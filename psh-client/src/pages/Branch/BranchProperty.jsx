@@ -6,8 +6,7 @@ import {
   CardFooter,
   Typography,
 } from "@material-tailwind/react";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import axios from "axios";
 import { Link } from "react-router-dom";
 
@@ -17,6 +16,7 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import { AuthContext } from "../../contexts/UserProvider";
 import UseFetch from "../../hooks/useFetch";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import toast from "react-hot-toast";
 
 const BranchProperty = ({ item, branchData }) => {
   const { user } = useContext(AuthContext);
@@ -62,7 +62,7 @@ const BranchProperty = ({ item, branchData }) => {
     }
   }
   const propertyId = data?._id;
-  const MySwal = withReactContent(Swal);
+
   const { data: wishlist, reFetch: wishlistRefetch } = UseFetch(`wishlist`);
 
   const handleSubmit = async (event) => {
@@ -74,10 +74,9 @@ const BranchProperty = ({ item, branchData }) => {
         email,
       };
       await axios.post(`${serverBaseUrl}/wishlist`, product);
-      // MySwal.fire("Thanks ! wishlisted");
       wishlistRefetch();
     } catch (err) {
-      MySwal.fire("Already Added!");
+      toast.error("Already Added!");
     }
   };
 
@@ -104,7 +103,7 @@ const BranchProperty = ({ item, branchData }) => {
       // MySwal.fire("Successfullt Remove ! wishlisted");
       wishlistRefetch();
     } catch (err) {
-      MySwal.fire("Wrong!");
+      toast.error("Wrong!");
     }
   };
   return (

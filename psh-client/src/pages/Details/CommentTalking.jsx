@@ -6,12 +6,11 @@ import {
 } from "@material-tailwind/react";
 import React from "react";
 import { useRef } from "react";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import toast from "react-hot-toast";
 
 const CommentTalking = () => {
-  const MySwal = withReactContent(Swal);
   const formRef = useRef(null);
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -27,10 +26,10 @@ const CommentTalking = () => {
         userName,
       };
       await axios.post(`${serverBaseUrl}/review`, product);
-      MySwal.fire("Good job!", "successfully added", "success");
+      toast.success("successfully added");
       formRef.current.reset();
     } catch (err) {
-      MySwal.fire("Something Error Found.", "warning");
+      toast.error("Something Error Found");
     }
   };
   const handleReply = async (reviewId, replyBody) => {
@@ -39,7 +38,7 @@ const CommentTalking = () => {
         body: replyBody,
         userName: userName,
       });
-      MySwal.fire("Good job!", "successfully added reply", "success");
+      toast.success("Good job!", "successfully added reply", "success");
       formRef.current.reset();
     } catch (err) {
       console.log("Error adding reply:", err);

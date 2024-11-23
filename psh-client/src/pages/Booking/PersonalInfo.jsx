@@ -1,11 +1,10 @@
 import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import { Tooltip, Typography } from "@material-tailwind/react";
 import { FaArrowLeft } from "react-icons/fa";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 
 import cashImg from "../../assets/img/Cash-1.png";
@@ -45,8 +44,6 @@ const PersonalInfo = () => {
   }
 
   //cart
-
-  const MySwal = withReactContent(Swal);
 
   const [showMobile, setShowMobile] = useState(true);
   const [showPaymentArrive, setShowPaymentArrive] = useState(false);
@@ -297,12 +294,8 @@ const PersonalInfo = () => {
       dispatch(placeLoadingShow(true));
 
       await axios.post(`${serverBaseUrl}/order`, formData);
-      MySwal.fire({
-        icon: "success",
-        title: "Booking successfully done",
-        showConfirmButton: false,
-        timer: 1500,
-      });
+
+      toast.success("Booking successfully done");
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
@@ -1744,10 +1737,10 @@ const PersonalInfo = () => {
           </div>
         )}
 
-        {/* <Toaster
+        <Toaster
           containerStyle={{ top: 300 }}
           toastOptions={{ position: "top-center" }}
-        ></Toaster> */}
+        ></Toaster>
       </form>
     </div>
   );

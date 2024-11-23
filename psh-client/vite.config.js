@@ -1,5 +1,4 @@
 import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react-swc";
 import pluginRewriteAll from "vite-plugin-rewrite-all";
 
 export default defineConfig({
@@ -10,11 +9,7 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print"], // Ensure this dependency is pre-bundled
   },
-  build: {
-    rollupOptions: {
-      external: ["sweetalert2"],
-    },
-  },
+
   // server: {
   //   proxy: {
   //     "/api": {

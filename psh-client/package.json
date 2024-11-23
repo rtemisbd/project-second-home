@@ -44,7 +44,6 @@
     "react-slider": "^2.0.6",
     "react-spinners": "^0.13.8",
     "react-star-ratings": "^2.3.0",
-    "react-sweetalert2": "^0.5.2",
     "react-to-pdf": "^1.0.1",
     "react-to-print": "^2.14.13",
     "redux": "^4.2.1",
@@ -52,7 +51,6 @@
     "redux-logger": "^3.0.6",
     "redux-thunk": "^2.4.2",
     "slick-carousel": "^1.8.1",
-    "sweetalert2-react-content": "^5.0.7",
     "use-react-countries": "^1.1.0",
     "yarn": "^1.22.19"
   },

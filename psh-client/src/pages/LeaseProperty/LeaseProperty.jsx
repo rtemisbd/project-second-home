@@ -1,8 +1,7 @@
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import React, { useRef, useContext } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
+
 import { Link } from "react-router-dom";
 
 import UseFetch from "../../hooks/useFetch";
@@ -10,7 +9,6 @@ import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const LeaseProperty = () => {
-  const MySwal = withReactContent(Swal);
   const formRef = useRef(null);
   const { user } = useContext(AuthContext);
   const { data } = UseFetch(`leaseproperty`);
@@ -50,10 +48,10 @@ const LeaseProperty = () => {
       };
 
       await axios.post(`${serverBaseUrl}/leaseproperty`, product);
-      MySwal.fire("Good job!", "successfully added", "success");
+      toast.success("successfully added");
       formRef.current.reset();
     } catch (err) {
-      MySwal.fire("Something Error Found.", "warning");
+      toast.error("Something Error Found");
     }
   };
   return (

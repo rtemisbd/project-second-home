@@ -4,8 +4,7 @@ import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { useContext } from "react";
 import { useRef } from "react";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import axios from "axios";
 import StarRatings from "react-star-ratings";
 import { Link, useNavigate } from "react-router-dom";
@@ -34,7 +33,7 @@ export function UserBooking({
   const handleCategorySelect = (category) => {
     setSelectedCategory(category);
   };
-  const MySwal = withReactContent(Swal);
+
   const propertyId =
     endOrder?.bookingInfo?.roomType === "Shared Room"
       ? endOrder?.bookingInfo?.roomId

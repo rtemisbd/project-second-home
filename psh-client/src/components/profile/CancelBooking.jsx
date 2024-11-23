@@ -10,8 +10,7 @@ import {
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { subDays } from "date-fns";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import axios from "axios";
 import DatePicker from "react-datepicker";
 
@@ -33,8 +32,6 @@ export function CancelBooking({
   const [cancelDate, setCancelDate] = useState(new Date());
   const { user } = useContext(AuthContext);
   const userName = user?.firstName;
-
-  const MySwal = withReactContent(Swal);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
