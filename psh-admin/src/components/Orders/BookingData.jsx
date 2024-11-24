@@ -31,7 +31,6 @@ const BookingData = ({
   booking,
   index,
   refetch,
-  transactions,
   extraCharge,
   isLoading,
   page,
@@ -115,7 +114,7 @@ const BookingData = ({
           <p className="fw-bold">{booking?.bookingInfo?.branch?.name}</p>
         </td>
         <td>
-          <p>#{booking?.userId?.slice(-5).toUpperCase()}</p>
+          <p>{booking?.phone}</p>
           <p>{booking?.fullName}</p>
         </td>
         <td>
@@ -375,7 +374,6 @@ const BookingData = ({
       {bookingDetails && (
         <SeeOrderDetails
           data={bookingDetails}
-          transactions={transactions}
           showDetails={showDetails}
           setShowDetails={setShowDetails}
         />

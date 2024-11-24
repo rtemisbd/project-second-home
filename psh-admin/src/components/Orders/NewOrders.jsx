@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
-import useTransaction from "../../hooks/useTransaction";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import img from "../../img/new/style.png";
 
@@ -12,15 +11,12 @@ import { authKey } from "../../utils/storageKey";
 import { baseUrl } from "../../utils/getBaseURL";
 import { MdRefresh } from "react-icons/md";
 import Pagination from "../Pagination/Pagination";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 
 const NewOrders = () => {
-  const dispatch = useDispatch();
   const { page, size } = useSelector((state) => state.pagination);
 
-  const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
-  console.log(transactions);
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -38,7 +34,7 @@ const NewOrders = () => {
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [allBranch, setAllBranch] = useState([]);
-  const [allBookings, setAllBookings] = useState([]);
+
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
@@ -96,9 +92,7 @@ const NewOrders = () => {
 
         const data = await response.json();
         setData(data.data);
-        setAllBookings(
-          data?.orders?.filter((booking) => booking?.status === "Approved")
-        );
+
         setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
@@ -116,7 +110,6 @@ const NewOrders = () => {
 
   // Get All Branch
   useEffect(() => {
-    // fetch(`https://api.psh.com.bd/api/branch`)
     fetch(`${baseUrl}/api/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
@@ -148,7 +141,7 @@ const NewOrders = () => {
     const value = e.target.value;
     setUnknownQuery(value);
 
-    if (!isNaN(Number(value) && value.length == 11)) {
+    if (!isNaN(Number(value) && value.length === 11)) {
       setFilteredPhone(value);
     }
     //  else {
@@ -480,7 +473,6 @@ const NewOrders = () => {
                     data={data?.orders}
                     page={page}
                     isLoading={isLoading}
-                    transactions={transactions}
                     refetch={refetch}
                     extraCharge={extraCharge}
                     size={size}

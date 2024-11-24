@@ -9,7 +9,7 @@ const BookingsTable = ({
   data,
   page,
   refetch,
-  transactions,
+
   extraCharge,
   isLoading,
   size,
@@ -26,7 +26,7 @@ const BookingsTable = ({
             <th>No.</th>
             <th>Date & Time</th>
             <th>Booking Id</th>
-            <th>User Id</th>
+            <th>User</th>
             <th>Room / Seat No</th>
             <th>Total Tk</th>
             <th>Discount</th>
@@ -50,7 +50,6 @@ const BookingsTable = ({
               refetch={refetch}
               page={page}
               extraCharge={extraCharge}
-              transactions={transactions}
               isLoading={isLoading}
               size={size}
             />

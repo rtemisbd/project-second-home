@@ -6,7 +6,6 @@ import {
   View,
   StyleSheet,
   Image,
-  BlobProvider,
 } from "@react-pdf/renderer";
 
 import pshLogo from "../../img/home/logo.png";

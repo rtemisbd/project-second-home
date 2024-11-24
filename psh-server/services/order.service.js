@@ -152,6 +152,33 @@ const getOrderFromDB = async (queries) => {
             },
           },
           { $unwind: "$branchDetails" },
+          // get transaction by order Id
+          {
+            $lookup: {
+              from: "transactions",
+              let: { orderId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$orderId", "$$orderId"] },
+                        { $eq: ["$acceptableStatus", "Accepted"] },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: null,
+                    totalReceiveTk: { $sum: "$receivedTk" },
+                    allProperties: { $push: "$$ROOT" },
+                  },
+                },
+              ],
+              as: "transactions",
+            },
+          },
         ],
         totalCounts: [
           {
