@@ -2,20 +2,18 @@ import React, { useEffect, useState } from "react";
 import img from "../../img/college/Icon material-delete.png";
 import img3 from "../../img/college/Icon feather-edit.png";
 import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
+
 import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
 import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
-import Category from "../../pages/edit/Category";
+
 import { Link } from "react-router-dom";
 import Banner from "../../pages/edit/Banner";
-import jsPDF from "jspdf";
+
 import "jspdf-autotable";
+import { toast, ToastContainer } from "react-toastify";
 
 const Banner_list = () => {
-  const MySwal = withReactContent(Swal);
-
   //sub stream
   const [data, setData] = useState([]);
 
@@ -130,8 +128,7 @@ const Banner_list = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
-          MySwal.fire("Good job!", "successfully deleted", "success");
+          toast.success("Successfully deleted");
           if (data.deletedCount === 1) {
             const remainItem = products.filter((item) => item._id !== id);
             setProducts(remainItem);
@@ -194,6 +191,7 @@ const Banner_list = () => {
           </div>
         </section>
       </div>
+      <ToastContainer className="toast-position" position="top-center" />
     </div>
   );
 };

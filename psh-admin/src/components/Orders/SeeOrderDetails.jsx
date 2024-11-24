@@ -1,7 +1,5 @@
-import axios from "axios";
 import React, { useRef } from "react";
-import { useState } from "react";
-import { useEffect } from "react";
+
 import "./styles/SeeOrderDetails.css";
 import { Table } from "react-bootstrap";
 
@@ -12,66 +10,15 @@ import DownlaodInvoice from "../Invoice/DownlaodInvoice";
 import ImageViewer from "./ImageViewer";
 import { formatDate } from "../../utils/dateConvert";
 
-const SeeOrderDetails = ({
-  transactions,
-  data,
-  showDetails,
-  setShowDetails,
-  // totalReceiveAmount,
-  // setTotalReceiveAmount,
-}) => {
-  // console.log(data?.bookingInfo);
+const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const ref = useRef();
 
   const handleClose = () => setShowDetails(false);
 
-  const [branchs, SetBranchs] = useState([]);
-  const [singleBranch, setSingleBranch] = useState({});
-  const [shareRoomBranch, setShareRoomBranch] = useState({});
+  const reversTransaction = data?.transactions?.[0]?.allProperties
+    ?.slice()
+    .reverse();
 
-  const findOrderTranstion = transactions?.filter(
-    (transaction) => transaction?.orderId === data?._id
-  );
-
-  let mytotalReceiveTk = 0;
-
-  let totalTransaction = [];
-
-  for (const item of findOrderTranstion) {
-    mytotalReceiveTk += item?.receivedTk;
-
-    totalTransaction.push({
-      totalReceive: mytotalReceiveTk,
-      dueAmount: data?.bookingInfo?.dueAmount - mytotalReceiveTk,
-      _id: item?._id,
-    });
-    // setTotalReceiveAmount(totalTransaction);
-  }
-
-  const reversTransaction = findOrderTranstion?.slice().reverse();
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
-        SetBranchs(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-    const branch = branchs.find(
-      (branch) => branch._id === data?.bookingInfo?.data?.branch
-    );
-    setSingleBranch(branch);
-    const shareRoomBranch = branchs.find(
-      (branch) => branch._id === data?.bookingInfo?.branch
-    );
-    setShareRoomBranch(shareRoomBranch);
-  }, [branchs, data?.bookingInfo?.data?.branch, data?.bookingInfo?.branch]);
-
-  // const formattedDate = new Date(data?.createdAt).toLocaleString();
   const formattedTime = new Date(data?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
@@ -485,11 +432,10 @@ const SeeOrderDetails = ({
             <Table striped responsive bordered>
               <thead>
                 <tr>
-                  <th>Date</th>
-                  <th>Booking Id</th>
-                  <th>Branch</th>
+                  <th>Payment Date</th>
+
                   <th>Full Name</th>
-                  <th>Email</th>
+
                   <th>Phone</th>
                   <th>Receive Amount</th>
                   <th>Payment Type</th>
@@ -505,15 +451,10 @@ const SeeOrderDetails = ({
 
                   return (
                     <tr key={transaction._id}>
-                      <td>{transaction?.paymentDate.split("T")[0]}</td>
+                      <td>{formatDate(transaction?.paymentDate)}</td>
 
-                      <td className="fw-bold">
-                        #{transaction?.orderId.slice(19)}
-                      </td>
-                      <td className="fw-bold">{transaction?.branch?.name}</td>
                       <td className="fw-bold">{transaction?.userName}</td>
 
-                      <td className="fw-bold">{transaction?.userEmail}</td>
                       <td className="fw-bold">{transaction?.userPhone}</td>
                       <td className="fw-bold" style={{ color: "green" }}>
                         Tk {transaction?.receivedTk?.toLocaleString()}
