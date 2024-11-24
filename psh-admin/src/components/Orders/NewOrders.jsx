@@ -20,6 +20,8 @@ const NewOrders = () => {
 
   const [transactions] = useTransaction();
   const [extraCharge] = useExtraCharge();
+  console.log(transactions);
+
   const [isLoading, setIsLoading] = useState(false);
 
   const [fromDate, setFromDate] = useState("");
