@@ -1,5 +1,4 @@
 import React from "react";
-import { Splide, SplideSlide } from "@splidejs/react-splide";
 
 import UseFetch from "../../hooks/useFetch";
 

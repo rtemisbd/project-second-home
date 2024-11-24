@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from "react";
-import "@splidejs/react-splide/css";
-import "@splidejs/react-splide/css/skyblue";
-import "@splidejs/react-splide/css/sea-green";
-import "@splidejs/react-splide/css/core";
+// import "@splidejs/react-splide/css";
+// import "@splidejs/react-splide/css/skyblue";
+// import "@splidejs/react-splide/css/sea-green";
+// import "@splidejs/react-splide/css/core";
 import Slider from "react-slick";
 import { IoIosArrowForward } from "react-icons/io";
 import { Link } from "react-router-dom";
 
-import UseFetch from "../../hooks/useFetch";
 import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";

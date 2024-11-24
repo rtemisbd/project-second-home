@@ -15,6 +15,10 @@ import { useQuery } from "react-query";
 import "./styles/Recommended.css";
 import "./styles/SingleCard.css";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
+import "@splidejs/react-splide/css/skyblue";
+import "@splidejs/react-splide/css/sea-green";
+import "@splidejs/react-splide/css/core";
 
 import { propertySlider } from "../../helpers/utils/projectSlider";
 

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from "react";
-import "@splidejs/react-splide/css";
-import "@splidejs/react-splide/css/skyblue";
-import "@splidejs/react-splide/css/sea-green";
-import "@splidejs/react-splide/css/core";
+// import "@splidejs/react-splide/css";
+// import "@splidejs/react-splide/css/skyblue";
+// import "@splidejs/react-splide/css/sea-green";
+// import "@splidejs/react-splide/css/core";
 import { format } from "date-fns";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { AiFillHeart } from "react-icons/ai";
