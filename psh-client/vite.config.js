@@ -7,12 +7,7 @@ export default defineConfig({
     react(), // React plugin with SWC for fast builds
     pluginRewriteAll(), // Rewrite plugin for route handling
   ],
-  resolve: {
-    alias: {
-      // Alias for smoother imports, if needed
-      "@splidejs": "/node_modules/@splidejs",
-    },
-  },
+
   optimizeDeps: {
     include: ["react-to-print", "@splidejs/splide"],
   },
