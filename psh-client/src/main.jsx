@@ -14,7 +14,6 @@ import "react-datepicker/dist/react-datepicker.css";
 
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import "/node_modules/@splidejs/splide/dist/css/splide.min.css";
-import "./node_modules/@splidejs/splide/dist/css/splide.min.css";
 
 import "@splidejs/react-splide/css";
 import "@splidejs/splide/dist/css/splide.min.css";
