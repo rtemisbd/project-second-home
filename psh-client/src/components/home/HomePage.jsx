@@ -3,8 +3,6 @@ import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import Slider from "react-slick";
 import axios from "axios";
 
-import UseFetch from "../../hooks/useFetch";
-// import Header from "./Header";
 import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
@@ -13,6 +11,9 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useQuery } from "react-query";
+
+import "./styles/Recommended.css";
+import "./styles/SingleCard.css";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ export default function HomePage() {
   const { pathname } = useLocation();
 
   // Get Properties
-  const { refetch, loading, error } = useQuery(["propertyList"], async () => {
+  const { refetch, error } = useQuery(["propertyList"], async () => {
     try {
       const queryParams = new URLSearchParams({
         Featured,
@@ -59,7 +60,7 @@ export default function HomePage() {
     }
   });
 
-  // show Random index
+  // Show Random Data
   const getRandomData = () => {
     const shuffledData = [...data];
 
@@ -100,12 +101,13 @@ export default function HomePage() {
   };
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 4) {
+    if (lastSlideIndex === randomIndex?.length - 4) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
     }
   };
+
   useEffect(() => {
     refetch();
     getRandomData();
@@ -182,11 +184,9 @@ export default function HomePage() {
       },
     ],
   };
-
   return (
-    <div className="category-item ">
-      {/* <Header /> */}
-      <div className=" text-left mt-3">
+    <div className="category-item">
+      <div className="text-left mt-3">
         <Tabs value={activeTab} className=" ">
           <TabsHeader
             className="rounded-none border-b bg-transparent p-0 md:gap-x-5 sm:gap-x-4 "
@@ -222,9 +222,10 @@ export default function HomePage() {
           </TabsHeader>
         </Tabs>
       </div>
-      {/* card start */}
+
+      {/* Cards */}
       {data?.length ? (
-        <div className="mt-3 all_recommended slider_margin card-slider ">
+        <div className="all_recommended mt-4 slider_margin card-slider">
           <Slider {...settings}>
             {randomIndex?.map((item) => (
               <SingleCard key={item._id} item={item} />

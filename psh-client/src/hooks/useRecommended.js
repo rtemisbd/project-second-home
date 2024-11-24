@@ -12,6 +12,7 @@ const useRecommended = () => {
         setRecommended(data);
       });
   }, []);
+
   return recommended;
 };
 export default useRecommended;
