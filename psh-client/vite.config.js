@@ -10,7 +10,11 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print"], // Ensure this dependency is pre-bundled
   },
-
+  build: {
+    rollupOptions: {
+      external: ["@splidejs/splide/dist/css/splide.min.css"],
+    },
+  },
   // server: {
   //   proxy: {
   //     "/api": {
