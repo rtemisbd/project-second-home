@@ -1713,6 +1713,32 @@ const PersonalInfo = () => {
                   // disabled
                 />
               </div>
+              <div
+                style={{
+                  backgroundColor: "#FDF6B1",
+                  borderLeft: "4px solid #02625a",
+                  fontSize: "14px",
+                  color: "#02625a",
+                  fontWeight: "bolder",
+                }}
+                className="px-3 py-2"
+              >
+                <span
+                  style={{
+                    fontSize: "18px",
+                    color: "red",
+                  }}
+                >
+                  Attention :
+                </span>
+                <span>
+                  {" "}
+                  Please bring two{" "}
+                  <span className="text-black">Passport-Size Photos</span> and
+                  one copy of your <span className="text-black"> NID Card</span>{" "}
+                  at the time of check-in.
+                </span>
+              </div>
             </div>
           </div>
         </div>

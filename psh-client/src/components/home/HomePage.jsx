@@ -116,28 +116,32 @@ export default function HomePage() {
   const settings = {
     dots: false,
 
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    initialSlide: 0,
     afterChange: (index) => {
       setLastSlideIndex(index);
     },
-    adaptiveHeight: true,
     infinite: false,
     speed: 400,
-    arrows: randomIndex?.length > 4 ? true : false,
-    autoplay: false,
+    adaptiveHeight: true,
+    slidesToShow: 4,
+    touchThreshold: 100,
+    initialSlide: 0,
+    draggable: true, // Enable free dragging
     swipeToSlide: true,
+    className: `center mx-[-15px] `,
+    arrows: data?.length > 4 ? true : false,
+    autoplay: false,
+
     prevArrow: <SlickArrowLeft />,
     nextArrow: <SlickArrowRight />,
-    className: "mx-[-15px]",
+
     responsive: [
       {
         breakpoint: 1200,
         settings: {
           slidesToShow: 3,
-
+          slidesToScroll: 1,
           dots: false,
+          infinite: false,
 
           autoplaySpeed: 3000,
         },
@@ -146,34 +150,40 @@ export default function HomePage() {
         breakpoint: 800,
         settings: {
           slidesToShow: 2,
-
+          slidesToScroll: 1,
           initialSlide: 2,
-
-          autoplaySpeed: 3000,
+          infinite: false,
         },
       },
       {
         breakpoint: 640,
         settings: {
           className: `center ms-[-8px] ${
-            lastSlideIndex >= randomIndex?.length - 1 ? "only-forMobile" : ""
+            activeTab === ""
+              ? lastSlideIndex >= data?.length - 1
+                ? "only-forMobile"
+                : ""
+              : lastSlideIndex >= data?.length - 1
+              ? "only-forMobile"
+              : ""
           }`,
           afterChange: (index) => {
             setLastSlideIndex(index);
           },
           centerMode: true,
           slidesToShow: 1,
-          initialSlide: 1,
+
           infinite: false,
           arrows: false,
+
           speed: 400,
           cssEase: "ease-out",
+          draggable: true, // Enable free dragging
           swipeToSlide: true,
         },
       },
     ],
   };
-
   return (
     <div className="category-item">
       <div className="text-left mt-3">
@@ -215,7 +225,7 @@ export default function HomePage() {
 
       {/* Cards */}
       {data?.length ? (
-        <div className="mt-3 all_recommended slider_margin card-slider">
+        <div className="all_recommended mt-4 slider_margin card-slider">
           <Slider {...settings}>
             {randomIndex?.map((item) => (
               <SingleCard key={item._id} item={item} />
