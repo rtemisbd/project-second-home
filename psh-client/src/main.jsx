@@ -13,6 +13,7 @@ import "slick-carousel/slick/slick-theme.css";
 import "react-datepicker/dist/react-datepicker.css";
 
 import "@splidejs/splide/dist/css/themes/splide-default.min.css";
+
 import "@splidejs/react-splide/css";
 import "@splidejs/splide/dist/css/splide.min.css";
 

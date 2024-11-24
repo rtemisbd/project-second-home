@@ -1,6 +1,7 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+@import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 
 a {
   font-weight: 500;
