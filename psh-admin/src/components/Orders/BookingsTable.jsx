@@ -27,7 +27,7 @@ const BookingsTable = ({
             <th>Date & Time</th>
             <th>Booking Id</th>
             <th>User</th>
-            <th>Room / Seat No</th>
+            <th>R. / S. No</th>
             <th>Total Tk</th>
             <th>Discount</th>
             <th>Payable Tk</th>
