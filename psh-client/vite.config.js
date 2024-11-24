@@ -4,19 +4,22 @@ import pluginRewriteAll from "vite-plugin-rewrite-all";
 
 export default defineConfig({
   plugins: [
-    react(), // React plugin with SWC for faster builds
-    pluginRewriteAll(), // Rewrite plugin to handle routing issues
+    react(), // React plugin with SWC for fast builds
+    pluginRewriteAll(), // Rewrite plugin for route handling
   ],
-  optimizeDeps: {
-    include: [
-      "react-to-print", // Pre-bundling specific dependencies
-      "@splidejs/splide/dist/css/themes/splide-default.min.css", // Include Splide CSS
-    ],
+  resolve: {
+    alias: {
+      // Alias for smoother imports, if needed
+      "@splidejs": "/node_modules/@splidejs",
+    },
   },
+  optimizeDeps: {
+    include: ["react-to-print", "@splidejs/splide"],
+  },
+
   build: {
     rollupOptions: {
-      // Explicitly externalize Splide's CSS if needed
-      external: ["@splidejs/splide/dist/css/themes/splide-default.min.css"],
+      external: ["@splidejs/splide/dist/css/splide.min.css"],
     },
   },
 });
