@@ -292,7 +292,7 @@ const SearchBoxWithNav = () => {
                 <hr style={{ margin: "5px 0" }} />
                 <ul className="flex " style={{ marginTop: "23px" }}>
                   {category.map((categoryItem, index) => (
-                    <li>
+                    <li key={index}>
                       <span
                         className={`tab  ${
                           categoryValue === index ? "selected" : ""

@@ -12,10 +12,8 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "react-datepicker/dist/react-datepicker.css";
 
+import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import "@splidejs/react-splide/css";
-import "@splidejs/react-splide/css/skyblue";
-import "@splidejs/react-splide/css/sea-green";
-import "@splidejs/react-splide/css/core";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import { QueryClient, QueryClientProvider } from "react-query";

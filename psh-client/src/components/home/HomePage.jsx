@@ -14,6 +14,9 @@ import { useQuery } from "react-query";
 
 import "./styles/Recommended.css";
 import "./styles/SingleCard.css";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+
+import { propertySlider } from "../../helpers/utils/projectSlider";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -224,14 +227,22 @@ export default function HomePage() {
       </div>
 
       {/* Cards */}
-      {data?.length ? (
-        <div className="all_recommended mt-4 slider_margin card-slider">
-          <Slider {...settings}>
-            {randomIndex?.map((item) => (
-              <SingleCard key={item._id} item={item} />
-            ))}
-          </Slider>
-        </div>
+      {randomIndex?.length ? (
+        // <div className="all_recommended mt-4 slider_margin card-slider">
+        //   <Slider {...settings}>
+        //     {randomIndex?.map((item) => (
+        //       <SingleCard key={item._id} item={item} />
+        //     ))}
+        //   </Slider>
+        // </div>
+
+        <Splide options={propertySlider(randomIndex)}>
+          {randomIndex?.map((item) => (
+            <SplideSlide key={item?._id}>
+              <SingleCard item={item} />
+            </SplideSlide>
+          ))}
+        </Splide>
       ) : (
         <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-1 gap-x-5">
           <CardSkeleton cards={4} />

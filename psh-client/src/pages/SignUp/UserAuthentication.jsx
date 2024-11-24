@@ -10,6 +10,8 @@ import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { IoReturnUpBack } from "react-icons/io5";
+import { FaArrowRightLong } from "react-icons/fa6";
+import { IoIosArrowBack } from "react-icons/io";
 
 const UserAuthentication = () => {
   const dispatch = useDispatch();
@@ -215,9 +217,13 @@ const UserAuthentication = () => {
           </div>
         </div>
         <div className="w-full lg:w-[35%]  h-full ">
-          <div className="flex justify-end px-12 pt-6">
-            <button onClick={handleBack}>
-              <IoReturnUpBack size={36} color="#35B0A7" />
+          <div
+            className="flex justify-end px-12 pt-6 items-center"
+            onClick={handleBack}
+          >
+            <button className="bg-[#35b0a7] text-white px-5 py-2 rounded hover:underline flex items-center ">
+              <IoIosArrowBack size={15} className="text-white " />
+              Back
             </button>
           </div>
           <div className="flex items-center w-full ">

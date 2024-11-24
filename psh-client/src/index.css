@@ -265,6 +265,13 @@ button:focus-visible {
   }
 }
 
+.splide__arrow {
+  opacity: 0.5 !important;
+  margin: -30px -15px !important;
+}
+.splide__arrow:hover {
+  opacity: 0.7 !important;
+}
 /* @media (prefers-color-scheme: light) {
   :root {
     color: black;

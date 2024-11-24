@@ -8,7 +8,6 @@ export const getTransaction = catchAsync(async (req, res, next) => {
   const transactions = await transactionServices.getAllTransactionFromDB(
     req.query
   );
-  console.log(transactions);
 
   sendResponse(res, {
     statusCode: 200,
