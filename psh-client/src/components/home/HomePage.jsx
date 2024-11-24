@@ -3,8 +3,6 @@ import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import Slider from "react-slick";
 import axios from "axios";
 
-import UseFetch from "../../hooks/useFetch";
-// import Header from "./Header";
 import SingleCard from "./SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
@@ -13,6 +11,9 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { useQuery } from "react-query";
+
+import "./styles/Recommended.css";
+import "./styles/SingleCard.css";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -28,7 +29,7 @@ export default function HomePage() {
   const { pathname } = useLocation();
 
   // Get Properties
-  const { refetch, loading, error } = useQuery(["propertyList"], async () => {
+  const { refetch, error } = useQuery(["propertyList"], async () => {
     try {
       const queryParams = new URLSearchParams({
         Featured,
@@ -59,7 +60,7 @@ export default function HomePage() {
     }
   });
 
-  // show Random index
+  // Show Random Data
   const getRandomData = () => {
     const shuffledData = [...data];
 
@@ -100,12 +101,13 @@ export default function HomePage() {
   };
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 4) {
+    if (lastSlideIndex === randomIndex?.length - 4) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
     }
   };
+
   useEffect(() => {
     refetch();
     getRandomData();
@@ -114,32 +116,28 @@ export default function HomePage() {
   const settings = {
     dots: false,
 
+    slidesToShow: 4,
+    slidesToScroll: 1,
+    initialSlide: 0,
     afterChange: (index) => {
       setLastSlideIndex(index);
     },
+    adaptiveHeight: true,
     infinite: false,
     speed: 400,
-    adaptiveHeight: true,
-    slidesToShow: 4,
-    touchThreshold: 100,
-    initialSlide: 0,
-    draggable: true, // Enable free dragging
-    swipeToSlide: true,
-    className: `center mx-[-15px] `,
-    arrows: data?.length > 4 ? true : false,
+    arrows: randomIndex?.length > 4 ? true : false,
     autoplay: false,
-
+    swipeToSlide: true,
     prevArrow: <SlickArrowLeft />,
     nextArrow: <SlickArrowRight />,
-
+    className: "mx-[-15px]",
     responsive: [
       {
         breakpoint: 1200,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+
           dots: false,
-          infinite: false,
 
           autoplaySpeed: 3000,
         },
@@ -148,35 +146,28 @@ export default function HomePage() {
         breakpoint: 800,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1,
+
           initialSlide: 2,
-          infinite: false,
+
+          autoplaySpeed: 3000,
         },
       },
       {
         breakpoint: 640,
         settings: {
           className: `center ms-[-8px] ${
-            activeTab === ""
-              ? lastSlideIndex >= data?.length - 1
-                ? "only-forMobile"
-                : ""
-              : lastSlideIndex >= data?.length - 1
-              ? "only-forMobile"
-              : ""
+            lastSlideIndex >= randomIndex?.length - 1 ? "only-forMobile" : ""
           }`,
           afterChange: (index) => {
             setLastSlideIndex(index);
           },
           centerMode: true,
           slidesToShow: 1,
-
+          initialSlide: 1,
           infinite: false,
           arrows: false,
-
           speed: 400,
           cssEase: "ease-out",
-          draggable: true, // Enable free dragging
           swipeToSlide: true,
         },
       },
@@ -184,9 +175,8 @@ export default function HomePage() {
   };
 
   return (
-    <div className="category-item ">
-      {/* <Header /> */}
-      <div className=" text-left mt-3">
+    <div className="category-item">
+      <div className="text-left mt-3">
         <Tabs value={activeTab} className=" ">
           <TabsHeader
             className="rounded-none border-b bg-transparent p-0 md:gap-x-5 sm:gap-x-4 "
@@ -222,9 +212,10 @@ export default function HomePage() {
           </TabsHeader>
         </Tabs>
       </div>
-      {/* card start */}
+
+      {/* Cards */}
       {data?.length ? (
-        <div className="mt-3 all_recommended slider_margin card-slider ">
+        <div className="mt-3 all_recommended slider_margin card-slider">
           <Slider {...settings}>
             {randomIndex?.map((item) => (
               <SingleCard key={item._id} item={item} />

@@ -40,6 +40,7 @@ import Skeleton from "react-loading-skeleton";
 import CardSkeleton from "../../components/CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast from "react-hot-toast";
+import useRecommended from "../../hooks/useRecommended";
 
 const Room = () => {
   const { id } = useParams();
@@ -84,18 +85,18 @@ const Room = () => {
   }, []);
 
   const { data2 } = UseFetch(`review`);
+  console.log(data);
 
   const { data: facality } = UseFetch("facilityCategory");
 
   // Recomended Data
 
-  const { data: recomended } = UseFetch(`property/properties/recommended`);
-
+  const recomended = useRecommended();
   // find Published Recommended Property
   const publishedRecomended = recomended?.filter(
     (property) =>
-      property?.isPublished === "Published" &&
-      property?.category?.name === data?.category?.name
+      // property?.isPublished === "Published" &&
+      property?.categoryDetails?.name === data?.category?.name
   );
 
   const main = data2?.filter((pd) => pd.property === id);

@@ -9,6 +9,7 @@ import LoadingState from "../LoadingState/LoadingState";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import { IoReturnUpBack } from "react-icons/io5";
 
 const UserAuthentication = () => {
   const dispatch = useDispatch();
@@ -69,7 +70,12 @@ const UserAuthentication = () => {
       await registerUser(firstName, email, phone, password);
 
       // dispatch(placeLoadingShow(false));
-      navigate(location.state?.from || "/");
+      // navigate(location.state?.from || "/");
+      if (window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate("/");
+      }
       // localStorage.removeItem("otp");
     } else {
       return toast.error("Incorrect OTP. Please try again.");
@@ -108,7 +114,11 @@ const UserAuthentication = () => {
 
     const user = loginUser(phone, password);
     if (user) {
-      return navigate(location?.state || "/");
+      if (window.history.length > 1) {
+        navigate(-1);
+      } else {
+        navigate("/");
+      }
     }
   };
 
@@ -184,22 +194,35 @@ const UserAuthentication = () => {
     toast.success("Please Check Your Phone Number");
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      navigate(-1);
+    } else {
+      navigate("/");
+    }
+  };
+
   return (
-    <div className="relative h-[100vh]">
+    <div className="h-[100vh] relative">
       <div className="flex flex-col lg:flex-row md:shadow-xl">
         <div className="w-[65%] hidden lg:block">
           <div>
             <img
               src="https://i.ibb.co/VBhC76Y/Untitled-design-1.png"
               alt="pharmacy"
-              className="img-fluid h-[100vh] w-full  object-fill"
+              className="img-fluid h-[100vh] w-full object-cover"
             />
           </div>
         </div>
-        <div className="w-full lg:w-[35%]  md:h-[100vh] ">
-          <div className="flex items-center w-full min-h-[100vh]">
+        <div className="w-full lg:w-[35%]  h-full ">
+          <div className="flex justify-end px-12 pt-6">
+            <button onClick={handleBack}>
+              <IoReturnUpBack size={36} color="#35B0A7" />
+            </button>
+          </div>
+          <div className="flex items-center w-full ">
             <div className="w-full">
-              <div className="flex justify-center mt-2 ">
+              <div className="flex justify-center ">
                 <Link to={"/"}>
                   <img
                     src={"https://i.ibb.co/RNJjy5X/Layer-1.png"}
@@ -328,17 +351,17 @@ const UserAuthentication = () => {
               )}
               {showSignUp && (
                 <div>
-                  <h2 className="text-xl text-center mt-6 font-[600]">
+                  <h2 className="text-xl text-center mt-3 font-[600]">
                     Sign Up To Project Second Home!
                   </h2>
                   <form
                     onSubmit={handleSignUp}
-                    className="w-[90%] lg:w-[75%] mx-auto shadow-md px-6 lg:px-0 lg:shadow-none mt-8"
+                    className="w-[90%] lg:w-[75%] mx-auto shadow-md px-6 lg:px-0 lg:shadow-none mt-4"
                   >
                     <span>Full Name</span>
                     <input
                       type="text"
-                      className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
+                      className="mt-2 border w-full p-2 rounded-md shadow-sm mb-2"
                       placeholder="Full Name"
                       required
                       onChange={(e) => setFirstName(e.target.value)}
@@ -348,7 +371,7 @@ const UserAuthentication = () => {
                     <span className="text-sm text-gray-600"> [Optional]</span>
                     <input
                       type="email"
-                      className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
+                      className="mt-2 border w-full p-2 rounded-md shadow-sm mb-2"
                       placeholder="Email Address"
                       onChange={(e) => setEmail(e.target.value)}
                       defaultValue={email}
@@ -356,7 +379,7 @@ const UserAuthentication = () => {
                     <span>Phone Number</span>
                     <input
                       type="text"
-                      className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
+                      className="mt-2 border w-full p-2 rounded-md shadow-sm mb-2"
                       placeholder="Phone Number"
                       required
                       onChange={(e) => setPhone(e.target.value)}
@@ -367,7 +390,7 @@ const UserAuthentication = () => {
 
                       <input
                         type={showPassword ? "text" : "password"}
-                        className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
+                        className="mt-2 border w-full p-2 rounded-md shadow-sm mb-2"
                         placeholder="Password"
                         required
                         value={password}
@@ -398,7 +421,7 @@ const UserAuthentication = () => {
 
                       <input
                         type={showConfirmPassword ? "text" : "password"}
-                        className="mt-2 border w-full p-2 rounded-md shadow-sm mb-4"
+                        className="mt-2 border w-full p-2 rounded-md shadow-sm mb-2"
                         placeholder="Password"
                         required
                         onChange={(e) => setConfirmPassword(e.target.value)}
@@ -538,7 +561,7 @@ const UserAuthentication = () => {
           </div>
         </div>
       </div>
-      <div className="bg-[#35B0A7] text-white text-center md:absolute bottom-0 w-full py-1 md:py-2">
+      <div className=" bg-[#35B0A7] text-white text-center w-full py-1 md:py-2 fixed bottom-0 ">
         <span className="text-[10px] md:text-sm px-5 ">
           Copyrights &copy; Project Second Home 2023.  All rights reserved.
         </span>
@@ -547,7 +570,7 @@ const UserAuthentication = () => {
         containerStyle={{ top: 200, zIndex: "100000" }}
         toastOptions={{ position: "top-center" }}
       ></Toaster>
-      <LoadingState />
+      {/* <LoadingState /> */}
     </div>
   );
 };
