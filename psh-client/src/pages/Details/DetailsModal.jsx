@@ -1,10 +1,7 @@
 import React, { useRef } from "react";
 import { Dialog, DialogBody, DialogFooter } from "@material-tailwind/react";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
-import "@splidejs/react-splide/css";
-import "@splidejs/react-splide/css/skyblue";
-import "@splidejs/react-splide/css/sea-green";
-import "@splidejs/react-splide/css/core";
+
 import { AiOutlineClose } from "react-icons/ai";
 
 import "./DetailsModal.css";
