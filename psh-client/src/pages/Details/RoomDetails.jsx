@@ -1,8 +1,4 @@
 import React, { useContext, useEffect } from "react";
-// import "@splidejs/react-splide/css";
-// import "@splidejs/react-splide/css/skyblue";
-// import "@splidejs/react-splide/css/sea-green";
-// import "@splidejs/react-splide/css/core";
 import { format } from "date-fns";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { AiFillHeart } from "react-icons/ai";
@@ -29,7 +25,6 @@ import BookingTotalBox from "../Booking/BookingTotalBox";
 import Seats from "./Seats";
 import BookingSeatTotal from "../Booking/BookingSeatTotal";
 import { ReviewAll } from "./ReviewAll";
-
 import useExtraCharge from "../../hooks/useExtraCharge";
 import SingleCard from "../../components/home/SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
@@ -42,70 +37,105 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast from "react-hot-toast";
 import useRecommended from "../../hooks/useRecommended";
 
-const Room = () => {
-  const { id } = useParams();
+const RoomDetails = () => {
+  const { id, category: categoryId } = useParams();
   const [extraCharge] = useExtraCharge(id);
   const { user } = useContext(AuthContext);
-
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
-
   // For See More Button
   const [keyDetails, setKeyDetails] = useState(false);
   const [amenities, setAmenities] = useState(false);
   const [furnishing, setFurnishing] = useState(false);
   const [services, setServices] = useState(false);
-  // end
+  const [roomType, setRoomType] = useState("");
+
+  const [data, setData] = useState([]);
+  const [seat, setSeat] = useState(null);
+  const [photos, setPhotos] = useState([]);
+  const [bookedDates, setBookDates] = useState([]);
+  const [keyValue, setKeyValue] = useState("");
+  const [size, setSize] = useState(null);
+  const [size2, setSize2] = useState(null);
 
   const userName = user?.firstName;
   const email = user?.email;
 
-  const [data, setData] = useState([]);
-  const [bookedDates, setBookDates] = useState([]);
-
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchCategory = async () => {
       try {
-        const response = await fetch(`${serverBaseUrl}/property/${id}`);
-        const { property, rentRooms } = await response.json();
-        // console.log(data);
-
-        setData(property);
-        setBookDates(rentRooms);
+        const response = await fetch(`${serverBaseUrl}/category/${categoryId}`);
+        const res = await response.json();
+        setRoomType(res.name);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
+    fetchCategory();
+  }, [categoryId]);
 
-    fetchData();
-  }, [id]);
+  useEffect(() => {
+    if (roomType === "Private Room") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${serverBaseUrl}/property/${id}`);
+          const { property, rentRooms } = await response.json();
+          setData(property);
+          setPhotos([...property?.photos]);
+          setBookDates(rentRooms);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
+      fetchData();
+    }
+    if (roomType === "Shared Room") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${serverBaseUrl}/seats/${id}`);
+          const { data } = await response.json();
+          setSeat(data);
+          setPhotos([...data?.photos]);
+          if (data) {
+            try {
+              const responseForRoom = await fetch(
+                `${serverBaseUrl}/property/${data?.roomId}`
+              );
+              const { property, rentRooms } = await responseForRoom.json();
+              setData(property);
+              setPhotos((previousPhotos) => [
+                ...previousPhotos,
+                ...property?.photos,
+              ]);
+              setBookDates(rentRooms);
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [roomType, id]);
   useEffect(() => {
     localStorage.removeItem("bookingItem");
     localStorage.removeItem("seatItem");
   }, []);
-
-  const { data2 } = UseFetch(`review`);
-  console.log(data);
+  console.log(photos);
 
   const { data: facality } = UseFetch("facilityCategory");
-
-  // Recomended Data
+  console.log(seat);
 
   const recomended = useRecommended();
-  // find Published Recommended Property
   const publishedRecomended = recomended?.filter(
-    (property) =>
-      // property?.isPublished === "Published" &&
-      property?.categoryDetails?.name === data?.category?.name
+    (property) => property?.categoryDetails?.name === data?.category?.name
   );
 
-  const main = data2?.filter((pd) => pd.property === id);
-
   // modal
-  const [size, setSize] = useState(null);
 
   const handleOpen = (value) => setSize(value);
-  const [size2, setSize2] = useState(null);
 
   const handleOpen2 = (value) => setSize2(value);
 
@@ -132,9 +162,6 @@ const Room = () => {
     }
   };
 
-  const activeReviews = data?.review?.filter(
-    (item) => item.status === "active"
-  );
   const propertyId = data?._id;
 
   const { data: wishlist, reFetch: wishlistRefetch } = UseFetch(`wishlist`);
@@ -192,12 +219,6 @@ const Room = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [location?.pathname]);
-
-  // For Recomended House
-
-  const [keyValue, setKeyValue] = useState("");
-
-  // For Slider
 
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
     if (lastSlideIndex === 0) {
@@ -313,9 +334,9 @@ const Room = () => {
               onClick={() => handleOpen("lg")}
             >
               <div>
-                {data?.photos ? (
+                {photos.length ? (
                   <img
-                    src={data?.photos[0]}
+                    src={photos[0]}
                     className="rounded w-[100%] lg:h-[400px] md:h-[280px] sm:h-[230px]"
                     alt=""
                   />
@@ -324,8 +345,8 @@ const Room = () => {
                 )}
               </div>
               <div className="grid grid-cols-2 gap-3 ml-3 relative">
-                {data?.photos ? (
-                  data?.photos?.slice(1, 5).map((photo, index) => (
+                {photos ? (
+                  photos?.slice(1, 5).map((photo, index) => (
                     <div key={index}>
                       <img
                         src={photo}
@@ -344,7 +365,7 @@ const Room = () => {
                 )}
                 <div className="absolute md:bottom-16 sm:bottom-10 md:right-28 sm:right-5">
                   <span className="md:text-5xl sm:text-[25px] ">
-                    +{data?.photos ? data?.photos?.slice(4).length : ""}
+                    +{photos ? photos?.slice(4).length : ""}
                   </span>
                 </div>
               </div>
@@ -573,7 +594,7 @@ const Room = () => {
                     </div>
                   </div>
                 </div>
-                <div className="flex items-center gap-x-3">
+                {/* <div className="flex items-center gap-x-3">
                   {activeReviews?.length > 0 ? (
                     <>
                       <p>5.0</p>
@@ -589,7 +610,7 @@ const Room = () => {
                   ) : (
                     <p>(0 Reviews)</p>
                   )}
-                </div>
+                </div> */}
 
                 <Dialog
                   open={size2 === "sm"}
@@ -1242,7 +1263,7 @@ const Room = () => {
                   </div>
                 </div>
 
-                <div className="w-full">
+                {/* <div className="w-full">
                   <div className="facility_h1 p-2 flex mt-5">
                     <h2 className="text-xl font-bold text-gray-900 ">
                       Reviews {activeReviews?.length}
@@ -1300,7 +1321,7 @@ const Room = () => {
                     detailsShow={detailsShow}
                     activeReviews={activeReviews}
                   />
-                </div>
+                </div> */}
 
                 <div className="flex items-center gap-x-3 request-visit">
                   <button
@@ -1365,4 +1386,4 @@ const Room = () => {
   );
 };
 
-export default Room;
+export default RoomDetails;

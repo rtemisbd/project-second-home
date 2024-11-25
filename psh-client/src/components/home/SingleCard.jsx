@@ -48,7 +48,7 @@ const SingleCard = ({ item }) => {
             color="transparent"
             className="m-0 rounded-none"
           >
-            <Link to={`/${item?.name}/${item._id}`}>
+            <Link to={`/${item?.category}/${item?.name}/${item._id}`}>
               <img
                 className="img_size"
                 style={{ borderRadius: "10px 10px 0px 0px" }}

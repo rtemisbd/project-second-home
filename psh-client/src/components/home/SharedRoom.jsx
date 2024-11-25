@@ -10,8 +10,6 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import "./styles/SingleCard.css";
 
 const SharedRoom = ({ item }) => {
-  console.log(item);
-
   return (
     <div className="single-card ">
       <Card className="mb-5 w-full ">
@@ -21,11 +19,11 @@ const SharedRoom = ({ item }) => {
           color="transparent"
           className="m-0 rounded-none"
         >
-          <Link to={`/${item?.name}/${item._id}`}>
+          <Link to={`/${item?.category}/${item?.name}/${item._id}`}>
             <img
               className="img_size"
               style={{ borderRadius: "10px 10px 0px 0px" }}
-              src={item.photos[0]}
+              src={item?.photos[0]}
               alt="Room Picture"
             />
           </Link>

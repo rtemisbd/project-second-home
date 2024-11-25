@@ -7,7 +7,6 @@ import Profile from "../pages/Profile/Profile";
 import Contact from "../pages/Contact/Contact";
 import About from "../pages/About/About";
 import SignIn from "../pages/SignUp/SignIn";
-import Room from "../pages/Details/Room";
 
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
@@ -39,6 +38,7 @@ import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
 import StudySpace from "../pages/StudySpace/StudySpace";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
+import RoomDetails from "../pages/Details/RoomDetails";
 
 export const router = createBrowserRouter([
   {
@@ -66,8 +66,8 @@ export const router = createBrowserRouter([
         element: <LeaseProperty />,
       },
       {
-        path: "/:room/:id",
-        element: <Room></Room>,
+        path: "/:category/:room/:id",
+        element: <RoomDetails />,
       },
       {
         path: "/event/:id",

@@ -20,6 +20,8 @@ import "@splidejs/react-splide/css/skyblue";
 import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import { propertySlider } from "../../helpers/utils/projectSlider";
+import useSeat from "../../hooks/useSeat";
+import SharedRoom from "./SharedRoom";
 
 export default function HomePage() {
   const dispatch = useDispatch();
@@ -31,7 +33,8 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [randomIndex, setRandomIndex] = useState([]);
-  const [lastSlideIndex, setLastSlideIndex] = useState(0);
+  const [showSharedRoom, setSharedRoom] = useState(false);
+  const [showOtherRoom, setShowOtherRoom] = useState(true);
   const { pathname } = useLocation();
 
   // Get Properties
@@ -54,6 +57,8 @@ export default function HomePage() {
       throw error;
     }
   });
+  // get all seats
+  const seats = useSeat();
 
   // Get categories
   const { refetch: refetchCategories } = useQuery(["categories"], async () => {
@@ -98,104 +103,27 @@ export default function HomePage() {
     return <div>Error occurred: {error.message}</div>; // Placeholder for error state
   }
 
-  const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === 0) {
-      return null;
-    } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
-    }
-  };
-
-  const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === randomIndex?.length - 4) {
-      return null;
-    } else {
-      return <img src={RightArrow} alt="nextArrow" {...props} />;
-    }
-  };
-
   useEffect(() => {
     refetch();
     getRandomData();
   }, [activeTab, Featured]);
 
-  const settings = {
-    dots: false,
+  useEffect(() => {
+    if (activeTab === "Shared Room") {
+      setShowOtherRoom(false);
+      setSharedRoom(true);
+    } else {
+      setSharedRoom(false);
+      setShowOtherRoom(true);
+    }
+  }, [activeTab]);
 
-    afterChange: (index) => {
-      setLastSlideIndex(index);
-    },
-    infinite: false,
-    speed: 400,
-    adaptiveHeight: true,
-    slidesToShow: 4,
-    touchThreshold: 100,
-    initialSlide: 0,
-    draggable: true, // Enable free dragging
-    swipeToSlide: true,
-    className: `center mx-[-15px] `,
-    arrows: data?.length > 4 ? true : false,
-    autoplay: false,
-
-    prevArrow: <SlickArrowLeft />,
-    nextArrow: <SlickArrowRight />,
-
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-          dots: false,
-          infinite: false,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 800,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-          initialSlide: 2,
-          infinite: false,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          className: `center ms-[-8px] ${
-            activeTab === ""
-              ? lastSlideIndex >= data?.length - 1
-                ? "only-forMobile"
-                : ""
-              : lastSlideIndex >= data?.length - 1
-              ? "only-forMobile"
-              : ""
-          }`,
-          afterChange: (index) => {
-            setLastSlideIndex(index);
-          },
-          centerMode: true,
-          slidesToShow: 1,
-
-          infinite: false,
-          arrows: false,
-
-          speed: 400,
-          cssEase: "ease-out",
-          draggable: true, // Enable free dragging
-          swipeToSlide: true,
-        },
-      },
-    ],
-  };
   return (
     <div className="category-item">
       <div className="text-left mt-3">
         <Tabs value={activeTab} className=" ">
           <TabsHeader
-            className="rounded-none border-b bg-transparent p-0 md:gap-x-5 sm:gap-x-4 "
+            className="rounded-none bg-transparent p-0 md:gap-x-5 sm:gap-x-4 mb-2"
             indicatorProps={{
               className:
                 "bg-transparent border-b-2 border-[#00BBB4] shadow-none rounded-none ",
@@ -212,7 +140,7 @@ export default function HomePage() {
             >
               Featured
             </Tab>
-            {[...categories].reverse().map((category, index) => (
+            {[...categories].map((category, index) => (
               <Tab
                 value={index}
                 key={index}
@@ -230,19 +158,19 @@ export default function HomePage() {
       </div>
 
       {/* Cards */}
-      {randomIndex?.length ? (
-        // <div className="all_recommended mt-4 slider_margin card-slider">
-        //   <Slider {...settings}>
-        //     {randomIndex?.map((item) => (
-        //       <SingleCard key={item._id} item={item} />
-        //     ))}
-        //   </Slider>
-        // </div>
-
+      {showOtherRoom && randomIndex?.length ? (
         <Splide options={propertySlider(randomIndex)}>
           {randomIndex?.map((item) => (
             <SplideSlide key={item?._id}>
               <SingleCard item={item} />
+            </SplideSlide>
+          ))}
+        </Splide>
+      ) : showSharedRoom && seats?.length ? (
+        <Splide options={propertySlider(seats)}>
+          {seats?.map((item) => (
+            <SplideSlide key={item?._id}>
+              <SharedRoom item={item} />
             </SplideSlide>
           ))}
         </Splide>
