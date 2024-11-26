@@ -1,9 +1,8 @@
-import React, { useContext, useEffect } from "react";
+import React, { useCallback, useContext, useEffect } from "react";
 import { format } from "date-fns";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { AiFillHeart } from "react-icons/ai";
 import { AiOutlineShareAlt } from "react-icons/ai";
-import { AiFillStar } from "react-icons/ai";
 import { useState } from "react";
 import Slider from "react-slick";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
@@ -14,28 +13,25 @@ import { IoCallOutline } from "react-icons/io5";
 
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
-import DetailsModal from "./DetailsModal";
 import homeIcon from "../../assets/img/home.png";
 import bedIcon from "../../assets/img/double-bed.png";
 import arroundIcon from "../../assets/img/arround.svg";
-import profileIcon from "../../assets/img/profile.png";
 import "../../components/shared/Custom.css";
 import Map from "./Map";
 import BookingTotalBox from "../Booking/BookingTotalBox";
 import Seats from "./Seats";
 import BookingSeatTotal from "../Booking/BookingSeatTotal";
-import { ReviewAll } from "./ReviewAll";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import SingleCard from "../../components/home/SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import "./Room.css";
 import RentVisitModal from "./RentVisitModal";
-import Skeleton from "react-loading-skeleton";
 import CardSkeleton from "../../components/CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast from "react-hot-toast";
 import useRecommended from "../../hooks/useRecommended";
+import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
@@ -54,7 +50,7 @@ const RoomDetails = () => {
   const [photos, setPhotos] = useState([]);
   const [bookedDates, setBookDates] = useState([]);
   const [keyValue, setKeyValue] = useState("");
-  const [size, setSize] = useState(null);
+
   const [size2, setSize2] = useState(null);
 
   const userName = user?.firstName;
@@ -123,7 +119,6 @@ const RoomDetails = () => {
     localStorage.removeItem("bookingItem");
     localStorage.removeItem("seatItem");
   }, []);
-  console.log(photos);
 
   const { data: facality } = UseFetch("facilityCategory");
   console.log(seat);
@@ -134,8 +129,6 @@ const RoomDetails = () => {
   );
 
   // modal
-
-  const handleOpen = (value) => setSize(value);
 
   const handleOpen2 = (value) => setSize2(value);
 
@@ -209,8 +202,6 @@ const RoomDetails = () => {
       toast.error("Wrong!");
     }
   };
-  const [detailsShow, setDetailsShow] = useState(false);
-  const handleDetailsShow = () => setDetailsShow(!detailsShow);
 
   // Page location top to path dependency
 
@@ -302,7 +293,7 @@ const RoomDetails = () => {
 
   return (
     <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
-      {data?.photos?.length > 0 ? (
+      {photos?.length > 0 ? (
         <div className="flex items-center gap-x-3 md:mt-3 sm:mt-0">
           <Link to="/" className="hover:text-[#00bbb4] md:block sm:hidden">
             <p>Home</p>
@@ -328,50 +319,7 @@ const RoomDetails = () => {
       )}
       <div className="mt-2">
         <div className=" ">
-          <div>
-            <div
-              className="grid grid-cols-2 cursor-pointer details-img"
-              onClick={() => handleOpen("lg")}
-            >
-              <div>
-                {photos.length ? (
-                  <img
-                    src={photos[0]}
-                    className="rounded w-[100%] lg:h-[400px] md:h-[280px] sm:h-[230px]"
-                    alt=""
-                  />
-                ) : (
-                  <Skeleton className=" w-[100%] lg:h-[400px] md:h-[280px] sm:h-[230px]" />
-                )}
-              </div>
-              <div className="grid grid-cols-2 gap-3 ml-3 relative">
-                {photos ? (
-                  photos?.slice(1, 5).map((photo, index) => (
-                    <div key={index}>
-                      <img
-                        src={photo}
-                        alt=""
-                        className="rounded w-[100%] lg:h-[195px] md:h-[134px] sm:h-[110px]"
-                      />
-                    </div>
-                  ))
-                ) : (
-                  <>
-                    <Skeleton className="rounded w-[100%] lg:h-[195px] md:h-[134px] sm:h-[110px]" />
-                    <Skeleton className="rounded w-[100%] lg:h-[195px] md:h-[134px] sm:h-[110px]" />
-                    <Skeleton className="rounded w-[100%] lg:h-[195px] md:h-[134px] sm:h-[110px]" />
-                    <Skeleton className="rounded w-[100%] lg:h-[195px] md:h-[134px] sm:h-[110px]" />
-                  </>
-                )}
-                <div className="absolute md:bottom-16 sm:bottom-10 md:right-28 sm:right-5">
-                  <span className="md:text-5xl sm:text-[25px] ">
-                    +{photos ? photos?.slice(4).length : ""}
-                  </span>
-                </div>
-              </div>
-            </div>
-            <DetailsModal size={size} handleOpen={handleOpen} data={data} />
-          </div>
+          <ImageViewerSlider photos={photos} />
 
           <div className="mt-2 text-start ">
             <div className="sticky lg:top-[70px] sm:top-[70px] bg-white py-1 ">
