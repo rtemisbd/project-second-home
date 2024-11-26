@@ -18,7 +18,6 @@ import { useContext } from "react";
 import { AuthContext } from "../../contexts/UserProvider";
 import "../../components/shared/Custom.css";
 import "./BookingTotalBox.css";
-import FinalLoginModal from "../../components/shared/FinalLoginModal";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
@@ -73,7 +72,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
       : data?.dAmountForDay * customerRent?.remainingDays
   );
 
-  const [vatTax, setVatTaxt] = useState(
+  const [vatTax, setVatTax] = useState(
     (subTotal * extraCharge[0]?.vatTax) / 100
   );
 
@@ -105,7 +104,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     // setSecurityFee(extraCharge[0]?.securityFee);
     setDisCountTk(0);
     setPromoCodeCheck(false);
-    setVatTaxt((subTotal * extraCharge[0]?.vatTax) / 100);
+    setVatTax((subTotal * extraCharge[0]?.vatTax) / 100);
 
     // If User give a Promo
     const promo = promos.find((promo) => promo?.promoCode === promoCode);
@@ -139,7 +138,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     }
     if (subTotal) {
       const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
-      setVatTaxt(parseInt(getvatTax));
+      setVatTax(parseInt(getvatTax));
     }
     // minimum Payment
     if (
@@ -448,7 +447,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const handleOpen = (value) => setSize(value);
   return (
     <>
-      <FinalLoginModal />
       <div
         style={{
           // height: "650px",

@@ -9,7 +9,6 @@ import UseFetch from "../../hooks/useFetch";
 import "./Custom.css";
 import { useDispatch } from "react-redux";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
-import FinalLoginModal from "./FinalLoginModal";
 import whatsappIcon from "../../../src/assets/img/whastapp.png";
 const Footer = () => {
   const { data } = UseFetch(`dynamic`);
@@ -478,7 +477,6 @@ const Footer = () => {
         appId=" 570469815108233"
       /> */}
       {/* Signup, login modal */}
-      <FinalLoginModal />
     </div>
   );
 };

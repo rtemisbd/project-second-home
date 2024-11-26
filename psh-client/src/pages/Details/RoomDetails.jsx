@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useEffect } from "react";
+import React, { useContext, useEffect } from "react";
 import { format } from "date-fns";
 import { Link, useLocation, useParams } from "react-router-dom";
 import { AiFillHeart } from "react-icons/ai";
@@ -13,8 +13,6 @@ import { IoCallOutline } from "react-icons/io5";
 
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
-import homeIcon from "../../assets/img/home.png";
-import bedIcon from "../../assets/img/double-bed.png";
 import arroundIcon from "../../assets/img/arround.svg";
 import "../../components/shared/Custom.css";
 import Map from "./Map";
@@ -35,7 +33,7 @@ import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
-  const [extraCharge] = useExtraCharge(id);
+  const [extraCharge] = useExtraCharge();
   const { user } = useContext(AuthContext);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   // For See More Button
@@ -50,6 +48,7 @@ const RoomDetails = () => {
   const [photos, setPhotos] = useState([]);
   const [bookedDates, setBookDates] = useState([]);
   const [keyValue, setKeyValue] = useState("");
+  const [addedWishList, setAddedWishlist] = useState(false);
 
   const [size2, setSize2] = useState(null);
 
@@ -115,13 +114,15 @@ const RoomDetails = () => {
       fetchData();
     }
   }, [roomType, id]);
+
   useEffect(() => {
     localStorage.removeItem("bookingItem");
     localStorage.removeItem("seatItem");
   }, []);
 
-  const { data: facality } = UseFetch("facilityCategory");
-  console.log(seat);
+  const { data: facilities } = UseFetch("facilityCategory");
+
+  console.log(data);
 
   const recomended = useRecommended();
   const publishedRecomended = recomended?.filter(
@@ -169,6 +170,7 @@ const RoomDetails = () => {
       };
       await axios.post(`${serverBaseUrl}/wishlist`, product);
       // MySwal.fire("Thanks ! wishlisted");
+      setAddedWishlist(true);
       wishlistRefetch();
     } catch (err) {
       toast.error("Already Added!");
@@ -196,6 +198,7 @@ const RoomDetails = () => {
         `${serverBaseUrl}/wishlist/${userWishList._id}`,
         product
       );
+      setAddedWishlist(false);
       // MySwal.fire("Successfullt Remove ! wishlisted");
       wishlistRefetch();
     } catch (err) {
@@ -291,6 +294,8 @@ const RoomDetails = () => {
     ],
   };
 
+  console.log(seat);
+
   return (
     <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
       {photos?.length > 0 ? (
@@ -340,7 +345,7 @@ const RoomDetails = () => {
                 </div>
 
                 <div className="sm:flex">
-                  {facality?.slice(0, 3).map((pd, index) => (
+                  {facilities?.slice(0, 3).map((pd, index) => (
                     <div key={pd?._id} onClick={() => setKeyValue(index + 1)}>
                       <span>
                         <a
@@ -385,28 +390,6 @@ const RoomDetails = () => {
                 ) : (
                   ""
                 )}
-
-                {data?.category?.name === "Shared Room" ? (
-                  <div
-                    onClick={() => setKeyValue(4)}
-                    className="sm:hidden md:block"
-                  >
-                    <a
-                      href="#seatTypes"
-                      onClick={anchorClickHandler}
-                      className={`hover:text-black hover:border-b-2 border-[#27b3b1] sm:text-[12px] md:text-[1rem]  md:px-8 custom_key sm:px-2 py-1  border ${
-                        // typeof keyValue !== "string" &&
-                        typeof keyValue === "number" && keyValue === 4
-                          ? "bg-[#00bbb4] text-white hover:text-white"
-                          : ""
-                      }`}
-                    >
-                      Seat Types
-                    </a>
-                  </div>
-                ) : (
-                  ""
-                )}
               </div>
             </div>
 
@@ -424,11 +407,6 @@ const RoomDetails = () => {
                         </div>
                         <p className="ms-1"> {data?.branch?.name} -</p>
                       </div>
-                      {/* 
-                      <p className="text-xl font-bold mt-1">
-                        {data?.branch?.name}
-                      </p> */}
-
                       <div className="flex text-[#9A9A9A] items-center mt-2">
                         <div>
                           <img
@@ -441,11 +419,6 @@ const RoomDetails = () => {
                       </div>
                       <div className="flex text-[#9A9A9A] items-center mt-2">
                         <div>
-                          {/* <img
-                            src="/images/icon/marker-02.png"
-                            className="md:w-[25px] sm:w-[35px]"
-                            alt=""
-                          /> */}
                           <IoCallOutline className="md:w-[25px] h-[25px] sm:w-[35px]" />
                         </div>
                         <p className="ms-1">
@@ -453,72 +426,27 @@ const RoomDetails = () => {
                           {data?.branch?.branchMobileNumber}{" "}
                         </p>
                       </div>
-                      <div className="md:flex mt-2">
-                        <div className="flex items-center text-black">
+                      {seat && (
+                        <>
                           <p className="ms-1 md:text-xl sm:text-[1rem]">
+                            Seat Number : {seat?.seatNumber}{" "}
+                            <span className="text-sm">
+                              [{seat?.seatType}, {seat?.name} ]
+                            </span>
+                          </p>
+                        </>
+                      )}
+                      <div className="mt-2">
+                        <div className="flex items-center text-black">
+                          <p
+                            className={`ms-1  ${
+                              seat
+                                ? "text-[16px] text-[#9A9A9A] font-[700]"
+                                : "md:text-xl sm:text-[1rem]"
+                            }`}
+                          >
                             Room Number : {data?.roomNumber}
                           </p>
-                        </div>
-                        <div className="flex sm:text-[12px] sm:mt-2 md:mt-0">
-                          <div className="flex md:mx-3 items-center">
-                            <div>
-                              <img src={homeIcon} alt="" />
-                            </div>
-                            {data?.furnitured === "yes" ? (
-                              <div className="ms-1 ">
-                                <span>Full Furnished</span>
-                              </div>
-                            ) : (
-                              <div className="ms-1">
-                                <span>None Full Furnished</span>
-                              </div>
-                            )}
-                          </div>
-                          <div className="flex items-center">
-                            <div>
-                              <img
-                                src="/images/icon/user-profile-02.png"
-                                alt=""
-                              />
-                            </div>
-
-                            <p className="ms-1">
-                              {data?.seats?.length > 0
-                                ? `${data?.seats?.length} People`
-                                : `${data?.bedroom} People`}
-                            </p>
-                          </div>
-                          <div className="flex mx-3 items-center">
-                            {data?.seats?.length === 0 ? (
-                              <>
-                                <div>
-                                  <img src={bedIcon} alt="" />
-                                </div>
-
-                                <p className="ms-1">{data?.bedroom} Bed</p>
-                              </>
-                            ) : (
-                              <>
-                                {" "}
-                                <div>
-                                  <img
-                                    src="/images/icon/category-bed.svg.png"
-                                    alt=""
-                                  />
-                                </div>
-                                <p className="ms-1">
-                                  {data?.seats?.length} Seats
-                                </p>
-                              </>
-                            )}
-                          </div>
-                          <div className="flex mx-3 items-center">
-                            <div>
-                              <img src="/images/icon/Bath.png" alt="" />
-                            </div>
-
-                            <p className="ms-1">{data?.bathroom} Bathroom</p>
-                          </div>
                         </div>
                       </div>
                     </div>
@@ -579,6 +507,7 @@ const RoomDetails = () => {
                     <RentVisitModal property={data} handleOpen2={handleOpen2} />
                   </DialogBody>
                 </Dialog>
+
                 <div style={{ width: "100%" }}>
                   <div className="facility_h1 p-2 mt-3">
                     <h2
@@ -588,29 +517,39 @@ const RoomDetails = () => {
                       Key Details
                     </h2>
                   </div>
-                  <div className="grid grid-cols-12 gap-x-4 md:gap-y-16 sm:gap-y-4 py-5 text-sm">
-                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                  <div className="grid grid-cols-6 gap-x-4 md:gap-y-16 sm:gap-y-4 py-5 text-sm">
+                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                       <p className="font-bold">Type</p>
                       <p>{data?.category?.name}</p>
                     </div>
-                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                      <p className="font-bold">People</p>
+                      <p>
+                        {data?.seats?.length
+                          ? data?.seats?.length
+                          : data?.bedroom}{" "}
+                        People{" "}
+                      </p>
+                    </div>
+                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                       <p className="font-bold">Bed Type</p>
-                      <p>{data?.bedType} Bed</p>
+                      <p>{data?.bedType} </p>
                     </div>
-                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                       <p className="font-bold">Floor</p>
-                      <p>{data?.floor}th Floor</p>
+                      <p>
+                        {data?.floor}{" "}
+                        {data?.floor === "1st" || "2nd" || "3rd" ? "" : "th"}{" "}
+                      </p>
                     </div>
-                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
-                      <p className="font-bold">Room Size</p>
-                      <p>{data?.area} SQ Feet</p>
+
+                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                      <p className="font-bold">Bathroom</p>
+                      <p>{data?.bathroom} Bathroom</p>
                     </div>
-                    <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
-                      <p className="font-bold">Furnishing</p>
-                      {data?.furnitured === "yes" ? <p>Yes</p> : <p>No</p>}
-                    </div>
+
                     {keyDetails ? (
-                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                         <p className="font-bold">Balcony</p>
                         <p>{data?.balcony}</p>
                       </div>
@@ -621,7 +560,7 @@ const RoomDetails = () => {
                       ""
                     ) : (
                       <div
-                        className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 mt-5 cursor-pointer"
+                        className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 mt-5 cursor-pointer"
                         onClick={() => setKeyDetails(true)}
                       >
                         <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -631,16 +570,24 @@ const RoomDetails = () => {
                     )}
                   </div>
                   {keyDetails ? (
-                    <div className="grid grid-cols-12 gap-x-4 md:gap-y-16 sm:gap-y-4 md:py-5">
-                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3 ">
+                    <div className="grid grid-cols-6 gap-x-4 md:gap-y-16 sm:gap-y-4 md:py-5">
+                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                        <p className="font-bold">Room Size</p>
+                        <p>{data?.area} SQ Feet</p>
+                      </div>
+                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                        <p className="font-bold">Furnishing</p>
+                        {data?.furnitured === "yes" ? <p>Yes</p> : <p>No</p>}
+                      </div>
+                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3 ">
                         <p className="font-bold"> Wi-Fi</p>
                         {data?.WiFi === "yes" ? <p>Yes</p> : <p>No</p>}
                       </div>
-                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2">
+                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1">
                         <p className="font-bold"> CCTV</p>
                         {data?.CCTV === "yes" ? <p>Yes</p> : <p>No</p>}
                       </div>
-                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                      <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                         <p className="font-bold">Meal</p>
                         <p>Complementary Breakfast</p>
                       </div>
@@ -648,7 +595,7 @@ const RoomDetails = () => {
                         ""
                       ) : (
                         <div
-                          className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 mt-5 cursor-pointer"
+                          className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 mt-5 cursor-pointer"
                           onClick={() => setKeyDetails(false)}
                         >
                           <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -662,16 +609,16 @@ const RoomDetails = () => {
                   )}
                 </div>
 
-                {facality?.slice(0, 3).map((pd) => {
+                {facilities?.slice(0, 3).map((pd) => {
                   // console.log(specificFacility);
 
-                  const findAmenities = facality?.find(
+                  const findAmenities = facilities?.find(
                     (facility) => facility?.name === "Amenities"
                   );
-                  const findFurnishing = facality?.find(
+                  const findFurnishing = facilities?.find(
                     (facility) => facility?.name === "Furnishing"
                   );
-                  const findServices = facality?.find(
+                  const findServices = facilities?.find(
                     (facility) => facility?.name === "Services"
                   );
 
@@ -689,13 +636,13 @@ const RoomDetails = () => {
                           {pd.name}
                         </h2>
                       </div>
-                      <div className="grid grid-cols-12 md:gap-x-4 md:gap-y-16 sm:gap-y-4 py-5 md:px-2">
+                      <div className="grid grid-cols-6 md:gap-x-4 md:gap-y-16 sm:gap-y-4 py-5 md:px-2">
                         {/* Show 5 amenities Facility*/}
                         {pd?.name === "Amenities" && !amenities
                           ? findAmenities?.facility?.slice(0, 5).map((item) => {
                               return (
                                 <React.Fragment key={item._id}>
-                                  <div className="flex flex-col items-start col-span-12 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                                  <div className="flex flex-col items-start col-span-12 sm:col-span-2 lg:col-span-1 md:col-span-3">
                                     <div>
                                       <div className="flex md:justify-center sm:justify-start">
                                         <img
@@ -722,7 +669,7 @@ const RoomDetails = () => {
                             {findAmenities?.facility?.map((item) => {
                               return (
                                 <React.Fragment key={item._id}>
-                                  <div className="flex flex-col items-start col-span-12 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                                  <div className="flex flex-col items-start col-span-12 sm:col-span-2 lg:col-span-1 md:col-span-3">
                                     <div>
                                       <div className="flex md:justify-center sm:justify-start">
                                         <img
@@ -747,7 +694,7 @@ const RoomDetails = () => {
                               ""
                             ) : (
                               <div
-                                className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3 cursor-pointer"
+                                className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3 cursor-pointer"
                                 onClick={() => setAmenities(false)}
                               >
                                 <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -767,7 +714,7 @@ const RoomDetails = () => {
                               .map((item) => {
                                 return (
                                   <React.Fragment key={item._id}>
-                                    <div className="flex flex-col items-start col-span-12 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                                    <div className="flex flex-col items-start col-span-12 sm:col-span-2 lg:col-span-1 md:col-span-3">
                                       <div>
                                         <div className="flex md:justify-center sm:justify-start">
                                           <img
@@ -793,7 +740,7 @@ const RoomDetails = () => {
                             {findFurnishing?.facility?.map((item) => {
                               return (
                                 <React.Fragment key={item._id}>
-                                  <div className="flex flex-col items-start col-span-12 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                                  <div className="flex flex-col items-start col-span-12 sm:col-span-2 lg:col-span-1 md:col-span-3">
                                     <div>
                                       <div className="flex md:justify-center sm:justify-start">
                                         <img
@@ -819,7 +766,7 @@ const RoomDetails = () => {
                               ""
                             ) : (
                               <div
-                                className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3 mt-5 cursor-pointer"
+                                className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3 mt-5 cursor-pointer"
                                 onClick={() => setFurnishing(false)}
                               >
                                 <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -836,7 +783,7 @@ const RoomDetails = () => {
                           ? findServices?.facility?.slice(0, 5).map((item) => {
                               return (
                                 <React.Fragment key={item._id}>
-                                  <div className="flex flex-col items-start col-span-12 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                                  <div className="flex flex-col items-start col-span-12 sm:col-span-2 lg:col-span-1 md:col-span-3">
                                     <div>
                                       <div className="flex md:justify-center sm:justify-start">
                                         <img
@@ -862,7 +809,7 @@ const RoomDetails = () => {
                             {findServices?.facility?.map((item) => {
                               return (
                                 <React.Fragment key={item._id}>
-                                  <div className="flex flex-col items-start col-span-12 sm:col-span-6 lg:col-span-2 md:col-span-3">
+                                  <div className="flex flex-col items-start col-span-12 sm:col-span-2 lg:col-span-1 md:col-span-3">
                                     <div>
                                       <div className="flex md:justify-center sm:justify-start">
                                         <img
@@ -888,7 +835,7 @@ const RoomDetails = () => {
                               ""
                             ) : (
                               <div
-                                className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 mt-5 md:col-span-3 cursor-pointer"
+                                className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 mt-5 md:col-span-3 cursor-pointer"
                                 onClick={() => setServices(true)}
                               >
                                 <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -906,7 +853,7 @@ const RoomDetails = () => {
                         pd?.name === "Amenities" &&
                         !amenities ? (
                           <div
-                            className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3 mt-5 cursor-pointer"
+                            className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3 mt-5 cursor-pointer"
                             onClick={() => setAmenities(true)}
                           >
                             <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -922,7 +869,7 @@ const RoomDetails = () => {
                         pd?.name === "Furnishing" &&
                         !furnishing ? (
                           <div
-                            className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 md:col-span-3 mt-5 cursor-pointer"
+                            className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3 mt-5 cursor-pointer"
                             onClick={() => setFurnishing(true)}
                           >
                             <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -937,7 +884,7 @@ const RoomDetails = () => {
                         pd?.name === "Services" &&
                         !services ? (
                           <div
-                            className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-6 lg:col-span-2 mt-5 md:col-span-3 cursor-pointer"
+                            className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 mt-5 md:col-span-3 cursor-pointer"
                             onClick={() => setServices(true)}
                           >
                             <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
@@ -1059,22 +1006,7 @@ const RoomDetails = () => {
                   ""
                 )}
 
-                {/* If Seats */}
-                {/* 
-                  {data?.category?.name === "Apartment" ||
-                  data?.category?.name === "Private Room" ? (
-                    ""
-                  ) : (
-                    <div className="mb-5 w-full">
-                      {data?.seats && data?.seats.length > 0 ? (
-                        <Seats data={data} handleSubmit={handleSubmit} />
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  )} */}
-
-                {data?.category?.name === "Shared Room" ? (
+                {/* {data?.category?.name === "Shared Room" ? (
                   <div id="seatTypes">
                     <div className="mb-5 w-full" id="seat">
                       {data?.seats && data?.seats.length > 0 ? (
@@ -1086,7 +1018,7 @@ const RoomDetails = () => {
                   </div>
                 ) : (
                   ""
-                )}
+                )} */}
 
                 <div>
                   <h2
@@ -1211,65 +1143,7 @@ const RoomDetails = () => {
                   </div>
                 </div>
 
-                {/* <div className="w-full">
-                  <div className="facility_h1 p-2 flex mt-5">
-                    <h2 className="text-xl font-bold text-gray-900 ">
-                      Reviews {activeReviews?.length}
-                    </h2>
-                    {activeReviews?.length > 0 && (
-                      <div className="flex">
-                        <div>
-                          <img
-                            src="../images/icon/Vector (1).png"
-                            alt=""
-                            className="ms-5 mt-1"
-                            style={{ width: 20, height: 20 }}
-                          />
-                        </div>
-                        <p className="ms-3 text-2xl">5.0</p>
-                      </div>
-                    )}
-                  </div>
-                  {activeReviews?.slice(0, 1).map((item) => (
-                    <div key={item.id}>
-                      <div className="flex items-center gap-x-3 mt-4">
-                        <p>
-                          <img src={profileIcon} alt="" />
-                        </p>
-                        <p>{item?.userName}</p>
-                        <p className="bg-[#FFB800] text-white px-2 rounded">
-                          5.0
-                        </p>
-                        <p>
-                          {item?.createdAt
-                            ? format(
-                                new Date(item.createdAt),
-                                "yyyy-MM-dd HH:mm:ss"
-                              )
-                            : ""}
-                        </p>
-                      </div>
-                      <p className="mt-2 pl-12">{item?.comment}</p>
-                    </div>
-                  ))}
-
-                  {activeReviews?.length > 0 && (
-                    <div className="mt-10">
-                      <button
-                        className="text-[#399] border px-8 py-2 border-[#399] hover:bg-[#399] hover:text-white rounded"
-                        onClick={handleDetailsShow}
-                      >
-                        See All {activeReviews?.length} Reviews
-                      </button>
-                    </div>
-                  )}
-
-                  <ReviewAll
-                    handleDetailsShow={handleDetailsShow}
-                    detailsShow={detailsShow}
-                    activeReviews={activeReviews}
-                  />
-                </div> */}
+                {/* review */}
 
                 <div className="flex items-center gap-x-3 request-visit">
                   <button

@@ -50,12 +50,12 @@ const BranchSchema = new mongoose.Schema(
     photos: {
       type: [String],
     },
-    property: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Property",
-      },
-    ],
+    // property: [
+    //   {
+    //     type: mongoose.Schema.Types.ObjectId,
+    //     ref: "Property",
+    //   },
+    // ],
 
     user: [
       {

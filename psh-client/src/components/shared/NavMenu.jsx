@@ -28,7 +28,6 @@ import {
 
 import SearchBoxWithNav from "../home/SearchBoxWithNav";
 import { HiOutlineUserCircle } from "react-icons/hi";
-import FinalLoginModal from "./FinalLoginModal";
 import updatedLogo from "../../assets/img/updated-logo.png";
 
 function ProfileMenu() {
@@ -724,7 +723,6 @@ export default function Navmenu() {
         setOpen={setOpen}
         handleClose={handleClose}
       /> */}
-      <FinalLoginModal />
       <SearchBoxWithNav />
     </>
   );
