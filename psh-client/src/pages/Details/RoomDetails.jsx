@@ -17,9 +17,7 @@ import arroundIcon from "../../assets/img/arround.svg";
 import "../../components/shared/Custom.css";
 import Map from "./Map";
 import BookingTotalBox from "../Booking/BookingTotalBox";
-import Seats from "./Seats";
 import BookingSeatTotal from "../Booking/BookingSeatTotal";
-import useExtraCharge from "../../hooks/useExtraCharge";
 import SingleCard from "../../components/home/SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
@@ -30,10 +28,11 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast from "react-hot-toast";
 import useRecommended from "../../hooks/useRecommended";
 import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
+import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
-  const [extraCharge] = useExtraCharge();
+
   const { user } = useContext(AuthContext);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   // For See More Button
@@ -51,6 +50,10 @@ const RoomDetails = () => {
   const [addedWishList, setAddedWishlist] = useState(false);
 
   const [size2, setSize2] = useState(null);
+
+  const anchorClick = (e) => {
+    anchorClickHandler(e);
+  };
 
   const userName = user?.firstName;
   const email = user?.email;
@@ -89,20 +92,22 @@ const RoomDetails = () => {
         try {
           const response = await fetch(`${serverBaseUrl}/seats/${id}`);
           const { data } = await response.json();
-          setSeat(data);
-          setPhotos([...data?.photos]);
-          if (data) {
+          console.log(data.seat);
+
+          setSeat(data.seat);
+          setBookDates(data.rentRooms);
+          setPhotos([...data?.seat?.photos]);
+          if (data?.seat) {
             try {
               const responseForRoom = await fetch(
-                `${serverBaseUrl}/property/${data?.roomId}`
+                `${serverBaseUrl}/property/${data?.seat?.roomId}`
               );
-              const { property, rentRooms } = await responseForRoom.json();
+              const { property } = await responseForRoom.json();
               setData(property);
               setPhotos((previousPhotos) => [
                 ...previousPhotos,
                 ...property?.photos,
               ]);
-              setBookDates(rentRooms);
             } catch (error) {
               console.error("Error fetching data:", error);
             }
@@ -114,6 +119,7 @@ const RoomDetails = () => {
       fetchData();
     }
   }, [roomType, id]);
+  console.log(bookedDates);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");
@@ -121,8 +127,6 @@ const RoomDetails = () => {
   }, []);
 
   const { data: facilities } = UseFetch("facilityCategory");
-
-  console.log(data);
 
   const recomended = useRecommended();
   const publishedRecomended = recomended?.filter(
@@ -132,29 +136,6 @@ const RoomDetails = () => {
   // modal
 
   const handleOpen2 = (value) => setSize2(value);
-
-  // anchorClickHandler
-  const anchorClickHandler = (e) => {
-    e.preventDefault();
-    const hash = e.target.getAttribute("href").split("#")[1];
-    if (hash === "") return false;
-
-    const targetElement = document.getElementById(hash);
-    if (targetElement) {
-      const navbarHeight =
-        document.querySelector(".navbar_sticky").offsetHeight;
-      const targetOffsetTop =
-        targetElement.getBoundingClientRect().top +
-        window.scrollY -
-        navbarHeight -
-        50;
-
-      window.scrollTo({
-        top: targetOffsetTop,
-        behavior: "smooth",
-      });
-    }
-  };
 
   const propertyId = data?._id;
 
@@ -294,8 +275,6 @@ const RoomDetails = () => {
     ],
   };
 
-  console.log(seat);
-
   return (
     <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
       {photos?.length > 0 ? (
@@ -332,7 +311,7 @@ const RoomDetails = () => {
                 <div onClick={() => setKeyValue(0)}>
                   <a
                     href="#keyDetails"
-                    onClick={anchorClickHandler}
+                    onClick={anchorClick}
                     className={`hover:text-black hover:border-b-2 border-[#27b3b1] sm:text-[12px] md:text-[1rem]  md:px-8 custom_key sm:px-2 py-1  border ${
                       // typeof keyValue !== "string" &&
                       typeof keyValue === "number" && keyValue === 0
@@ -350,7 +329,7 @@ const RoomDetails = () => {
                       <span>
                         <a
                           href={`#${pd?.name}`}
-                          onClick={anchorClickHandler}
+                          onClick={anchorClick}
                           className={`hover:text-black hover:border-b-2 border-[#27b3b1] sm:text-[12px] md:text-[1rem] md:px-8 custom_key sm:px-2 py-1 border ${
                             keyValue === index + 1
                               ? "bg-[#00bbb4] text-white hover:text-white"
@@ -368,7 +347,7 @@ const RoomDetails = () => {
                   <div>
                     <a
                       href="#priceDetails"
-                      onClick={anchorClickHandler}
+                      onClick={anchorClick}
                       className="hover:text-black hover:border-b-2 border-[#35B0A7]"
                     >
                       Price Details
@@ -381,7 +360,7 @@ const RoomDetails = () => {
                   <div>
                     <a
                       href="#apartmentDetails"
-                      onClick={anchorClickHandler}
+                      onClick={anchorClick}
                       className="hover:text-black hover:border-b-2 border-[#35B0A7]"
                     >
                       {data?.category?.name} Details
@@ -1143,7 +1122,7 @@ const RoomDetails = () => {
                   </div>
                 </div>
 
-                {/* review */}
+                {/* review will include later */}
 
                 <div className="flex items-center gap-x-3 request-visit">
                   <button
@@ -1159,21 +1138,28 @@ const RoomDetails = () => {
               {/* Total Box */}
 
               <div className="flex flex-col items-start space-y-3 sm:col-span-12 md:col-span-6 lg:col-span-4 ">
-                {data?.seats && data?.seats.length > 0 ? (
+                {/* {data?.seats && data?.seats.length > 0 ? (
                   <BookingSeatTotal
                     data={data}
                     bookedDates={bookedDates}
                     seats={data?.seats}
-                    extraCharge={extraCharge}
+                    // extraCharge={extraCharge}
                   />
                 ) : (
                   <BookingTotalBox
                     data={data}
                     bookedDates={bookedDates}
                     seats={data?.seats}
-                    extraCharge={extraCharge}
+                    // extraCharge={extraCharge}
                   />
-                )}
+                )} */}
+                <BookingTotalBox
+                  // data={seat ? seat : data}
+                  data={data}
+                  bookedDates={bookedDates}
+                  seat={seat}
+                  // extraCharge={extraCharge}
+                />
               </div>
             </div>
           </div>

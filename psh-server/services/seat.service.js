@@ -1,3 +1,4 @@
+import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 
 const getAllSeatsFromDB = async () => {
@@ -35,9 +36,20 @@ const getAllSeatsFromDB = async () => {
 };
 
 const getSeatByIdFromDB = async (id) => {
-  const result = await Seat.findById(id);
+  const rentRooms = await RentRoom.find({
+    seatId: id,
+    bookingStatus: { $in: ["Booked", "Reserved"] },
+  }).select({
+    bookStartDate: 1,
+    bookEndDate: 1,
+    bookingStatus: 1,
+    roomType: 1,
+    seatId: 1,
+    seatNumber: 1,
+  });
+  const seat = await Seat.findById(id);
 
-  return result;
+  return { seat, rentRooms };
 };
 
 export const seatServices = {

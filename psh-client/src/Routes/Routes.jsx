@@ -1,6 +1,5 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
-import Home from "../pages/Home/Home";
 import SignUp from "../pages/SignUp/SignUp";
 import Success from "../pages/Success/Success";
 import Profile from "../pages/Profile/Profile";
@@ -39,6 +38,7 @@ import ResetPasswordForm from "../pages/ResetPasswordForm";
 import StudySpace from "../pages/StudySpace/StudySpace";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
 import RoomDetails from "../pages/Details/RoomDetails";
+import Home from "../pages/Home/Home";
 
 export const router = createBrowserRouter([
   {

@@ -12,8 +12,10 @@ import SearchBoxSm from "../../components/home/SearchBoxSm";
 import SearchBox from "../../components/home/SearchBox";
 import BusinessPlatform from "../new/BusinessPlatform";
 import HomePage from "../../components/home/HomePage";
+import useRentRoom from "../../hooks/useRentRoom";
 
-function Home() {
+const Home = () => {
+  useRentRoom();
   return (
     <>
       <div className="banner_custom_container ">
@@ -39,6 +41,6 @@ function Home() {
       </div>
     </>
   );
-}
+};
 
 export default Home;

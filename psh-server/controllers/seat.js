@@ -14,12 +14,14 @@ export const getAllSeats = catchAsync(async (req, res, next) => {
 });
 
 export const getSeatById = catchAsync(async (req, res, next) => {
-  const result = await seatServices.getSeatByIdFromDB(req.params.id);
+  const { seat, rentRooms } = await seatServices.getSeatByIdFromDB(
+    req.params.id
+  );
 
   sendResponse(res, {
     statusCode: 200,
     success: true,
     message: "Seats retrieved successfully",
-    data: result,
+    data: { seat, rentRooms },
   });
 });

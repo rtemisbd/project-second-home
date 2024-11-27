@@ -22,6 +22,7 @@ import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import LoadingState from "../LoadingState/LoadingState";
 import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);
@@ -89,26 +90,9 @@ const PersonalInfo = () => {
   const [image, setImage] = useState([]);
 
   const [gardianImg, setGardianImg] = useState([]);
-  // anchorClickHandler
-  const anchorClickHandler = (e) => {
-    e.preventDefault();
-    const hash = e.target.getAttribute("href").split("#")[1];
-    if (hash === "") return false;
 
-    const targetElement = document.getElementById(hash);
-    if (targetElement) {
-      const navbarHeight =
-        document.querySelector(".navbar_sticky").offsetHeight;
-      const targetOffsetTop =
-        targetElement.getBoundingClientRect().top +
-        window.scrollY -
-        navbarHeight;
-
-      window.scrollTo({
-        top: targetOffsetTop,
-        behavior: "smooth",
-      });
-    }
+  const anchorClick = (e) => {
+    anchorClickHandler(e);
   };
 
   const bookingOrder = async (e) => {
@@ -1752,7 +1736,7 @@ const PersonalInfo = () => {
             >
               <a
                 href="#keyDetails"
-                onClick={anchorClickHandler}
+                onClick={anchorClick}
                 className="md:invisible hover:text-white text-white px-14 rounded-t-lg py-1"
                 style={{ backgroundColor: "#00bbb4" }}
               >
