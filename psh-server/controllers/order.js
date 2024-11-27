@@ -14,9 +14,8 @@ import { generateBookingId } from "../utils/generateBookingId.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
-export const createOrder = catchAsync(async (req, res, next) => {
-  console.log(req.body);
 
+export const createOrder = catchAsync(async (req, res, next) => {
   const {
     email,
     bookingInfo,

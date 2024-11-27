@@ -26,29 +26,18 @@ import useExtraCharge from "../../hooks/useExtraCharge";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 
 const BookingTotalBox = ({ data, bookedDates, seat }) => {
-  console.log({ data, seat });
-
   const { user } = useContext(AuthContext);
   const [extraCharge] = useExtraCharge();
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const startDate = useSelector((state) => state.dateCount.startDate);
+  const endDate = useSelector((state) => state.dateCount.endDate);
+  const customerRent = useSelector((state) => state.dateCount.customerRent);
+
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   const [amountForDay, setAmountForDay] = useState(0);
   const [amountForMonth, setAmountForMonth] = useState(0);
   const [amountForYear, setAmountForYear] = useState(0);
-  useEffect(() => {
-    setAmountForDay(seat?.dAmountForDay ?? data?.dAmountForDay ?? 0);
-    setAmountForMonth(seat?.dAmountForMonth ?? data?.dAmountForMonth ?? 0);
-    setAmountForYear(seat?.dAmountForYear ?? data?.dAmountForYear ?? 0);
-  }, [seat, data]);
-
-  const navigate = useNavigate();
-
-  // date handle
-  const dispatch = useDispatch();
-  // const currentDate = new Date().toISOString().split("T")[0];
-  const startDate = useSelector((state) => state.dateCount.startDate);
-
-  const endDate = useSelector((state) => state.dateCount.endDate);
-  const customerRent = useSelector((state) => state.dateCount.customerRent);
 
   const [selectedCheckPayment, setSelectedPayment] = useState(null);
   const [promos] = usePromos();
@@ -88,6 +77,12 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
 
   const [scrollY, setScrollY] = useState(0);
 
+  useEffect(() => {
+    setAmountForDay(seat?.dAmountForDay ?? data?.dAmountForDay ?? 0);
+    setAmountForMonth(seat?.dAmountForMonth ?? data?.dAmountForMonth ?? 0);
+    setAmountForYear(seat?.dAmountForYear ?? data?.dAmountForYear ?? 0);
+  }, [seat, data]);
+
   const anchorClick = (e) => {
     anchorClickHandler(e);
   };
@@ -100,9 +95,6 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   }, [user?._id]);
 
   useEffect(() => {
-    // set Extra Charge
-    // setAddmissionFee(extraCharge[0]?.admissionFee);
-    // setSecurityFee(extraCharge[0]?.securityFee);
     setDisCountTk(0);
     setPromoCodeCheck(false);
     setVatTax((subTotal * extraCharge[0]?.vatTax) / 100);
