@@ -33,6 +33,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const startDate = useSelector((state) => state.dateCount.startDate);
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
+  const seatBooking = useSelector((state) => state.seatBooking.seatBooking);
 
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   const [amountForDay, setAmountForDay] = useState(0);
@@ -49,9 +50,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const [promoCodeCheck, setPromoCodeCheck] = useState(false);
   const [showMiniumPayment, setShowMinimumPayment] = useState(false);
 
-  const [subTotal, setSubtotal] = useState(
-    amountForDay * customerRent?.remainingDays
-  );
+  const [subTotal, setSubtotal] = useState(amountForDay);
 
   const [vatTax, setVatTax] = useState(
     (subTotal * extraCharge[0]?.vatTax) / 100
@@ -335,10 +334,13 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     vatTax: vatTax,
     totalAmount: totalRentAmount,
     payableAmount: payableAmount,
+    roomId: data?._id,
     roomName: data?.name,
     roomNumber: data?.roomNumber,
     roomType: data?.category?.name,
     branch: data?.branch,
+    seatBooking: seat,
+    seat: seat?._id,
     rentDate: {
       bookStartDate: new Date(startDate).toISOString().split("T")[0],
       bookEndDate: new Date(endDate).toISOString().split("T")[0],
@@ -385,7 +387,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     const isBooked = isAlreadyBookings(
       inputStartDate,
       inputEndDate,
-      data?.rentDate
+      bookedDates
     );
 
     if (!isBooked) {

@@ -33,6 +33,7 @@ const BookNow = () => {
       <h2 className="flex justify-left font-bold mb-5 text-2xl">
         Your Information :
       </h2>
+
       <div className=" md:text-xl sm:text-sm">
         <div className="flex justify-between ">
           <p className="flex">

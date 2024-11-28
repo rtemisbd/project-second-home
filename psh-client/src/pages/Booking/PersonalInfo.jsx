@@ -62,6 +62,7 @@ const PersonalInfo = () => {
 
   useEffect(() => {
     const bookingItem = localStorage.getItem("bookingItem");
+
     if (bookingItem) {
       const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
       setBookingItem(parseToJson);
@@ -117,7 +118,7 @@ const PersonalInfo = () => {
       emergencyContact?.length !== 11 ||
       emergencyContact?.substring(0, 2) !== "01"
     ) {
-      return toast.error("Sorry! you gave me wrong Gardian phone number");
+      return toast.error("Sorry! you gave a wrong phone number");
     }
     const formData = new FormData();
     // Booking Data Append
@@ -328,14 +329,14 @@ const PersonalInfo = () => {
 
               {/* Emargency Details */}
               <p className="text-black flex justify-left mt-5 font-bold">
-                Gardian Information <span className="text-red-500">*</span>
+                Guardian Information <span className="text-red-500">*</span>
               </p>
 
               <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-x-36 gap-y-3 mt-5 personal-info-page">
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Contact Name">Name</label>
                   <input
-                    placeholder="Gardian Contact Name *"
+                    placeholder="Guardian Contact Name *"
                     type="text"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="ecName"
