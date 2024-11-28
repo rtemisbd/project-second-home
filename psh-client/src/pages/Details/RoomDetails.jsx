@@ -985,20 +985,6 @@ const RoomDetails = () => {
                   ""
                 )}
 
-                {/* {data?.category?.name === "Shared Room" ? (
-                  <div id="seatTypes">
-                    <div className="mb-5 w-full" id="seat">
-                      {data?.seats && data?.seats.length > 0 ? (
-                        <Seats data={data} handleSubmit={handleSubmit} />
-                      ) : (
-                        ""
-                      )}
-                    </div>
-                  </div>
-                ) : (
-                  ""
-                )} */}
-
                 <div>
                   <h2
                     id="apartmentDetails"
@@ -1132,33 +1118,15 @@ const RoomDetails = () => {
                   >
                     Request for a visit to our PSH
                   </button>
-                  {/* <p></p> */}
                 </div>
               </div>
               {/* Total Box */}
 
               <div className="flex flex-col items-start space-y-3 sm:col-span-12 md:col-span-6 lg:col-span-4 ">
-                {/* {data?.seats && data?.seats.length > 0 ? (
-                  <BookingSeatTotal
-                    data={data}
-                    bookedDates={bookedDates}
-                    seats={data?.seats}
-                    // extraCharge={extraCharge}
-                  />
-                ) : (
-                  <BookingTotalBox
-                    data={data}
-                    bookedDates={bookedDates}
-                    seats={data?.seats}
-                    // extraCharge={extraCharge}
-                  />
-                )} */}
                 <BookingTotalBox
-                  // data={seat ? seat : data}
                   data={data}
                   bookedDates={bookedDates}
                   seat={seat}
-                  // extraCharge={extraCharge}
                 />
               </div>
             </div>

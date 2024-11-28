@@ -11,7 +11,6 @@ const OrderSchema = new mongoose.Schema(
     branch: {
       type: ObjectId,
       ref: "Branch",
-      // required: true,
     },
     fullName: {
       type: String,
@@ -25,7 +24,6 @@ const OrderSchema = new mongoose.Schema(
     userId: {
       type: ObjectId,
       ref: "User",
-      // required: true,
     },
     email: {
       type: String,

@@ -118,6 +118,8 @@ export default function HomePage() {
     }
   }, [activeTab]);
 
+  console.log(randomIndex);
+
   return (
     <div className="category-item">
       <div className="text-left mt-3">
@@ -145,7 +147,7 @@ export default function HomePage() {
                 value={index}
                 key={index}
                 onClick={() => {
-                  setFeatured("no");
+                  setFeatured("");
                   setActiveTab(category.name);
                 }}
                 className="w-fit md:text-[20px] sm:text-[12px] category-type px-0 z-0"

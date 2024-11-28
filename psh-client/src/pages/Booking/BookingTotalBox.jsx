@@ -340,7 +340,6 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     roomType: data?.category?.name,
     branch: data?.branch,
     seatBooking: seat,
-    seat: seat?._id,
     rentDate: {
       bookStartDate: new Date(startDate).toISOString().split("T")[0],
       bookEndDate: new Date(endDate).toISOString().split("T")[0],

@@ -4,16 +4,15 @@ import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
 import nodemailer from "nodemailer";
 import Adjustment from "../models/Adjustment.js";
-import { bookingMail } from "../mail/bookingMail.js";
 import { bookingConfirmMail } from "../mail/bookingConfirmMail.js";
 import { cancelBookingMail } from "../mail/cancelBookingMail.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import mongoose from "mongoose";
-import { generateBookingId } from "../utils/generateBookingId.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
+import config from "../config/index.js";
+import { generateBookingId } from "../utils/generateBookingId.js";
 
 export const createOrder = catchAsync(async (req, res, next) => {
   const {
@@ -125,31 +124,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
     },
   };
 
-  // Order Mail to customer and Manager
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      user: "alaminbamna08@gmail.com",
-      pass: "qesfajhmrfhkfnbo",
-    },
-  });
-  const adminEmail = "psh.info2016@gmail.com";
-
-  const mailOptions = {
-    from: "alaminbamna08@gmail.com",
-    to: `${adminEmail},${email}`,
-    subject: "Your Booking Details at Project Second Home",
-    html: bookingMail(result),
-  };
-
-  transporter.sendMail(mailOptions, function (error, info) {
-    if (error) {
-      // console.log(error);
-    } else {
-      // console.log("Email sent: " + info.response);
-    }
-  });
-
   await User.updateOne(
     { phone: phone },
     { $set: userUpdate },
@@ -184,7 +158,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
     statusCode: 200,
     success: true,
     message:
-      "Thank Youe ! Your Booking Successfully Done, I will very soon Contact You",
+      "Thank You! Your Booking Successfully Done, We will contact you very soon.",
   });
 });
 
@@ -541,6 +515,7 @@ export const getOrder = catchAsync(async (req, res, next) => {
 // };
 
 // Separate function to update order payment status
+
 const updateOrderPaymentStatus = async () => {
   try {
     await Promise.all([

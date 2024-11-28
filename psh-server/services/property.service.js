@@ -21,7 +21,7 @@ const getPropertiesFromDB = async (queries) => {
   const size = parseInt(queries.size) || 0;
 
   let query = {};
-  if (Featured && Featured !== "no") query.Featured = Featured;
+  if (Featured && Featured !== "") query.Featured = Featured;
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
   if (gender && gender !== "") query.type = gender;
   if (bedType && bedType !== "") query.bedType = bedType;

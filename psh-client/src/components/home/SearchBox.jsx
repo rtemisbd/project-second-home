@@ -106,7 +106,6 @@ const SearchBox = () => {
   const handleGenderSelection = (index) => {
     setGenderValue(index);
     const selectedGender = gender[index];
-    setGenderDisplay(selectedGender);
 
     // Map gender values to query values
     if (selectedGender === "Female") {
