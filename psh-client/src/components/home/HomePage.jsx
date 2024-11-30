@@ -4,8 +4,6 @@ import Slider from "react-slick";
 import axios from "axios";
 
 import SingleCard from "./SingleCard";
-import LeftArrow from "../../assets/img/arrow2.png";
-import RightArrow from "../../assets/img/arrow1.png";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { useLocation } from "react-router-dom";
@@ -35,6 +33,7 @@ export default function HomePage() {
   const [randomIndex, setRandomIndex] = useState([]);
   const [showSharedRoom, setSharedRoom] = useState(false);
   const [showOtherRoom, setShowOtherRoom] = useState(true);
+  const [withSharedRoom, setWithSharedRoom] = useState(true);
   const { pathname } = useLocation();
 
   // Get Properties
@@ -44,6 +43,7 @@ export default function HomePage() {
         Featured,
         category: activeTab,
         isPublished: "Published",
+        withSharedRoom,
       });
       const response = await axios.get(
         `${serverBaseUrl}/property?${queryParams.toString()}`
@@ -112,12 +112,12 @@ export default function HomePage() {
     if (activeTab === "Shared Room") {
       setShowOtherRoom(false);
       setSharedRoom(true);
+      setRandomIndex(seats);
     } else {
       setSharedRoom(false);
       setShowOtherRoom(true);
     }
   }, [activeTab]);
-
   console.log(randomIndex);
 
   return (
@@ -137,6 +137,7 @@ export default function HomePage() {
                 getRandomData();
                 setFeatured("yes");
                 setActiveTab("");
+                setWithSharedRoom(true);
               }}
               className="w-fit md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4]"
             >
@@ -149,6 +150,7 @@ export default function HomePage() {
                 onClick={() => {
                   setFeatured("");
                   setActiveTab(category.name);
+                  setWithSharedRoom(false);
                 }}
                 className="w-fit md:text-[20px] sm:text-[12px] category-type px-0 z-0"
               >
@@ -160,19 +162,11 @@ export default function HomePage() {
       </div>
 
       {/* Cards */}
-      {showOtherRoom && randomIndex?.length ? (
+      {randomIndex?.length ? (
         <Splide options={propertySlider(randomIndex)}>
           {randomIndex?.map((item) => (
             <SplideSlide key={item?._id}>
               <SingleCard item={item} />
-            </SplideSlide>
-          ))}
-        </Splide>
-      ) : showSharedRoom && seats?.length ? (
-        <Splide options={propertySlider(seats)}>
-          {seats?.map((item) => (
-            <SplideSlide key={item?._id}>
-              <SharedRoom item={item} />
             </SplideSlide>
           ))}
         </Splide>

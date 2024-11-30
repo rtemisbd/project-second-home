@@ -31,6 +31,7 @@ function List({ type }) {
   const [category, setCategory] = useState(location.state?.category || "");
 
   const [bedrooms, setBedrooms] = useState(location.state.bedrooms || "");
+  const [withSharedRoom, setWithSharedRoom] = useState(true);
   const [startDate, setStartDate] = useState(location.state?.startDate || "");
   const [endDate, setEndDate] = useState(location.state?.endDate || "");
 
@@ -67,6 +68,7 @@ function List({ type }) {
     try {
       setLoading(true);
       const queryParams = new URLSearchParams({
+        withSharedRoom,
         furnitured,
         category,
         isPublished: "Published",

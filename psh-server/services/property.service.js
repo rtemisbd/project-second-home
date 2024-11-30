@@ -1,7 +1,6 @@
-import Branch from "../models/Branch.js";
-import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 import RentRoom from "../models/RentRoom.js";
+import { seatServices } from "./seat.service.js";
 
 const getPropertiesFromDB = async (queries) => {
   const {
@@ -15,6 +14,7 @@ const getPropertiesFromDB = async (queries) => {
     startDate,
     endDate,
     recommended,
+    withSharedRoom,
   } = queries;
 
   const page = parseInt(queries.page) || 0;
@@ -113,8 +113,19 @@ const getPropertiesFromDB = async (queries) => {
   const properties = await Property.aggregate(pipeline);
   // console.log(properties);
 
-  const paginatedResults = properties[0]?.paginatedResults || [];
-  const totalCount = properties[0]?.totalCount || 0;
+  let paginatedResults = properties[0]?.paginatedResults || [];
+  let totalCount = properties[0]?.totalCount || 0;
+  if (withSharedRoom && category !== "Private Room") {
+    const extractedSeats = await seatServices.getAllSeatsFromDB();
+
+    paginatedResults = [
+      ...paginatedResults.filter(
+        (result) => result.categoryDetails.name === "Private Room"
+      ),
+      ...extractedSeats,
+    ];
+    totalCount += extractedSeats.length;
+  }
 
   return {
     properties: paginatedResults,
