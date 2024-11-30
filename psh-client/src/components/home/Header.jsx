@@ -65,7 +65,7 @@ function Header({ type }) {
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
-    navigate("/list", { state: payload });
+    navigate(`/branch/${destination}`, { state: payload });
   };
 
   const [suggestions, setSuggestions] = useState([]);

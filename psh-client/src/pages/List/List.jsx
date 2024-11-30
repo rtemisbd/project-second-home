@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useParams } from "react-router-dom";
 
 import { useSelector } from "react-redux";
 import {
@@ -20,20 +20,24 @@ import axios from "axios";
 
 function List({ type }) {
   const location = useLocation();
+  const { name } = useParams();
+
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
-  const [destination, setDestination] = useState(location.state.destination);
+  const [destination, setDestination] = useState(
+    location?.state?.destination ? location?.state?.destination : name
+  );
   const [furnitured, setRecommended] = useState(
-    location.state?.furnitured || ""
+    location?.state?.furnitured || ""
   );
 
-  const [gender, setGender] = useState(location.state?.gender || "");
-  const [category, setCategory] = useState(location.state?.category || "");
+  const [gender, setGender] = useState(location?.state?.gender || "");
+  const [category, setCategory] = useState(location?.state?.category || "");
 
-  const [bedrooms, setBedrooms] = useState(location.state.bedrooms || "");
+  const [bedrooms, setBedrooms] = useState(location?.state?.bedrooms || "");
   const [withSharedRoom, setWithSharedRoom] = useState(true);
-  const [startDate, setStartDate] = useState(location.state?.startDate || "");
-  const [endDate, setEndDate] = useState(location.state?.endDate || "");
+  const [startDate, setStartDate] = useState(location?.state?.startDate || "");
+  const [endDate, setEndDate] = useState(location?.state?.endDate || "");
 
   const [facilityFilters, setFacilityFilters] = useState([]);
   const [commonFacilityFilters, setCommonFacilityFilters] = useState([]);

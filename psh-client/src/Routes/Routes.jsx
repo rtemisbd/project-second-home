@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
         element: <About></About>,
       },
       {
-        path: "/list",
+        path: `/branch/:name`,
         element: <List></List>,
       },
       {

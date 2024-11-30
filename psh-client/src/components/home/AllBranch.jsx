@@ -101,7 +101,7 @@ const AllBranch = () => {
               <Slider {...settings}>
                 {data?.map((item) => (
                   <div className="items-start" key={item?._id}>
-                    <Link to={`/branch/${item?._id}`}>
+                    <Link to={`/branch/${item?.name}`}>
                       <Card
                         shadow={false}
                         className="relative grid h-[12rem] items-end justify-center overflow-hidden text-center"

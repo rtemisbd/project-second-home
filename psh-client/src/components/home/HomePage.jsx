@@ -113,12 +113,13 @@ export default function HomePage() {
       setShowOtherRoom(false);
       setSharedRoom(true);
       setRandomIndex(seats);
+      setWithSharedRoom(false);
     } else {
       setSharedRoom(false);
       setShowOtherRoom(true);
+      setWithSharedRoom(false);
     }
   }, [activeTab]);
-  console.log(randomIndex);
 
   return (
     <div className="category-item">

@@ -5,7 +5,10 @@ const useRecommended = () => {
   const [recommended, setRecommended] = useState([]);
 
   useEffect(() => {
-    const queryParams = new URLSearchParams({ recommended: "yes" });
+    // const queryParams = new URLSearchParams({
+    //   recommended: "yes",
+    //   withSharedRoom: true,
+    // });
     fetch(`${serverBaseUrl}/property/properties/recommended`)
       .then((res) => res.json())
       .then((data) => {

@@ -155,7 +155,7 @@ const SearchBoxWithNav = () => {
 
     dispatch({ type: "NEW_SEARCH", payload });
     reduxDispatch(placeSearchBoxShow(false));
-    navigate("/list", { state: payload });
+    navigate(`/branch/${destination}`, { state: payload });
   };
 
   return (

@@ -136,7 +136,7 @@ const getPropertiesFromDB = async (queries) => {
 };
 
 const getRecommendedPropertiesFromDB = async () => {
-  const properties = await Property.aggregate([
+  const result = await Property.aggregate([
     { $match: { recommended: "yes", isPublished: "Published" } },
 
     {
@@ -158,16 +158,15 @@ const getRecommendedPropertiesFromDB = async () => {
       },
     },
     { $unwind: "$categoryDetails" },
-    // {
-    //   $lookup: {
-    //     from: "review",
-    //     localField: "review",
-    //     foreignField: "_id",
-    //     as: "review",
-    //   },
-    // },
-    // { $unwind: "$review" },
   ]);
+  const extractedSeats = await seatServices.getAllSeatsFromDB();
+  const properties = [
+    ...result.filter(
+      (result) => result.categoryDetails.name === "Private Room"
+    ),
+    ...extractedSeats,
+  ];
+
   return properties;
 };
 
