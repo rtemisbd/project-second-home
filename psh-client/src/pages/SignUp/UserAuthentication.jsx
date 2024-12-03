@@ -222,8 +222,8 @@ const UserAuthentication = () => {
               className="flex justify-end px-12 pt-6 items-center"
               onClick={handleBack}
             >
-              <button className=" text-black px-5 py-2 rounded hover:underline flex items-center ">
-                <IoIosArrowBack size={15} className="text-black " />
+              <button className=" text-[#35b0a7] px-5 py-2 rounded hover:underline flex items-center ">
+                <IoIosArrowBack size={15} className="text-[#35b0a7] " />
                 Back
               </button>
             </div>
