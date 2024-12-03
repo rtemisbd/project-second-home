@@ -17,7 +17,6 @@ import "@splidejs/react-splide/css";
 import "@splidejs/react-splide/css/skyblue";
 import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
-import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 import { propertySlider } from "../../helpers/utils/projectSlider";
 import useSeat from "../../hooks/useSeat";
 import SharedRoom from "./SharedRoom";
