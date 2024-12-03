@@ -15,7 +15,7 @@ import "react-datepicker/dist/react-datepicker.css";
 import "react-loading-skeleton/dist/skeleton.css";
 
 import "@splidejs/react-splide/css";
-import "@splidejs/splide/dist/css/themes/splide-default.min.css";
+// import "@splidejs/splide/dist/css/themes/splide-default.min.css";
 
 import { QueryClient, QueryClientProvider } from "react-query";
 import { persistQueryClient } from "react-query/persistQueryClient-experimental";
