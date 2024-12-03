@@ -18,9 +18,10 @@ export const getCategory = async (req, res, next) => {
 };
 export const getSingleCategory = async (req, res, next) => {
   try {
-    const category = await Category.findById(req.params.id).populate(
-      "property"
-    );
+    // const category = await Category.findById(req.params.id).populate(
+    //   "property"
+    // );
+    const category = await Category.findById(req.params.id);
     res.status(200).json(category);
   } catch (err) {
     next(err);

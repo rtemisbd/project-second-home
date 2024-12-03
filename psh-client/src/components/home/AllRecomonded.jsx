@@ -8,7 +8,7 @@ import useRecommended from "../../hooks/useRecommended";
 import SingleCard from "./SingleCard";
 import { PropagateLoader } from "react-spinners";
 
-const AllRecomonded = ({ item }) => {
+const AllRecomonded = () => {
   const [page, setPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(Number.MAX_VALUE);
   const [totalPages, setTotalPages] = useState(1);
@@ -23,19 +23,6 @@ const AllRecomonded = ({ item }) => {
     const selectedPage = parseInt(event.target.value);
     setPage(selectedPage);
   };
-
-  // const {
-  //   data: recomendedData,
-  //   loading,
-  //   error,
-  //   reFetch,
-  // } = UseFetch(
-  //   `property/properties/recommended?page=${page}&pageSize=${itemsPerPage}`
-  // );
-  // // find Published Recommended Property
-  // const publishedData = recomendedData.filter(
-  //   (property) => property?.isPublished === "Published"
-  // );
 
   const publishedData = useRecommended();
 
@@ -88,18 +75,18 @@ const AllRecomonded = ({ item }) => {
 
             // Find Already Seat Booked
 
-            const isAlreadySeatBook = [];
+            // const isAlreadySeatBook = [];
 
-            let isSeatIntoDate = false;
-            for (const range of item?.seats) {
-              for (const rentDate of range?.rentDate) {
-                isAlreadySeatBook.push(rentDate);
-                if (currentDate <= rentDate.bookEndDate) {
-                  isSeatIntoDate = true;
-                  break; // No need to continue checking once a match is found
-                }
-              }
-            }
+            // let isSeatIntoDate = false;
+            // for (const range of item?.seats) {
+            //   for (const rentDate of range?.rentDate) {
+            //     isAlreadySeatBook.push(rentDate);
+            //     if (currentDate <= rentDate.bookEndDate) {
+            //       isSeatIntoDate = true;
+            //       break; // No need to continue checking once a match is found
+            //     }
+            //   }
+            // }
             return (
               <Link
                 to={`/room/${item._id}`}

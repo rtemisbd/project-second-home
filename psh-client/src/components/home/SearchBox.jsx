@@ -93,7 +93,6 @@ const SearchBox = () => {
   const handleFurnitureSelection = (index) => {
     setFurnishedValue(index);
     const selectedFurniture = furnitures[index];
-    setFurnishedDisplay(selectedFurniture);
 
     // Map furnitures values to query values
     if (selectedFurniture === "Furnished") {
@@ -106,8 +105,6 @@ const SearchBox = () => {
   const handleGenderSelection = (index) => {
     setGenderValue(index);
     const selectedGender = gender[index];
-    setGenderDisplay(selectedGender);
-
     // Map gender values to query values
     if (selectedGender === "Female") {
       setGenderQuery("female");
@@ -119,10 +116,6 @@ const SearchBox = () => {
   const handleCategorySelection = (index) => {
     setCategoryValue(index);
     const selectedCategory = category[index];
-    // setCategoryDisplay(selectedCategory);
-    console.log(selectedCategory);
-
-    // Map category values to query values
     if (selectedCategory === "All") {
       setCategoryQuery("");
     } else {
@@ -162,7 +155,7 @@ const SearchBox = () => {
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
-    navigate("/list", { state: payload });
+    navigate(`/branch/${destination}`, { state: payload });
   };
 
   return (

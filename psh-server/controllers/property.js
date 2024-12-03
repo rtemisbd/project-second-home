@@ -3,7 +3,6 @@ import Property from "../models/Property.js";
 import Branch from "../models/Branch.js";
 import catchAsync from "../shared/cathAsync.js";
 import { propertyServices } from "../services/property.service.js";
-import sendResponse from "../shared/sendResponse.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -22,24 +21,24 @@ export const CreatePropertys = async (req, res, next) => {
     }
 
     // Create the Property and assign it to the category, branch, and facilities
-    const product = new Property({
+    const newRoom = new Property({
       rentDate: rentDate,
       category: category._id,
       branch: branch._id,
       seats: seats,
       ...othersData,
     });
-    await product.save();
+    await newRoom.save();
 
     // Add the product to the category's products array
-    category.property.push(product._id);
+    category.property.push(newRoom._id);
     await category.save();
 
     // Add the product to the branch's products array
-    branch.property.push(product._id);
+    branch.property.push(newRoom._id);
     await branch.save();
 
-    res.status(201).json(product);
+    res.status(201).json(newRoom);
   } catch (err) {
     next(err);
   }

@@ -3,11 +3,13 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import axios from "axios";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Branch = ({ data }) => {
   const { _id, name } = data;
 
   const [files, setFiles] = useState("");
+  const [banner, setBanner] = useState("");
   const MySwal = withReactContent(Swal);
   const formRef = useRef(null);
   const handleSubmit = async (event) => {
@@ -51,7 +53,7 @@ const Branch = ({ data }) => {
         photos: list?.length > 0 ? list : data?.photos,
       };
 
-      await axios.put(`https://api.psh.com.bd/api/branch/${_id}`, branch);
+      await axios.put(`${baseUrl}/api/branch/${_id}`, branch);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {
@@ -281,6 +283,18 @@ const Branch = ({ data }) => {
               onChange={(e) => setFiles(e.target.files)}
               multiple
               // required
+            />
+          </div>
+          <div className="col-md-12 form_sub_stream">
+            <label htmlFor="inputState" className="form-label profile_label3 ">
+              Banner upload
+            </label>
+
+            <input
+              type="file"
+              className="main_form w-100 p-0"
+              name="banner"
+              onChange={(e) => setBanner(e.target.files)}
             />
           </div>
         </div>

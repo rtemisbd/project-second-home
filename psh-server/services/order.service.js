@@ -30,13 +30,6 @@ const createOrderIntoDB = async (payload) => {
 
   const bookingInfoParse = JSON.parse(bookingInfo);
 
-  const gardianImg = req?.files?.gardianImg?.length
-    ? req?.files?.gardianImg[0]?.path
-    : user?.gardianImg;
-
-  const image = req?.files?.image?.length
-    ? req?.files?.image[0]?.path
-    : user?.cardImage;
   const branch = bookingInfoParse?.branch;
 
   const generateId = await generateBookingId();
@@ -46,8 +39,7 @@ const createOrderIntoDB = async (payload) => {
     bookingId: generateId,
     email,
     branch,
-    image,
-    gardianImg,
+
     fullName,
     fatherName,
     motherName,

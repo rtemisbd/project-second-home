@@ -18,48 +18,31 @@ import { useContext } from "react";
 import { AuthContext } from "../../contexts/UserProvider";
 import "../../components/shared/Custom.css";
 import "./BookingTotalBox.css";
-import FinalLoginModal from "../../components/shared/FinalLoginModal";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
+import useExtraCharge from "../../hooks/useExtraCharge";
+import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 
-const BookingTotalBox = ({ data, seats, extraCharge }) => {
+const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const { user } = useContext(AuthContext);
-  const [isIncludeFood, setIsIncludeFood] = useState(false);
-
+  const [extraCharge] = useExtraCharge();
   const navigate = useNavigate();
-
-  // date handle
   const dispatch = useDispatch();
-  // const currentDate = new Date().toISOString().split("T")[0];
   const startDate = useSelector((state) => state.dateCount.startDate);
-
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
+  const seatBooking = useSelector((state) => state.seatBooking.seatBooking);
+
+  const [isIncludeFood, setIsIncludeFood] = useState(false);
+  const [amountForDay, setAmountForDay] = useState(0);
+  const [amountForMonth, setAmountForMonth] = useState(0);
+  const [amountForYear, setAmountForYear] = useState(0);
 
   const [selectedCheckPayment, setSelectedPayment] = useState(null);
   const [promos] = usePromos();
-  const anchorClickHandler = (e) => {
-    e.preventDefault();
-    const hash = e.target.getAttribute("href").split("#")[1];
-    if (hash === "") return false;
 
-    const targetElement = document.getElementById(hash);
-    if (targetElement) {
-      const navbarHeight =
-        document.querySelector(".navbar_sticky").offsetHeight;
-      const targetOffsetTop =
-        targetElement.getBoundingClientRect().top +
-        window.scrollY -
-        navbarHeight;
-
-      window.scrollTo({
-        top: targetOffsetTop,
-        behavior: "smooth",
-      });
-    }
-  };
   const [userPromo, setUserPromo] = useState({});
   const [discountTk, setDisCountTk] = useState(0);
   const [promoCode, setPromoCode] = useState(null);
@@ -67,13 +50,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   const [promoCodeCheck, setPromoCodeCheck] = useState(false);
   const [showMiniumPayment, setShowMinimumPayment] = useState(false);
 
-  const [subTotal, setSubtotal] = useState(
-    data?.seats?.length > 0
-      ? 0
-      : data?.dAmountForDay * customerRent?.remainingDays
-  );
+  const [subTotal, setSubtotal] = useState(amountForDay);
 
-  const [vatTax, setVatTaxt] = useState(
+  const [vatTax, setVatTax] = useState(
     (subTotal * extraCharge[0]?.vatTax) / 100
   );
 
@@ -91,6 +70,21 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   );
 
   const [singleUser, setSingleUser] = useState({});
+  // handle Scrolled
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [size, setSize] = React.useState(null);
+
+  const [scrollY, setScrollY] = useState(0);
+
+  useEffect(() => {
+    setAmountForDay(seat?.dAmountForDay ?? data?.dAmountForDay ?? 0);
+    setAmountForMonth(seat?.dAmountForMonth ?? data?.dAmountForMonth ?? 0);
+    setAmountForYear(seat?.dAmountForYear ?? data?.dAmountForYear ?? 0);
+  }, [seat, data]);
+
+  const anchorClick = (e) => {
+    anchorClickHandler(e);
+  };
 
   // Get Single User
   useEffect(() => {
@@ -100,12 +94,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
   }, [user?._id]);
 
   useEffect(() => {
-    // set Extra Charge
-    // setAddmissionFee(extraCharge[0]?.admissionFee);
-    // setSecurityFee(extraCharge[0]?.securityFee);
     setDisCountTk(0);
     setPromoCodeCheck(false);
-    setVatTaxt((subTotal * extraCharge[0]?.vatTax) / 100);
+    setVatTax((subTotal * extraCharge[0]?.vatTax) / 100);
 
     // If User give a Promo
     const promo = promos.find((promo) => promo?.promoCode === promoCode);
@@ -120,26 +111,26 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
 
     if (
       customerRent?.remainingDays &&
-      data?.dAmountForDay &&
+      amountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      setSubtotal(() => data?.dAmountForDay * customerRent?.remainingDays);
+      setSubtotal(() => amountForDay * customerRent?.remainingDays);
     } else if (
       customerRent?.months !== undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
         () =>
-          data?.dAmountForMonth * customerRent?.months +
-          data?.dAmountForDay * customerRent?.days
+          amountForMonth * customerRent?.months +
+          amountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(() => data?.dAmountForYear * customerRent?.years);
+      setSubtotal(() => amountForYear * customerRent?.years);
     }
     if (subTotal) {
       const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
-      setVatTaxt(parseInt(getvatTax));
+      setVatTax(parseInt(getvatTax));
     }
     // minimum Payment
     if (
@@ -321,8 +312,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     }
   };
 
-  // if months >1 then this funtionality added
-
   // get month Last Day
   function getLastDayOfMonth() {
     const today = new Date(startDate);
@@ -345,10 +334,12 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     vatTax: vatTax,
     totalAmount: totalRentAmount,
     payableAmount: payableAmount,
+    roomId: data?._id,
     roomName: data?.name,
     roomNumber: data?.roomNumber,
     roomType: data?.category?.name,
     branch: data?.branch,
+    seatBooking: seat,
     rentDate: {
       bookStartDate: new Date(startDate).toISOString().split("T")[0],
       bookEndDate: new Date(endDate).toISOString().split("T")[0],
@@ -363,8 +354,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     customerRent: customerRent,
   };
 
-  // const [open, setOpen] = React.useState(false);
-  // const handleOpen = () => setOpen((cur) => !cur);
   const handleAddItem = () => {
     if (!user) {
       return navigate("/authentication", { state: location?.pathname });
@@ -397,7 +386,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     const isBooked = isAlreadyBookings(
       inputStartDate,
       inputEndDate,
-      data?.rentDate
+      bookedDates
     );
 
     if (!isBooked) {
@@ -415,11 +404,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
       toast.error("Sorry ! You Select Already Booking Dates");
     }
   };
-
-  // handle Scrooled
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  const [scrollY, setScrollY] = useState(0);
 
   const handleScroll = () => {
     setScrollY(window.scrollY);
@@ -443,12 +427,9 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
     }
   }, [scrollY]);
 
-  const [size, setSize] = React.useState(null);
-
   const handleOpen = (value) => setSize(value);
   return (
     <>
-      <FinalLoginModal />
       <div
         style={{
           // height: "650px",
@@ -476,9 +457,6 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
             borderRadius: "5px",
           }}
         >
-          {/* <h2 className="text-left font-bold" style={{ color: "#212A42" }}>
-            {data?.name}
-          </h2> */}
           <div className="flex justify-between">
             <div className="flex ">
               <div>
@@ -560,7 +538,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                 selected={new Date(startDate)}
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(leftDate(date))}
-                excludeDateIntervals={data?.rentDate?.map((rent) => {
+                excludeDateIntervals={bookedDates?.map((rent) => {
                   return {
                     start: subDays(new Date(rent?.bookStartDate), 1),
                     end: addDays(new Date(rent?.bookEndDate), -1),
@@ -584,7 +562,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(rightDate(date))}
                 // showIcon
-                excludeDateIntervals={data?.rentDate?.map((rent) => {
+                excludeDateIntervals={bookedDates?.map((rent) => {
                   return {
                     start: subDays(new Date(rent?.bookStartDate), 1),
                     end: addDays(new Date(rent?.bookEndDate), 0),
@@ -707,9 +685,8 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                         customerRent?.years === undefined ? (
                           <span>
                             {customerRent?.remainingDays + " day"} X{" "}
-                            {data?.dAmountForDay} = {""}
-                            {data?.dAmountForDay * customerRent?.remainingDays +
-                              " Tk"}
+                            {amountForDay} = {""}
+                            {amountForDay * customerRent?.remainingDays + " Tk"}
                           </span>
                         ) : (
                           ""
@@ -719,13 +696,11 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                         customerRent?.years === undefined ? (
                           <span>
                             {customerRent.months + " month"} = {""}
-                            {data?.dAmountForMonth * customerRent.months +
-                              " Tk"}
+                            {amountForMonth * customerRent.months + " Tk"}
                             {customerRent?.days > 0 ? (
                               <span>
                                 + {customerRent?.days + " Days"} = {""}
-                                {data?.dAmountForDay * customerRent?.days +
-                                  " Tk"}
+                                {amountForDay * customerRent?.days + " Tk"}
                               </span>
                             ) : (
                               ""
@@ -738,7 +713,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                         {customerRent?.years === 1 ? (
                           <span>
                             {customerRent?.years + " Year"} = {""}
-                            {data?.dAmountForYear * customerRent?.years + " Tk"}
+                            {amountForYear * customerRent?.years + " Tk"}
                           </span>
                         ) : (
                           ""
@@ -1257,7 +1232,7 @@ const BookingTotalBox = ({ data, seats, extraCharge }) => {
                 href="#cart2"
                 className="md:invisible ms-3 text-white hover:text-white px-14 py-1 rounded-t-lg"
                 style={{ backgroundColor: "#00bbb4" }}
-                onClick={anchorClickHandler}
+                onClick={anchorClick}
               >
                 <i className="fas fa-shopping-cart mr-2 mt-2 text-[16px]"></i>
                 Apply for Booking

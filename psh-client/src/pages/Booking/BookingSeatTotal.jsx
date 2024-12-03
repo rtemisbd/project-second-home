@@ -18,7 +18,6 @@ import { AuthContext } from "../../contexts/UserProvider";
 import "./BookingTotalBox.css";
 import "../../components/shared/Custom.css";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
-import FinalLoginModal from "../../components/shared/FinalLoginModal";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "./bookingChecking";
@@ -469,8 +468,6 @@ const BookingSeatTotal = ({ data, seats, extraCharge }) => {
       }}
       className="sticky md:top-20 w-full"
     >
-      <FinalLoginModal />
-
       <div
         style={{
           backgroundColor: "#35B0A7",

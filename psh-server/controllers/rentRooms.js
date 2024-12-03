@@ -3,8 +3,9 @@ import RentRoom from "../models/RentRoom.js";
 
 export const getRentRooms = async (req, res, next) => {
   try {
-    const { checkingDate } = req.query;
-    const today = new Date(checkingDate).toISOString()?.split("T")[0];
+    // const { checkingDate } = req.query;
+    // const today = new Date(checkingDate).toISOString()?.split("T")[0];
+    const today = new Date().toISOString()?.split("T")[0];
     const rentRooms = await RentRoom.find({
       bookStartDate: { $lte: today },
       bookEndDate: { $gte: today },

@@ -11,6 +11,8 @@ import ImageViewer from "./ImageViewer";
 import { formatDate } from "../../utils/dateConvert";
 
 const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
+  console.log(data);
+
   const ref = useRef();
 
   const handleClose = () => setShowDetails(false);

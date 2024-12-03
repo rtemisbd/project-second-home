@@ -1,7 +1,6 @@
-import Branch from "../models/Branch.js";
-import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 import RentRoom from "../models/RentRoom.js";
+import { seatServices } from "./seat.service.js";
 
 const getPropertiesFromDB = async (queries) => {
   const {
@@ -15,13 +14,14 @@ const getPropertiesFromDB = async (queries) => {
     startDate,
     endDate,
     recommended,
+    withSharedRoom,
   } = queries;
 
   const page = parseInt(queries.page) || 0;
   const size = parseInt(queries.size) || 0;
 
   let query = {};
-  if (Featured && Featured !== "no") query.Featured = Featured;
+  if (Featured && Featured !== "") query.Featured = Featured;
   if (furnitured && furnitured !== "") query.furnitured = furnitured;
   if (gender && gender !== "") query.type = gender;
   if (bedType && bedType !== "") query.bedType = bedType;
@@ -113,11 +113,24 @@ const getPropertiesFromDB = async (queries) => {
   const properties = await Property.aggregate(pipeline);
   // console.log(properties);
 
-  const paginatedResults = properties[0]?.paginatedResults || [];
-  const totalCount = properties[0]?.totalCount || 0;
+  let allProperties = properties[0]?.paginatedResults || [];
+  let totalCount = properties[0]?.totalCount || 0;
+  if (withSharedRoom && category !== "Private Room") {
+    const extractedSeats = await seatServices.getAllSeatsFromDB({
+      destination,
+    });
+
+    allProperties = [
+      ...allProperties.filter(
+        (result) => result.categoryDetails.name === "Private Room"
+      ),
+      ...extractedSeats,
+    ];
+    totalCount += extractedSeats.length;
+  }
 
   return {
-    properties: paginatedResults,
+    properties: allProperties,
     totalCount: totalCount,
     currentPage: page,
     pageSize: size,
@@ -125,7 +138,7 @@ const getPropertiesFromDB = async (queries) => {
 };
 
 const getRecommendedPropertiesFromDB = async () => {
-  const properties = await Property.aggregate([
+  const result = await Property.aggregate([
     { $match: { recommended: "yes", isPublished: "Published" } },
 
     {
@@ -147,16 +160,15 @@ const getRecommendedPropertiesFromDB = async () => {
       },
     },
     { $unwind: "$categoryDetails" },
-    // {
-    //   $lookup: {
-    //     from: "review",
-    //     localField: "review",
-    //     foreignField: "_id",
-    //     as: "review",
-    //   },
-    // },
-    // { $unwind: "$review" },
   ]);
+  const extractedSeats = await seatServices.getAllSeatsFromDB({});
+  const properties = [
+    ...result.filter(
+      (result) => result.categoryDetails.name === "Private Room"
+    ),
+    ...extractedSeats,
+  ];
+
   return properties;
 };
 

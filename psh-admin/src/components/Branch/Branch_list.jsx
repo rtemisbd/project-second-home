@@ -13,6 +13,7 @@ import BranchUpdate from "./BranchUpdate";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Branch_list = () => {
   const MySwal = withReactContent(Swal);
@@ -91,29 +92,11 @@ const Branch_list = () => {
       },
     },
   ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-  });
+
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(`https://api.psh.com.bd/api/branch`, {
+        const { data } = await axios.get(`${baseUrl}/api/branch`, {
           mode: "cors",
         });
         setData(data);
@@ -128,13 +111,12 @@ const Branch_list = () => {
   const handleBranch = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/branch/${id}`;
+      const url = `${baseUrl}/api/branch/${id}`;
       fetch(url, {
         method: "DELETE",
       })
         .then((res) => res.json())
         .then((data) => {
-          console.log(data);
           MySwal.fire("Good job!", "successfully deleted", "success");
           if (data.deletedCount === 1) {
             const remainItem = products.filter((item) => item._id !== id);
@@ -176,7 +158,6 @@ const Branch_list = () => {
                     keyField="_id"
                     columns={columns}
                     data={data}
-                    pagination={pagination}
                     exportCSV
                   >
                     {(props) => (
@@ -186,7 +167,6 @@ const Branch_list = () => {
                           keyField="_id"
                           columns={columns}
                           data={data}
-                          pagination={pagination}
                           {...props.baseProps}
                         />
                       </React.Fragment>
@@ -195,15 +175,9 @@ const Branch_list = () => {
                 </>
               </div>
             </div>
-            {/* /.row (main row) */}
           </div>
-          {/* /.container-fluid */}
         </section>
-        {/* /.content */}
       </div>
-      {/* /.content-wrapper */}
-
-      {/* Control Sidebar */}
     </div>
   );
 };

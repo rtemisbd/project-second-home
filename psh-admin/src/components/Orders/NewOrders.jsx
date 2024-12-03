@@ -144,9 +144,6 @@ const NewOrders = () => {
     if (!isNaN(Number(value) && value.length === 11)) {
       setFilteredPhone(value);
     }
-    //  else {
-    //   setFilteredName(value);
-    // }
   };
 
   const handleRefreshQuery = () => {

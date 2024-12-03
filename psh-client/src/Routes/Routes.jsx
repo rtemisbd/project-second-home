@@ -1,13 +1,11 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
-import Home from "../pages/Home/Home";
 import SignUp from "../pages/SignUp/SignUp";
 import Success from "../pages/Success/Success";
 import Profile from "../pages/Profile/Profile";
 import Contact from "../pages/Contact/Contact";
 import About from "../pages/About/About";
 import SignIn from "../pages/SignUp/SignIn";
-import Room from "../pages/Details/Room";
 
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
@@ -39,6 +37,8 @@ import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
 import StudySpace from "../pages/StudySpace/StudySpace";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
+import RoomDetails from "../pages/Details/RoomDetails";
+import Home from "../pages/Home/Home";
 
 export const router = createBrowserRouter([
   {
@@ -58,7 +58,7 @@ export const router = createBrowserRouter([
         element: <About></About>,
       },
       {
-        path: "/list",
+        path: `/branch/:name`,
         element: <List></List>,
       },
       {
@@ -66,8 +66,8 @@ export const router = createBrowserRouter([
         element: <LeaseProperty />,
       },
       {
-        path: "/:room/:id",
-        element: <Room></Room>,
+        path: "/:category/:room/:id",
+        element: <RoomDetails />,
       },
       {
         path: "/event/:id",
