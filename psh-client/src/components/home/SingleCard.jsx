@@ -10,8 +10,6 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 // import "./styles/SingleCard.css";
 
 const SingleCard = ({ item }) => {
-  // console.log(item);
-
   return (
     <div className="single-card ">
       <Card className="mb-5 w-full ">
@@ -38,8 +36,7 @@ const SingleCard = ({ item }) => {
           )}
           {item?.categoryDetails?.name === "Shared Room" ? (
             <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
-              {item?.seatType?.toUpperCase()}
-              {/* -{item?.seatNumber} */}
+              {item?.seatType}-{item?.seatNumber}
             </div>
           ) : (
             ""

@@ -1,7 +1,9 @@
 import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 
-const getAllSeatsFromDB = async () => {
+const getAllSeatsFromDB = async (queries) => {
+  const { destination } = queries;
+
   const pipeline = [
     {
       $lookup: {
@@ -21,6 +23,11 @@ const getAllSeatsFromDB = async () => {
       },
     },
     { $unwind: "$branchDetails" },
+    {
+      $match: {
+        ...(destination ? { "branchDetails.name": destination } : {}),
+      },
+    },
     {
       $lookup: {
         from: "categories",

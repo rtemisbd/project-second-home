@@ -113,13 +113,15 @@ const getPropertiesFromDB = async (queries) => {
   const properties = await Property.aggregate(pipeline);
   // console.log(properties);
 
-  let paginatedResults = properties[0]?.paginatedResults || [];
+  let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
   if (withSharedRoom && category !== "Private Room") {
-    const extractedSeats = await seatServices.getAllSeatsFromDB();
+    const extractedSeats = await seatServices.getAllSeatsFromDB({
+      destination,
+    });
 
-    paginatedResults = [
-      ...paginatedResults.filter(
+    allProperties = [
+      ...allProperties.filter(
         (result) => result.categoryDetails.name === "Private Room"
       ),
       ...extractedSeats,
@@ -128,7 +130,7 @@ const getPropertiesFromDB = async (queries) => {
   }
 
   return {
-    properties: paginatedResults,
+    properties: allProperties,
     totalCount: totalCount,
     currentPage: page,
     pageSize: size,
@@ -159,7 +161,7 @@ const getRecommendedPropertiesFromDB = async () => {
     },
     { $unwind: "$categoryDetails" },
   ]);
-  const extractedSeats = await seatServices.getAllSeatsFromDB();
+  const extractedSeats = await seatServices.getAllSeatsFromDB({});
   const properties = [
     ...result.filter(
       (result) => result.categoryDetails.name === "Private Room"

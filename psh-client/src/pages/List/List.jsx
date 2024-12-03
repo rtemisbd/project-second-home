@@ -1,16 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
-
-import { useSelector } from "react-redux";
-import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-} from "@material-tailwind/react";
-import UseFetch from "../../hooks/useFetch";
-
-import ListFilter from "./ListFilter";
 import SingleCard from "../../components/home/SingleCard";
 import "./List.css";
 import { PropagateLoader } from "react-spinners";
@@ -24,9 +13,10 @@ function List({ type }) {
 
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
-  const [destination, setDestination] = useState(
-    location?.state?.destination ? location?.state?.destination : name
-  );
+  // const [destination, setDestination] = useState(
+  //   location?.state?.destination ? location?.state?.destination : name
+  // );
+  const [destination, setDestination] = useState(name);
   const [furnitured, setRecommended] = useState(
     location?.state?.furnitured || ""
   );
