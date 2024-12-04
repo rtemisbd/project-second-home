@@ -1,16 +1,22 @@
 import { useDispatch, useSelector } from "react-redux";
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
+import promoIcon from "../../assets/img/coupon.png";
 import "../../components/shared/Custom.css";
 import "./BookingTotalBox.css";
 import { rightDate } from "../../redux/reducers/dateSlice";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import DatePicker from "react-datepicker";
+import { useState } from "react";
+import { Link } from "react-router-dom";
 
 const BookingBox = ({ data, bookedDates, seat }) => {
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
+
+  const [promoCode, setPromoCode] = useState(null);
+  const [promoCodeCheck, setPromoCodeCheck] = useState(false);
 
   // get month Last Day
   function getLastDayOfMonth() {
@@ -183,6 +189,52 @@ const BookingBox = ({ data, bookedDates, seat }) => {
           </p>
         </div>
       </div>
+      <form
+      // onSubmit={handlePromoCode}
+      >
+        <div className="flex total-area relative md:mx-3 sm:mx-2 my-3">
+          <div>
+            <input
+              className="sm:px-5 md:px-6 text-sm"
+              type="text"
+              name="promoCode"
+              onChange={(e) => setPromoCode(e.target.value)}
+              style={{ height: "25px", width: "80%" }}
+              placeholder="Pormo Code"
+              disabled={promoCodeCheck ? true : false}
+              required
+            />
+            <div className="absolute top-1 left-3">
+              <img src={promoIcon} alt="" />
+            </div>
+          </div>
+          <div className=" ">
+            <button
+              type="submit"
+              style={{
+                border: "1px solid #399",
+                backgroundColor: promoCodeCheck ? "#9eebe8" : "#35B0A7 ",
+                color: "white",
+                borderRadius: "0px 2px 2px 0px",
+                padding: "1px 5px",
+                fontSize: "14px",
+              }}
+              disabled={promoCodeCheck ? true : false}
+              className="ms-[-40px]"
+            >
+              Confirm
+            </button>
+          </div>
+          <Link
+            to="/promo"
+            className="md:text-[14px] sm:text-[12px] ms-5 mt-1 hover:text-[#02625a]  text-[#35B0A7] font-[600] underline"
+            target="_blank"
+          >
+            {" "}
+            Your Offers
+          </Link>
+        </div>
+      </form>
     </div>
   );
 };

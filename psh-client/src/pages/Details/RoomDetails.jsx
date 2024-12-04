@@ -93,8 +93,6 @@ const RoomDetails = () => {
         try {
           const response = await fetch(`${serverBaseUrl}/seats/${id}`);
           const { data } = await response.json();
-          console.log(data.seat);
-
           setSeat(data.seat);
           setBookDates(data.rentRooms);
           setPhotos([...data?.seat?.photos]);

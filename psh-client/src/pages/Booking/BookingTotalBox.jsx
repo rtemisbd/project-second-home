@@ -235,7 +235,6 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   // If Promo Code
   const handlePromoCode = (e) => {
     e.preventDefault();
-
     if (!user) {
       return toast.error("Login Required");
     }
@@ -243,9 +242,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     if (userPromo?.promoDiscount === 100) {
       return toast.error("Sorry ! this offer only for Shared Room");
     }
-
     // Already Used Promo Checking
-
     const findLastTimeUsedPromo = singleUser?.usedPromo
       ?.slice()
       .reverse()
@@ -265,9 +262,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     }
 
     const newMonth = new Date(startDate).getMonth() + 1;
-
     // Check use month promo code
-
     if (previousUseMonth === newMonth) {
       return toast.error(
         "Sorry! you have already used this promo code this month"

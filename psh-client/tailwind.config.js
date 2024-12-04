@@ -9,7 +9,7 @@ module.exports = withMT({
   ],
   theme: {
     screens: {
-      sm: "320px",
+      sm: "315px",
       // => @media (min-width: 640px) { ... }
 
       md: "768px",
