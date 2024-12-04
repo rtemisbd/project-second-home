@@ -100,42 +100,6 @@ const Footer = () => {
           <footer className="pt-4 pb-8 xl:pt-8 custom-container sm:p-5 ">
             <div className="  dark:text-gray-300">
               <ul className="grid lg:grid-cols-5 md:grid-cols-2 sm:grid-cols-2 pb-8 text-lg font-light gap-x-10">
-                {/* <li className="w-1/2 md:w-1/6 lg:w-1/6">
-                  <div className="text-start">
-                    <h2
-                      className=" dark:text-gray-200 text-md mb-4"
-                      style={{ color: "rgba(40, 255, 239, 1)" }}
-                    >
-                      PSH
-                    </h2>
-
-                    <ul className="footer_li">
-                      {data
-                        ?.filter((item) => item?.section === "footer1")
-                        .map((item) => (
-                          <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
-                            <Link to={`${item?.link}`}> {item?.name}</Link>
-                          </li>
-                        ))}
-
-                      <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
-                        <a href="#">Our Story</a>
-                      </li>
-                     
-                      <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
-                        <a href="#">Our Service</a>
-                      </li>
-                      <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
-                        <a href="#">Testimonials</a>
-                      </li>
-                      <Link to={"/terms"}>
-                        <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
-                          <a>Terms & Conditions</a>
-                        </li>
-                      </Link>
-                    </ul>
-                  </div>
-                </li> */}
                 <li className="">
                   <div className="text-start">
                     <h2
@@ -373,12 +337,9 @@ const Footer = () => {
                 </div>
                 <div>
                   <div className="mt-6">
-                    <button
-                      className="footer_btn"
-                      onClick={() => dispatch(placeModalShow(true))}
-                    >
+                    <Link to="/authentication" className="footer_btn">
                       <p className="mt-2 text-[14px]"> Login / Signup</p>
-                    </button>
+                    </Link>
                   </div>
                   <div className="mt-6 ">
                     <button className="footer_btn ">
