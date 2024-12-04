@@ -36,6 +36,8 @@ const BookingData = ({
   page,
   size,
 }) => {
+  console.log(booking);
+
   // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
     ?.toLocaleString()

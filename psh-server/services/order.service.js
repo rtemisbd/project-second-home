@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import OrderModel from "../models/Order.js";
 import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
+import RentRoom from "../models/RentRoom.js";
 
 const createOrderIntoDB = async (payload) => {
   const {
@@ -247,6 +248,25 @@ const getOrderFromDB = async (queries) => {
   const result = await OrderModel.aggregate(pipeline);
 
   return { result, totalCount };
+};
+
+const getOrderByIdFromDB = async (id) => {
+  const rentRooms = await RentRoom.find({
+    roomId: propertyId,
+    bookingStatus: { $in: ["Booked", "Reserved"] },
+  }).select({
+    bookStartDate: 1,
+    bookEndDate: 1,
+    bookingStatus: 1,
+    roomType: 1,
+    seatId: 1,
+    seatNumber: 1,
+    roomNumber: 1,
+    roomId: 1,
+  });
+  const result = await OrderModel.findById(id);
+
+  return result;
 };
 
 export const orderServices = {

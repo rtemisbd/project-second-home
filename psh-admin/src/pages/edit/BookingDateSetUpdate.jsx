@@ -15,6 +15,8 @@ const BookingDateSetUpdate = ({
   showSeatUpdateDuration,
   setShowSeatUpdateDuration,
 }) => {
+  // console.log(data);
+
   const {
     room,
     loading,
