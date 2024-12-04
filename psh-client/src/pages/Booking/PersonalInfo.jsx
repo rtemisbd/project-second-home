@@ -182,7 +182,6 @@ const PersonalInfo = () => {
       navigate("/booking-now");
     } catch (error) {
       dispatch(placeLoadingShow(false));
-      console.log(error);
 
       toast.error("Something is wrong");
     }
