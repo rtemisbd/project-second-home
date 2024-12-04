@@ -17,6 +17,8 @@ const BookingDateUpdate = ({
   setShowDurationModal,
   showDurationModal,
 }) => {
+  // console.log(data);
+
   const { room, loading, error } = UseFetch(
     `property/${data?.bookingInfo?.data?._id}`
   );
@@ -91,11 +93,6 @@ const BookingDateUpdate = ({
   }, []);
 
   useEffect(() => {
-    //  Set Extra Charge
-    // setAddmissionFee(extraCharge[0]?.admissionFee);
-    // setSecurityFee(extraCharge[0]?.securityFee);
-    // If used promo this booking User then find-out promo
-
     const promo = promos.find(
       (promo) => promo?.promoCode === data?.bookingInfo?.usedPromo?.promo
     );

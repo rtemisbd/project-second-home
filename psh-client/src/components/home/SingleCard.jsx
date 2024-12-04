@@ -73,7 +73,7 @@ const SingleCard = ({ item }) => {
 
             <div className="">
               <h2 className=" text-[14px] card-title ">
-                {item?.name}-{}
+                Room No-{}
                 {item?.roomNumber}
               </h2>
             </div>

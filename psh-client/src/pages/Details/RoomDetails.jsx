@@ -29,6 +29,7 @@ import toast from "react-hot-toast";
 import useRecommended from "../../hooks/useRecommended";
 import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
+import BookingBox from "../Booking/BookingBox";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
@@ -119,7 +120,6 @@ const RoomDetails = () => {
       fetchData();
     }
   }, [roomType, id]);
-  console.log(bookedDates);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");
@@ -1128,6 +1128,7 @@ const RoomDetails = () => {
                   bookedDates={bookedDates}
                   seat={seat}
                 />
+                {/* <BookingBox data={data} bookedDates={bookedDates} seat={seat} /> */}
               </div>
             </div>
           </div>
