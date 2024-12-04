@@ -17,11 +17,6 @@ const BookingDateUpdate = ({
   setShowDurationModal,
   showDurationModal,
 }) => {
-  // console.log(data);
-
-  const { room, loading, error } = UseFetch(
-    `property/${data?.bookingInfo?.data?._id}`
-  );
   // const [extraCharge] = useExtraCharge();
   const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
   const [roomBookingDates, setRoomBookingDates] = useState([]);
@@ -34,7 +29,30 @@ const BookingDateUpdate = ({
     data?.bookingInfo?.rentDate?.bookEndDate
   );
   const [customerRent, setCustomerRent] = useState({});
-  console.log(data?.branchDetails?.foodAmount);
+  const [addMissionFee, setAddmissionFee] = useState(0);
+
+  const [securityFee, setSecurityFee] = useState(0);
+
+  const [minimumPayment, setMinimumPayment] = useState(0);
+
+  const [totalRentAmount, setTotalRentAmount] = useState(
+    parseInt(data?.bookingInfo?.totalAmount)
+  );
+  const [payableAmount, setPayableAmount] = useState(0);
+  const [promos] = usePromo();
+  const [userPromo, setUserPromo] = useState({});
+  const [discountTk, setDisCountTk] = useState(0);
+
+  const [isAdjustmen, setIsAdjustment] = useState(false);
+  const [bookedDates, setBookedDates] = useState([]);
+
+  const { room, loading, error } = UseFetch(
+    `property/${data?.bookingInfo?.data?._id}`
+  );
+
+  useEffect(() => {
+    setBookedDates(room?.rentRooms);
+  }, [room]);
   // Get Total Days this Year
   function getDaysInCurrentYear() {
     const currentDate = new Date(startDate);
@@ -72,22 +90,6 @@ const BookingDateUpdate = ({
     (subTotal * extraCharge[0]?.vatTax) / 100
   );
 
-  const [addMissionFee, setAddmissionFee] = useState(0);
-
-  const [securityFee, setSecurityFee] = useState(0);
-
-  const [minimumPayment, setMinimumPayment] = useState(0);
-
-  const [totalRentAmount, setTotalRentAmount] = useState(
-    parseInt(data?.bookingInfo?.totalAmount)
-  );
-  const [payableAmount, setPayableAmount] = useState(0);
-  const [promos] = usePromo();
-  const [userPromo, setUserPromo] = useState({});
-  const [discountTk, setDisCountTk] = useState(0);
-
-  const [isAdjustmen, setIsAdjustment] = useState(false);
-
   useEffect(() => {
     setIsIncludeFood(data?.isIncludeFood);
   }, []);
@@ -98,16 +100,6 @@ const BookingDateUpdate = ({
     );
     setUserPromo(promo);
     setVatTaxt((subTotal * extraCharge[0]?.vatTax) / 100);
-
-    // find Already Booking Dates
-    if (room) {
-      const roomBookingDates = room?.rentDate?.filter(
-        (rent) =>
-          rent.bookStartDate !== data?.bookingInfo?.rentDate?.bookStartDate
-      );
-      setRoomBookingDates(roomBookingDates);
-    }
-
     // Date Calculation Start
     if (years < 1 && months < 1) {
       setCustomerRent({ daysDifference, remainingDays });
@@ -549,7 +541,7 @@ const BookingDateUpdate = ({
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => setStartDate(date)}
                     // showIcon
-                    excludeDateIntervals={roomBookingDates?.map((rent) => {
+                    excludeDateIntervals={bookedDates?.map((rent) => {
                       return {
                         start: subDays(new Date(rent?.bookStartDate), 1),
                         end: addDays(new Date(rent?.bookEndDate), 0),
@@ -565,7 +557,7 @@ const BookingDateUpdate = ({
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => setEndDate(date)}
                     // showIcon
-                    excludeDateIntervals={roomBookingDates?.map((rent) => {
+                    excludeDateIntervals={bookedDates?.map((rent) => {
                       return {
                         start: subDays(new Date(rent?.bookStartDate), 1),
                         end: addDays(new Date(rent?.bookEndDate), 0),

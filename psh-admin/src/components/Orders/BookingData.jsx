@@ -9,24 +9,6 @@ import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
 import { FaWhatsapp } from "react-icons/fa";
 
-// whats app ui
-const pulseEffect = {
-  position: "absolute",
-  height: "100%",
-  width: "100%",
-  borderRadius: "50%",
-  backgroundColor: "rgba(14, 192, 67, 0.75)",
-  animation: "ping 1s infinite",
-};
-
-const innerCircleStyle = {
-  borderRadius: "50%",
-  height: "12px",
-  width: "12px",
-  backgroundColor: "#00BBB4",
-  position: "relative",
-};
-
 const BookingData = ({
   booking,
   index,
@@ -36,8 +18,6 @@ const BookingData = ({
   page,
   size,
 }) => {
-  console.log(booking);
-
   // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
     ?.toLocaleString()
@@ -268,48 +248,29 @@ const BookingData = ({
         </td>
         <td>
           <div className="d-flex justify-content-center">
-            {booking?.bookingInfo?.roomType === "Shared Room" && (
-              <button
-                title={`${
-                  booking?.status === "Approved"
-                    ? "Sorry ! Your Booking Already Approved"
-                    : ""
-                }`}
-                type="button"
-                className={`rounded ${
-                  booking?.status === "Approved" ? "bg-white" : ""
-                }`}
-                style={{
-                  backgroundColor:
-                    booking?.status === "Approved" ? "white" : "#35b0a7",
-                }}
-                disabled={booking?.status === "Approved" ? true : false}
-                onClick={() => handleSeatShow(booking)}
-              >
-                <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
-              </button>
-            )}
-            {booking?.bookingInfo?.roomType === "Private Room" && (
-              <button
-                title={`${
-                  booking?.status === "Approved"
-                    ? "Sorry ! Your Booking Already Approved"
-                    : ""
-                }`}
-                type="button"
-                className={`rounded ${
-                  booking?.status === "Approved" ? "bg-white" : ""
-                }`}
-                style={{
-                  backgroundColor:
-                    booking?.status === "Approved" ? "white" : "#35b0a7",
-                }}
-                disabled={booking?.status === "Approved" ? true : false}
-                onClick={() => handleDurationShow(booking)}
-              >
-                <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
-              </button>
-            )}
+            <button
+              title={`${
+                booking?.status === "Approved"
+                  ? "Sorry ! Your Booking Already Approved"
+                  : ""
+              }`}
+              type="button"
+              className={`rounded ${
+                booking?.status === "Approved" ? "bg-white" : ""
+              }`}
+              style={{
+                backgroundColor:
+                  booking?.status === "Approved" ? "white" : "#35b0a7",
+              }}
+              disabled={booking?.status === "Approved" ? true : false}
+              onClick={() => {
+                booking?.bookingInfo?.roomType === "Shared Room"
+                  ? handleSeatShow(booking)
+                  : handleDurationShow(booking);
+              }}
+            >
+              <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
+            </button>
           </div>
           {/* Modal order Date Update */}
           {booking?.bookingInfo?.roomType === "Shared Room" &&
