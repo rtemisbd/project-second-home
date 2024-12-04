@@ -33,8 +33,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const startDate = useSelector((state) => state.dateCount.startDate);
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
-  const seatBooking = useSelector((state) => state.seatBooking.seatBooking);
-
+  // const seatBooking = useSelector((state) => state.seatBooking.seatBooking);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   const [amountForDay, setAmountForDay] = useState(0);
   const [amountForMonth, setAmountForMonth] = useState(0);
@@ -50,7 +49,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const [promoCodeCheck, setPromoCodeCheck] = useState(false);
   const [showMiniumPayment, setShowMinimumPayment] = useState(false);
 
-  const [subTotal, setSubtotal] = useState(amountForDay);
+  const [subTotal, setSubtotal] = useState(0);
 
   const [vatTax, setVatTax] = useState(
     (subTotal * extraCharge[0]?.vatTax) / 100
@@ -71,20 +70,23 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
 
   const [singleUser, setSingleUser] = useState({});
   // handle Scrolled
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [size, setSize] = React.useState(null);
-
   const [scrollY, setScrollY] = useState(0);
-
-  useEffect(() => {
-    setAmountForDay(seat?.dAmountForDay ?? data?.dAmountForDay ?? 0);
-    setAmountForMonth(seat?.dAmountForMonth ?? data?.dAmountForMonth ?? 0);
-    setAmountForYear(seat?.dAmountForYear ?? data?.dAmountForYear ?? 0);
-  }, [seat, data]);
 
   const anchorClick = (e) => {
     anchorClickHandler(e);
   };
+  useEffect(() => {
+    if (!seat) {
+      setAmountForDay(data?.dAmountForDay);
+      setAmountForMonth(data?.dAmountForMonth);
+      setAmountForYear(data?.dAmountForYear);
+    } else {
+      setAmountForDay(seat?.dAmountForDay);
+      setAmountForMonth(seat?.dAmountForMonth);
+      setAmountForYear(seat?.dAmountForYear);
+    }
+    setSubtotal(amountForDay);
+  }, [seat, data]);
 
   // Get Single User
   useEffect(() => {
@@ -219,9 +221,9 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     customerRent?.remainingDays,
     customerRent?.months,
     customerRent?.years,
-    data?.dAmountForDay,
-    data?.dAmountForYear,
-    data?.dAmountForMonth,
+    amountForDay,
+    amountForMonth,
+    amountForYear,
     subTotal,
     vatTax,
     extraCharge[0]?.admissionFee,
@@ -419,15 +421,6 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     };
   }, []);
 
-  useEffect(() => {
-    if (scrollY > 230) {
-      setIsScrolled(true);
-    } else {
-      setIsScrolled(false);
-    }
-  }, [scrollY]);
-
-  const handleOpen = (value) => setSize(value);
   return (
     <>
       <div
@@ -739,6 +732,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                 </Tooltip>
               </div>
             </div>
+            {/* <p>BDT {isNaN(subTotal) ? 0 : subTotal?.toLocaleString()}</p> */}
             <p>BDT {isNaN(subTotal) ? 0 : subTotal?.toLocaleString()}</p>
           </div>
           {isIncludeFood ? (
@@ -834,7 +828,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
               </div>
             </div>
 
-            <p> + BDT {isNaN(vatTax) ? 0 : vatTax?.toLocaleString()} </p>
+            <p> + BDT {isNaN(vatTax) ? 0 : vatTax?.toLocaleString()}</p>
           </div>
           {customerRent.months >= 1 || customerRent.years ? (
             <div className="flex justify-between ">
