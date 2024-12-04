@@ -84,6 +84,10 @@ const PersonalInfo = () => {
 
   const bookingOrder = async (e) => {
     e.preventDefault();
+<<<<<<< HEAD
+=======
+
+>>>>>>> a802620ef8941dc352966bc84e4cb24a76ade936
     const address = e.target.address.value;
     const birthDate = birthDay?.toISOString()?.split("T")[0];
     const emergencyContactName = e.target.ecName.value;
