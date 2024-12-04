@@ -87,7 +87,6 @@ const PersonalInfo = () => {
   const bookingOrder = async (e) => {
     e.preventDefault();
 
-    const phone = e.target.phone.value;
     const address = e.target.address.value;
     const birthDate = birthDay?.toISOString()?.split("T")[0];
     const emergencyContactName = e.target.ecName.value;
@@ -186,7 +185,6 @@ const PersonalInfo = () => {
       navigate("/booking-now");
     } catch (error) {
       dispatch(placeLoadingShow(false));
-      console.log(error);
 
       toast.error("Something is wrong");
     }
