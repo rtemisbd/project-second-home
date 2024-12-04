@@ -23,6 +23,7 @@ const BookingDateSetUpdate = ({
     error,
     refetch: roomFetch,
   } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
+  console.log(room);
 
   // const [extraCharge, setExtraCharge] = useState([]);
   const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
@@ -95,10 +96,6 @@ const BookingDateSetUpdate = ({
   }, []);
 
   useEffect(() => {
-    // set Extra Charge
-    // setAddmissionFee(extraCharge[0]?.admissionFee);
-    // setSecurityFee(extraCharge[0]?.securityFee);
-
     // If used promo this booking User then find-out promo
     const promo = promos.find(
       (promo) => promo?.promoCode === data?.bookingInfo?.usedPromo?.promo
@@ -108,15 +105,7 @@ const BookingDateSetUpdate = ({
 
     // find Already Booking Dates
     if (room) {
-      const seatBookingData = room?.seats?.find(
-        (seat) => seat?._id === data?.bookingInfo?.seatBooking._id
-      );
-
-      const seatBookingDates = seatBookingData?.rentDate?.filter(
-        (rent) =>
-          rent.bookStartDate !== data?.bookingInfo?.rentDate?.bookStartDate
-      );
-      setSeatBookingDates(seatBookingDates);
+      setSeatBookingDates(room?.rentRooms);
     }
 
     // Date Calculation Start

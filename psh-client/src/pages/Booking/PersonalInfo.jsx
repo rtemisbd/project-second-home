@@ -37,7 +37,6 @@ const PersonalInfo = () => {
   const [showBankTransfer, setShowBankTransfer] = useState(false);
   const [bookingExtend, setBookingExtend] = useState(false);
   const [birthDay, setBirthDay] = useState(new Date());
-
   const [isActive1, setIsActive1] = useState(true);
   const [isActive2, setIsActive2] = useState(false);
   const [isActive3, setIsActive3] = useState(false);
@@ -59,7 +58,6 @@ const PersonalInfo = () => {
   let toggleClassCheck4 = isActive4 ? "active" : "";
 
   // find branch
-
   useEffect(() => {
     const bookingItem = localStorage.getItem("bookingItem");
 

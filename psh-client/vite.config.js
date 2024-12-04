@@ -1,24 +1,3 @@
-// import { defineConfig } from "vite";
-// import react from "@vitejs/plugin-react-swc";
-// import pluginRewriteAll from "vite-plugin-rewrite-all";
-
-// export default defineConfig({
-//   plugins: [
-//     react(), // React plugin with SWC for fast builds
-//     pluginRewriteAll(), // Rewrite plugin for route handling
-//   ],
-
-//   optimizeDeps: {
-//     include: ["react-to-print", "@splidejs/splide"],
-//   },
-
-//   build: {
-//     rollupOptions: {
-//       external: ["@splidejs/splide/dist/css/splide.min.css"],
-//     },
-//   },
-// });
-
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import pluginRewriteAll from "vite-plugin-rewrite-all";
