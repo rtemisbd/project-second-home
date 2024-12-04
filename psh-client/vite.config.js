@@ -29,7 +29,11 @@ export default defineConfig({
     pluginRewriteAll(), // Use the rewrite plugin if needed for URL rewriting
   ],
   optimizeDeps: {
-    include: ["react-to-print"], // Ensure this dependency is pre-bundled
+    include: [
+      "react-to-print",
+      "splidejs/react-splide",
+      "splidejs/splide/dist/css/themes/splide-default.min.css",
+    ], // Ensure this dependency is pre-bundled
   },
 
   // server: {
