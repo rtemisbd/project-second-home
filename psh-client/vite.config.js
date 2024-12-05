@@ -10,7 +10,9 @@ export default defineConfig({
   optimizeDeps: {
     include: ["react-to-print", "splidejs/react-splide"], // Ensure this dependency is pre-bundled
   },
-
+  define: {
+    "process.env": process.env,
+  },
   // server: {
   //   proxy: {
   //     "/api": {
