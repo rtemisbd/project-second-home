@@ -19,7 +19,7 @@ import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import { propertySlider } from "../../helpers/utils/projectSlider";
 import useSeat from "../../hooks/useSeat";
-import SharedRoom from "./SharedRoom";
+// import SharedRoom from "./SharedRoom";
 
 export default function HomePage() {
   const dispatch = useDispatch();
