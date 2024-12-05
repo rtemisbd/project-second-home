@@ -5,17 +5,30 @@
 .facility_img {
   width: 100px;
 }
+.aspect-w-16 {
+  position: relative;
+  width: 100%;
+  padding-bottom: 56.25%;
+}
+.aspect-w-16 iframe {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
 
 @media screen and (max-width: 600px) {
   .facility > h2 {
     font-size: 18px;
+    font-weight: 500;
   }
 
   .facility_img {
-    width: 80px;
+    width: 140px;
   }
 
   .facility > p {
-    font-size: 12px;
+    font-size: 10px !important;
   }
 }

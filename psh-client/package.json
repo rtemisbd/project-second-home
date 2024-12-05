@@ -47,6 +47,7 @@
     "react-star-ratings": "^2.3.0",
     "react-to-pdf": "^1.0.1",
     "react-to-print": "^2.14.13",
+    "react-youtube": "^10.1.0",
     "redux": "^4.2.1",
     "redux-devtools-extension": "^2.13.9",
     "redux-logger": "^3.0.6",
