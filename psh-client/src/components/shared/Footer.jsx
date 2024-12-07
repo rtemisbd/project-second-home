@@ -424,7 +424,7 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="whatsapp_pic ">
+      {/* <div className="whatsapp_pic ">
         <a href="https://wa.me/+8801647647404" target="_blank">
           <img
             src={whatsappIcon}
@@ -432,7 +432,7 @@ const Footer = () => {
             style={{ width: 60, height: 60 }}
           />
         </a>
-      </div>
+      </div> */}
       {/* <MessengerCustomerChat
         pageId="102879811311818"
         appId=" 570469815108233"

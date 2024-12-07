@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useRef, useState } from "react";
 import healthyMealIcon from "../../assets/img/healthy-meal.png";
 import security24 from "../../assets/img/security-24.svg";
 import "./styles/Facility.css";
@@ -11,6 +11,9 @@ import YouTube from "react-youtube";
 import { youtubeSlider } from "../../helpers/utils/youtubeSlider";
 
 const Facility = () => {
+  const [activeSlide, setActiveSlide] = useState(0);
+  const splideRef = useRef(null);
+
   const youtubeVideoLinks = [
     "https://www.youtube.com/watch?v=qp6e0tucEhw",
     "https://www.youtube.com/watch?v=2g811Eo7K8U",
@@ -89,14 +92,18 @@ const Facility = () => {
           </div>
 
           {/* YouTube Slider */}
-          <div className="w-full md:w-1/2 px-3">
-            <Splide options={youtubeSlider(youtubeVideoLinks)}>
+          <div className="w-full md:w-1/2 px-3 relative">
+            <Splide
+              options={youtubeSlider(youtubeVideoLinks)}
+              onMove={(splide) => setActiveSlide(splide.index)} // Update active slide
+              ref={splideRef} // Attach Splide instance to the ref
+            >
               {youtubeVideoLinks.map((link, index) => {
                 const videoId = extractVideoId(link);
                 return (
-                  <SplideSlide key={index}>
+                  <SplideSlide key={index} className="aspect-w-16 aspect-h-9">
                     {videoId ? (
-                      <div className="aspect-w-16 aspect-h-9">
+                      <div>
                         <YouTube videoId={videoId} opts={videoOptions} />
                       </div>
                     ) : (
@@ -106,6 +113,21 @@ const Facility = () => {
                 );
               })}
             </Splide>
+
+            {/* Custom Pagination */}
+            {/* <ul className="splide__pagination absolute bottom-20">
+              {youtubeVideoLinks.map((_, index) => (
+                <li
+                  key={index}
+                  className={`h-4 w-4 rounded-full splide__pagination__page ${
+                    activeSlide === index ? "is-active" : ""
+                  }`}
+                  onClick={() => splideRef.current.go(index)}
+                >
+                 
+                </li>
+              ))}
+            </ul> */}
           </div>
         </div>
       </div>
