@@ -1,6 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { Tooltip, Typography } from "@material-tailwind/react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -1290,7 +1290,22 @@ const PersonalInfo = () => {
                     <input type="checkbox" name="terms" required id="" />
                   </div>
                   <p className="text-left pl-3 text-[12px]">
-                    I agree with our Terms of use and Privacy Policy
+                    I agree with our{" "}
+                    <Link
+                      to="/terms"
+                      className="underline hover:text-[#02625a]"
+                    >
+                      {" "}
+                      Terms of use
+                    </Link>{" "}
+                    and{" "}
+                    <Link
+                      to="/privacy"
+                      className="underline hover:text-[#02625a]"
+                    >
+                      {" "}
+                      Privacy Policy
+                    </Link>
                   </p>
                 </div>
 

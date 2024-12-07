@@ -2,23 +2,23 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { baseUrl } from "../utils/getBaseURL";
 
-const useBranch = () => {
-  const [allBranch, setAllBranch] = useState([]);
-  const { isLoading, refetch } = useQuery("branches", () =>
-    fetch(`${baseUrl}/api/branch`, {
+const useCategory = () => {
+  const [categories, setCategories] = useState([]);
+  const { isLoading, refetch } = useQuery("categories", () =>
+    fetch(`${baseUrl}/api/category`, {
       method: "GET",
     })
       .then((res) => res.json())
       .then((data) => {
-        setAllBranch(data);
+        setCategories(data);
       })
   );
 
   return {
-    allBranch,
+    categories,
     isLoading,
     refetch,
   };
 };
 
-export default useBranch;
+export default useCategory;

@@ -17,8 +17,8 @@ const getPropertiesFromDB = async (queries) => {
     withSharedRoom,
   } = queries;
 
-  const page = parseInt(queries.page) || 0;
-  const size = parseInt(queries.size) || 0;
+  const page = parseInt(queries.page);
+  const size = parseInt(queries.size);
 
   let query = {};
   if (Featured && Featured !== "") query.Featured = Featured;
@@ -33,55 +33,69 @@ const getPropertiesFromDB = async (queries) => {
   if (recommended && recommended !== "no") {
     query.recommended = recommended;
   }
-  console.log(query);
 
+  // Declare pipeline as an array, adding conditional stages
   const pipeline = [
     { $match: query },
-    {
-      $lookup: {
-        from: "branches",
-        localField: "branch",
-        foreignField: "_id",
-        as: "branchDetails",
-        pipeline: [
+
+    // Lookup for branches (destination)
+    ...(destination
+      ? [
           {
-            $project: {
-              _id: 1,
-              name: 1,
-              foodAmount: 1,
+            $lookup: {
+              from: "branches",
+              localField: "branch",
+              foreignField: "_id",
+              as: "branchDetails",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                    foodAmount: 1,
+                  },
+                },
+              ],
             },
           },
-        ],
-      },
-    },
-    { $unwind: "$branchDetails" },
-    {
-      $match: {
-        ...(destination ? { "branchDetails.name": destination } : {}),
-      },
-    },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "category",
-        foreignField: "_id",
-        as: "categoryDetails",
-        pipeline: [
+          { $unwind: "$branchDetails" },
           {
-            $project: {
-              _id: 1,
-              name: 1,
+            $match: {
+              "branchDetails.name": destination,
             },
           },
-        ],
-      },
-    },
-    { $unwind: "$categoryDetails" },
-    {
-      $match: {
-        ...(category !== "" ? { "categoryDetails.name": category } : {}),
-      },
-    },
+        ]
+      : []),
+
+    // Lookup for categories
+    ...(category
+      ? [
+          {
+            $lookup: {
+              from: "categories",
+              localField: "category",
+              foreignField: "_id",
+              as: "categoryDetails",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: "$categoryDetails" },
+          {
+            $match: {
+              "categoryDetails.name": category,
+            },
+          },
+        ]
+      : []),
+
+    // Faceted Pagination and Total Counts
     {
       $facet: {
         paginatedResults: [
@@ -109,12 +123,15 @@ const getPropertiesFromDB = async (queries) => {
       },
     },
   ];
+  console.log(destination);
 
+  // Execute the pipeline
   const properties = await Property.aggregate(pipeline);
-  // console.log(properties);
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
+
+  // Handle shared room logic
   if (withSharedRoom && category !== "Private Room") {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,

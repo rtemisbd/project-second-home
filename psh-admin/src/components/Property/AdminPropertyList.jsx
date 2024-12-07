@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
@@ -31,7 +31,6 @@ const AdminPropertyList = (props) => {
   const dispatch = useDispatch();
   const handleClose = () => dispatch(placeLoadingShow(false));
   const { page, size } = useSelector((state) => state.pagination);
-  //sub stream
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [filterData, setFilterData] = useState([]);
@@ -39,8 +38,6 @@ const AdminPropertyList = (props) => {
   const [isFilter, setIsFilter] = useState(false);
 
   const [categories, setCategories] = useState([]);
-
-  // const [branches, setBranches] = useState([]);
   const [selectCategory, setSelectCategory] = useState("All");
   const [selectBranch, setSelectBranch] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
@@ -61,28 +58,39 @@ const AdminPropertyList = (props) => {
   });
 
   // Get Properties
-  const { refetch } = useQuery(["propertyList", page, size], async () => {
-    try {
-      const queryParams = new URLSearchParams({
-        page,
-        size,
-      });
-      const response = await axios.get(
-        `${baseUrl}/api/property?${queryParams.toString()}`,
-        {
-          mode: "cors",
-        }
-      );
-      console.log(response);
+  const { refetch } = useQuery(
+    ["propertyList", page, size],
+    async () => {
+      try {
+        const queryParams = new URLSearchParams({ page, size });
 
-      setData(response?.data?.properties);
-      setTotalDataCount(response?.data?.totalCount);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  });
+        const response = await fetch(
+          `${baseUrl}/api/property?${queryParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error(`API error with status: ${response.status}`);
+        }
+
+        const json = await response.json();
+        console.log("Parsed Response:", json);
+        setData(json?.properties || []);
+        setTotalDataCount(json?.totalCount || 0);
+      } catch (error) {
+        console.error("Fetch error:", error);
+      }
+    },
+    { refetchOnWindowFocus: false }
+  );
+
   console.log(totalDataCount);
+  // Re-fetch data whenever size changes
+  useEffect(() => {
+    refetch();
+  }, []);
 
   // Handle Search
 
@@ -112,12 +120,7 @@ const AdminPropertyList = (props) => {
     {
       text: "No",
       formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>{index + 1}</p>
-          </>
-        );
+        return <> {(page - 1) * size + index + 1}</>;
       },
     },
     {
@@ -292,25 +295,6 @@ const AdminPropertyList = (props) => {
       },
     },
   ];
-  // const pagination = paginationFactory({
-  //   page: 1,
-  //   sizePerPage: 10,
-  //   style: { width: 60 },
-  //   lastPageText: "Last",
-  //   firstPageText: "First",
-  //   nextPageText: "Next",
-  //   prePageText: "Previous",
-  //   showTotal: true,
-  //   alwaysShowAllBtns: true,
-  //   onPageChange: function (page, sizePerPage) {
-  //     console.log("page", page);
-  //     console.log("sizePerPage", sizePerPage);
-  //   },
-  //   onSizePerPageChange: function (page, sizePerPage) {
-  //     console.log("page", page);
-  //     console.log("sizePerPage", sizePerPage);
-  //   },
-  // });
 
   //delete
   const [products, setProducts] = useState(data);
