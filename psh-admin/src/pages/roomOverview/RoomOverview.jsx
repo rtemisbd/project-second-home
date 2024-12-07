@@ -102,7 +102,7 @@ const RoomOverview = () => {
                   id="branchId"
                   value={branch}
                 >
-                  <option value="All">All</option>
+                  <option value="">All</option>
                   {allBranch?.map((branch) => (
                     <option value={branch?.name}>{branch?.name}</option>
                   ))}

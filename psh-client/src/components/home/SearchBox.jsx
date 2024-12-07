@@ -70,7 +70,7 @@ const SearchBox = () => {
     // setSelectedItem(item);
     setQuery(item.name);
     setInputActive(false);
-    setDestination(item.name);
+    setDestination(item?.name);
   };
 
   useEffect(() => {

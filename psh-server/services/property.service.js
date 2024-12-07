@@ -39,7 +39,7 @@ const getPropertiesFromDB = async (queries) => {
     { $match: query },
 
     // Lookup for branches (destination)
-    ...(destination
+    ...(destination && destination !== ""
       ? [
           {
             $lookup: {
@@ -68,7 +68,7 @@ const getPropertiesFromDB = async (queries) => {
       : []),
 
     // Lookup for categories
-    ...(category
+    ...(category && category !== ""
       ? [
           {
             $lookup: {
