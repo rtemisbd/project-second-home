@@ -48,7 +48,6 @@ export default function HomePage() {
       const response = await axios.get(
         `${serverBaseUrl}/property?${queryParams.toString()}`
       );
-      console.log(response);
 
       setData(response?.data?.properties);
       setRandomIndex(data);

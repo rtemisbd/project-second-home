@@ -58,39 +58,30 @@ const AdminPropertyList = (props) => {
   });
 
   // Get Properties
-  const { refetch } = useQuery(
-    ["propertyList", page, size],
-    async () => {
-      try {
-        const queryParams = new URLSearchParams({ page, size });
+  const { refetch, error } = useQuery(["propertyList"], async () => {
+    try {
+      const queryParams = new URLSearchParams({
+        page,
+        size,
+      });
+      const response = await axios.get(
+        `${baseUrl}/api/property?${queryParams.toString()}`
+      );
+      console.log(response);
 
-        const response = await fetch(
-          `${baseUrl}/api/property?${queryParams.toString()}`,
-          {
-            method: "GET",
-          }
-        );
+      setData(response?.data?.properties);
 
-        if (!response.ok) {
-          throw new Error(`API error with status: ${response.status}`);
-        }
+      setTotalDataCount(response?.data?.totalCount);
+    } catch (error) {
+      console.error(error);
+      throw error;
+    }
+  });
 
-        const json = await response.json();
-        console.log("Parsed Response:", json);
-        setData(json?.properties || []);
-        setTotalDataCount(json?.totalCount || 0);
-      } catch (error) {
-        console.error("Fetch error:", error);
-      }
-    },
-    { refetchOnWindowFocus: false }
-  );
-
-  console.log(totalDataCount);
   // Re-fetch data whenever size changes
   useEffect(() => {
     refetch();
-  }, []);
+  }, [refetch, page, size]);
 
   // Handle Search
 

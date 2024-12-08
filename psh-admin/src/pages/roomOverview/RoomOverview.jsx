@@ -1,40 +1,56 @@
 import { useEffect, useState } from "react";
-import { MdRefresh } from "react-icons/md";
-import useBranch from "../../hooks/useBranch";
-import useCategory from "../../hooks/useCategory";
-import { Spinner } from "react-bootstrap";
+import { Table } from "react-bootstrap";
 import { useQuery } from "react-query";
 import { baseUrl } from "../../utils/getBaseURL";
+import useBranch from "../../hooks/useBranch";
+import useCategory from "../../hooks/useCategory";
 
 const RoomOverview = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [branch, setBranch] = useState("All");
-  const [category, setCategory] = useState("All");
+  const [branch, setBranch] = useState("");
+  const [category, setCategory] = useState("");
 
   const [data, setData] = useState([]);
-  const [totalDataCount, setTotalDataCount] = useState(0);
+  const [bookedRooms, setBookedRooms] = useState([]);
+  const [bookedSeats, setBookedSeats] = useState([]);
+  const [bookingStatus, setBookingStatus] = useState("Available");
 
   const { allBranch } = useBranch();
   const { categories } = useCategory();
 
-  //   get properties
-  const { refetch } = useQuery(
+  // Helper to format a date into YYYY-MM-DD
+  const formatDate = (date) => date.toISOString().split("T")[0];
+
+  // Generate array of dates between two dates
+  const generateDateArray = (start, end) => {
+    let startDate = new Date(start);
+    let endDate = new Date(end);
+    let dates = [];
+    while (startDate <= endDate) {
+      dates.push(formatDate(new Date(startDate)));
+      startDate.setDate(startDate.getDate() + 1);
+    }
+    return dates;
+  };
+
+  const handleFromDate = (e) => setFromDate(e.target.value);
+  const handleToDate = (e) => setToDate(e.target.value);
+
+  // Fetch properties
+  const { refetch: refetchProperties } = useQuery(
     ["fetchProperties", branch, category],
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          //   startDate: fromDate,
-          //   endDate: toDate,
           destination: branch,
           category,
+          withSharedRoom: true,
         });
 
         const response = await fetch(
           `${baseUrl}/api/property?${queryParams.toString()}`,
-          {
-            method: "GET",
-          }
+          { method: "GET" }
         );
 
         if (!response.ok) {
@@ -43,90 +59,159 @@ const RoomOverview = () => {
 
         const json = await response.json();
         setData(json?.properties || []);
-        setTotalDataCount(json?.totalCount || 0);
       } catch (error) {
         throw new Error(error);
       }
     }
-    // { refetchOnWindowFocus: false }
   );
-  console.log({ data, totalDataCount, category });
 
+  // Fetch booked dates and room/seat data
+  const { refetch: refetchRentDates } = useQuery(
+    ["fetchRentDates"],
+    async () => {
+      try {
+        const response = await fetch(`${baseUrl}/api/rent-rooms`, {
+          method: "GET",
+        });
+        const rents = await response.json();
+        setBookedRooms(rents?.bookedRooms || []);
+        setBookedSeats(rents?.bookedSeats || []);
+      } catch (error) {
+        throw new Error(error);
+      }
+    }
+  );
+
+  // Initial fetching
   useEffect(() => {
-    refetch();
-  }, [branch, category, refetch]);
+    refetchProperties();
+    refetchRentDates();
+  }, [branch, category, refetchProperties, refetchRentDates]);
+
+  // Default date range initialization
+  useEffect(() => {
+    const today = new Date();
+    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
+
+    setFromDate(formatDate(startOfMonth));
+    setToDate(formatDate(endOfMonth));
+  }, []);
+
+  // Generate array of dates for the table header
+  const datesArray =
+    fromDate && toDate ? generateDateArray(fromDate, toDate) : [];
+
+  const getBookingStatus = (room, date) => {
+    const isPrivateRoom = room?.categoryDetails?.name === "Private Room";
+
+    const booking = isPrivateRoom
+      ? bookedRooms.find(
+          (br) =>
+            br.roomNumber === room.roomNumber &&
+            new Date(br.bookStartDate) <= new Date(date) &&
+            new Date(br.bookEndDate) >= new Date(date)
+        )
+      : bookedSeats.find(
+          (bs) =>
+            bs.seatNumber === room.seatNumber &&
+            new Date(bs.bookStartDate) <= new Date(date) &&
+            new Date(bs.bookEndDate) >= new Date(date)
+        );
+
+    return booking?.bookingStatus;
+  };
 
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">
-            {/* searching fields */}
-            <div className="d-lg-flex justify-content-end gap-2 ">
-              {/* from date */}
-              <div className="">
-                <label htmlFor="">From Date </label>
-                <br />
-                <div>
-                  <input
-                    type="date"
-                    onChange={(e) => setFromDate(e.target.value)}
-                    name=""
-                    id="fromDateId"
-                    value={fromDate}
-                    className="rounded"
-                  />
-                </div>
-              </div>
-              {/* to date */}
-              <div className="">
-                <label htmlFor="">To Date </label> <br />
-                <div>
-                  <input
-                    type="date"
-                    name=""
-                    id="toDateId"
-                    onChange={(e) => setToDate(e.target.value)}
-                    value={toDate}
-                    className="rounded"
-                  />
-                </div>
-              </div>
-              {/* branch */}
+            {/* Search Filters */}
+            <div className="d-lg-flex justify-content-end gap-2">
               <div>
-                <label htmlFor="">Branch </label> <br />
-                <select
+                <label htmlFor="fromDate">From Date</label>
+                <input
+                  type="date"
+                  id="fromDate"
                   className="rounded"
-                  style={{ height: "30px" }}
-                  onChange={(e) => setBranch(e.target.value)}
-                  id="branchId"
+                  value={fromDate}
+                  onChange={handleFromDate}
+                />
+              </div>
+              <div>
+                <label htmlFor="toDate">To Date</label>
+                <input
+                  type="date"
+                  id="toDate"
+                  className="rounded"
+                  value={toDate}
+                  onChange={handleToDate}
+                />
+              </div>
+              <div>
+                <label htmlFor="branch">Branch</label>
+                <select
+                  id="branch"
+                  className="rounded"
                   value={branch}
+                  onChange={(e) => setBranch(e.target.value)}
                 >
                   <option value="">All</option>
                   {allBranch?.map((branch) => (
-                    <option value={branch?.name}>{branch?.name}</option>
+                    <option key={branch.name} value={branch.name}>
+                      {branch.name}
+                    </option>
                   ))}
                 </select>
               </div>
-              {/* category */}
               <div>
-                <label htmlFor="">Room Type </label> <br />
+                <label htmlFor="category">Room Type</label>
                 <select
+                  id="category"
                   className="rounded"
-                  style={{ height: "30px" }}
-                  onChange={(e) => setCategory(e.target.value)}
-                  id="categoryId"
                   value={category}
+                  onChange={(e) => setCategory(e.target.value)}
                 >
                   <option value="">All</option>
                   {categories?.map((category) => (
-                    <option value={category?.name}>{category?.name}</option>
+                    <option key={category.name} value={category.name}>
+                      {category.name}
+                    </option>
                   ))}
                 </select>
               </div>
             </div>
+
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
-            {/* overview table */}
+
+            {/* Overview Table */}
+            <div>
+              <Table striped bordered>
+                <thead>
+                  <tr>
+                    <th>Room/Seat</th>
+                    {datesArray.map((date) => (
+                      <th key={date}>{new Date(date).getDate()}</th>
+                    ))}
+                  </tr>
+                </thead>
+                <tbody>
+                  {data.map((room, index) => (
+                    <tr key={index}>
+                      <td>
+                        {room?.categoryDetails?.name === "Private Room"
+                          ? `Room: ${room.roomNumber}`
+                          : `Seat: ${room.seatNumber}`}
+                      </td>
+                      {datesArray.map((date) => (
+                        <td key={date}>{getBookingStatus(room, date)}</td>
+                      ))}
+                    </tr>
+                  ))}
+                </tbody>
+              </Table>
+            </div>
           </div>
         </section>
       </div>
