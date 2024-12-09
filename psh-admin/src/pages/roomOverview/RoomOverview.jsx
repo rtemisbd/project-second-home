@@ -4,8 +4,12 @@ import { useQuery } from "react-query";
 import { baseUrl } from "../../utils/getBaseURL";
 import useBranch from "../../hooks/useBranch";
 import useCategory from "../../hooks/useCategory";
+import { useSelector } from "react-redux";
+import Pagination from "../../components/Pagination/Pagination";
 
 const RoomOverview = () => {
+  const { page, size } = useSelector((state) => state.pagination);
+
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [branch, setBranch] = useState("");
@@ -14,6 +18,7 @@ const RoomOverview = () => {
   const [seatNumber, setSeatNumber] = useState("");
 
   const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
   const [bookedRooms, setBookedRooms] = useState([]);
   const [bookedSeats, setBookedSeats] = useState([]);
   const [bookingStatus, setBookingStatus] = useState("Available");
@@ -41,7 +46,7 @@ const RoomOverview = () => {
 
   // Fetch properties
   const { refetch: refetchProperties } = useQuery(
-    ["fetchProperties", branch, category],
+    ["fetchProperties", branch, category, page, size],
     async () => {
       try {
         const queryParams = new URLSearchParams({
@@ -50,6 +55,8 @@ const RoomOverview = () => {
           withSharedRoom: true,
           roomNumber,
           seatNumber,
+          page,
+          size,
         });
 
         const response = await fetch(
@@ -63,6 +70,7 @@ const RoomOverview = () => {
 
         const json = await response.json();
         setData(json?.properties || []);
+        setTotalDataCount(json.totalCount);
       } catch (error) {
         throw new Error(error);
       }
@@ -102,6 +110,8 @@ const RoomOverview = () => {
     category,
     roomNumber,
     seatNumber,
+    size,
+    page,
     refetchProperties,
     refetchRentDates,
   ]);
@@ -281,6 +291,7 @@ const RoomOverview = () => {
           </div>
         </section>
       </div>
+      <Pagination totalDataCount={totalDataCount} />
     </div>
   );
 };

@@ -68,7 +68,7 @@ const Facility = () => {
           {/* Left Section */}
           <div className="w-full md:w-1/2 space-y-8 sm:px-4 md:px-0 facility sm:mb-4">
             {/* Feature Item */}
-            <div className=" w-full flex items-center gap-4  ">
+            <div className=" w-full flex items-center gap-4 border-white border-l-4 border-r-0 border-b-0 border-t shadow-sm py-2 rounded-lg">
               <div>
                 <img
                   src="/images/Icon.png"
@@ -85,7 +85,7 @@ const Facility = () => {
               </div>
             </div>
             {/* Feature Item */}
-            <div className="  w-full flex items-center gap-4 ">
+            <div className="  w-full flex items-center gap-4 border-white border-l-4 border-r-0 border-b-0 border-t shadow-sm py-2 rounded-lg  ">
               <div>
                 <img
                   src={healthyMealIcon}
@@ -102,7 +102,7 @@ const Facility = () => {
               </div>
             </div>
             {/* Feature Item */}
-            <div className="  w-full flex items-center gap-4  ">
+            <div className="  w-full flex items-center gap-4  border-white border-l-4 border-r-0 border-b-0 border-t shadow-sm py-2 rounded-lg ">
               <div>
                 <img
                   src={security24}
