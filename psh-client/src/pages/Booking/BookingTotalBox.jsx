@@ -10,7 +10,7 @@ import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import { useEffect } from "react";
 import { placeBooking } from "../../redux/reducers/bookingSlice";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
-import { toast } from "react-hot-toast";
+import { toast, Toaster } from "react-hot-toast";
 
 import usePromos from "../../hooks/usePromos";
 
@@ -398,7 +398,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
         navigate("/personal-info");
       }
     } else {
-      toast.error("Sorry ! You Select Already Booking Dates");
+      toast.error("Sorry ! The date you select is already booked.");
     }
   };
 
@@ -1256,6 +1256,10 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
           </span>
         </div>
       </div>
+      <Toaster
+        containerStyle={{ top: 300 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
     </>
   );
 };
