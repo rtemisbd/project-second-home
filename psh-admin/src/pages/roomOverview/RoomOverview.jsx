@@ -119,7 +119,7 @@ const RoomOverview = () => {
             new Date(bs.bookEndDate) >= new Date(date)
         );
 
-    return booking?.bookingStatus;
+    return booking?.bookingStatus || "Available";
   };
 
   return (

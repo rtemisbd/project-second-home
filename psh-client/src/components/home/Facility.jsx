@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import healthyMealIcon from "../../assets/img/healthy-meal.png";
 import security24 from "../../assets/img/security-24.svg";
 import "./styles/Facility.css";
@@ -9,16 +9,45 @@ import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import YouTube from "react-youtube";
 import { youtubeSlider } from "../../helpers/utils/youtubeSlider";
+// import axios from "axios";
+// import * as cheerio from "cheerio";
 
 const Facility = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  // const [youtubeVideoLinks, setYoutubeVideoLinks] = useState([]);
   const splideRef = useRef(null);
 
   const youtubeVideoLinks = [
-    "https://www.youtube.com/watch?v=qp6e0tucEhw",
-    "https://www.youtube.com/watch?v=2g811Eo7K8U",
-    "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1",
+    "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b",
+    "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky",
+    "https://youtu.be/mPbJNN1sPwI?si=Y5ly5yTSau2IgcxO",
+    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd",
   ];
+
+  // useEffect(() => {
+  //   const fetchPlaylistVideos = async () => {
+  //     try {
+  //       const { data } = await axios.get(
+  //         `https://youtube.com/playlist?list=PLhmWShztbaVd3O69pu5yGVGUz0IYHUwAX`
+  //       );
+  //       const $ = cheerio.load(data);
+
+  //       const videoData = [];
+  //       $('a[title][href*="/watch"]').each((index, element) => {
+  //         const title = $(element).attr("title");
+  //         const videoId = $(element).attr("href").split("v=")[1].split("&")[0];
+  //         videoData.push({ title, videoId });
+  //       });
+
+  //       setYoutubeVideoLinks(videoData);
+  //     } catch (error) {
+  //       console.error("Error scraping playlist data:", error);
+  //     }
+  //   };
+
+  //   fetchPlaylistVideos();
+  // }, []);
 
   const videoOptions = {
     playerVars: {
