@@ -43,6 +43,7 @@ export default function HomePage() {
         Featured,
         category: activeTab,
         isPublished: "Published",
+        fromClient: true,
         withSharedRoom,
       });
       const response = await axios.get(

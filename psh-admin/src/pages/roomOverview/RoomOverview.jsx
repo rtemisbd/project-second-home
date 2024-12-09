@@ -38,7 +38,6 @@ const RoomOverview = () => {
 
   const handleFromDate = (e) => setFromDate(e.target.value);
   const handleToDate = (e) => setToDate(e.target.value);
-  console.log(roomNumber);
 
   // Fetch properties
   const { refetch: refetchProperties } = useQuery(
@@ -110,10 +109,10 @@ const RoomOverview = () => {
   // Default date range initialization
   useEffect(() => {
     const today = new Date();
-    const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
+    // const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
-    setFromDate(formatDate(startOfMonth));
+    setFromDate(formatDate(today));
     setToDate(formatDate(endOfMonth));
   }, []);
 
@@ -138,8 +137,10 @@ const RoomOverview = () => {
             new Date(bs.bookEndDate) >= new Date(date)
         );
 
-    return booking?.bookingStatus || "Available";
+    // return booking?.bookingStatus || "Available";
+    return booking?.bookingStatus;
   };
+  console.log(bookedRooms);
 
   return (
     <div className="wrapper">
@@ -246,7 +247,31 @@ const RoomOverview = () => {
                           : `Seat: ${room.seatNumber}`}
                       </td>
                       {datesArray.map((date) => (
-                        <td key={date}>{getBookingStatus(room, date)}</td>
+                        <td key={date}>
+                          {getBookingStatus(room, date) ? (
+                            <div
+                              style={{
+                                backgroundColor: "red",
+                                width: "12px",
+                                height: "12px",
+                                margin: "auto",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          ) : (
+                            <div
+                              style={{
+                                backgroundColor: "#00BBB4",
+                                width: "12px",
+                                height: "12px",
+                                margin: "auto",
+                              }}
+                            >
+                              {" "}
+                            </div>
+                          )}
+                        </td>
                       ))}
                     </tr>
                   ))}

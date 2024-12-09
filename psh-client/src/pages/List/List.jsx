@@ -76,6 +76,7 @@ function List({ type }) {
         facilities,
         commonfacilities,
         itemsPerPage,
+        fromClient: true,
         page,
         sort,
       });
