@@ -10,6 +10,8 @@ const RoomOverview = () => {
   const [toDate, setToDate] = useState("");
   const [branch, setBranch] = useState("");
   const [category, setCategory] = useState("");
+  const [roomNumber, setRoomNumber] = useState("");
+  const [seatNumber, setSeatNumber] = useState("");
 
   const [data, setData] = useState([]);
   const [bookedRooms, setBookedRooms] = useState([]);
@@ -36,6 +38,7 @@ const RoomOverview = () => {
 
   const handleFromDate = (e) => setFromDate(e.target.value);
   const handleToDate = (e) => setToDate(e.target.value);
+  console.log(roomNumber);
 
   // Fetch properties
   const { refetch: refetchProperties } = useQuery(
@@ -46,6 +49,8 @@ const RoomOverview = () => {
           destination: branch,
           category,
           withSharedRoom: true,
+          roomNumber,
+          seatNumber,
         });
 
         const response = await fetch(
@@ -70,9 +75,16 @@ const RoomOverview = () => {
     ["fetchRentDates"],
     async () => {
       try {
-        const response = await fetch(`${baseUrl}/api/rent-rooms`, {
-          method: "GET",
+        const queryParams = new URLSearchParams({
+          fromDate,
+          toDate,
         });
+        const response = await fetch(
+          `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
         const rents = await response.json();
         setBookedRooms(rents?.bookedRooms || []);
         setBookedSeats(rents?.bookedSeats || []);
@@ -86,7 +98,14 @@ const RoomOverview = () => {
   useEffect(() => {
     refetchProperties();
     refetchRentDates();
-  }, [branch, category, refetchProperties, refetchRentDates]);
+  }, [
+    branch,
+    category,
+    roomNumber,
+    seatNumber,
+    refetchProperties,
+    refetchRentDates,
+  ]);
 
   // Default date range initialization
   useEffect(() => {
@@ -128,32 +147,32 @@ const RoomOverview = () => {
         <section className="content customize_list">
           <div className="container-fluid">
             {/* Search Filters */}
-            <div className="d-lg-flex justify-content-end gap-2">
+            <div className="d-lg-flex justify-content-end justify-items-center gap-4">
               <div>
-                <label htmlFor="fromDate">From Date</label>
+                <label htmlFor="fromDate">From Date</label> <br />
                 <input
                   type="date"
                   id="fromDate"
-                  className="rounded"
+                  className="rounded "
                   value={fromDate}
                   onChange={handleFromDate}
                 />
               </div>
               <div>
-                <label htmlFor="toDate">To Date</label>
+                <label htmlFor="toDate">To Date</label> <br />
                 <input
                   type="date"
                   id="toDate"
-                  className="rounded"
+                  className="rounded "
                   value={toDate}
                   onChange={handleToDate}
                 />
               </div>
               <div>
-                <label htmlFor="branch">Branch</label>
+                <label htmlFor="branch">Branch</label> <br />
                 <select
                   id="branch"
-                  className="rounded"
+                  className="rounded py-1 "
                   value={branch}
                   onChange={(e) => setBranch(e.target.value)}
                 >
@@ -166,10 +185,10 @@ const RoomOverview = () => {
                 </select>
               </div>
               <div>
-                <label htmlFor="category">Room Type</label>
+                <label htmlFor="category">Room Type</label> <br />
                 <select
                   id="category"
-                  className="rounded"
+                  className="rounded py-1 "
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
@@ -181,6 +200,24 @@ const RoomOverview = () => {
                   ))}
                 </select>
               </div>
+              <div>
+                <label htmlFor="roomId">Room Number </label> <br />
+                <input
+                  type="text"
+                  className="rounded  "
+                  value={roomNumber}
+                  onChange={(e) => setRoomNumber(e.target.value)}
+                />
+              </div>
+              <div>
+                <label htmlFor="seatId">Seat Number </label> <br />
+                <input
+                  type="text"
+                  className="rounded  "
+                  value={seatNumber}
+                  onChange={(e) => setSeatNumber(e.target.value)}
+                />
+              </div>
             </div>
 
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
@@ -190,7 +227,11 @@ const RoomOverview = () => {
               <Table striped bordered>
                 <thead>
                   <tr>
-                    <th>Room/Seat</th>
+                    <th>
+                      <p>Dates</p>
+                      <hr />
+                      <p>Room/Seat</p>
+                    </th>
                     {datesArray.map((date) => (
                       <th key={date}>{new Date(date).getDate()}</th>
                     ))}

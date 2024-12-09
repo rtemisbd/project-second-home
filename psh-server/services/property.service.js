@@ -15,6 +15,8 @@ const getPropertiesFromDB = async (queries) => {
     endDate,
     recommended,
     withSharedRoom,
+    roomNumber,
+    seatNumber,
   } = queries;
 
   const page = parseInt(queries.page);
@@ -32,6 +34,9 @@ const getPropertiesFromDB = async (queries) => {
   }
   if (recommended && recommended !== "no") {
     query.recommended = recommended;
+  }
+  if (roomNumber && roomNumber !== "") {
+    query.roomNumber = { $regex: `^${roomNumber}`, $options: "i" };
   }
 
   const pipeline = [
@@ -114,9 +119,10 @@ const getPropertiesFromDB = async (queries) => {
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom && category !== "Private Room") {
+  if (withSharedRoom && category !== "Private Room" && roomNumber === "") {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
+      seatNumber,
     });
 
     allProperties = [
