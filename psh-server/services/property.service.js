@@ -127,13 +127,11 @@ const getPropertiesFromDB = async (queries) => {
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
   if (withSharedRoom && category !== "Private Room" && !roomNumber) {
-    // let query = {};
-    // if (seatNumber && seatNumber !== "") {
-    //   query.seatNumber = { $regex: `^${seatNumber}`, $options: "i" };
-    // }
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
       seatNumber,
+      size,
+      page,
     });
 
     allProperties = [

@@ -18,11 +18,11 @@ const Facility = () => {
   const splideRef = useRef(null);
 
   const youtubeVideoLinks = [
+    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd",
     "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1",
     "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b",
     "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky",
     "https://youtu.be/mPbJNN1sPwI?si=Y5ly5yTSau2IgcxO",
-    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd",
   ];
 
   // useEffect(() => {

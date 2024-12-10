@@ -2,7 +2,7 @@ import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 
 const getAllSeatsFromDB = async (queries) => {
-  const { destination, seatNumber } = queries;
+  const { destination, seatNumber, size, page } = queries;
   let query = {};
   if (seatNumber && seatNumber !== "") {
     query.seatNumber = { $regex: `^${seatNumber}`, $options: "i" };
@@ -42,9 +42,35 @@ const getAllSeatsFromDB = async (queries) => {
       },
     },
     { $unwind: "$categoryDetails" },
+    {
+      $facet: {
+        paginatedResults: [
+          { $sort: { createdAt: -1 } },
+          ...(page >= 1 && size >= 1
+            ? [{ $skip: (page - 1) * size }, { $limit: size }]
+            : []),
+        ],
+        totalCounts: [
+          {
+            $group: {
+              _id: null,
+              totalCount: { $sum: 1 },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        paginatedResults: 1,
+        totalCount: {
+          $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
+        },
+      },
+    },
   ];
   const result = await Seat.aggregate(pipeline);
-  return result;
+  return result[0]?.paginatedResults || [];
 };
 
 const getSeatByIdFromDB = async (id) => {
