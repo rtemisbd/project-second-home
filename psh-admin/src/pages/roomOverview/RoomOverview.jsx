@@ -23,8 +23,10 @@ const RoomOverview = () => {
   const [bookedSeats, setBookedSeats] = useState([]);
   const [reserved, setReserved] = useState([]);
 
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedYear, setSelectedYear] = useState("");
+  const [startMonth, setStartMonth] = useState("");
+  const [endMonth, setEndMonth] = useState("");
+  const [startYear, setStartYear] = useState("");
+  const [endYear, setEndYear] = useState("");
   const [monthIndex, setMonthIndex] = useState(null);
 
   const { allBranch } = useBranch();
@@ -46,12 +48,14 @@ const RoomOverview = () => {
   ];
 
   // Helper to format a date into YYYY-MM-DD
-  const formatDate = (date) => date.toISOString().split("T")[0];
+  // const formatDate = (date) => date.toLocaleString();
+  const formatDate = (date) => date.toLocaleDateString("en-CA");
 
   // Generate array of dates between two dates
   const generateDateArray = (start, end) => {
     let startDate = new Date(start);
     let endDate = new Date(end);
+
     let dates = [];
     while (startDate <= endDate) {
       dates.push(formatDate(new Date(startDate)));
@@ -60,8 +64,18 @@ const RoomOverview = () => {
     return dates;
   };
 
-  const handleFromDate = (e) => setFromDate(e.target.value);
-  const handleToDate = (e) => setToDate(e.target.value);
+  const handleFromDate = (e) => {
+    setFromDate(e.target.value);
+    const startDate = new Date(e.target.value);
+    setStartMonth(months[startDate.getMonth()]);
+    setStartYear(startDate.getFullYear());
+  };
+  const handleToDate = (e) => {
+    setToDate(e.target.value);
+    const endDate = new Date(e.target.value);
+    setEndMonth(months[endDate.getMonth()]);
+    setEndYear(endDate.getFullYear());
+  };
 
   // Fetch properties
   const { refetch: refetchProperties } = useQuery(
@@ -74,8 +88,6 @@ const RoomOverview = () => {
           withSharedRoom: true,
           roomNumber,
           seatNumber,
-          page,
-          size,
         });
 
         const response = await fetch(
@@ -133,7 +145,7 @@ const RoomOverview = () => {
   //     const startOfMonth = new Date(year, currentMonthIndex, 1);
   //     const endOfMonth = new Date(year, currentMonthIndex + 1, 0);
   //     setMonthIndex(today.getMonth());
-  //     setSelectedMonth(months[monthIndex]);
+  //     setStartMonth(months[monthIndex]);
   //     setSelectedYear(year);
   //     setFromDate(startOfMonth.toISOString().split("T")[0]);
   //     setToDate(endOfMonth.toISOString().split("T")[0]);
@@ -151,7 +163,7 @@ const RoomOverview = () => {
     if (newMonthIndex < 0 || newMonthIndex > 11) return;
 
     setMonthIndex(newMonthIndex);
-    setSelectedMonth(months[newMonthIndex]);
+    setStartMonth(months[newMonthIndex]);
 
     const startOfMonth = new Date(currentYear, newMonthIndex, 1);
     const endOfMonth = new Date(currentYear, newMonthIndex + 1, 0);
@@ -169,8 +181,6 @@ const RoomOverview = () => {
     category,
     roomNumber,
     seatNumber,
-    size,
-    page,
     refetchProperties,
     refetchRentDates,
   ]);
@@ -181,6 +191,9 @@ const RoomOverview = () => {
     const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1);
     const endOfMonth = new Date(today.getFullYear(), today.getMonth() + 1, 0);
 
+    setStartMonth(months[today.getMonth()]);
+    setStartYear(today.getFullYear());
+    setEndYear(today.getFullYear());
     setFromDate(formatDate(startOfMonth));
     setToDate(formatDate(endOfMonth));
   }, []);
@@ -312,21 +325,26 @@ const RoomOverview = () => {
             {/* Overview Table */}
             <div>
               <div className="d-lg-flex justify-content-end justify-items-center gap-4">
-                <button
+                {/* <button
                   onClick={() => changeSelectedMonth("prev")}
                   className="pagination-button"
                 >
                   prev
-                </button>
-                <h2>
-                  {selectedMonth} - {selectedYear}
-                </h2>
-                <button
+                </button> */}
+                <h4>
+                  {startMonth} {startYear}{" "}
+                  {endMonth && (
+                    <>
+                      - {endMonth} {endYear}
+                    </>
+                  )}
+                </h4>
+                {/* <button
                   onClick={() => changeSelectedMonth("next")}
                   className="pagination-button"
                 >
                   next
-                </button>
+                </button> */}
               </div>
               <Table striped bordered>
                 <thead>
@@ -373,7 +391,7 @@ const RoomOverview = () => {
                           ) : getReservedStatus(room, date) ? (
                             <div
                               style={{
-                                backgroundColor: "blue",
+                                backgroundColor: "#F96167",
                                 width: "100%",
                                 height: "100%",
                                 // margin: "auto",
@@ -403,7 +421,7 @@ const RoomOverview = () => {
           </div>
         </section>
       </div>
-      <Pagination totalDataCount={totalDataCount} />
+      {/* <Pagination totalDataCount={totalDataCount} /> */}
     </div>
   );
 };
