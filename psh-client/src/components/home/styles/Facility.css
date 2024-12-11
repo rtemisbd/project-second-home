@@ -28,6 +28,9 @@
 .splide__pagination__page {
   background: #5a5959 !important;
   top: 32px !important;
+  height: 6px !important;
+  width: 6px !important;
+  border-radius: 100% !important;
 }
 .splide__pagination__page.is-active {
   background: #00c194 !important;

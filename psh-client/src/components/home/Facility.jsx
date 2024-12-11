@@ -9,8 +9,6 @@ import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import YouTube from "react-youtube";
 import { youtubeSlider } from "../../helpers/utils/youtubeSlider";
-// import axios from "axios";
-// import * as cheerio from "cheerio";
 
 const Facility = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -102,7 +100,7 @@ const Facility = () => {
               </div>
             </div>
             {/* Feature Item */}
-            <div className="  w-full flex items-center gap-4  border-white border-l-4 border-r-0 border-b-0 border-t shadow-sm py-2 rounded-lg ">
+            <div className="  w-full flex items-center gap-4 border-white border-l-4 border-r-0 border-b-0 border-t shadow-sm py-2 rounded-lg ">
               <div>
                 <img
                   src={security24}
@@ -121,7 +119,7 @@ const Facility = () => {
           </div>
 
           {/* YouTube Slider */}
-          <div className="w-full md:w-1/2 px-3 relative">
+          <div className="w-full md:w-1/2 px-3 ">
             <Splide
               options={youtubeSlider(youtubeVideoLinks)}
               onMove={(splide) => setActiveSlide(splide.index)} // Update active slide

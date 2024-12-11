@@ -3,7 +3,7 @@ export const youtubeSlider = (projects) => ({
   perMove: 1,
   pagination: true,
   arrows: false,
-  // width: "100%",
+  width: "100%",
   // height: "auto",
   drag: true,
   focus: "center",

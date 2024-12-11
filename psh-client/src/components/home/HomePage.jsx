@@ -31,8 +31,6 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState("");
   const [isLoaded, setIsLoaded] = useState(false);
   const [randomIndex, setRandomIndex] = useState([]);
-  const [showSharedRoom, setSharedRoom] = useState(false);
-  const [showOtherRoom, setShowOtherRoom] = useState(true);
   const [withSharedRoom, setWithSharedRoom] = useState(true);
   const { pathname } = useLocation();
 
@@ -111,14 +109,9 @@ export default function HomePage() {
 
   useEffect(() => {
     if (activeTab === "Shared Room") {
-      setShowOtherRoom(false);
-      setSharedRoom(true);
       setRandomIndex(seats);
       setWithSharedRoom(false);
     } else {
-      setSharedRoom(false);
-      setShowOtherRoom(true);
-      setWithSharedRoom(false);
     }
   }, [activeTab]);
 
