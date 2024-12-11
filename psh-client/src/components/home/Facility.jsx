@@ -16,11 +16,11 @@ const Facility = () => {
   const splideRef = useRef(null);
 
   const youtubeVideoLinks = [
-    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd",
-    "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1",
-    "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b",
-    "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky",
-    "https://youtu.be/mPbJNN1sPwI?si=Y5ly5yTSau2IgcxO",
+    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd?rel=0",
+    "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1?rel=0",
+    "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b?rel=0",
+    "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky?rel=0",
+    "https://youtu.be/mPbJNN1sPwI?si=Y5ly5yTSau2IgcxO?rel=0",
   ];
 
   // useEffect(() => {
@@ -140,21 +140,6 @@ const Facility = () => {
                 );
               })}
             </Splide>
-
-            {/* Custom Pagination */}
-            {/* <ul className="splide__pagination absolute bottom-20">
-              {youtubeVideoLinks.map((_, index) => (
-                <li
-                  key={index}
-                  className={`h-4 w-4 rounded-full splide__pagination__page ${
-                    activeSlide === index ? "is-active" : ""
-                  }`}
-                  onClick={() => splideRef.current.go(index)}
-                >
-                 
-                </li>
-              ))}
-            </ul> */}
           </div>
         </div>
       </div>
