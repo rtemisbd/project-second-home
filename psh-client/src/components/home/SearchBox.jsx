@@ -41,7 +41,7 @@ const SearchBox = () => {
   const [categoryQuery, setCategoryQuery] = useState("");
   const [categoryValue, setCategoryValue] = useState(0);
   const category = ["All", ...data.map((item) => item?.name)];
-  const beds = ["All", "Bunk Bed", "Bunk Bed & Single Bed", "King Size Bed"];
+  const beds = ["All", "Bunk Bed", "Single Bed", "King Size Bed"];
   const [bedValue, setBedValue] = useState(0);
 
   const [inputActive, setInputActive] = useState(false);
@@ -70,7 +70,7 @@ const SearchBox = () => {
     // setSelectedItem(item);
     setQuery(item.name);
     setInputActive(false);
-    setDestination(item.name);
+    setDestination(item?.name);
   };
 
   useEffect(() => {
@@ -382,10 +382,10 @@ const SearchBox = () => {
                   if (
                     (categoryValue === 1 &&
                       bed !== "Bunk Bed" &&
-                      bed !== "Bunk Bed & Single Bed") ||
+                      bed !== "Single Bed") ||
                     (categoryValue === 2 &&
                       bed !== "Single Bed" &&
-                      bed !== "Bunk Bed & Single Bed" &&
+                      bed !== "Single Bed" &&
                       bed !== "King Size Bed")
                   ) {
                     return null; // Skip rendering
