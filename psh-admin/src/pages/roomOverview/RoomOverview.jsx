@@ -325,12 +325,12 @@ const RoomOverview = () => {
             {/* Overview Table */}
             <div>
               <div className="d-lg-flex justify-content-end justify-items-center gap-4">
-                {/* <button
+                <button
                   onClick={() => changeSelectedMonth("prev")}
                   className="pagination-button"
                 >
                   prev
-                </button> */}
+                </button>
                 <h4>
                   {startMonth} {startYear}{" "}
                   {endMonth && (
@@ -339,12 +339,12 @@ const RoomOverview = () => {
                     </>
                   )}
                 </h4>
-                {/* <button
+                <button
                   onClick={() => changeSelectedMonth("next")}
                   className="pagination-button"
                 >
                   next
-                </button> */}
+                </button>
               </div>
               <Table striped bordered>
                 <thead>

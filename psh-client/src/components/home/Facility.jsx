@@ -9,6 +9,7 @@ import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import YouTube from "react-youtube";
 import { youtubeSlider } from "../../helpers/utils/youtubeSlider";
+import LoadingState from "../../pages/LoadingState/LoadingState";
 
 const Facility = () => {
   const [activeSlide, setActiveSlide] = useState(0);
@@ -167,7 +168,7 @@ const Facility = () => {
                         />
                       </div>
                     ) : (
-                      <p>Invalid video link</p>
+                      <LoadingState />
                     )}
                   </SplideSlide>
                 );
