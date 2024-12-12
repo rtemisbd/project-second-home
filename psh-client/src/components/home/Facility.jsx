@@ -12,8 +12,10 @@ import { youtubeSlider } from "../../helpers/utils/youtubeSlider";
 
 const Facility = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [videoEnded, setVideoEnded] = useState([]);
   // const [youtubeVideoLinks, setYoutubeVideoLinks] = useState([]);
   const splideRef = useRef(null);
+  const playerRefs = useRef([]);
 
   const youtubeVideoLinks = [
     "https://www.youtube.com/embed/B7kZf4bmj1s?si=dXWNL8qtTsk27-rK?rel=0",
@@ -49,8 +51,8 @@ const Facility = () => {
 
   const videoOptions = {
     playerVars: {
-      autoplay: 0, // Disable autoplay
-      rel: 0, // Show only related videos from the same channel
+      autoplay: 0,
+      rel: 0,
     },
   };
 
@@ -63,13 +65,12 @@ const Facility = () => {
     const newActiveSlide = splide.index;
     setActiveSlide(newActiveSlide);
 
-    // Pause all videos and play only the active one
     playerRefs.current.forEach((player, index) => {
       if (player) {
         if (index === newActiveSlide) {
-          player.playVideo(); // Play the active slide's video
+          player.playVideo();
         } else {
-          player.pauseVideo(); // Pause other videos
+          player.pauseVideo();
         }
       }
     });
@@ -83,6 +84,7 @@ const Facility = () => {
       return updatedState;
     });
   };
+
   return (
     <div className="md:py-[20px] bg-gray-100">
       <div className="custom-container ">
@@ -155,18 +157,14 @@ const Facility = () => {
                   <SplideSlide key={index} className="aspect-w-16 aspect-h-9">
                     {videoId ? (
                       <div>
-                        {!videoEnded[index] ? (
-                          <YouTube
-                            videoId={videoId}
-                            opts={videoOptions}
-                            onReady={(event) => {
-                              playerRefs.current[index] = event.target;
-                            }}
-                            onEnd={() => handleVideoEnd(index)}
-                          />
-                        ) : (
-                          <p>Video has ended.</p>
-                        )}
+                        <YouTube
+                          videoId={videoId}
+                          opts={videoOptions}
+                          onReady={(event) => {
+                            playerRefs.current[index] = event.target;
+                          }}
+                          onEnd={() => handleVideoEnd(index)}
+                        />
                       </div>
                     ) : (
                       <p>Invalid video link</p>

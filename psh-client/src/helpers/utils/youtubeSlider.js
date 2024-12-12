@@ -5,7 +5,7 @@ export const youtubeSlider = (projects) => ({
   arrows: false,
   width: "100%",
   // height: "auto",
-  drag: true,
+  drag: projects?.length > 1 ? true : false,
   focus: "center",
   // arrows: projects?.length > 1 ? true : false,
 });
