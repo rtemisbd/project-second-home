@@ -16,7 +16,7 @@ const Facility = () => {
   const splideRef = useRef(null);
 
   const youtubeVideoLinks = [
-    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd?rel=0",
+    "https://www.youtube.com/embed/B7kZf4bmj1s?si=dXWNL8qtTsk27-rK?rel=0",
     "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1?rel=0",
     "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b?rel=0",
     "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky?rel=0",
@@ -49,7 +49,8 @@ const Facility = () => {
 
   const videoOptions = {
     playerVars: {
-      autoplay: 1,
+      autoplay: 0, // Disable autoplay
+      rel: 0, // Show only related videos from the same channel
     },
   };
 
@@ -58,7 +59,30 @@ const Facility = () => {
     const match = url.match(regex);
     return match ? match[1] : null;
   };
+  const handleSlideChange = (splide) => {
+    const newActiveSlide = splide.index;
+    setActiveSlide(newActiveSlide);
 
+    // Pause all videos and play only the active one
+    playerRefs.current.forEach((player, index) => {
+      if (player) {
+        if (index === newActiveSlide) {
+          player.playVideo(); // Play the active slide's video
+        } else {
+          player.pauseVideo(); // Pause other videos
+        }
+      }
+    });
+  };
+
+  const handleVideoEnd = (index) => {
+    // Mark the video as ended
+    setVideoEnded((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[index] = true;
+      return updatedState;
+    });
+  };
   return (
     <div className="md:py-[20px] bg-gray-100">
       <div className="custom-container ">
@@ -122,8 +146,8 @@ const Facility = () => {
           <div className="w-full md:w-1/2 px-3 ">
             <Splide
               options={youtubeSlider(youtubeVideoLinks)}
-              onMove={(splide) => setActiveSlide(splide.index)} // Update active slide
-              ref={splideRef} // Attach Splide instance to the ref
+              onMove={handleSlideChange}
+              ref={splideRef}
             >
               {youtubeVideoLinks.map((link, index) => {
                 const videoId = extractVideoId(link);
@@ -131,7 +155,18 @@ const Facility = () => {
                   <SplideSlide key={index} className="aspect-w-16 aspect-h-9">
                     {videoId ? (
                       <div>
-                        <YouTube videoId={videoId} opts={videoOptions} />
+                        {!videoEnded[index] ? (
+                          <YouTube
+                            videoId={videoId}
+                            opts={videoOptions}
+                            onReady={(event) => {
+                              playerRefs.current[index] = event.target;
+                            }}
+                            onEnd={() => handleVideoEnd(index)}
+                          />
+                        ) : (
+                          <p>Video has ended.</p>
+                        )}
                       </div>
                     ) : (
                       <p>Invalid video link</p>
