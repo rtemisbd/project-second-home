@@ -207,7 +207,7 @@ function List({ type }) {
       <div className=" mt-3 ml-2 flex justify-between items-center">
         <p>{totalDataCount} Results Found</p>
         <p className="">
-          <span className="hidden md:block"> Search Number </span>
+          <span className="hidden md:inline"> Search Number </span>
           <select
             className="border border-black rounded ml-2"
             value={itemsPerPage}

@@ -9,18 +9,21 @@ import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import YouTube from "react-youtube";
 import { youtubeSlider } from "../../helpers/utils/youtubeSlider";
+import LoadingState from "../../pages/LoadingState/LoadingState";
 
 const Facility = () => {
   const [activeSlide, setActiveSlide] = useState(0);
+  const [videoEnded, setVideoEnded] = useState([]);
   // const [youtubeVideoLinks, setYoutubeVideoLinks] = useState([]);
   const splideRef = useRef(null);
+  const playerRefs = useRef([]);
 
   const youtubeVideoLinks = [
-    "https://youtu.be/B7kZf4bmj1s?si=QHiTuTWJutQpxdgd",
-    "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1",
-    "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b",
-    "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky",
-    "https://youtu.be/mPbJNN1sPwI?si=Y5ly5yTSau2IgcxO",
+    "https://www.youtube.com/embed/B7kZf4bmj1s?si=dXWNL8qtTsk27-rK?rel=0",
+    "https://youtu.be/VoDUk7G1dN4?si=ficVVq7oBB6v8ke1?rel=0",
+    "https://youtu.be/dHMzkV5XZ0Y?si=rQ1vONFrJt8k5j2b?rel=0",
+    "https://youtu.be/SpgFHQ9LFTU?si=QU_L3Q2yfVkoqPky?rel=0",
+    "https://youtu.be/mPbJNN1sPwI?si=Y5ly5yTSau2IgcxO?rel=0",
   ];
 
   // useEffect(() => {
@@ -49,7 +52,8 @@ const Facility = () => {
 
   const videoOptions = {
     playerVars: {
-      autoplay: 1,
+      autoplay: 0,
+      rel: 0,
     },
   };
 
@@ -57,6 +61,29 @@ const Facility = () => {
     const regex = /(?:\?v=|\/embed\/|\.be\/|\/v\/)([^&#?/]+)/;
     const match = url.match(regex);
     return match ? match[1] : null;
+  };
+  const handleSlideChange = (splide) => {
+    const newActiveSlide = splide.index;
+    setActiveSlide(newActiveSlide);
+
+    playerRefs.current.forEach((player, index) => {
+      if (player) {
+        if (index === newActiveSlide) {
+          player.playVideo();
+        } else {
+          player.pauseVideo();
+        }
+      }
+    });
+  };
+
+  const handleVideoEnd = (index) => {
+    // Mark the video as ended
+    setVideoEnded((prevState) => {
+      const updatedState = [...prevState];
+      updatedState[index] = true;
+      return updatedState;
+    });
   };
 
   return (
@@ -122,8 +149,8 @@ const Facility = () => {
           <div className="w-full md:w-1/2 px-3 ">
             <Splide
               options={youtubeSlider(youtubeVideoLinks)}
-              onMove={(splide) => setActiveSlide(splide.index)} // Update active slide
-              ref={splideRef} // Attach Splide instance to the ref
+              onMove={handleSlideChange}
+              ref={splideRef}
             >
               {youtubeVideoLinks.map((link, index) => {
                 const videoId = extractVideoId(link);
@@ -131,30 +158,22 @@ const Facility = () => {
                   <SplideSlide key={index} className="aspect-w-16 aspect-h-9">
                     {videoId ? (
                       <div>
-                        <YouTube videoId={videoId} opts={videoOptions} />
+                        <YouTube
+                          videoId={videoId}
+                          opts={videoOptions}
+                          onReady={(event) => {
+                            playerRefs.current[index] = event.target;
+                          }}
+                          onEnd={() => handleVideoEnd(index)}
+                        />
                       </div>
                     ) : (
-                      <p>Invalid video link</p>
+                      <LoadingState />
                     )}
                   </SplideSlide>
                 );
               })}
             </Splide>
-
-            {/* Custom Pagination */}
-            {/* <ul className="splide__pagination absolute bottom-20">
-              {youtubeVideoLinks.map((_, index) => (
-                <li
-                  key={index}
-                  className={`h-4 w-4 rounded-full splide__pagination__page ${
-                    activeSlide === index ? "is-active" : ""
-                  }`}
-                  onClick={() => splideRef.current.go(index)}
-                >
-                 
-                </li>
-              ))}
-            </ul> */}
           </div>
         </div>
       </div>
