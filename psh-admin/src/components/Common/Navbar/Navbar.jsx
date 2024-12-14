@@ -414,49 +414,6 @@ const Navbar = () => {
                   ) : (
                     ""
                   )}
-                  {(user && user?.role === "SuperAdmin") ||
-                  user?.role === "admin" ||
-                  user?.role === "subAdmin1" ? (
-                    <Link
-                      to={"/dashboard/booking-overview"}
-                      style={{
-                        backgroundColor:
-                          location.pathname === "/booking-overview"
-                            ? "#35b0a7"
-                            : "",
-                        borderRadius: "10px",
-                      }}
-                    >
-                      <li className="main_nav-link">
-                        <div
-                          className={` nav-link d-flex align-items-center ${
-                            location.pathname === "/booking-overview"
-                              ? "active_route"
-                              : "text-black"
-                          }`}
-                        >
-                          <IoCalendarOutline
-                            style={{
-                              width: "24px",
-                              height: "24px",
-                              color: "white",
-                              marginRight: "10px",
-                            }}
-                          />
-
-                          <span className="span_text">Booking Overview</span>
-                          <span
-                            className="span_text_mobile"
-                            data-widget="pushmenu"
-                          >
-                            Booking Overview
-                          </span>
-                        </div>
-                      </li>
-                    </Link>
-                  ) : (
-                    ""
-                  )}
 
                   <ul
                     className={` custom-drop ${
@@ -616,6 +573,50 @@ const Navbar = () => {
                     )}
                   </ul>
                 </li>
+
+                {(user && user?.role === "SuperAdmin") ||
+                user?.role === "admin" ||
+                user?.role === "subAdmin1" ? (
+                  <Link
+                    to={"/dashboard/booking-overview"}
+                    style={{
+                      backgroundColor:
+                        location.pathname === "/booking-overview"
+                          ? "#35b0a7"
+                          : "",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <li className="main_nav-link">
+                      <div
+                        className={` nav-link d-flex align-items-center ${
+                          location.pathname === "/booking-overview"
+                            ? "active_route"
+                            : "text-black"
+                        }`}
+                      >
+                        <IoCalendarOutline
+                          style={{
+                            width: "24px",
+                            height: "24px",
+                            color: "white",
+                            marginRight: "10px",
+                          }}
+                        />
+
+                        <span className="span_text">Booking Overview</span>
+                        <span
+                          className="span_text_mobile"
+                          data-widget="pushmenu"
+                        >
+                          Booking Overview
+                        </span>
+                      </div>
+                    </li>
+                  </Link>
+                ) : (
+                  ""
+                )}
 
                 <li
                   className="nav-item"

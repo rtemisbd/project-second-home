@@ -115,14 +115,10 @@ const getPropertiesFromDB = async (queries) => {
     },
   ];
 
-  let properties = [];
-  if (seatNumber !== "") {
-    properties = [];
-  } else properties = await Property.aggregate(pipeline);
+  let properties = await Property.aggregate(pipeline);
 
-  if (fromClient) {
-    properties = await Property.aggregate(pipeline);
-  }
+  if (seatNumber) properties = [];
+  if (fromClient) properties = await Property.aggregate(pipeline);
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
