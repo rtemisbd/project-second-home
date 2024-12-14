@@ -27,8 +27,6 @@ const BookingBox = ({ data, bookedDates, seat }) => {
     return lastDay;
   }
 
-  console.log(data);
-
   return (
     <div
       style={{

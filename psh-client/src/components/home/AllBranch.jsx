@@ -25,7 +25,7 @@ const AllBranch = () => {
     }
   };
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 4) {
+    if (lastSlideIndex === data?.length - 3) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
@@ -33,15 +33,18 @@ const AllBranch = () => {
   };
   const settings = {
     dots: false,
-    speed: 400,
-
     slidesToShow: 4,
     slidesToScroll: 1,
     initialSlide: 0,
+    afterChange: (index) => {
+      setLastSlideIndex(index);
+    },
     adaptiveHeight: true,
+    infinite: false,
+    speed: 400,
     arrows: data?.length > 4 ? true : false,
     autoplay: false,
-    infinite: true,
+    swipeToSlide: true,
     prevArrow: <SlickArrowLeft />,
     nextArrow: <SlickArrowRight />,
     className: "mx-[-15px]",
@@ -50,42 +53,45 @@ const AllBranch = () => {
         breakpoint: 1200,
         settings: {
           slidesToShow: 3,
-          slidesToScroll: 1,
+
           dots: false,
-          infinite: false,
-          // autoplay: true,
+
+          autoplaySpeed: 3000,
         },
       },
       {
         breakpoint: 800,
         settings: {
           slidesToShow: 2,
-          slidesToScroll: 1,
-          initialSlide: 0,
-          // infinite: true,
-          // autoplay: true,
+
+          initialSlide: 2,
+
           autoplaySpeed: 3000,
         },
       },
       {
         breakpoint: 640,
         settings: {
-          className: `center ms-[-8px] `,
+          className: `center ms-[-8px] ${
+            lastSlideIndex >= data?.length - 1 ? "only-forMobile" : ""
+          }`,
           afterChange: (index) => {
             setLastSlideIndex(index);
           },
           centerMode: true,
           slidesToShow: 1,
-          slidesToScroll: 1,
 
+          infinite: false,
           arrows: false,
-          initialSlide: 1,
+
           speed: 400,
           cssEase: "ease-out",
+          swipeToSlide: true,
         },
       },
     ],
   };
+
   return (
     <div>
       <div>

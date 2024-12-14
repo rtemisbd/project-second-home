@@ -42,7 +42,7 @@ const AllRecomonded = () => {
       <div className=" mt-3 flex justify-between items-center sm:px-5 sm:pt-1 md:px-0 md:pt-0 custom-container">
         <p className="ms-0">{paginatedData?.length} Results Found</p>
         <p className="">
-          Search Number{" "}
+          <span className="hidden md:inline"> Search Number </span>
           <select
             className="border border-black rounded ml-2"
             value={itemsPerPage}

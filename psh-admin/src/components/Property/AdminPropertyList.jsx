@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
@@ -25,99 +25,90 @@ import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import { baseUrl } from "../../utils/getBaseURL";
 import useBranch from "../../hooks/useBranch";
 import Pagination from "../Pagination/Pagination";
+import useCategory from "../../hooks/useCategory";
 
-const AdminPropertyList = (props) => {
+const AdminPropertyList = () => {
   const MySwal = withReactContent(Swal);
   const dispatch = useDispatch();
   const handleClose = () => dispatch(placeLoadingShow(false));
   const { page, size } = useSelector((state) => state.pagination);
-  //sub stream
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [filterData, setFilterData] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
 
-  const [categories, setCategories] = useState([]);
-
-  // const [branches, setBranches] = useState([]);
+  // const [categories, setCategories] = useState([]);
   const [selectCategory, setSelectCategory] = useState("All");
   const [selectBranch, setSelectBranch] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
 
   // Get All Branch
-  const { allBranch: branches, refetch: refetchBranches } = useBranch();
+  const { allBranch: branches } = useBranch();
+  const { categories } = useCategory();
 
-  const { refetch: categoryList } = useQuery(["categoryList"], async () => {
-    try {
-      const response = await axios.get(`${baseUrl}/api/category`, {
-        mode: "cors",
-      });
-
-      setCategories(response.data);
-    } catch (error) {
-      console.error(error);
-    }
-  });
-
-  // Get Properties
   const { refetch } = useQuery(["propertyList", page, size], async () => {
     try {
       const queryParams = new URLSearchParams({
         page,
         size,
+        fromClient: "true",
       });
       const response = await axios.get(
-        `${baseUrl}/api/property?${queryParams.toString()}`,
-        {
-          mode: "cors",
-        }
+        `${baseUrl}/api/property?${queryParams.toString()}`
       );
-      console.log(response);
 
-      setData(response?.data?.properties);
-      setTotalDataCount(response?.data?.totalCount);
-    } catch (error) {
-      console.error(error);
-      throw error;
+      console.log("Response Data:", response.data);
+
+      // Check if data exists
+      if (response?.data?.properties) {
+        setData(response.data.properties);
+        setTotalDataCount(response.data.totalCount);
+      } else {
+        console.log("No properties found");
+        setData([]);
+        setTotalDataCount(0);
+      }
+    } catch (err) {
+      console.error("Error fetching properties:", err);
+      throw err;
     }
   });
-  console.log(totalDataCount);
+
+  // Re-fetch data whenever `page` or `size` changes
+  useEffect(() => {
+    refetch();
+  }, [refetch, page, size]);
 
   // Handle Search
 
-  const handleSearch = async () => {
-    setIsLoading(true);
-    setIsFilter(true);
+  // const handleSearch = async () => {
+  //   setIsLoading(true);
+  //   setIsFilter(true);
 
-    try {
-      const response = await axios.get(`${baseUrl}/api/property`, {
-        params: {
-          sCategory: selectCategory !== "All" ? selectCategory : undefined,
-          sBranch: selectBranch !== "All" ? selectBranch : undefined,
-          roomNumber: roomNumber.toUpperCase(),
-        },
-        mode: "cors",
-      });
+  //   try {
+  //     const response = await axios.get(`${baseUrl}/api/property`, {
+  //       params: {
+  //         sCategory: selectCategory !== "All" ? selectCategory : undefined,
+  //         sBranch: selectBranch !== "All" ? selectBranch : undefined,
+  //         roomNumber: roomNumber.toUpperCase(),
+  //       },
+  //       mode: "cors",
+  //     });
 
-      setFilterData(response.data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  //     setFilterData(response.data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   } finally {
+  //     setIsLoading(false);
+  //   }
+  // };
 
   const columns = [
     {
       text: "No",
       formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>{index + 1}</p>
-          </>
-        );
+        return <> {(page - 1) * size + index + 1}</>;
       },
     },
     {
@@ -292,25 +283,6 @@ const AdminPropertyList = (props) => {
       },
     },
   ];
-  // const pagination = paginationFactory({
-  //   page: 1,
-  //   sizePerPage: 10,
-  //   style: { width: 60 },
-  //   lastPageText: "Last",
-  //   firstPageText: "First",
-  //   nextPageText: "Next",
-  //   prePageText: "Previous",
-  //   showTotal: true,
-  //   alwaysShowAllBtns: true,
-  //   onPageChange: function (page, sizePerPage) {
-  //     console.log("page", page);
-  //     console.log("sizePerPage", sizePerPage);
-  //   },
-  //   onSizePerPageChange: function (page, sizePerPage) {
-  //     console.log("page", page);
-  //     console.log("sizePerPage", sizePerPage);
-  //   },
-  // });
 
   //delete
   const [products, setProducts] = useState(data);
@@ -409,7 +381,7 @@ const AdminPropertyList = (props) => {
                 </div>
                 <div style={{ marginLeft: 10, marginTop: 30 }}>
                   <button
-                    onClick={handleSearch}
+                    // onClick={handleSearch}
                     className="btn text-white mb-5"
                     style={{
                       backgroundColor: "#35b0a7",

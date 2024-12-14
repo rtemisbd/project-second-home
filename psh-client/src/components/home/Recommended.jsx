@@ -12,9 +12,7 @@ import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
 import "./styles/Recommended.css";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
-import { useQuery } from "react-query";
-import axios from "axios";
-import { serverBaseUrl } from "../../serverApi/baseUrl";
+
 import useRecommended from "../../hooks/useRecommended";
 
 const Recommended = () => {
@@ -37,7 +35,6 @@ const Recommended = () => {
   };
   const settings = {
     dots: false,
-
     slidesToShow: 4,
     slidesToScroll: 1,
     initialSlide: 0,

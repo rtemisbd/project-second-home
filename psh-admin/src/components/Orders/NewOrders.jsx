@@ -12,6 +12,7 @@ import { baseUrl } from "../../utils/getBaseURL";
 import { MdRefresh } from "react-icons/md";
 import Pagination from "../Pagination/Pagination";
 import { useSelector } from "react-redux";
+import useBranch from "../../hooks/useBranch";
 
 const NewOrders = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -33,11 +34,12 @@ const NewOrders = () => {
 
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
-  const [allBranch, setAllBranch] = useState([]);
 
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
+  // get all branches
+  const { allBranch } = useBranch();
   // Get all Bookings
   const { refetch } = useQuery(
     [
@@ -108,35 +110,6 @@ const NewOrders = () => {
     refetch();
   }, [size, refetch]);
 
-  // Get All Branch
-  useEffect(() => {
-    fetch(`${baseUrl}/api/branch`)
-      .then((res) => res.json())
-      .then((data) => setAllBranch(data));
-  }, []);
-
-  // Get All Status Bookings
-
-  const handleBranch = (e) => {
-    setBranch(e.target.value);
-  };
-
-  const handlePaymentStatus = (e) => {
-    setPaymentStatus(e.target.value);
-  };
-
-  const handleBookingStatus = (e) => {
-    setBookingStatus(e.target.value);
-  };
-
-  const handleRunningStatus = (e) => {
-    setRunningStatus(e.target.value);
-  };
-
-  const handleGuestType = (e) => {
-    setGuestType(e.target.value);
-  };
-
   const handleUnknownQuery = (e) => {
     const value = e.target.value;
     setUnknownQuery(value);
@@ -184,7 +157,7 @@ const NewOrders = () => {
 
           <div className="content-wrapper h-0" style={{ background: "unset" }}>
             {/* booking details */}
-            <h4 className="customize mx-lg-5 mb-3">Booking Deatails</h4>
+            <h4 className="customize mx-lg-5 mb-3">Booking Details</h4>
             <div className="row customize mx-lg-5">
               <div className="col-md-3 home_card_m">
                 <div className="card_1">
@@ -334,7 +307,7 @@ const NewOrders = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px" }}
-                  onChange={handleBranch}
+                  onChange={(e) => setBranch(e.target.value)}
                   id="branchId"
                   value={branch}
                 >
@@ -349,7 +322,7 @@ const NewOrders = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  onChange={handlePaymentStatus}
+                  onChange={(e) => setPaymentStatus(e.target.value)}
                   id="paymentStatusId"
                   value={paymentStatus}
                 >
@@ -364,7 +337,7 @@ const NewOrders = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  onChange={handleBookingStatus}
+                  onChange={(e) => setBookingStatus(e.target.value)}
                   id="bookingStatusId"
                   value={bookingStatus}
                 >
@@ -381,7 +354,7 @@ const NewOrders = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  onChange={handleRunningStatus}
+                  onChange={(e) => setRunningStatus(e.target.value)}
                   id="runningStatusId"
                   value={runningStatus}
                 >
@@ -395,7 +368,7 @@ const NewOrders = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  onChange={handleGuestType}
+                  onChange={(e) => setGuestType(e.target.value)}
                   id="guestTypeId"
                   value={guestType}
                 >

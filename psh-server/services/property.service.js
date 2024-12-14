@@ -15,10 +15,13 @@ const getPropertiesFromDB = async (queries) => {
     endDate,
     recommended,
     withSharedRoom,
+    roomNumber,
+    seatNumber,
+    fromClient,
   } = queries;
 
-  const page = parseInt(queries.page) || 0;
-  const size = parseInt(queries.size) || 0;
+  const page = parseInt(queries.page);
+  const size = parseInt(queries.size);
 
   let query = {};
   if (Featured && Featured !== "") query.Featured = Featured;
@@ -33,7 +36,9 @@ const getPropertiesFromDB = async (queries) => {
   if (recommended && recommended !== "no") {
     query.recommended = recommended;
   }
-  console.log(query);
+  if (roomNumber && roomNumber !== "") {
+    query.roomNumber = { $regex: `^${roomNumber}`, $options: "i" };
+  }
 
   const pipeline = [
     { $match: query },
@@ -86,7 +91,7 @@ const getPropertiesFromDB = async (queries) => {
       $facet: {
         paginatedResults: [
           { $sort: { createdAt: -1 } },
-          ...(page > 0 && size > 0
+          ...(page >= 1 && size >= 1
             ? [{ $skip: (page - 1) * size }, { $limit: size }]
             : []),
         ],
@@ -110,14 +115,19 @@ const getPropertiesFromDB = async (queries) => {
     },
   ];
 
-  const properties = await Property.aggregate(pipeline);
-  // console.log(properties);
+  let properties = await Property.aggregate(pipeline);
+
+  if (seatNumber) properties = [];
+  if (fromClient) properties = await Property.aggregate(pipeline);
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom && category !== "Private Room") {
+  if (withSharedRoom && category !== "Private Room" && !roomNumber) {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
+      seatNumber,
+      size,
+      page,
     });
 
     allProperties = [
@@ -136,6 +146,158 @@ const getPropertiesFromDB = async (queries) => {
     pageSize: size,
   };
 };
+
+// const getPropertiesFromDB = async (queries) => {
+//   const {
+//     Featured,
+//     isPublished,
+//     furnitured,
+//     category,
+//     gender,
+//     destination,
+//     bedType,
+//     startDate,
+//     endDate,
+//     recommended,
+//     withSharedRoom,
+//   } = queries;
+
+//   const page = parseInt(queries.page);
+//   const size = parseInt(queries.size);
+
+//   let query = {};
+//   if (Featured && Featured !== "") query.Featured = Featured;
+//   if (furnitured && furnitured !== "") query.furnitured = furnitured;
+//   if (gender && gender !== "") query.type = gender;
+//   if (bedType && bedType !== "") query.bedType = bedType;
+//   if (isPublished && isPublished !== "") {
+//     query.isPublished = isPublished;
+//   } else {
+//     query.isPublished = "Published";
+//   }
+//   if (recommended && recommended !== "no") {
+//     query.recommended = recommended;
+//   }
+
+//   // Declare pipeline as an array, adding conditional stages
+//   const pipeline = [
+//     { $match: query },
+
+//     // Lookup for branches (destination)
+//     ...(destination && destination !== ""
+//       ? [
+//           {
+//             $lookup: {
+//               from: "branches",
+//               localField: "branch",
+//               foreignField: "_id",
+//               as: "branchDetails",
+//               pipeline: [
+//                 {
+//                   $project: {
+//                     _id: 1,
+//                     name: 1,
+//                     foodAmount: 1,
+//                   },
+//                 },
+//               ],
+//             },
+//           },
+//           { $unwind: "$branchDetails" },
+//           {
+//             $match: {
+//               "branchDetails.name": destination,
+//             },
+//           },
+//         ]
+//       : []),
+
+//     // Lookup for categories
+//     ...(category && category !== ""
+//       ? [
+//           {
+//             $lookup: {
+//               from: "categories",
+//               localField: "category",
+//               foreignField: "_id",
+//               as: "categoryDetails",
+//               pipeline: [
+//                 {
+//                   $project: {
+//                     _id: 1,
+//                     name: 1,
+//                   },
+//                 },
+//               ],
+//             },
+//           },
+//           { $unwind: "$categoryDetails" },
+//           {
+//             $match: {
+//               "categoryDetails.name": category,
+//             },
+//           },
+//         ]
+//       : []),
+
+//     // Faceted Pagination and Total Counts
+//     {
+//       $facet: {
+//         paginatedResults: [
+//           { $sort: { createdAt: -1 } },
+//           ...(page >= 1 && size >= 1
+//             ? [{ $skip: (page - 1) * size }, { $limit: size }]
+//             : []),
+//         ],
+//         totalCounts: [
+//           {
+//             $group: {
+//               _id: null,
+//               totalCount: { $sum: 1 },
+//             },
+//           },
+//         ],
+//       },
+//     },
+//     {
+//       $project: {
+//         paginatedResults: 1,
+//         totalCount: {
+//           $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
+//         },
+//       },
+//     },
+//   ];
+//   console.log(destination);
+
+//   // Execute the pipeline
+//   const properties = await Property.aggregate(pipeline);
+
+//   let allProperties = properties[0]?.paginatedResults || [];
+//   let totalCount = properties[0]?.totalCount || 0;
+
+//   // Handle shared room logic
+//   if (withSharedRoom && category !== "Private Room") {
+//     const extractedSeats = await seatServices.getAllSeatsFromDB({
+//       destination,
+//     });
+
+//     allProperties = [
+//       ...allProperties.filter(
+//         (result) => result.categoryDetails.name === "Private Room"
+//       ),
+//       ...extractedSeats,
+//     ];
+//     totalCount += extractedSeats.length;
+//   }
+
+//   return {
+//     properties: allProperties,
+//     totalCount: totalCount,
+//     currentPage: page,
+//     pageSize: size,
+//   };
+// };
 
 const getRecommendedPropertiesFromDB = async () => {
   const result = await Property.aggregate([

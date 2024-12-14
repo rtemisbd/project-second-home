@@ -68,6 +68,7 @@ import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
 import StudySpace from "./components/StudySpace/StudySpace";
+import RoomOverview from "./pages/roomOverview/RoomOverview";
 
 function App() {
   return (
@@ -152,6 +153,8 @@ function App() {
         <Route path="terms_list" element={<Terms_list />} />
         <Route path="update_terms/:id" element={<Update_Terms />} />
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
+        {/* testing new overview */}
+        <Route path="booking-overview" element={<RoomOverview />} />
       </Route>
 
       <Route path="*" element={<NotFound />}></Route>

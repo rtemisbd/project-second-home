@@ -13,7 +13,7 @@ import "./Navbar.css";
 import { MdDashboard } from "react-icons/md";
 import { RiUserAddLine } from "react-icons/ri";
 import { RiBuilding2Line } from "react-icons/ri";
-import { IoBedOutline } from "react-icons/io5";
+import { IoBedOutline, IoCalendarOutline } from "react-icons/io5";
 import { MdOutlineLocalOffer } from "react-icons/md";
 import { CiDiscount1 } from "react-icons/ci";
 import { AiOutlineDollarCircle } from "react-icons/ai";
@@ -99,7 +99,7 @@ const Navbar = () => {
         </nav>
 
         <aside
-          className="main-sidebar  elevation-4 side_menubar "
+          className="main-sidebar elevation-4 side_menubar "
           style={{
             position: "fixed",
           }}
@@ -573,6 +573,50 @@ const Navbar = () => {
                     )}
                   </ul>
                 </li>
+
+                {(user && user?.role === "SuperAdmin") ||
+                user?.role === "admin" ||
+                user?.role === "subAdmin1" ? (
+                  <Link
+                    to={"/dashboard/booking-overview"}
+                    style={{
+                      backgroundColor:
+                        location.pathname === "/booking-overview"
+                          ? "#35b0a7"
+                          : "",
+                      borderRadius: "10px",
+                    }}
+                  >
+                    <li className="main_nav-link">
+                      <div
+                        className={` nav-link d-flex align-items-center ${
+                          location.pathname === "/booking-overview"
+                            ? "active_route"
+                            : "text-black"
+                        }`}
+                      >
+                        <IoCalendarOutline
+                          style={{
+                            width: "24px",
+                            height: "24px",
+                            color: "white",
+                            marginRight: "10px",
+                          }}
+                        />
+
+                        <span className="span_text">Booking Overview</span>
+                        <span
+                          className="span_text_mobile"
+                          data-widget="pushmenu"
+                        >
+                          Booking Overview
+                        </span>
+                      </div>
+                    </li>
+                  </Link>
+                ) : (
+                  ""
+                )}
 
                 <li
                   className="nav-item"
