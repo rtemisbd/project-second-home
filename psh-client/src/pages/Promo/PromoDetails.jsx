@@ -130,6 +130,10 @@ const PromoDetails = () => {
           </div>
         </div>
       </div>
+      <Toaster
+        containerStyle={{ top: 300 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
     </div>
   );
 };

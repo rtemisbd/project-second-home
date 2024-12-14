@@ -4,6 +4,7 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { Spinner } from "react-bootstrap";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const FeaturedRoom = (props) => {
   const [data, setData] = useState([]);
@@ -39,7 +40,7 @@ const FeaturedRoom = (props) => {
 
   const { refetch: categoryList } = useQuery(["categoryList"], async () => {
     try {
-      const response = await axios.get(`https://api.psh.com.bd/api/category`, {
+      const response = await axios.get(`${baseUrl}/api/category`, {
         mode: "cors",
       });
 
@@ -50,7 +51,7 @@ const FeaturedRoom = (props) => {
   });
   const { refetch: branchList } = useQuery(["branchList"], async () => {
     try {
-      const response = await axios.get(`https://api.psh.com.bd/api/branch`, {
+      const response = await axios.get(`${baseUrl}/api/branch`, {
         mode: "cors",
       });
 
@@ -63,7 +64,7 @@ const FeaturedRoom = (props) => {
   // Get Properties
   const { refetch } = useQuery(["propertyList"], async () => {
     try {
-      const response = await axios.get("https://api.psh.com.bd/api/property", {
+      const response = await axios.get(`${baseUrl}/api/property`, {
         mode: "cors",
       });
 
@@ -79,7 +80,7 @@ const FeaturedRoom = (props) => {
     setIsFilter(true);
 
     try {
-      const response = await axios.get("https://api.psh.com.bd/api/property", {
+      const response = await axios.get(`${baseUrl}/api/property`, {
         params: {
           sCategory: selectCategory !== "All" ? selectCategory : undefined,
           sBranch: selectBranch !== "All" ? selectBranch : undefined,
@@ -120,7 +121,7 @@ const FeaturedRoom = (props) => {
 
     try {
       const response = await axios.patch(
-        `https://api.psh.com.bd/api/property/featured`,
+        `${baseUrl}/api/property/featured`,
         updateFeatured
       );
       toast.success(response.data.message);
