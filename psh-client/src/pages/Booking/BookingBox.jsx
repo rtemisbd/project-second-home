@@ -200,7 +200,7 @@ const BookingBox = ({ data, bookedDates, seat }) => {
               name="promoCode"
               onChange={(e) => setPromoCode(e.target.value)}
               style={{ height: "25px", width: "80%" }}
-              placeholder="Pormo Code"
+              placeholder="Promo Code"
               disabled={promoCodeCheck ? true : false}
               required
             />
