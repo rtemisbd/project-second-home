@@ -1,100 +1,49 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Slider from "react-slick";
-import { IoIosArrowForward } from "react-icons/io";
-
-import UseFetch from "../../hooks/useFetch";
+import { useState, useRef, useEffect } from "react";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
+import UseFetch from "../../hooks/useFetch";
+import { Link } from "react-router-dom";
+import { promoSlider } from "../../helpers/utils/promoSlider";
+
 import "./styles/AllPromo.css";
+import { IoIosArrowForward } from "react-icons/io";
 
 const PromoOffer = () => {
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [showPrevArrow, setShowPrevArrow] = useState(false);
+  const [showNextArrow, setShowNextArrow] = useState(true);
   const { data } = UseFetch(`promo`);
-  // const [filteredProducts, setFilteredProducts] = useState([]);
 
-  // useEffect(() => {
-  //   filterProducts();
-  // }, [data]);
+  const splideRef = useRef(null); // Create a ref for the Splide instance
 
   const promoFiltering = data.filter(
     (promo) => promo.isPublished === "Published"
   );
-  //console.log(promoFiltering);
 
-  const [lastSlideIndex, setLastSlideIndex] = useState(0);
-  const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === 0) {
-      return null;
-    } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
+  const handleMove = (splide) => {
+    const newIndex = splide.index;
+    setActiveIndex(newIndex);
+    setShowPrevArrow(newIndex > 0);
+    setShowNextArrow(newIndex < promoFiltering.length - 1);
+  };
+
+  useEffect(() => {
+    setShowPrevArrow(false);
+    setShowNextArrow(promoFiltering.length > 1);
+  }, [promoFiltering]);
+
+  const handlePrevClick = () => {
+    if (splideRef.current) {
+      splideRef.current.go("<");
     }
   };
-  const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 3) {
-      return null;
-    } else {
-      return <img src={RightArrow} alt="nextArrow" {...props} />;
+
+  const handleNextClick = () => {
+    if (splideRef.current) {
+      splideRef.current.go(">");
     }
-  };
-  const settings = {
-    dots: false,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    initialSlide: 0,
-    afterChange: (index) => {
-      setLastSlideIndex(index);
-    },
-    adaptiveHeight: true,
-    infinite: false,
-    speed: 400,
-    arrows: data?.length > 3 ? true : false,
-    autoplay: false,
-    swipeToSlide: true,
-    prevArrow: <SlickArrowLeft />,
-    nextArrow: <SlickArrowRight />,
-    className: "mx-[-15px]",
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
-
-          dots: false,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 800,
-        settings: {
-          slidesToShow: 2,
-
-          initialSlide: 2,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          className: `center ms-[-8px] ${
-            lastSlideIndex >= data?.length - 1 ? "only-forMobile" : ""
-          }`,
-          afterChange: (index) => {
-            setLastSlideIndex(index);
-          },
-          centerMode: true,
-          slidesToShow: 1,
-
-          infinite: false,
-          arrows: false,
-
-          speed: 400,
-          cssEase: "ease-out",
-          swipeToSlide: true,
-        },
-      },
-    ],
   };
 
   return (
@@ -103,8 +52,8 @@ const PromoOffer = () => {
         <div className="">
           <div className="">
             <h2 className="text-xl font-bold text-gray-900">Promo Offers</h2>
-            <div className="flex justify-between items-center">
-              <p className="mb-2">Our best Discount Offers for you</p>
+            <div className="flex justify-between items-end my-2">
+              <p className="">Our best Discount Offers for you</p>
               <p>
                 <Link
                   to="/promo"
@@ -115,34 +64,52 @@ const PromoOffer = () => {
                 </Link>
               </p>
             </div>
-            <div className="all_recommended slider_margin promo-slider">
-              <Slider {...settings}>
-                {promoFiltering
-                  ?.slice()
-                  ?.reverse()
-                  .map((item, i) => (
-                    <div key={i} className="group relative">
+            <div className="all_promo slider_margin promo-slider pl-0 relative">
+              <Splide
+                ref={splideRef} // Attach the Splide ref
+                options={promoSlider(promoFiltering)}
+                onMove={handleMove} // Listen for move events
+              >
+                {promoFiltering?.map((item, index) => (
+                  <SplideSlide key={item?._id}>
+                    <div className="group relative">
                       <Link to={`/promo/${item?._id}`}>
                         <div className="relative w-full overflow-hidden rounded-r-lg rounded-l-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
-                          {item?.homePageCover?.length > 0 ? (
+                          {item?.homePageCover?.length > 0 && (
                             <img
                               src={item?.homePageCover[0]}
                               alt=""
-                              className="promo_img"
-                              style={{
-                                maxWidth: "110%",
-
-                                height: "220px",
-                              }}
+                              className="promo_img h-[200px] md:h-[240px]"
                             />
-                          ) : (
-                            ""
                           )}
                         </div>
                       </Link>
                     </div>
-                  ))}
-              </Slider>
+                  </SplideSlide>
+                ))}
+              </Splide>
+              <div className="all_promo absolute z-50 top-1/2 w-full flex justify-between">
+                {showPrevArrow ? (
+                  <button
+                    className="splide__arrow--prev absolute"
+                    onClick={handlePrevClick}
+                  >
+                    <img src={LeftArrow} alt="prevArrow" />
+                  </button>
+                ) : (
+                  <></>
+                )}
+                {showNextArrow ? (
+                  <button
+                    className="splide__arrow--next right-10 absolute"
+                    onClick={handleNextClick}
+                  >
+                    <img src={RightArrow} alt="nextArrow" />
+                  </button>
+                ) : (
+                  <></>
+                )}
+              </div>
             </div>
           </div>
         </div>

@@ -2,49 +2,67 @@
   padding: 0 !important;
 }
 
-.all_promo .splide__arrow--prev::before {
-  /* content: url("../../assets/img/arrow1.png"); */
-  /* Add your custom icon or image here */
-  border-radius: 5px 0px 0px 5px;
-  border: 1px solid #e5e5e5;
+/* Customize the left arrow button */
+ .all_promo .splide__arrow--prev {
+  left:-20px !important;
+  border-radius: 50%; 
+  /* border: 1px solid #e5e5e5; */
   background: #fff;
-  padding: 15px 20px;
+  padding: 10px 12px;
+  /* content: url("../../assets/img/arrow2.png"); */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px 0px black;
+  z-index: 1000;
 }
 
+/* Customize the right arrow button */
+ .all_promo .splide__arrow--next {
+  right: -20px !important ;
+  border-radius: 50%; 
+  /* border: 1px solid #e5e5e5; */
+  background: #fff;
+  padding: 10px 12px;
+  /* content: url("../../assets/img/arrow1.png");  */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px 0px black;
+  z-index: 1000;
+}
+
+/* Hide SVG icons provided by Splide */
 .all_promo svg {
   display: none;
 }
 
-.all_promo .splide__arrow--next::before {
-  /* content: url("../../assets/img/arrow2.png"); */
-  /* Add your custom icon or image here */
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  padding: 15px 20px;
-}
-
-.all_promo .splide__arrow--prev {
-  left: 635px;
-  top: 280px !important;
-}
-
-/* Customize the right arrow button position */
-
-.all_promo .splide__arrow--next {
-  right: 635px;
-  top: 280px !important;
-}
-
+/* Responsive styling for smaller screens */
 @media screen and (max-width: 600px) {
-  .all_promo .splide__arrow--prev {
-    /* left: 210px !important;
-    top: 280px !important; */
-    display: none !important;
-  }
-
+  .all_promo .splide__arrow--prev,
   .all_promo .splide__arrow--next {
-    /* right: 200px !important;
-    top: 280px !important; */
-    display: none !important;
+    display: none !important; /* Hide arrows on small screens */
   }
+}
+
+/* Adjustments for other components inside .splide */
+.all_promo .splide__arrows {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+    /* margin-top: -40px;  */
+    background-color: white;
+}
+
+.all_promo .splide__arrow img {
+  width: 24px; /* Size of the arrow icons */
+  height: 24px;
+}
+
+/* Optional hover effect for arrow buttons */
+ .all_promo .splide__arrow--prev:hover,
+ .all_promo .splide__arrow--next:hover {
+  background: #f0f0f0; /* Change background color on hover */
 }

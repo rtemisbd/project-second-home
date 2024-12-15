@@ -215,7 +215,7 @@ const BookingData = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button class="btn btn-light position-relative">
+            <button class="btn position-relative">
               <FaWhatsapp
                 style={{
                   width: "32px",
