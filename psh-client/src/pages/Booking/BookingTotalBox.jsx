@@ -319,7 +319,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   }
 
   const bookingData = {
-    data: data,
+    // data: data,
     subTotal: subTotal,
     foodAmount: isIncludeFood
       ? data?.branch?.foodAmount * customerRent.remainingDays
@@ -332,10 +332,10 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     totalAmount: totalRentAmount,
     payableAmount: payableAmount,
     roomId: data?._id,
-    roomName: data?.name,
+    // roomName: data?.name,
     roomNumber: data?.roomNumber,
-    roomType: data?.category?.name,
-    branch: data?.branch,
+    // roomType: data?.category?.name,
+    // branch: data?.branch,
     seatBooking: seat,
     rentDate: {
       bookStartDate: new Date(startDate).toISOString().split("T")[0],

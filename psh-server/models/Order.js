@@ -115,7 +115,6 @@ const OrderSchema = new mongoose.Schema(
     whichOfMonthPayment: {
       type: String,
     },
-
     seat: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Seat",
@@ -153,10 +152,6 @@ const OrderSchema = new mongoose.Schema(
     isIncludeFood: {
       type: Boolean,
     },
-
-    // unReceivedTk: {
-    //   type: Number,
-    // },
     paymentStatus: {
       type: String,
     },

@@ -25,7 +25,7 @@ const payment_create = async (req, res) => {
       {
         mode: "0011",
         payerReference: " ",
-        callbackURL: "http://localhost:8000/api/bkash/payment/callback",
+        callbackURL: `${config.server_url}/bkash/payment/callback`,
         amount,
         currency: "BDT",
         intent: "sale",
@@ -47,7 +47,7 @@ const call_back = async (req, res) => {
   const { paymentID, status } = req.query;
 
   if (status === "cancel" || status === "failure") {
-    return res.redirect(`http://localhost:5173/error?message=${status}`);
+    return res.redirect(`${config.client_url}/error?message=${status}`);
   }
 
   if (status === "success") {
@@ -70,16 +70,16 @@ const call_back = async (req, res) => {
           amount: parseInt(data.amount),
         });
 
-        return res.redirect(`http://localhost:5173/success`);
+        return res.redirect(`${config.client_url}/success`);
       } else {
         return res.redirect(
-          `http://localhost:5173/error?message=${data.statusMessage}`
+          `${config.client_url}/error?message=${data.statusMessage}`
         );
       }
     } catch (error) {
       console.error("Error during payment execution:", error);
       return res.redirect(
-        `http://localhost:5173/error?message=${error.message}`
+        `${config.client_url}/error?message=${error.message}`
       );
     }
   }

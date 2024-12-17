@@ -7,6 +7,8 @@ export default {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
   database_url: process.env.MONGO_URL,
+  server_url: process.env.server_site_url,
+  client_url: process.env.client_site_url,
   sms_api_key: process.env.SMS_API_KEY_VALUE,
   sms_sender_id: process.env.SMS_SENDER_ID,
   sms_api_host: process.env.SMS_API_HOST_SITE,

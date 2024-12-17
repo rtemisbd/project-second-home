@@ -68,6 +68,7 @@ const PersonalInfo = () => {
       navigate("/");
     }
   }, []);
+  console.log(bookingItem);
   // Get Single singleUser
   useEffect(() => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
@@ -93,15 +94,15 @@ const PersonalInfo = () => {
     const arrivalTime = e.target.arrivalTime.value;
     const request = e.target.request.value;
     const paymentType = e.target?.payment?.value;
-    const bkashNumber = e.target?.bkashNumber?.value;
-    const bkashTrx = e.target?.bkashTrx?.value;
-    const nagadNumber = e.target?.nagadNumber?.value;
-    const nagadTrx = e.target?.nagadTrx?.value;
-    const dutchNumber = e.target?.dutchNumber?.value;
-    const dutchTrx = e.target?.dutchTrx?.value;
+    // const bkashNumber = e.target?.bkashNumber?.value;
+    // const bkashTrx = e.target?.bkashTrx?.value;
+    // const nagadNumber = e.target?.nagadNumber?.value;
+    // const nagadTrx = e.target?.nagadTrx?.value;
+    // const dutchNumber = e.target?.dutchNumber?.value;
+    // const dutchTrx = e.target?.dutchTrx?.value;
 
     const customerType = "";
-    const whichOfMonthPayment = "";
+    // const whichOfMonthPayment = "";
     const adjustmentAmount = 0;
     const receivedTk = Number(e.target?.receivedTk?.value)
       ? Number(e.target?.receivedTk?.value)
@@ -134,29 +135,29 @@ const PersonalInfo = () => {
     formData.append("arrivalTime", arrivalTime);
     formData.append("request", request);
     formData.append("paymentType", paymentType);
-    formData.append(
-      "paymentNumber",
-      bkashNumber
-        ? bkashNumber
-        : "" || nagadNumber
-        ? nagadNumber
-        : "" || dutchNumber
-        ? dutchNumber
-        : ""
-    );
-    formData.append(
-      "transactionId",
-      bkashTrx
-        ? bkashTrx
-        : "" || nagadTrx
-        ? nagadTrx
-        : "" || dutchTrx
-        ? dutchTrx
-        : ""
-    );
+    // formData.append(
+    //   "paymentNumber",
+    //   bkashNumber
+    //     ? bkashNumber
+    //     : "" || nagadNumber
+    //     ? nagadNumber
+    //     : "" || dutchNumber
+    //     ? dutchNumber
+    //     : ""
+    // );
+    // formData.append(
+    //   "transactionId",
+    //   bkashTrx
+    //     ? bkashTrx
+    //     : "" || nagadTrx
+    //     ? nagadTrx
+    //     : "" || dutchTrx
+    //     ? dutchTrx
+    //     : ""
+    // );
 
     formData.append("customerType", customerType);
-    formData.append("whichOfMonthPayment", whichOfMonthPayment);
+    // formData.append("whichOfMonthPayment", whichOfMonthPayment);
     formData.append("adjustmentAmount", adjustmentAmount);
     formData.append("receivedTk", receivedTk);
     formData.append("totalAmount", bookingItem?.totalAmount);
@@ -165,7 +166,7 @@ const PersonalInfo = () => {
     formData.append("totalReceiveTk", totalReceiveTk);
     formData.append("foodAmount", bookingItem?.foodAmount);
     formData.append("isIncludeFood", bookingItem?.isIncludeFood);
-    formData.append("dueAmount", bookingItem?.payableAmount - totalReceiveTk);
+    // formData.append("dueAmount", bookingItem?.payableAmount - totalReceiveTk);
     formData.append("paymentStatus", paymentStatus);
     formData.append("bookingExtend", bookingExtend);
 

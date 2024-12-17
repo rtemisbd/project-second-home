@@ -41,13 +41,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
 
   const bookingInfoParse = JSON.parse(bookingInfo);
 
-  const gardianImg = req?.files?.gardianImg?.length
-    ? req?.files?.gardianImg[0]?.path
-    : user?.gardianImg;
-
-  const image = req?.files?.image?.length
-    ? req?.files?.image[0]?.path
-    : user?.cardImage;
   const branch = bookingInfoParse?.branch;
 
   const generateId = await generateBookingId();
@@ -57,8 +50,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
     bookingId: generateId,
     email,
     branch,
-    image,
-    gardianImg,
     fullName,
     fatherName,
     motherName,
@@ -110,8 +101,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
     nationalId: nid,
     validityType: validityType,
     validityNumber: validityNumber,
-    cardImage: image,
-    gardianImg: gardianImg,
 
     employmentStatus: {
       workAs: employeeStatus,
