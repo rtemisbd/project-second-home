@@ -139,6 +139,8 @@ const NewOrders = () => {
     document.getElementById("guestTypeId").value = "All";
   };
 
+  console.log(data.orders);
+
   useEffect(() => {
     if (data?.orders?.length === 0 && !hasTimeoutRun) {
       const timeoutId = setTimeout(() => {

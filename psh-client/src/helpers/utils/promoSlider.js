@@ -3,7 +3,7 @@ export const promoSlider = (projects) => ({
   perMove: 1,
   gap: "24px",
   pagination: false,
-  //   arrows: true,
+  // arrows: true,
   width: "100%",
   height: "auto",
   drag: true,

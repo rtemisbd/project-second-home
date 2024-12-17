@@ -24,9 +24,8 @@ const AllBranch = () => {
       return <img src={LeftArrow} alt="prevArrow" {...props} />;
     }
   };
-
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 5) {
+    if (lastSlideIndex === data?.length - 3) {
       return null;
     } else {
       return <img src={RightArrow} alt="nextArrow" {...props} />;
@@ -81,7 +80,7 @@ const AllBranch = () => {
           },
           centerMode: true,
           slidesToShow: 1,
-          initialSlide: 1,
+
           infinite: false,
           arrows: false,
 

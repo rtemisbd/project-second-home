@@ -2,13 +2,17 @@
   padding: 0 !important;
 }
 
+.splide-track-padding {
+  transition: padding-left 0.3s ease-in-out, padding-right 0.3s ease-in-out;
+}
 /* Customize the left arrow button */
- .all_promo .splide__arrow--prev {
-  left:-20px !important;
-  border-radius: 50%; 
+.all_promo .splide__arrow--prev {
+  top: 40px !important;
+  left: 8px !important;
+  border-radius: 50%;
   /* border: 1px solid #e5e5e5; */
   background: #fff;
-  padding: 10px 12px;
+  /* padding: 4px; */
   /* content: url("../../assets/img/arrow2.png"); */
   cursor: pointer;
   display: flex;
@@ -19,13 +23,14 @@
 }
 
 /* Customize the right arrow button */
- .all_promo .splide__arrow--next {
-  right: -20px !important ;
-  border-radius: 50%; 
+.all_promo .splide__arrow--next {
+  top: 40px !important;
+  right: 8px !important ;
+  border-radius: 50%;
   /* border: 1px solid #e5e5e5; */
   background: #fff;
-  padding: 10px 12px;
-  /* content: url("../../assets/img/arrow1.png");  */
+  /* padding: 4px; */
+  /* content: url("../../assets/img/arrow1.png"); */
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -52,8 +57,8 @@
   display: flex;
   justify-content: space-between;
   position: relative;
-    /* margin-top: -40px;  */
-    background-color: white;
+  /* margin-top: -40px;  */
+  background-color: white;
 }
 
 .all_promo .splide__arrow img {
@@ -62,7 +67,7 @@
 }
 
 /* Optional hover effect for arrow buttons */
- .all_promo .splide__arrow--prev:hover,
- .all_promo .splide__arrow--next:hover {
+.all_promo .splide__arrow--prev:hover,
+.all_promo .splide__arrow--next:hover {
   background: #f0f0f0; /* Change background color on hover */
 }

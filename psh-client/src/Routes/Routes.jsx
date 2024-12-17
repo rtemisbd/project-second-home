@@ -39,6 +39,7 @@ import StudySpace from "../pages/StudySpace/StudySpace";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
 import RoomDetails from "../pages/Details/RoomDetails";
 import Home from "../pages/Home/Home";
+import PaymentPage from "../components/payment/payment2";
 
 export const router = createBrowserRouter([
   {
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
       {
         path: "/",
         element: <Home></Home>,
+      },
+      {
+        path: "/payment",
+        element: <PaymentPage></PaymentPage>,
       },
       {
         path: "/contact-us",
