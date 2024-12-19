@@ -1,71 +1,61 @@
-import mongoose from "mongoose";
+import mongoose, { startSession } from "mongoose";
 import OrderModel from "../models/Order.js";
 import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import RentRoom from "../models/RentRoom.js";
+import { setValue } from "node-global-storage";
+import axios from "axios";
+import config from "../config/index.js";
 
 const createOrderIntoDB = async (payload) => {
-  const {
-    email,
-    bookingInfo,
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData
-  } = payload;
+  const { amount, dataForBooking } = payload;
+  try {
+    const session = await startSession();
+    setValue("userId", dataForBooking?.userId);
+    return await session.withTransaction(async () => {
+      //step-1 : update user information
+      const userUpdate = {
+        firstName: dataForBooking?.fullName,
+        phone: dataForBooking?.phone,
+        userAddress: dataForBooking?.address,
+        validityType: dataForBooking?.validityType,
+        emergencyContact: {
+          contactName: dataForBooking?.emergencyContactName,
+          relation: dataForBooking?.emergencyRelationC,
+          contactNumber: dataForBooking?.emergencyContact,
+        },
+      };
+      await User.updateOne(
+        { phone: phone },
+        { $set: userUpdate },
+        { runValidators: true }
+      );
 
-  const user = await User.findOne({ phone });
+      // generate booking id for order
+      const generateId = await generateBookingId();
+      dataForBooking.bookingId = generateId;
 
-  const bookingInfoParse = JSON.parse(bookingInfo);
-
-  const branch = bookingInfoParse?.branch;
-
-  const generateId = await generateBookingId();
-
-  const newOrder = new OrderModel({
-    bookingInfo: bookingInfoParse,
-    bookingId: generateId,
-    email,
-    branch,
-
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData,
-  });
-  newOrder.customerType = newOrder.bookingInfo.customerRent?.daysDifference
-    ? "Walk-in Guest"
-    : "Monthly";
-
-  // Booking Save to Database
-  const result = await newOrder.save();
-  return result;
+      //step-2 : create transaction by bkash
+      const { data } = await axios.post(
+        config.bkash_create_payment_url,
+        {
+          mode: "0011",
+          payerReference: " ",
+          callbackURL: `${config.server_url}/bkash/payment/callback?orderInfo=${dataForBooking}`, //step-3 : call back where order will create after transaction
+          amount,
+          currency: "BDT",
+          intent: "sale",
+          merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
+        },
+        {
+          headers: await bkash_headers(),
+        }
+      );
+      return res.status(200).json({ bkashURL: data.bkashURL });
+    });
+  } catch (error) {
+    return res.status(401).json({ error: error.message });
+  }
 };
 
 const getOrderFromDB = async (queries) => {

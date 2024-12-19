@@ -3,14 +3,8 @@ import { getValue, setValue } from "node-global-storage";
 import { v4 as uuidv4 } from "uuid";
 import Payment from "../models/payment.js";
 import config from "../config/index.js";
-
-// Function to generate headers for bkash API
-const bkash_headers = async () => ({
-  "Content-Type": "application/json",
-  Accept: "application/json",
-  authorization: getValue("id_token"),
-  "x-app-key": config.bkash_api_key,
-});
+import { bkash_headers } from "../utils/bkash_headers.js";
+import { startSession } from "mongoose";
 
 // Function to create a payment
 const payment_create = async (req, res) => {
@@ -44,38 +38,55 @@ const payment_create = async (req, res) => {
 
 // Callback function after payment
 const call_back = async (req, res) => {
-  const { paymentID, status } = req.query;
+  const { paymentID, status, dataForBooking } = req.query;
 
   if (status === "cancel" || status === "failure") {
     return res.redirect(`${config.client_url}/error?message=${status}`);
   }
-
   if (status === "success") {
     try {
-      const { data } = await axios.post(
-        config.bkash_execute_payment_url,
-        { paymentID },
-        {
-          headers: await bkash_headers(),
-        }
-      );
-
-      if (data && data.statusCode === "0000") {
-        // Using getValue to retrieve userId from global storage
-        await Payment.create({
-          userId: getValue("userId"),
-          paymentID,
-          trxID: data.trxID,
-          date: data.paymentExecuteTime,
-          amount: parseInt(data.amount),
-        });
-
-        return res.redirect(`${config.client_url}/success`);
-      } else {
-        return res.redirect(
-          `${config.client_url}/error?message=${data.statusMessage}`
+      const session = await startSession();
+      return await session.withTransaction(async () => {
+        // step-4 : bkash payment execution
+        const { data } = await axios.post(
+          config.bkash_execute_payment_url,
+          { paymentID },
+          {
+            headers: await bkash_headers(),
+          }
         );
-      }
+        // step-5 : create user transaction
+        if (data && data.statusCode === "0000") {
+          await Transaction.create({
+            // orderId: result?._id,
+            branch: dataForBooking?.branch,
+            paymentDate: data.paymentExecuteTime,
+            totalAmount: dataForBooking?.bookingInfo?.totalAmount,
+            payableAmount: dataForBooking?.payableAmount,
+            receivedTk: parseInt(data.amount),
+            // paymentNumber: result?.paymentNumber,
+            transactionId: data.trxID,
+            userId: getValue("userId"),
+            userPhone: dataForBooking?.phone,
+            acceptableStatus: "Accepted",
+          });
+          // await Payment.create({
+          //   userId: getValue("userId"),
+          //   paymentID,
+          //   trxID: data.trxID,
+          //   date: data.paymentExecuteTime,
+          //   amount: parseInt(data.amount),
+          // });
+
+          // step-6 : create order
+
+          return res.redirect(`${config.client_url}/success`);
+        } else {
+          return res.redirect(
+            `${config.client_url}/error?message=${data.statusMessage}`
+          );
+        }
+      });
     } catch (error) {
       console.error("Error during payment execution:", error);
       return res.redirect(

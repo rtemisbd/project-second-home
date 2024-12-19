@@ -83,7 +83,7 @@ export default function Profile() {
     },
 
     {
-      label: "Issue Details",
+      label: "Complain",
       value: "list",
       icon: <TbReport style={{ width: "24px", height: "24px" }} />,
     },

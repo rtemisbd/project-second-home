@@ -26,13 +26,13 @@ export default function TicketList() {
         <MenuList />
       </div> */}
       <div className="flex justify-between items-center">
-        <h1 className="font-bold text-xl">Issu Details</h1>
+        <h1 className="font-bold text-xl">Complain Container</h1>
         <div>
           <button
             onClick={handleOpen}
             className="text-sm bg-[#35B0A7] px-5 py-3 text-white rounded "
           >
-            Create Ticket
+            Create Complain
           </button>
         </div>
         <TicketCreate handleOpen={handleOpen} open={open} />
@@ -132,9 +132,7 @@ export default function TicketList() {
           </table>
         </Card>
       ) : (
-        <p className="text-center text-xl text-red-500 mt-5">
-          No Tricket Found
-        </p>
+        <p className="text-center text-xl text-red-500 mt-5">No Data Found</p>
       )}
 
       <TicketDetails
