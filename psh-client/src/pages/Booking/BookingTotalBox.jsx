@@ -332,7 +332,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     totalAmount: totalRentAmount,
     payableAmount: payableAmount,
     roomId: data?._id,
-    // roomName: data?.name,
+    roomName: data?.name,
     roomNumber: data?.roomNumber,
     roomType: data?.category?.name,
     branch: data?.branch,

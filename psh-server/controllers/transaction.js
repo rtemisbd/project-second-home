@@ -30,12 +30,25 @@ export const getTransactionById = catchAsync(async (req, res, next) => {
     data: result,
   });
 });
+// get transaction by orderId
+export const getTransactionByOrderId = catchAsync(async (req, res, next) => {
+  const result = await transactionServices.getTransactionByOrderIdFromDB(
+    req.params.orderId
+  );
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Transaction retrieved successfully",
+    data: result,
+  });
+});
 
 export const getUserTransactions = async (req, res, next) => {
   try {
-    const email = req.params.email;
+    const phone = req.params.phone;
 
-    const transaction = await Transaction.find({ userEmail: email }).sort({
+    const transaction = await Transaction.find({ userPhone: phone }).sort({
       createdAt: -1,
     });
 

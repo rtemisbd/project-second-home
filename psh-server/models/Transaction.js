@@ -5,7 +5,7 @@ const TransactionSchema = new mongoose.Schema(
     orderId: {
       type: ObjectId,
       ref: "order",
-      required: true,
+      // required: true,
     },
     branch: {
       type: ObjectId,

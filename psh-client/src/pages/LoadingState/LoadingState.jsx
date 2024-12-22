@@ -13,12 +13,12 @@ const LoadingState = () => {
         content: {
           top: "50%",
           left: "50%",
-          // right: "auto",
-          // bottom: "auto",
+
           marginRight: "-50%",
           transform: "translate(-50%, -45%)",
           padding: 0,
           border: 0,
+          background: "transparent",
         },
       }}
       // className=" mt-48"

@@ -75,16 +75,17 @@ const PersonalInfo = () => {
         // setValidityType(data?.validityType ? data?.validityType : "Select One");
       });
   }, [user?._id]);
+  console.log(singleUser);
 
   useEffect(() => {
     if (singleUser) {
       setDataForBooking((prevData) => ({
         ...prevData,
-        userId: singleUser._id || "",
-        fullName: singleUser.firstName || "",
-        phone: singleUser.phone || "",
-        address: singleUser.userAddress || "",
-        validityType: singleUser.validityType || "",
+        userId: singleUser?._id || "",
+        fullName: singleUser?.firstName || "",
+        phone: singleUser?.phone || "",
+        address: singleUser?.userAddress || "",
+        validityType: singleUser?.validityType || "",
         emergencyContactName: singleUser?.emergencyContact?.contactName || "",
         emergencyRelationC: singleUser?.emergencyContact?.relation || "",
         contactNumber: singleUser?.emergencyContact?.contactNumber || "",
@@ -127,14 +128,26 @@ const PersonalInfo = () => {
 
   const handlePayByBkash = async (amount) => {
     try {
+      dispatch(placeLoadingShow(true));
+
       const { data } = await axios.post(
-        `${serverBaseUrl}/bkash/payment/create`,
-        { amount },
+        `${serverBaseUrl}/order`,
+        { amount: 1, dataForBooking },
         { withCredentials: true }
       );
-      window.location.href = data.bkashURL;
+      // console.log(data?.data?.bkashURL);
+      window.location.href = await data?.data?.bkashURL;
+      dispatch(placeLoadingShow(false));
+      // toast.success("Booking successfully done");
+      // localStorage.removeItem("bookingItem");
+      // localStorage.removeItem("seatItem");
+
+      // navigate("/booking-now");
     } catch (error) {
       console.log(error);
+
+      dispatch(placeLoadingShow(false));
+      toast.error("Something is wrong");
     }
   };
   const handleInputChange = (e) => {
@@ -214,21 +227,14 @@ const PersonalInfo = () => {
     // save order information to the database
 
     try {
+      dispatch(placeLoadingShow(true));
+
       const { data } = await axios.post(
-        `${serverBaseUrl}/bkash/payment/create`,
-        { amount },
+        `${serverBaseUrl}/order`,
+        { amount, dataForBooking },
         { withCredentials: true }
       );
       window.location.href = data.bkashURL;
-    } catch (error) {
-      dispatch(placeLoadingShow(false));
-      toast.error("Something is wrong");
-    }
-    try {
-      dispatch(placeLoadingShow(true));
-
-      await axios.post(`${serverBaseUrl}/order`, formData);
-
       toast.success("Booking successfully done");
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
@@ -274,7 +280,7 @@ const PersonalInfo = () => {
     <div>
       <LoadingState />
       <form
-        onSubmit={bookingOrder}
+        // onSubmit={bookingOrder}
         className={`custom-container user_info_page ${
           isBlur ? "blur-lg relative" : ""
         }`}
@@ -309,9 +315,9 @@ const PersonalInfo = () => {
                     type="text"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="firstName"
-                    defaultValue={singleUser ? singleUser.firstName : ""}
+                    defaultValue={singleUser ? singleUser?.firstName : ""}
                     required
-                    disabled={singleUser.firstName ? true : false}
+                    disabled={singleUser?.firstName ? true : false}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
@@ -329,7 +335,7 @@ const PersonalInfo = () => {
                     name="phone"
                     required
                     disabled
-                    defaultValue={singleUser ? singleUser.phone : ""}
+                    defaultValue={singleUser ? singleUser?.phone : ""}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
@@ -346,7 +352,7 @@ const PersonalInfo = () => {
                     className="text-black personal-info rounded 
                         lg:w-[350px] md:w-[300px] sm:w-full"
                     name="address"
-                    // defaultValue={singleUser ? singleUser.userAddress : ""}
+                    // defaultValue={singleUser ? singleUser?.userAddress : ""}
                     value={dataForBooking.address}
                     style={{
                       height: "45px",
@@ -368,10 +374,32 @@ const PersonalInfo = () => {
                     required
                   >
                     <option selected>Select One</option>
-                    <option value="National ID Card">National ID Card</option>
-                    <option value="Passport">Passport</option>
-                    <option value="Driving Licence">Driving Licence</option>
-                    <option value="Birth Certificate">Birth Certificate</option>
+                    <option
+                      selected={singleUser?.validityType === "National ID Card"}
+                      value="National ID Card"
+                    >
+                      National ID Card
+                    </option>
+                    <option
+                      selected={singleUser?.validityType === "Passport"}
+                      value="Passport"
+                    >
+                      Passport
+                    </option>
+                    <option
+                      selected={singleUser?.validityType === "Driving Licence"}
+                      value="Driving Licence"
+                    >
+                      Driving Licence
+                    </option>
+                    <option
+                      selected={
+                        singleUser?.validityType === "Birth Certificate"
+                      }
+                      value="Birth Certificate"
+                    >
+                      Birth Certificate
+                    </option>
                   </select>
                 </div>
               </div>

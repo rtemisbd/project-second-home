@@ -3,58 +3,64 @@ import OrderModel from "../models/Order.js";
 import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import RentRoom from "../models/RentRoom.js";
-import { setValue } from "node-global-storage";
+import { getValue, setValue } from "node-global-storage";
 import axios from "axios";
 import config from "../config/index.js";
+import { v4 as uuidv4 } from "uuid";
+import { bkash_headers } from "../utils/bkash_headers.js";
 
 const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking } = payload;
   try {
-    const session = await startSession();
+    // const session = await startSession();
     setValue("userId", dataForBooking?.userId);
-    return await session.withTransaction(async () => {
-      //step-1 : update user information
-      const userUpdate = {
-        firstName: dataForBooking?.fullName,
-        phone: dataForBooking?.phone,
-        userAddress: dataForBooking?.address,
-        validityType: dataForBooking?.validityType,
-        emergencyContact: {
-          contactName: dataForBooking?.emergencyContactName,
-          relation: dataForBooking?.emergencyRelationC,
-          contactNumber: dataForBooking?.emergencyContact,
-        },
-      };
-      await User.updateOne(
-        { phone: phone },
-        { $set: userUpdate },
-        { runValidators: true }
-      );
+    // return await session.withTransaction(async () => {
+    //step-1 : update user information
+    const userUpdate = {
+      firstName: dataForBooking?.fullName,
+      phone: dataForBooking?.phone,
+      userAddress: dataForBooking?.address,
+      validityType: dataForBooking?.validityType,
+      emergencyContact: {
+        contactName: dataForBooking?.emergencyContactName,
+        relation: dataForBooking?.emergencyRelationC,
+        contactNumber: dataForBooking?.contactNumber,
+      },
+    };
+    await User.updateOne(
+      { phone: dataForBooking?.phone },
+      { $set: userUpdate },
+      { runValidators: true }
+    );
 
-      // generate booking id for order
-      const generateId = await generateBookingId();
-      dataForBooking.bookingId = generateId;
+    // generate booking id for order
+    const generateId = await generateBookingId();
+    dataForBooking.bookingId = generateId;
 
-      //step-2 : create transaction by bkash
-      const { data } = await axios.post(
-        config.bkash_create_payment_url,
-        {
-          mode: "0011",
-          payerReference: " ",
-          callbackURL: `${config.server_url}/bkash/payment/callback?orderInfo=${dataForBooking}`, //step-3 : call back where order will create after transaction
-          amount,
-          currency: "BDT",
-          intent: "sale",
-          merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
-        },
-        {
-          headers: await bkash_headers(),
-        }
-      );
-      return res.status(200).json({ bkashURL: data.bkashURL });
-    });
+    //step-2 : create transaction by bkash
+    // Generate a unique callback identifier
+    const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
+
+    const { data } = await axios.post(
+      config.bkash_create_payment_url,
+      {
+        mode: "0011",
+        payerReference: " ",
+        callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`, //step-3 : call back where order will create after transaction
+        amount,
+        currency: "BDT",
+        intent: "sale",
+        merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
+      },
+      {
+        headers: await bkash_headers(getValue("id_token")),
+      }
+    );
+
+    return { bkashURL: data.bkashURL };
+    // });
   } catch (error) {
-    return res.status(401).json({ error: error.message });
+    return { error: error.message };
   }
 };
 

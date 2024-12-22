@@ -8,15 +8,19 @@ const useUserTransactions = () => {
   const [transactions, setTransaction] = useState([]);
   const { user } = useContext(AuthContext);
 
-  const { isLoading, refetch } = useQuery([user?.email], () =>
-    fetch(`${serverBaseUrl}/transaction/${user?.email}`, {
+  const { isLoading, refetch } = useQuery([user?.phone], () =>
+    fetch(`${serverBaseUrl}/transaction/${user?.phone}`, {
       method: "GET",
     })
       .then((res) => res.json())
       .then((data) => {
-        setTransaction(data?.transaction);
+        // console.log(data);
+
+        setTransaction(data?.data);
       })
   );
+  console.log(transactions);
+
   return [transactions, refetch];
 };
 

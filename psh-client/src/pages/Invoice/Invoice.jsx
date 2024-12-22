@@ -30,22 +30,23 @@ const Invoice = () => {
   const [size, setSize] = useState(null);
 
   const handleOpen = (value) => setSize(value);
+  console.log(transactions);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${serverBaseUrl}/branch`);
-        SetBranch(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    const findOrderBranch = branch.find(
-      (branch) => branch?._id === userEndOrder?.bookingInfo?.branch
-    );
-    SetBookingBranch(findOrderBranch);
-    fetchData();
-  }, [userEndOrder?.bookingInfo?.branch, branch]);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.get(`${serverBaseUrl}/branch`);
+  //       SetBranch(response.data);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   const findOrderBranch = branch.find(
+  //     (branch) => branch?._id === userEndOrder?.bookingInfo?.branch
+  //   );
+  //   SetBookingBranch(findOrderBranch);
+  //   fetchData();
+  // }, [userEndOrder?.bookingInfo?.branch, branch]);
 
   const { pathname } = useLocation();
 
@@ -104,20 +105,20 @@ const Invoice = () => {
                     </p>
                     <p>
                       <span className="font-bold">Branch :</span>{" "}
-                      {userEndOrder?.branch?.name}
+                      {userEndOrder?.bookingInfo?.branch?.name}
                     </p>
                     <p>
                       <span className="font-bold">Address :</span>
 
-                      {userEndOrder?.branch?.branchAddress}
+                      {userEndOrder?.bookingInfo?.branch?.branchAddress}
                     </p>
                     <p>
                       <span className="font-bold">Mobile :</span>{" "}
-                      {userEndOrder?.branch?.branchMobileNumber}
+                      {userEndOrder?.bookingInfo?.branch?.branchMobileNumber}
                     </p>
                     <p>
                       <span className="font-bold">Email :</span>{" "}
-                      {userEndOrder?.branch?.branchEmail}
+                      {userEndOrder?.bookingInfo?.branch?.branchEmail}
                     </p>
                   </div>
                   <div>
@@ -189,9 +190,9 @@ const Invoice = () => {
                           </p>
                         ) : (
                           <p className="ml-10">
-                            {userEndOrder?.bookingInfo?.data?.name +
+                            {userEndOrder?.bookingInfo?.roomName +
                               ", Room Number : " +
-                              userEndOrder?.bookingInfo?.data?.roomNumber}
+                              userEndOrder?.bookingInfo?.roomNumber}
                           </p>
                         )}
                       </div>
@@ -309,14 +310,14 @@ const Invoice = () => {
                       </p>
                       <p>
                         <span className="font-bold mr-3">Account Number :</span>{" "}
-                        {userEndOrder?.paymentNumber}
+                        {transactions[length - 1]?.paymentNumber}
                       </p>
 
                       <p>
                         <span className="font-bold mr-3">
                           Transaction ID <span className="ml-[10px]">:</span>
                         </span>{" "}
-                        {userEndOrder?.transactionId}
+                        {transactions[length - 1]?.transactionId}
                       </p>
                     </div>
                     <div>
@@ -400,7 +401,9 @@ const Invoice = () => {
                           ) : (
                             <p className=" text-[12px]">
                               BDT{" "}
-                              {userEndOrder?.totalReceiveTk?.toLocaleString()}
+                              {transactions[
+                                length - 1
+                              ]?.receivedTk?.toLocaleString()}
                             </p>
                           )}
                         </div>
@@ -416,7 +419,10 @@ const Invoice = () => {
                           </p>
                           <p className="ml-[75px]">:</p>
                           <p className=" text-[12px]">
-                            BDT {userEndOrder?.dueAmount?.toLocaleString()}
+                            BDT{" "}
+                            {transactions[length - 1]?.payableAmount -
+                              transactions[length - 1]?.receivedTk}{" "}
+                            {/* {userEndOrder?.dueAmount?.toLocaleString()} */}
                           </p>
                         </div>
                       </div>

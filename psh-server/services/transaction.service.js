@@ -132,7 +132,17 @@ const getAllTransactionFromDB = async (queries) => {
 
 // Function to get transaction by ID
 const getTransactionByIdFromDB = async (id) => {
-  const result = await Transaction.findById(id);
+  if (id.length > 11) {
+    const result = await Transaction.findById(id);
+    return result;
+  } else {
+    const result = await Transaction.find({ userPhone: id });
+    return result;
+  }
+};
+// Function to get transaction by OrderId
+const getTransactionByOrderIdFromDB = async (orderId) => {
+  const result = await Transaction.find({ orderId });
   return result;
 };
 
@@ -140,4 +150,5 @@ const getTransactionByIdFromDB = async (id) => {
 export const transactionServices = {
   getAllTransactionFromDB,
   getTransactionByIdFromDB,
+  getTransactionByOrderIdFromDB,
 };

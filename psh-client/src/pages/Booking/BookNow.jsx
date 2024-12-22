@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { AuthContext } from "../../contexts/UserProvider";
 import userEndOrder from "../../hooks/userEndOrder";
@@ -16,6 +16,7 @@ const BookNow = () => {
       setEndOrder(lastOrder);
     }
   }, [userOrder, user]);
+  console.log(endOrder);
 
   const getInvoice = () => {
     navigate("/invoice", { state: endOrder });
@@ -107,7 +108,7 @@ const BookNow = () => {
               <span>Room Number</span>{" "}
               <span className="md:ml-[64px] sm:ml-2 ">:</span>
             </p>
-            <p>{endOrder?.bookingInfo?.data?.roomNumber}</p>
+            <p>{endOrder?.bookingInfo?.roomNumber}</p>
           </div>
         )}
 
@@ -159,13 +160,20 @@ const BookNow = () => {
         </div>
       </div>
 
-      <div className="flex justify-center mt-20">
+      <div className="flex justify-center  mt-20">
         <div
           onClick={getInvoice}
           className="bg-[#35B0A7] md:px-[120px] sm:px-[60px] py-[8px] rounded"
         >
-          <button className="text-xl text-white">Get Invoice</button>
+          <button className="text-xl text-white text-center">
+            Get Invoice
+          </button>
         </div>
+        {/* <Link to={"/"}>
+          <button className="bg-[#35B0A7] md:px-[120px] sm:px-[60px] py-[8px] rounded">
+            HOME PAGE
+          </button>
+        </Link> */}
       </div>
     </div>
   );
