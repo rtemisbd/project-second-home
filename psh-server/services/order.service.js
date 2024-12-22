@@ -123,6 +123,7 @@ const getOrderFromDB = async (queries) => {
   const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
   const totalCount =
     totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
+  console.log(totalCountsResult.length);
 
   const pipeline = [
     { $match: matchStage },
@@ -132,42 +133,42 @@ const getOrderFromDB = async (queries) => {
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
-          {
-            $lookup: {
-              from: "branches",
-              localField: "branch",
-              foreignField: "_id",
-              as: "branchDetails",
-            },
-          },
-          { $unwind: "$branchDetails" },
+          // {
+          //   $lookup: {
+          //     from: "branches",
+          //     localField: "branch",
+          //     foreignField: "_id",
+          //     as: "branchDetails",
+          //   },
+          // },
+          // { $unwind: "$branchDetails" },
           // get transaction by order Id
-          {
-            $lookup: {
-              from: "transactions",
-              let: { orderId: "$_id" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: {
-                      $and: [
-                        { $eq: ["$orderId", "$$orderId"] },
-                        { $eq: ["$acceptableStatus", "Accepted"] },
-                      ],
-                    },
-                  },
-                },
-                {
-                  $group: {
-                    _id: null,
-                    totalReceiveTk: { $sum: "$receivedTk" },
-                    allProperties: { $push: "$$ROOT" },
-                  },
-                },
-              ],
-              as: "transactions",
-            },
-          },
+          // {
+          //   $lookup: {
+          //     from: "transactions",
+          //     let: { orderId: "$_id" },
+          //     pipeline: [
+          //       {
+          //         $match: {
+          //           $expr: {
+          //             $and: [
+          //               { $eq: ["$orderId", "$$orderId"] },
+          //               { $eq: ["$acceptableStatus", "Accepted"] },
+          //             ],
+          //           },
+          //         },
+          //       },
+          //       {
+          //         $group: {
+          //           _id: null,
+          //           totalReceiveTk: { $sum: "$receivedTk" },
+          //           allProperties: { $push: "$$ROOT" },
+          //         },
+          //       },
+          //     ],
+          //     as: "transactions",
+          //   },
+          // },
         ],
         totalCounts: [
           {
@@ -242,6 +243,7 @@ const getOrderFromDB = async (queries) => {
   ];
 
   const result = await OrderModel.aggregate(pipeline);
+  console.log({ result });
 
   return { result, totalCount };
 };
