@@ -49,7 +49,7 @@ const call_back = async (req, res) => {
   }
 
   if (status === "success") {
-    const session = await OrderModel.startSession();
+    const session = await startSession();
     try {
       session.startTransaction();
 
@@ -64,9 +64,12 @@ const call_back = async (req, res) => {
           headers: await bkash_headers(getValue("id_token")),
         }
       );
+      console.log({ data });
 
       if (data && data.statusCode === "0000") {
         // Step 5: Create order
+        // const dataForBooking = data.data;
+        console.log({ dataForBooking });
         dataForBooking.paymentType = "bKash";
         const result = await OrderModel.create([dataForBooking], { session });
         console.log({ result });

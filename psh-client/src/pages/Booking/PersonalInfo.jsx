@@ -34,18 +34,6 @@ const PersonalInfo = () => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
 
-  // const [validityType, setValidityType] = useState();
-  // const [bookingExtend, setBookingExtend] = useState(false);
-  // const [fullName, setFullName] = useState("");
-  // const [phone, setPhone] = useState("");
-  // const [address, setAddress] = useState("");
-  // const [emergencyContactName, setEmergencyContactName] = useState("");
-  // const [emergencyRelationC, setEmergencyRelationC] = useState("");
-  // const [emergencyContact, setEmergencyContact] = useState("");
-  // const [arrivalTime, setArrivalTime] = useState("");
-  // const [request, setRequest] = useState("");
-  // const [birthDay, setBirthDay] = useState(new Date());
-
   const [dataForBooking, setDataForBooking] = useState({
     arrivalTime: "",
     bookingExtend: false,
@@ -95,6 +83,7 @@ const PersonalInfo = () => {
       }));
     }
   }, [singleUser]);
+  console.log({ dataForBooking });
 
   const anchorClick = (e) => {
     anchorClickHandler(e);
@@ -138,9 +127,9 @@ const PersonalInfo = () => {
       // console.log(data?.data?.bkashURL);
       window.location.href = await data?.data?.bkashURL;
       dispatch(placeLoadingShow(false));
-      // toast.success("Booking successfully done");
-      // localStorage.removeItem("bookingItem");
-      // localStorage.removeItem("seatItem");
+      toast.success("Booking successfully done");
+      localStorage.removeItem("bookingItem");
+      localStorage.removeItem("seatItem");
 
       // navigate("/booking-now");
     } catch (error) {
@@ -247,7 +236,6 @@ const PersonalInfo = () => {
     }
     e.target.reset();
   };
-
   // handle Scrooled
   const handleScroll = () => {
     setScrollY(window.scrollY);
@@ -1377,7 +1365,7 @@ const PersonalInfo = () => {
             borderRadius: "3px",
             backgroundColor: "white",
           }}
-          className="bg-white z-50 absolute top-1/2 w-2/5 left-1/3 right-1/2"
+          className="bg-white z-50 absolute top-1/2 w-[96%] md:w-2/5 left-2 md:left-1/3 md:right-1/2"
         >
           <div
             style={{
@@ -1396,12 +1384,12 @@ const PersonalInfo = () => {
               <IoCloseCircleOutline color="white" size={28} />
             </button>
           </div>
-          <div className="my-4 flex justify-center">
+          <div className="my-4 flex justify-center mx-4">
             <div>
               <h2 className="font-medium text-center mb-4">
                 How much do you want to pay now?
               </h2>
-              <div className="flex gap-4">
+              <div className="flex flex-wrap gap-4">
                 <button
                   onClick={() => handlePayByBkash(bookingItem?.minimumPayment)}
                   className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
@@ -1423,11 +1411,11 @@ const PersonalInfo = () => {
               </div>
               {showUserInputForPayment && (
                 <div>
-                  <div className="flex justify-center w-full  my-4">
+                  <div className="flex justify-center w-full my-4">
                     <input
                       type="number"
                       placeholder="Enter your amount"
-                      className="border px-3 py-2 rounded-l-xl w-[80%] "
+                      className="border px-3 py-2 rounded-l-xl w-[66%] md:w-[80%] "
                       name="amountForPay"
                       onChange={handleUserInputAmount}
                     />

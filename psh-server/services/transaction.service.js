@@ -2,8 +2,16 @@ import mongoose from "mongoose";
 import Transaction from "../models/Transaction.js";
 
 const getAllTransactionFromDB = async (queries) => {
-  const { fromDate, toDate, branch, paymentType, phone, bookingId, status } =
-    queries;
+  const {
+    fromDate,
+    toDate,
+    branch,
+    paymentType,
+    paymentNumber,
+    phone,
+    bookingId,
+    status,
+  } = queries;
 
   let matchStage = {};
 
@@ -18,6 +26,9 @@ const getAllTransactionFromDB = async (queries) => {
   }
   if (status && status !== "All") {
     matchStage.acceptableStatus = status;
+  }
+  if (paymentNumber && paymentNumber !== "") {
+    matchStage.paymentNumber = paymentNumber;
   }
   if (phone && phone !== "") matchStage.userPhone = phone;
   if (fromDate && toDate) {

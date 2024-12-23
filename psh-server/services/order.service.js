@@ -11,7 +11,7 @@ import { bkash_headers } from "../utils/bkash_headers.js";
 
 const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking } = payload;
-  const session = await User.startSession();
+  const session = await startSession();
   try {
     session.startTransaction();
 
@@ -81,8 +81,8 @@ const getOrderFromDB = async (queries) => {
     paymentStatus,
     runningStatus,
     guestType,
-    // filteredName,
     filteredPhone,
+    // status
   } = queries;
   const today = new Date();
   const formattedDate = today.toISOString().split("T")[0];
@@ -100,8 +100,8 @@ const getOrderFromDB = async (queries) => {
     matchStage.paymentStatus = paymentStatus;
   if (bookingStatus && bookingStatus !== "All")
     matchStage.status = bookingStatus;
-  // if (filteredName && filteredName !== "") matchStage.fullName = filteredName;
-  if (filteredPhone && filteredPhone !== "") matchStage.phone = filteredPhone;
+  if (filteredPhone && filteredPhone !== "")
+    matchStage.phone = { $regex: `^${filteredPhone}` };
   if (fromDate && toDate) {
     matchStage.createdAt = {
       $gte: new Date(fromDate),
@@ -130,7 +130,6 @@ const getOrderFromDB = async (queries) => {
   const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
   const totalCount =
     totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
-  console.log(totalCountsResult.length);
 
   const pipeline = [
     { $match: matchStage },
@@ -140,42 +139,42 @@ const getOrderFromDB = async (queries) => {
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
-          // {
-          //   $lookup: {
-          //     from: "branches",
-          //     localField: "branch",
-          //     foreignField: "_id",
-          //     as: "branchDetails",
-          //   },
-          // },
-          // { $unwind: "$branchDetails" },
-          // get transaction by order Id
-          // {
-          //   $lookup: {
-          //     from: "transactions",
-          //     let: { orderId: "$_id" },
-          //     pipeline: [
-          //       {
-          //         $match: {
-          //           $expr: {
-          //             $and: [
-          //               { $eq: ["$orderId", "$$orderId"] },
-          //               { $eq: ["$acceptableStatus", "Accepted"] },
-          //             ],
-          //           },
-          //         },
-          //       },
-          //       {
-          //         $group: {
-          //           _id: null,
-          //           totalReceiveTk: { $sum: "$receivedTk" },
-          //           allProperties: { $push: "$$ROOT" },
-          //         },
-          //       },
-          //     ],
-          //     as: "transactions",
-          //   },
-          // },
+          {
+            $lookup: {
+              from: "branches",
+              localField: "branch",
+              foreignField: "_id",
+              as: "branchDetails",
+            },
+          },
+          { $unwind: "$branchDetails" },
+          //get transaction by order Id
+          {
+            $lookup: {
+              from: "transactions",
+              let: { orderId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$orderId", "$$orderId"] },
+                        { $eq: ["$acceptableStatus", "Accepted"] },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: null,
+                    totalReceiveTk: { $sum: "$receivedTk" },
+                    allProperties: { $push: "$$ROOT" },
+                  },
+                },
+              ],
+              as: "transactions",
+            },
+          },
         ],
         totalCounts: [
           {
