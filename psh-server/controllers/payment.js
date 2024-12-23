@@ -47,12 +47,15 @@ const call_back = async (req, res) => {
   if (status === "cancel" || status === "failure") {
     return res.redirect(`${config.client_url}/error?message=${status}`);
   }
+
   if (status === "success") {
+    const session = await OrderModel.startSession();
     try {
-      // const session = await startSession();
-      // return await session.withTransaction(async () => {
-      // step-4 : bkash payment execution
+      session.startTransaction();
+
+      // Step 4: Execute payment via bKash
       const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
+      console.log({ dataForBooking });
 
       const { data } = await axios.post(
         config.bkash_execute_payment_url,
@@ -63,48 +66,53 @@ const call_back = async (req, res) => {
       );
 
       if (data && data.statusCode === "0000") {
-        // step-5 : create order
+        // Step 5: Create order
         dataForBooking.paymentType = "bKash";
-        const result = await OrderModel.create(dataForBooking);
-        // step-6 : create user transaction
-        const newTransaction = await Transaction.create({
-          orderId: result?._id,
-          branch: dataForBooking?.branch,
-          paymentDate: new Date(),
-          totalAmount: dataForBooking?.bookingInfo?.totalAmount,
-          payableAmount: dataForBooking?.payableAmount,
-          receivedTk: parseInt(data?.amount),
-          paymentNumber: data?.customerMsisdn,
-          transactionId: data.trxID,
-          userId: getValue("userId"),
-          userPhone: dataForBooking?.phone,
-          acceptableStatus: "Accepted",
-        });
+        const result = await OrderModel.create([dataForBooking], { session });
+        console.log({ result });
 
-        // Phone Sms For Booking
-        const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+        // Step 6: Create user transaction
+        const newTransaction = await Transaction.create(
+          [
+            {
+              orderId: result[0]?._id,
+              branch: dataForBooking?.branch,
+              paymentDate: new Date(),
+              totalAmount: dataForBooking?.bookingInfo?.totalAmount,
+              payableAmount: dataForBooking?.payableAmount,
+              receivedTk: parseInt(data?.amount),
+              paymentNumber: data?.customerMsisdn,
+              transactionId: data.trxID,
+              userId: getValue("userId"),
+              userPhone: dataForBooking?.phone,
+              acceptableStatus: "Accepted",
+            },
+          ],
+          { session }
+        );
+        console.log({ newTransaction });
 
-        bookingSms(bookingMessage)
-          .then((response) => {
-            console.log("Response from SMS API:", response);
-            // Handle response data as needed
-          })
-          .catch((error) => {
-            console.error("Error while sending SMS:", error);
-            // Handle error
-          });
+        // Phone SMS for booking
+        const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result[0]?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+
+        await bookingSms(bookingMessage);
+
+        // Commit the transaction
+        await session.commitTransaction();
         return res.redirect(`${config.client_url}/success`);
       } else {
-        return res.redirect(
-          `${config.client_url}/error?message=${data.statusMessage}`
-        );
+        throw new Error(data.statusMessage || "Payment execution failed");
       }
-      // });
     } catch (error) {
+      await session.abortTransaction();
       console.error("Error during payment execution:", error);
       return res.redirect(
-        `${config.client_url}/error?message=${error.message}`
+        `${config.client_url}/error?message=${encodeURIComponent(
+          error.message
+        )}`
       );
+    } finally {
+      session.endSession();
     }
   }
 };

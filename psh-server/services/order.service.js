@@ -11,11 +11,14 @@ import { bkash_headers } from "../utils/bkash_headers.js";
 
 const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking } = payload;
+  const session = await User.startSession();
   try {
-    // const session = await startSession();
+    session.startTransaction();
+
+    // Set user context
     setValue("userId", dataForBooking?.userId);
-    // return await session.withTransaction(async () => {
-    //step-1 : update user information
+
+    // Step 1: Update user information
     const userUpdate = {
       firstName: dataForBooking?.fullName,
       phone: dataForBooking?.phone,
@@ -27,40 +30,44 @@ const createOrderIntoDB = async (payload) => {
         contactNumber: dataForBooking?.contactNumber,
       },
     };
-    await User.updateOne(
+    const updatedUser = await User.updateOne(
       { phone: dataForBooking?.phone },
       { $set: userUpdate },
-      { runValidators: true }
+      { runValidators: true, session }
     );
+    console.log({ updatedUser });
 
-    // generate booking id for order
+    // Step 2: Generate booking ID
     const generateId = await generateBookingId();
     dataForBooking.bookingId = generateId;
 
-    //step-2 : create transaction by bkash
-    // Generate a unique callback identifier
+    // Step 3: Create payment request via bKash
     const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-
     const { data } = await axios.post(
       config.bkash_create_payment_url,
       {
         mode: "0011",
         payerReference: " ",
-        callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`, //step-3 : call back where order will create after transaction
+        callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
         amount,
         currency: "BDT",
         intent: "sale",
-        merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
+        merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
       },
       {
         headers: await bkash_headers(getValue("id_token")),
       }
     );
 
+    // Commit the transaction
+    await session.commitTransaction();
     return { bkashURL: data.bkashURL };
-    // });
   } catch (error) {
+    await session.abortTransaction();
+    console.error("Error in createOrderIntoDB:", error);
     return { error: error.message };
+  } finally {
+    session.endSession();
   }
 };
 
