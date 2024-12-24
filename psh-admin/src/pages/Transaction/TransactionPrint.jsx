@@ -34,7 +34,7 @@ const TransactionPrint = ({ transaction }) => {
         transaction?.paymentType === "nagad" ? (
           <span style={{ fontWeight: "bold" }}>
             {" "}
-            {transaction?.paymentType}, {transaction?.paymentNumber}, Trx :{" "}
+            {transaction?.paymentType} : {transaction?.paymentNumber}, Trx :{" "}
             {transaction?.transactionId}
           </span>
         ) : (

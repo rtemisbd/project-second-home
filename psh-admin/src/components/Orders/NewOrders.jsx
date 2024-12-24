@@ -104,7 +104,6 @@ const NewOrders = () => {
       refetchOnWindowFocus: false,
     }
   );
-  console.log(bookingStatus);
 
   // Re-fetch data whenever size changes
   useEffect(() => {
@@ -139,8 +138,6 @@ const NewOrders = () => {
     setGuestType("All");
     document.getElementById("guestTypeId").value = "All";
   };
-
-  console.log(data.orders);
 
   useEffect(() => {
     if (data?.orders?.length === 0 && !hasTimeoutRun) {

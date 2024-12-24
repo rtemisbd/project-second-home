@@ -465,7 +465,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                         transaction?.paymentType === "nagad" ? (
                           <span>
                             {" "}
-                            {transaction?.paymentType},{" "}
+                            {transaction?.paymentType} :{" "}
                             {transaction?.paymentNumber}, Trx :{" "}
                             {transaction?.transactionId}
                           </span>

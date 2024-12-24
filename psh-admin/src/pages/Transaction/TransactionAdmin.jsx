@@ -108,7 +108,6 @@ const TransactionAdmin = () => {
       refetchOnWindowFocus: false,
     }
   );
-  console.log({ data });
 
   // }
 

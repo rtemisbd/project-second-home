@@ -149,6 +149,12 @@ const BookingData = ({
             {booking?.paymentStatus}
           </span>
         </td>
+
+        <td>
+          <p className="fw-bold">
+            Tk {booking?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+          </p>
+        </td>
         <td>
           {" "}
           <span
@@ -158,13 +164,10 @@ const BookingData = ({
             }}
           >
             {" "}
-            Tk {booking?.dueAmount?.toLocaleString()}
+            TK{" "}
+            {booking?.payableAmount - booking?.transactions[0]?.totalReceiveTk}
+            {/* Tk {booking?.dueAmount?.toLocaleString()} */}
           </span>
-        </td>
-        <td>
-          <p className="fw-bold">
-            Tk {booking?.totalReceiveTk?.toLocaleString()}
-          </p>
         </td>
         <td>
           <div className=" d-flex ">
