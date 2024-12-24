@@ -29,6 +29,8 @@ const PersonalInfo = () => {
   const [amountForPay, setAmountForPay] = useState(0);
   const [isBlur, setIsBlur] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [requiredMessage, setRequiredMessage] = useState(false);
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [isLessAmount, setIsLessAmount] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
@@ -79,7 +81,10 @@ const PersonalInfo = () => {
         contactNumber: singleUser?.emergencyContact?.contactNumber || "",
         arrivalTime: "09 AM To 10 AM",
         bookingInfo: bookingItem,
+        branch: bookingItem?.branch?._id,
+        totalAmount: bookingItem?.totalAmount,
         payableAmount: bookingItem?.payableAmount,
+        discount: bookingItem?.discount,
       }));
     }
   }, [singleUser]);
@@ -100,9 +105,12 @@ const PersonalInfo = () => {
 
   const handlePaymentOption = () => {
     console.log(dataForBooking);
-
-    setIsBlur(true);
-    setShowPayment(true);
+    if (agreeTerms) {
+      setIsBlur(true);
+      setShowPayment(true);
+    } else {
+      setRequiredMessage(true);
+    }
   };
 
   const handleUserInputAmount = (e) => {
@@ -200,7 +208,7 @@ const PersonalInfo = () => {
     // formData.append("request", request);
     // formData.append("paymentType", paymentType);
     // formData.append("customerType", customerType);
-    // // formData.append("whichOfMonthPayment", whichOfMonthPayment);
+    // formData.append("whichOfMonthPayment", whichOfMonthPayment);
     // formData.append("adjustmentAmount", adjustmentAmount);
     // formData.append("receivedTk", receivedTk);
     // formData.append("totalAmount", bookingItem?.totalAmount);
@@ -214,7 +222,6 @@ const PersonalInfo = () => {
     // formData.append("bookingExtend", bookingExtend);
 
     // save order information to the database
-
     try {
       dispatch(placeLoadingShow(true));
 
@@ -1271,7 +1278,17 @@ const PersonalInfo = () => {
                 </div>
                 <div className="flex px-4 mt-1 text-black  mb-1">
                   <div>
-                    <input type="checkbox" name="terms" required id="" />
+                    <input
+                      type="checkbox"
+                      name="terms"
+                      required
+                      id="terms"
+                      // checked={agreeTerms}
+                      onChange={() => {
+                        setAgreeTerms(!agreeTerms);
+                        setRequiredMessage(false);
+                      }}
+                    />
                   </div>
                   <p className="text-left pl-3 text-[12px]">
                     I agree with our{" "}
@@ -1292,7 +1309,12 @@ const PersonalInfo = () => {
                     </Link>
                   </p>
                 </div>
-
+                {requiredMessage && (
+                  <p className="text-sm text-red-600 font-medium px-4">
+                    Please check the box for agree our Terms of use and Privacy
+                    Policy
+                  </p>
+                )}
                 <button
                   type="button"
                   onClick={handlePaymentOption}

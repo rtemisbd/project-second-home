@@ -639,31 +639,6 @@ export const updateBooking = async (req, res, next) => {
               // console.error("Error while sending SMS:", error);
               // Handle error
             });
-
-          // Booking Confirmation Mail to customer
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "alaminbamna08@gmail.com",
-              pass: "qesfajhmrfhkfnbo",
-            },
-          });
-
-          const mailOptions = {
-            from: "alaminbamna08@gmail.com",
-            to: `${findSingleOrder?.email}`,
-            subject:
-              "Booking Confirmation: Your Reservation at Project Second Home",
-            html: bookingConfirmMail(findSingleOrder),
-          };
-
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              // console.log(error);
-            } else {
-              // console.log("Email sent: " + info.response);
-            }
-          });
         }
         // if cancel
         else {
@@ -709,32 +684,7 @@ export const updateBooking = async (req, res, next) => {
             // { new: true }
           );
 
-          // Booking Cancelation Mail to customer
-
           if (req.body?.status === "Canceled") {
-            const transporter = nodemailer.createTransport({
-              service: "gmail",
-              auth: {
-                user: "alaminbamna08@gmail.com",
-                pass: "qesfajhmrfhkfnbo",
-              },
-            });
-
-            const mailOptions = {
-              from: "alaminbamna08@gmail.com",
-              to: `${findSingleOrder?.email}`,
-              subject: `Cancellation Confirmation: Booking ID [${slicedObjectId}]`,
-              html: cancelBookingMail(findSingleOrder),
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                // console.log(error);
-              } else {
-                // console.log("Email sent: " + info.response);
-              }
-            });
-
             // Phone Sms for cancel
 
             const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
@@ -802,30 +752,6 @@ export const updateBooking = async (req, res, next) => {
               // console.error("Error while sending SMS:", error);
               // Handle error
             });
-
-          // Booking Confirmation Mail to customer
-          const transporter = nodemailer.createTransport({
-            service: "gmail",
-            auth: {
-              user: "alaminbamna08@gmail.com",
-              pass: "qesfajhmrfhkfnbo",
-            },
-          });
-
-          const mailOptions = {
-            from: "alaminbamna08@gmail.com",
-            to: `${findSingleOrder?.email}`,
-            subject: "Your Booking Details at Project Second Home",
-            html: bookingConfirmMail(findSingleOrder),
-          };
-
-          transporter.sendMail(mailOptions, function (error, info) {
-            if (error) {
-              console.log(error);
-            } else {
-              console.log("Email sent: " + info.response);
-            }
-          });
         } else {
           await Property.updateOne(
             { _id: bookingInfo_Id },
@@ -866,29 +792,6 @@ export const updateBooking = async (req, res, next) => {
           // Booking Cancelation Mail to customer
 
           if (req.body?.status === "Canceled") {
-            const transporter = nodemailer.createTransport({
-              service: "gmail",
-              auth: {
-                user: "alaminbamna08@gmail.com",
-                pass: "qesfajhmrfhkfnbo",
-              },
-            });
-
-            const mailOptions = {
-              from: "alaminbamna08@gmail.com",
-              to: `${findSingleOrder?.email}`,
-              subject: `Cancellation Confirmation: Booking ID [${slicedObjectId}]`,
-              html: cancelBookingMail(findSingleOrder),
-            };
-
-            transporter.sendMail(mailOptions, function (error, info) {
-              if (error) {
-                console.log(error);
-              } else {
-                console.log("Email sent: " + info.response);
-              }
-            });
-
             // Phone Sms for Cancel
             const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
 

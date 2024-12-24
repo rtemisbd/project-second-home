@@ -8,6 +8,7 @@ import { startSession } from "mongoose";
 import { bookingSms } from "../SMS/BookingSms.js";
 import OrderModel from "../models/Order.js";
 import Transaction from "../models/Transaction.js";
+import RentRoom from "../models/RentRoom.js";
 
 // Function to create a payment
 const payment_create = async (req, res) => {
@@ -54,8 +55,6 @@ const call_back = async (req, res) => {
       session.startTransaction();
 
       // Step 4: Execute payment via bKash
-      const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
-      console.log({ dataForBooking });
 
       const { data } = await axios.post(
         config.bkash_execute_payment_url,
@@ -68,9 +67,10 @@ const call_back = async (req, res) => {
 
       if (data && data.statusCode === "0000") {
         // Step 5: Create order
-        // const dataForBooking = data.data;
+        const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
         console.log({ dataForBooking });
         dataForBooking.paymentType = "bKash";
+        dataForBooking.status = "Approved";
         const result = await OrderModel.create([dataForBooking], { session });
         console.log({ result });
 
@@ -94,6 +94,28 @@ const call_back = async (req, res) => {
           { session }
         );
         console.log({ newTransaction });
+
+        //step 7 : create rent collection
+        const rentDate = await RentRoom.create(
+          [
+            {
+              bookStartDate:
+                dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
+              bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
+              roomId: dataForBooking?.bookingInfo?.data?._id,
+              roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
+              roomType: dataForBooking?.bookingInfo?.roomType,
+              seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
+              seatNumber: dataForBooking?.bookingInfo?.seatBooking?.seatNumber,
+              bookingId: dataForBooking?._id,
+              branch: dataForBooking?.bookingInfo?.branch?._id,
+              userId: dataForBooking?.userId,
+            },
+          ],
+          { session }
+        );
+
+        console.log({ rentDate });
 
         // Phone SMS for booking
         const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result[0]?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
