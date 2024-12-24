@@ -165,7 +165,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
 
 export const getOrder = catchAsync(async (req, res, next) => {
   const { result, totalCount } = await orderServices.getOrderFromDB(req.query);
-  console.log("controller", { result, totalCount });
 
   const orders = result[0]?.paginatedResults || [];
 

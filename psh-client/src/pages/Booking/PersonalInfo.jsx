@@ -78,7 +78,7 @@ const PersonalInfo = () => {
         validityType: singleUser?.validityType || "",
         emergencyContactName: singleUser?.emergencyContact?.contactName || "",
         emergencyRelationC: singleUser?.emergencyContact?.relation || "",
-        contactNumber: singleUser?.emergencyContact?.contactNumber || "",
+        emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
         arrivalTime: "09 AM To 10 AM",
         bookingInfo: bookingItem,
         branch: bookingItem?.branch?._id,

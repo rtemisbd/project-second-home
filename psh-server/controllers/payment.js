@@ -63,19 +63,18 @@ const call_back = async (req, res) => {
           headers: await bkash_headers(getValue("id_token")),
         }
       );
-      console.log({ data });
 
       if (data && data.statusCode === "0000") {
         // Step 5: Create order
         const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
         console.log({ dataForBooking });
-        dataForBooking.paymentType = "bKash";
+        dataForBooking.paymentType = "bkash";
         dataForBooking.status = "Approved";
         const result = await OrderModel.create([dataForBooking], { session });
         console.log({ result });
 
         // Step 6: Create user transaction
-        const newTransaction = await Transaction.create(
+        await Transaction.create(
           [
             {
               orderId: result[0]?._id,
@@ -83,20 +82,21 @@ const call_back = async (req, res) => {
               paymentDate: new Date(),
               totalAmount: dataForBooking?.bookingInfo?.totalAmount,
               payableAmount: dataForBooking?.payableAmount,
+              paymentType: "bkash",
               receivedTk: parseInt(data?.amount),
               paymentNumber: data?.customerMsisdn,
               transactionId: data.trxID,
               userId: getValue("userId"),
               userPhone: dataForBooking?.phone,
+              userName: dataForBooking?.fullName,
               acceptableStatus: "Accepted",
             },
           ],
           { session }
         );
-        console.log({ newTransaction });
 
         //step 7 : create rent collection
-        const rentDate = await RentRoom.create(
+        await RentRoom.create(
           [
             {
               bookStartDate:
@@ -114,8 +114,6 @@ const call_back = async (req, res) => {
           ],
           { session }
         );
-
-        console.log({ rentDate });
 
         // Phone SMS for booking
         const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result[0]?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;

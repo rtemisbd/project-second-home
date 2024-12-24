@@ -103,7 +103,7 @@ const BookingData = ({
           {" "}
           {booking?.bookingInfo?.roomType === "Shared Room"
             ? booking?.bookingInfo?.seatBooking?.seatNumber
-            : booking?.bookingInfo?.data?.roomNumber}
+            : booking?.bookingInfo?.roomNumber}
         </td>
         <td
           style={{

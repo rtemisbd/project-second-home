@@ -27,7 +27,7 @@ const createOrderIntoDB = async (payload) => {
       emergencyContact: {
         contactName: dataForBooking?.emergencyContactName,
         relation: dataForBooking?.emergencyRelationC,
-        contactNumber: dataForBooking?.contactNumber,
+        contactNumber: dataForBooking?.emergencyContact,
       },
     };
     const updatedUser = await User.updateOne(
@@ -148,6 +148,7 @@ const getOrderFromDB = async (queries) => {
             },
           },
           { $unwind: "$branchDetails" },
+
           //get transaction by order Id
           {
             $lookup: {

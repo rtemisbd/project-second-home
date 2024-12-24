@@ -12,18 +12,18 @@ import { ENUM_USER_ROLE } from "../enums/user.js";
 
 const router = express.Router();
 
-router.get("/", getTransaction);
-// router.get(
-//   "/",
-//   auth(
-//     ENUM_USER_ROLE.ADMIN,
-//     ENUM_USER_ROLE.SUPER_ADMIN,
-//     ENUM_USER_ROLE.MANAGER,
-//     ENUM_USER_ROLE.SUB_ADMIN_1,
-//     ENUM_USER_ROLE.SUB_ADMIN_2
-//   ),
-//   getTransaction
-// );
+// router.get("/", getTransaction);
+router.get(
+  "/",
+  auth(
+    ENUM_USER_ROLE.ADMIN,
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.MANAGER,
+    ENUM_USER_ROLE.SUB_ADMIN_1,
+    ENUM_USER_ROLE.SUB_ADMIN_2
+  ),
+  getTransaction
+);
 
 router.route("/:id").get(getTransactionById);
 // router.route("/:phone").get(getUserTransactions);

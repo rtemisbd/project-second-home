@@ -204,7 +204,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 <label htmlFor="" className="fw-medium">
                   Room Title
                 </label>
-                <p> {data?.bookingInfo?.data?.name}</p>
+                <p> {data?.bookingInfo?.roomName}</p>
               </div>
             )}
             {data?.bookingInfo?.roomType === "Shared Room" ? (
@@ -230,7 +230,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 <label htmlFor="" className="fw-medium">
                   Room Number
                 </label>
-                <p> {data?.bookingInfo?.data?.roomNumber}</p>
+                <p> {data?.bookingInfo?.roomNumber}</p>
               </div>
             )}
 
