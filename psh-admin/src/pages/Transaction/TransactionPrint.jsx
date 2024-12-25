@@ -35,7 +35,7 @@ const TransactionPrint = ({ transaction }) => {
           <span style={{ fontWeight: "bold" }}>
             {" "}
             {transaction?.paymentType} : {transaction?.paymentNumber}, Trx :{" "}
-            {transaction?.transactionId}
+            {transaction?.transactionId ? transaction.transactionId : "---"}
           </span>
         ) : (
           transaction?.paymentType

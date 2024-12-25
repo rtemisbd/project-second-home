@@ -19,6 +19,7 @@ import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import { IoCloseCircleOutline } from "react-icons/io5";
+import MobileBanking from "../Payment/MobileBanking";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);
@@ -30,11 +31,15 @@ const PersonalInfo = () => {
   const [isBlur, setIsBlur] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
+  const [selectMethod, setSelectMethod] = useState("app");
   const [requiredMessage, setRequiredMessage] = useState(false);
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [isLessAmount, setIsLessAmount] = useState(false);
   const [isScrolled, setIsScrolled] = useState(false);
   const [scrollY, setScrollY] = useState(0);
+
+  const [paymentNumber, setPaymentNumber] = useState(null);
+  const [receivedTk, setReceivedTk] = useState(null);
 
   const [dataForBooking, setDataForBooking] = useState({
     arrivalTime: "",
@@ -126,10 +131,14 @@ const PersonalInfo = () => {
   const handlePayByBkash = async (amount) => {
     try {
       dispatch(placeLoadingShow(true));
+      if (selectMethod === "manual") {
+        dataForBooking.receivedTk = receivedTk;
+        dataForBooking.paymentNumber = paymentNumber;
+      }
 
       const { data } = await axios.post(
         `${serverBaseUrl}/order`,
-        { amount: 1, dataForBooking },
+        { amount: 1, dataForBooking, selectMethod },
         { withCredentials: true }
       );
       // console.log(data?.data?.bkashURL);
@@ -164,85 +173,6 @@ const PersonalInfo = () => {
     }));
   };
 
-  const bookingOrder = async (e) => {
-    e.preventDefault();
-    // const address = e.target.address.value;
-    // const birthDate = birthDay?.toISOString()?.split("T")[0];
-    // const emergencyContactName = e.target.ecName.value;
-    // const emergencyRelationC = e.target.ecRelation.value;
-    // const emergencyContact = e.target.ecNumber.value;
-    // const arrivalTime = e.target.arrivalTime.value;
-    // const request = e.target.request.value;
-    // const paymentType = e.target?.payment?.value;
-    // const customerType = "";
-    // // const whichOfMonthPayment = "";
-    // const adjustmentAmount = 0;
-    // const receivedTk = Number(e.target?.receivedTk?.value)
-    //   ? Number(e.target?.receivedTk?.value)
-    //   : 0;
-    // const totalReceiveTk = 0;
-    // const paymentStatus = "Unpaid";
-    // if (validityType === "Select One") {
-    //   return toast.error("Sorry! Please Select Verification Type");
-    // }
-    // if (
-    //   emergencyContact?.length !== 11 ||
-    //   emergencyContact?.substring(0, 2) !== "01"
-    // ) {
-    //   return toast.error("Sorry! you gave a wrong phone number");
-    // }
-    // const formData = new FormData();
-    // // Booking Data Append
-    // formData.append("bookingInfo", JSON.stringify(bookingItem));
-    // formData.append("fullName", singleUser?.firstName);
-    // formData.append("userId", singleUser?._id);
-    // formData.append("email", singleUser?.email);
-    // formData.append("phone", singleUser?.phone);
-    // formData.append("address", address);
-    // formData.append("birthDate", birthDate);
-    // formData.append("emergencyContactName", emergencyContactName);
-    // formData.append("emergencyRelationC", emergencyRelationC);
-    // formData.append("emergencyContact", emergencyContact);
-    // formData.append("validityType", validityType);
-    // formData.append("arrivalTime", arrivalTime);
-    // formData.append("request", request);
-    // formData.append("paymentType", paymentType);
-    // formData.append("customerType", customerType);
-    // formData.append("whichOfMonthPayment", whichOfMonthPayment);
-    // formData.append("adjustmentAmount", adjustmentAmount);
-    // formData.append("receivedTk", receivedTk);
-    // formData.append("totalAmount", bookingItem?.totalAmount);
-    // formData.append("payableAmount", bookingItem?.payableAmount);
-    // formData.append("discount", bookingItem?.discount);
-    // formData.append("totalReceiveTk", totalReceiveTk);
-    // formData.append("foodAmount", bookingItem?.foodAmount);
-    // formData.append("isIncludeFood", bookingItem?.isIncludeFood);
-    // // formData.append("dueAmount", bookingItem?.payableAmount - totalReceiveTk);
-    // formData.append("paymentStatus", paymentStatus);
-    // formData.append("bookingExtend", bookingExtend);
-
-    // save order information to the database
-    try {
-      dispatch(placeLoadingShow(true));
-
-      const { data } = await axios.post(
-        `${serverBaseUrl}/order`,
-        { amount, dataForBooking },
-        { withCredentials: true }
-      );
-      window.location.href = data.bkashURL;
-      toast.success("Booking successfully done");
-      dispatch(placeLoadingShow(false));
-      localStorage.removeItem("bookingItem");
-      localStorage.removeItem("seatItem");
-
-      navigate("/booking-now");
-    } catch (error) {
-      dispatch(placeLoadingShow(false));
-      toast.error("Something is wrong");
-    }
-    e.target.reset();
-  };
   // handle Scrooled
   const handleScroll = () => {
     setScrollY(window.scrollY);
@@ -277,7 +207,7 @@ const PersonalInfo = () => {
       <form
         // onSubmit={bookingOrder}
         className={`custom-container user_info_page ${
-          isBlur ? "blur-lg relative" : ""
+          isBlur ? "blur-lg relative h-[100vh] md:h-[80vh] overflow-hidden" : ""
         }`}
       >
         <div
@@ -1387,7 +1317,7 @@ const PersonalInfo = () => {
             borderRadius: "3px",
             backgroundColor: "white",
           }}
-          className="bg-white z-50 absolute top-1/2 w-[96%] md:w-2/5 left-2 md:left-1/3 md:right-1/2"
+          className="bg-white z-50 absolute top-1/4 w-[96%] md:w-2/5 left-2 md:left-1/3 md:right-1/2"
         >
           <div
             style={{
@@ -1406,57 +1336,144 @@ const PersonalInfo = () => {
               <IoCloseCircleOutline color="white" size={28} />
             </button>
           </div>
-          <div className="my-4 flex justify-center mx-4">
-            <div>
-              <h2 className="font-medium text-center mb-4">
-                How much do you want to pay now?
-              </h2>
-              <div className="flex flex-wrap gap-4">
-                <button
-                  onClick={() => handlePayByBkash(bookingItem?.minimumPayment)}
-                  className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
-                >
-                  Minimum - {bookingItem?.minimumPayment} ৳
-                </button>
-                <button
-                  onClick={() => handlePayByBkash(bookingItem?.totalAmount)}
-                  className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
-                >
-                  Total Amount - {bookingItem?.totalAmount} ৳
-                </button>
-                <button
-                  onClick={() => setShowUserInputForPayment(true)}
-                  className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
-                >
-                  Custom Amount
-                </button>
-              </div>
-              {showUserInputForPayment && (
+          <div className="my-4 flex items-center mx-4">
+            <input
+              type="radio"
+              id="app"
+              name="method"
+              value="app"
+              defaultChecked
+              className=" mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+            <span className="text-[15px] mr-2">Pay By BKash</span>
+            <input
+              type="radio"
+              id="manual"
+              name="method"
+              value="manual"
+              // className="mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+              <span className="text-[15px]">Manual BKash</span>
+          </div>
+          <div>
+            {selectMethod === "app" ? (
+              <div className="my-4 flex justify-center mx-4">
                 <div>
-                  <div className="flex justify-center w-full my-4">
-                    <input
-                      type="number"
-                      placeholder="Enter your amount"
-                      className="border px-3 py-2 rounded-l-xl w-[66%] md:w-[80%] "
-                      name="amountForPay"
-                      onChange={handleUserInputAmount}
-                    />
+                  <h2 className="font-medium text-center mb-4">
+                    How much do you want to pay now?
+                  </h2>
+                  <div className="flex flex-wrap gap-4">
                     <button
-                      onClick={() => handlePayByBkash(amountForPay)}
-                      className="bg-[#02625a] px-3 py-2 rounded-r-xl  text-white"
-                      disabled={isLessAmount}
+                      onClick={() =>
+                        handlePayByBkash(bookingItem?.minimumPayment)
+                      }
+                      className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
-                      Pay Now
+                      Minimum - {bookingItem?.minimumPayment} ৳
+                    </button>
+                    <button
+                      onClick={() => handlePayByBkash(bookingItem?.totalAmount)}
+                      className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                    >
+                      Total Amount - {bookingItem?.totalAmount} ৳
+                    </button>
+                    <button
+                      onClick={() => setShowUserInputForPayment(true)}
+                      className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                    >
+                      Custom Amount
                     </button>
                   </div>
-                  {isLessAmount && (
-                    <p className="text-sm text-red-600">
-                      Please Pay Atleast ৳ {bookingItem.minimumPayment}
-                    </p>
+                  {showUserInputForPayment && (
+                    <div>
+                      <div className="flex justify-center w-full my-4">
+                        <input
+                          type="number"
+                          placeholder="Enter your amount"
+                          className="border px-3 py-2 rounded-l-xl w-[66%] md:w-[80%] "
+                          name="amountForPay"
+                          onChange={handleUserInputAmount}
+                        />
+                        <button
+                          onClick={() => handlePayByBkash(amountForPay)}
+                          className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
+                          disabled={isLessAmount}
+                        >
+                          Pay Now
+                        </button>
+                      </div>
+                      {isLessAmount && (
+                        <p className="text-sm text-red-600">
+                          Please Pay Atleast ৳ {bookingItem.minimumPayment}
+                        </p>
+                      )}
+                    </div>
                   )}
                 </div>
-              )}
-            </div>
+              </div>
+            ) : (
+              <div className="mx-4 mb-4">
+                <p className="text-left font-bold my-2">
+                  bkash (Merchant) :{" "}
+                  {bookingItem?.branch?.branchBkashNumber
+                    ? bookingItem?.branch?.branchBkashNumber
+                    : ""}{" "}
+                </p>
+                <p>1. Select Make Payment</p>
+                <p>2. Enter The Merchant Number (01407001410)</p>
+                <p>
+                  3. Enter The Amount You Want To Pay{" "}
+                  <span className="text-[#35B0A7]">
+                    (minimum amount to pay : ৳{bookingItem?.minimumPayment})
+                  </span>
+                </p>
+                <p className="text-left my-2">
+                  Please fill the form to submit your booking
+                </p>
+
+                <div className="mt-3">
+                  <div>
+                    <p className="text-[1rem]">
+                      bKash Number (from which you make payment) :{" "}
+                    </p>
+                  </div>
+                  <div className="w-[250px]">
+                    <input
+                      className="mt-2 ps-2  border h-8 w-[250px]"
+                      name="bkashNumber"
+                      required
+                      type="text"
+                      placeholder="017xxxxxxxx"
+                      onChange={(e) => setPaymentNumber(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <div>
+                    <p>How much money have you send :</p>
+                  </div>
+                  <div className="w-[250px]">
+                    <input
+                      className=" mt-2 ps-2 border h-8 w-[250px]"
+                      name="receivedTk"
+                      required
+                      type="text"
+                      placeholder="Sending Amount"
+                      onChange={(e) => setReceivedTk(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => handlePayByBkash(receivedTk)}
+                  className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
+                >
+                  Place Booking Now
+                </button>
+              </div>
+            )}
           </div>
         </div>
       )}
