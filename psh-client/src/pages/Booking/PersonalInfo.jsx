@@ -1317,7 +1317,7 @@ const PersonalInfo = () => {
             borderRadius: "3px",
             backgroundColor: "white",
           }}
-          className="bg-white z-50 absolute top-1/4 w-[96%] md:w-2/5 left-2 md:left-1/3 md:right-1/2"
+          className="bg-white z-50 absolute top-[15%] lg:top-[20%] w-[96%] lg:w-[50%] left-2 md:left-4 lg:left-1/4 lg:right-1/2"
         >
           <div
             style={{
