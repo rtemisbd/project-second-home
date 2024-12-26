@@ -70,7 +70,6 @@ const PersonalInfo = () => {
         // setValidityType(data?.validityType ? data?.validityType : "Select One");
       });
   }, [user?._id]);
-  console.log(singleUser);
 
   useEffect(() => {
     if (singleUser) {
@@ -93,7 +92,6 @@ const PersonalInfo = () => {
       }));
     }
   }, [singleUser]);
-  console.log({ dataForBooking });
 
   const anchorClick = (e) => {
     anchorClickHandler(e);

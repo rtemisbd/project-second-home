@@ -63,11 +63,11 @@ const createOrderIntoDB = async (payload) => {
           headers: await bkash_headers(getValue("id_token")),
         }
       );
-    }
 
-    // Commit the transaction
-    await session.commitTransaction();
-    return { bkashURL: data.bkashURL };
+      // Commit the transaction
+      await session.commitTransaction();
+      return { bkashURL: data.bkashURL };
+    }
   } catch (error) {
     await session.abortTransaction();
     console.error("Error in createOrderIntoDB:", error);
