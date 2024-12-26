@@ -308,7 +308,7 @@ function List({ type }) {
               </p>
             ) : data?.length > 0 ? (
               <>
-                <div className="px-4 md:px-0 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-x-7 lg:gap-x-5  ">
+                <div className="px-4 md:px-0 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-x-7 lg:gap-x-5">
                   {data?.map((item) => (
                     <div key={item._id}>
                       <SingleCard item={item} />

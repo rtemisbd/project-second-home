@@ -1,8 +1,6 @@
 import { useState, useRef } from "react";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import LeftArrow from "../../assets/img/arrow2.png";
-import RightArrow from "../../assets/img/arrow1.png";
 import UseFetch from "../../hooks/useFetch";
 import { Link } from "react-router-dom";
 import { promoSlider } from "../../helpers/utils/promoSlider";
@@ -18,6 +16,8 @@ const PromoOffer = () => {
   const promoFiltering = data.filter(
     (promo) => promo.isPublished === "Published"
   );
+
+  const totalSlides = promoFiltering.length;
 
   // Update active index on slide movement
   const handleMove = (splide) => {
@@ -38,19 +38,8 @@ const PromoOffer = () => {
     }
   };
 
-  // Dynamic arrow visibility
-  const isLastSlide = () => {
-    if (!splideRef.current) return false;
-
-    const splide = splideRef.current.splide;
-    const { length } = splide.Components.Elements.slides; // Total slides
-    const { perPage } = splide.options; // Slides visible at once
-    const lastVisibleSlideIndex = splide.index + perPage;
-
-    return lastVisibleSlideIndex >= length; // Check if we reached the end
-  };
-
   const isFirstSlide = activeIndex === 0;
+  const isLastSlide = activeIndex === totalSlides - 1;
 
   return (
     <div>
@@ -58,7 +47,7 @@ const PromoOffer = () => {
         <div>
           <h2 className="text-xl font-bold text-gray-900">Promo Offers</h2>
           <div className="flex justify-between items-end my-2">
-            <p className="">Our best Discount Offers for you</p>
+            <p>Our best Discount Offers for you</p>
             <p>
               <Link
                 to="/promo"
@@ -69,7 +58,7 @@ const PromoOffer = () => {
               </Link>
             </p>
           </div>
-          <div className="all_promo slider_margin promo-slider pl-0 relative">
+          <div className="all_promo slider_margin promo-slider pl-12 md:pl-0 relative">
             {/* Splide Slider */}
             <Splide
               ref={splideRef}
@@ -78,7 +67,7 @@ const PromoOffer = () => {
             >
               {promoFiltering.map((item) => (
                 <SplideSlide key={item?._id}>
-                  <div className="group relative">
+                  <div className="group relative shadow">
                     <Link to={`/promo/${item?._id}`}>
                       <div className="relative w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
                         {item?.homePageCover?.length > 0 && (
@@ -100,21 +89,19 @@ const PromoOffer = () => {
               {/* Left Arrow */}
               {!isFirstSlide && (
                 <button
-                  className="splide__arrow splide__arrow--prev"
+                  className="splide__arrow splide__arrow--prev "
                   onClick={handlePrevClick}
                 >
-                  {/* <img src={LeftArrow} alt="Prev Arrow" /> */}
                   {"<"}
                 </button>
               )}
 
               {/* Right Arrow */}
-              {!isLastSlide() && (
+              {!isLastSlide && (
                 <button
                   className="splide__arrow splide__arrow--next"
                   onClick={handleNextClick}
                 >
-                  {/* <img src={RightArrow} alt="Next Arrow" /> */}
                   {">"}
                 </button>
               )}
