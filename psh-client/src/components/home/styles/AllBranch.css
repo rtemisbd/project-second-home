@@ -1,208 +1,79 @@
-.module {
-  width: 100%;
-  height: 240px;
-  position: relative;
-  overflow: hidden;
-  margin: 20px;
-}
-
-.module > header {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  width: 100%;
-  padding: 20px 10px;
-  background: inherit;
-
-  overflow: hidden;
-}
-
-.module > header::before {
-  content: "";
-  position: absolute;
-  top: -20px;
-  left: 0;
-  width: 200%;
-  height: 200%;
-  background: inherit;
-
-  -webkit-filter: blur(4px);
-  filter: blur(4px);
-}
-
-.module > header::after {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.25);
-}
-
-.module > header > i {
-  margin: 0;
-
-  color: white;
-  position: relative;
-  z-index: 1;
-}
-
-.module > header > p {
-  margin: 0;
-  margin-left: 10px;
-  color: white;
-  position: relative;
-  z-index: 1;
-}
-
-.note {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 4px 38px;
-  border-radius: 0.25rem;
-  background-color: #35b0a7;
-  font-size: 14px;
-  font-weight: 700;
-  color: white;
-}
-
-.note2 {
-  position: absolute;
-  top: 8px;
-  left: 8px;
-  padding: 4px 38px;
-  border-radius: 0.25rem;
-  background-color: #c9f2ef;
-  font-size: 14px;
-  font-weight: 700;
-  color: black;
-}
-
 .splide {
   padding: 0 !important;
 }
 
-.all_branch .splide__arrow--prev::before {
-  content: url("../../../assets/img/arrow1.png");
-  /* Add your custom icon or image here */
-  border-radius: 5px 0px 0px 5px;
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  padding: 15px 20px;
+.splide-track-padding {
+  transition: padding-left 0.3s ease-in-out, padding-right 0.3s ease-in-out;
 }
-
-.all_branch svg {
-  display: none;
-}
-
-.all_branch .splide__arrow--next::before {
-  content: url("../../../assets/img/arrow2.png");
-  /* Add your custom icon or image here */
-  border: 1px solid #e5e5e5;
-  background: #fff;
-  padding: 15px 20px;
-}
-
-/* Customize the left arrow button position */
-
+/* Customize the left arrow button */
 .all_branch .splide__arrow--prev {
-  left: 635px;
-  top: 290px !important;
-}
-
-/* Customize the right arrow button position */
-
-.all_branch .splide__arrow--next {
-  right: 635px;
-  top: 290px !important;
-}
-
-@media screen and (max-width: 600px) {
-  .all_branch .splide__arrow--prev {
-    /* left: 280px !important;
-    top: 280px !important; */
-    display: none !important;
-  }
-
-  .all_branch .splide__arrow--next {
-    /* right: 215px !important;
-    top: 280px !important; */
-    display: none !important;
-  }
-}
-
-/* ------------------------------------------------------------ */
-
-.all_branch .splide__arrow--prev::before {
-  content: url("../../../assets/img/arrow2.png");
-  /* Add your custom icon or image here */
-  border-radius: 5px 0px 0px 5px;
-  border: 1px solid #e5e5e5;
-  background: white;
-  padding: 2px 5px;
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  top: 40px !important;
+  left: 8px !important;
   border-radius: 50%;
-}
-
-.all_branch {
-  position: relative; /* Make sure the parent container has a relative position */
-}
-
-.all_branch svg {
-  display: none;
-}
-
-.all_branch .splide__arrow {
-  /* Position the arrow buttons */
-  bottom: 10px; /* Adjust this value as needed */
-}
-
-.all_branch .splide__arrow--next::before {
-  content: url("../../../assets/img/arrow1.png");
-  /* Add your custom icon or image here */
-  border: 1px solid #e5e5e5;
-  background: white;
-
-  padding: 6px 14px;
-  border-radius: 50%;
-  /* box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5); */
-}
-.all_branch .splide__arrow--prev {
-  left: 20px;
-  /* Adjust the top value to move the button down */
-  opacity: 0.9 !important;
-}
-
-.all_branch .splide__arrow--next {
-  right: 20px;
-  /* Adjust the top value to move the button down */
-  opacity: 0.9 !important;
-}
-
-.card-slider .slick-slider .slick-arrow {
-  /* display: none !important; */
-  margin: 3px 20px;
-  z-index: 1016;
-  border-radius: 79%;
+  /* border: 1px solid #e5e5e5; */
+  background: #fff;
+  /* padding: 4px; */
+  /* content: url("../../assets/img/arrow2.png"); */
   cursor: pointer;
-  width: 35px;
-  height: 36px;
-  padding: 12px 12.5px;
-  background-color: #fff;
-  box-shadow: 0 0 20px 5px rgba(35, 35, 35, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px 0px black;
+  z-index: 1000;
 }
 
-@media screen and (max-width: 600px) {
-  .all_branch .splide__arrow--prev {
-    /* left: 210px;
-    top: 410px !important; */
-    display: none !important;
-  }
+/* Customize the right arrow button */
+.all_branch .splide__arrow--next {
+  width: 34px;
+  height: 34px;
+  font-size: 16px;
+  top: 40px !important;
+  right: 8px !important ;
+  border-radius: 50%;
+  /* border: 1px solid #e5e5e5; */
+  background: #fff;
+  /* padding: 4px; */
+  /* content: url("../../assets/img/arrow1.png"); */
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0px 0px 10px 0px black;
+  z-index: 1000;
+}
 
+/* Hide SVG icons provided by Splide */
+.all_branch svg {
+  display: none;
+}
+
+/* Responsive styling for smaller screens */
+@media screen and (max-width: 600px) {
+  .all_branch .splide__arrow--prev,
   .all_branch .splide__arrow--next {
-    /* right: 200px !important;
-    top: 410px !important; */
-    display: none !important;
+    display: none !important; /* Hide arrows on small screens */
   }
+}
+
+/* Adjustments for other components inside .splide */
+.all_branch .splide__arrows {
+  display: flex;
+  justify-content: space-between;
+  position: relative;
+  /* margin-top: -40px;  */
+  background-color: white;
+}
+
+.all_branch .splide__arrow img {
+  width: 24px; /* Size of the arrow icons */
+  height: 24px;
+}
+
+/* Optional hover effect for arrow buttons */
+.all_branch .splide__arrow--prev:hover,
+.all_branch .splide__arrow--next:hover {
+  background: #f0f0f0; /* Change background color on hover */
 }
