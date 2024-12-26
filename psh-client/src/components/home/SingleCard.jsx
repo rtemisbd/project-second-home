@@ -43,7 +43,10 @@ const SingleCard = ({ item }) => {
           )}
         </CardHeader>
         <CardBody className="p-2">
-          <Link to={`/ `} className="hover:text-black">
+          <Link
+            to={`/${item?.category}/${item?.name}/${item._id} `}
+            className="hover:text-black"
+          >
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-sm font-medium bg-[#FCA22A] text-white px-2 py-1 rounded">
