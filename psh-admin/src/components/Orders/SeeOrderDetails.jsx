@@ -342,14 +342,20 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Total Payment
               </label>
-              <p>Tk {data?.totalReceiveTk?.toLocaleString()}</p>
+              <p>
+                Tk {data?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+                {/* {data?.totalReceiveTk?.toLocaleString()} */}
+              </p>
             </div>
 
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Due Amount
               </label>
-              <p> Tk {data?.dueAmount?.toLocaleString()}</p>
+              <p>
+                Tk {data?.payableAmount - data?.transactions[0]?.totalReceiveTk}
+                {/* {data?.dueAmount?.toLocaleString()} */}
+              </p>
             </div>
 
             <div className="col-lg-3">

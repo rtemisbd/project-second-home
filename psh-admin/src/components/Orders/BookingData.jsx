@@ -75,6 +75,7 @@ const BookingData = ({
   useEffect(() => {
     setIsIncludeFood(booking?.isIncludeFood);
   }, []);
+  console.log(booking);
 
   return (
     <>
@@ -152,7 +153,10 @@ const BookingData = ({
 
         <td>
           <p className="fw-bold">
-            Tk {booking?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+            Tk{" "}
+            {booking?.transactions[0]?.totalReceiveTk
+              ? booking?.transactions[0]?.totalReceiveTk?.toLocaleString()
+              : "---"}
           </p>
         </td>
         <td>
@@ -165,7 +169,10 @@ const BookingData = ({
           >
             {" "}
             TK{" "}
-            {booking?.payableAmount - booking?.transactions[0]?.totalReceiveTk}
+            {booking?.transactions[0]?.totalReceiveTk
+              ? booking?.payableAmount -
+                booking?.transactions[0]?.totalReceiveTk
+              : "---"}
             {/* Tk {booking?.dueAmount?.toLocaleString()} */}
           </span>
         </td>
