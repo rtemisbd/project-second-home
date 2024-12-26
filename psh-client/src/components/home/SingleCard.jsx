@@ -7,7 +7,7 @@ import {
 import { Link } from "react-router-dom";
 import locationIcon from "../../assets/img/branchLocationIcon.png";
 
-// import "./styles/SingleCard.css";
+import "./styles/SingleCard.css";
 
 const SingleCard = ({ item }) => {
   return (

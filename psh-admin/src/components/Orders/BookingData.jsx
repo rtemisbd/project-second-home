@@ -18,55 +18,48 @@ const BookingData = ({
   page,
   size,
 }) => {
+  // For Status Modal
+  const [statusModalData, setStatusModalData] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  // For Payment Modal
+  const [paymentModalData, setPaymentModalData] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // For Privet Room Modal
+  const [showDurationModal, setShowDurationModal] = useState(false);
+  const [durationUpdatePrivateRoom, setDurationUpdatePrivateRoom] =
+    useState(null);
+  const [isIncludeFood, setIsIncludeFood] = useState(false);
+  // For Seat Update Duration Modal
+  const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
+  const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
+  // Details Modal
+  const [bookingDetails, setBookingDetails] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+
   // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
-
-  // For Status Modal
-  const [statusModalData, setStatusModalData] = useState(null);
-
-  const [showStatusModal, setShowStatusModal] = useState(false);
 
   const handleStatusShow = (statusData) => {
     setShowStatusModal(true);
     setStatusModalData(statusData);
   };
 
-  // For Payment Modal
-  const [paymentModalData, setPaymentModalData] = useState(null);
-
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-
   const handlePaymentShow = (paymentData) => {
     setShowPaymentModal(true);
     setPaymentModalData(paymentData);
   };
-
-  // For Privet Room Modal
-  const [showDurationModal, setShowDurationModal] = useState(false);
-  const [durationUpdatePrivateRoom, setDurationUpdatePrivateRoom] =
-    useState(null);
 
   const handleDurationShow = (privateRoomData) => {
     setShowDurationModal(true);
     setDurationUpdatePrivateRoom(privateRoomData);
   };
 
-  const [isIncludeFood, setIsIncludeFood] = useState(false);
-
-  // For Seat Update Duration Modal
-  const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
-  const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
   const handleSeatShow = (seatData) => {
     setShowSeatUpdateDuration(true);
     setDurationUpdateDataSeat(seatData);
   };
-
-  // Details Modal
-  const [bookingDetails, setBookingDetails] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-
   const handleShowDetails = (detailsData) => {
     setShowDetails(true);
     setBookingDetails(detailsData);
@@ -75,7 +68,6 @@ const BookingData = ({
   useEffect(() => {
     setIsIncludeFood(booking?.isIncludeFood);
   }, []);
-  console.log(booking);
 
   return (
     <>
@@ -266,12 +258,8 @@ const BookingData = ({
               }`}
               type="button"
               className={`rounded ${
-                booking?.status === "Approved" ? "bg-white" : ""
+                booking?.status === "Approved" ? "bg-white" : "#35b0a7"
               }`}
-              style={{
-                backgroundColor:
-                  booking?.status === "Approved" ? "white" : "#35b0a7",
-              }}
               disabled={booking?.status === "Approved" ? true : false}
               onClick={() => {
                 booking?.bookingInfo?.roomType === "Shared Room"
