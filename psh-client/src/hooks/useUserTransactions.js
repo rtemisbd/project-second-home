@@ -19,7 +19,6 @@ const useUserTransactions = () => {
         setTransaction(data?.data);
       })
   );
-  console.log(transactions);
 
   return [transactions, refetch];
 };

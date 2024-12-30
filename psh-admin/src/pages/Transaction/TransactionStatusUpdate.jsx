@@ -1,12 +1,11 @@
 /* eslint-disable no-unused-vars */
 import React, { useState, useEffect } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import { useDispatch } from "react-redux";
 import LoadingState from "../LoadingState/LoadingState";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
   const { _id, name, seatNumber, desc, acceptableStatus } = data;
@@ -14,8 +13,6 @@ const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
 
   // const handleClose = () => dispatch(placeLoadingShow(false));
   const [user, setUser] = useState(data);
-
-  const MySwal = withReactContent(Swal);
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
@@ -32,7 +29,7 @@ const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
     e.preventDefault();
 
     if (acceptableStatus === user?.acceptableStatus) {
-      return MySwal.fire(`Sorry Already ${user?.acceptableStatus}`);
+      return toast(`Sorry Already ${user?.acceptableStatus}`);
     }
 
     const newPost = {
@@ -44,17 +41,14 @@ const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
         ...newPost,
       };
 
-      await axios.patch(
-        `https://api.psh.com.bd/api/transaction/${_id}`,
-        updatedStatus
-      );
-      MySwal.fire("Updated", "success");
+      await axios.patch(`${baseUrl}/api/transaction/${_id}`, updatedStatus);
+      toast("Updated", "success");
       handleClose();
       refetch();
     } catch (err) {
       // console.log(err);
       handleClose();
-      MySwal.fire("Something Error Found.", "warning");
+      toast("Something Error Found.", "warning");
     }
   };
   return (

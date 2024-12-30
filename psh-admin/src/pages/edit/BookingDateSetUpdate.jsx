@@ -7,6 +7,7 @@ import UseFetch from "../../hooks/useFetch";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
 import usePromo from "../../hooks/usePromo";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const BookingDateSetUpdate = ({
   data,
@@ -413,7 +414,7 @@ const BookingDateSetUpdate = ({
       if (showMiniumPayment) {
         try {
           const response = await axios.patch(
-            `https://api.psh.com.bd/api/order/${data._id}`,
+            `${baseUrl}/api/order/${data._id}`,
             bookingDataUpdate,
             {
               headers: {
@@ -430,15 +431,11 @@ const BookingDateSetUpdate = ({
         }
       } else {
         try {
-          await axios.patch(
-            `https://api.psh.com.bd/api/order/${data._id}`,
-            bookingData,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
+          await axios.patch(`${baseUrl}/api/order/${data._id}`, bookingData, {
+            headers: {
+              "Content-Type": "application/json",
+            },
+          });
 
           toast.success("Success");
           refetch();

@@ -109,24 +109,24 @@ const createOrderByManualBkash = async (payload) => {
       { session }
     );
 
-    //step 7 : create rent collection
-    await RentRoom.create(
-      [
-        {
-          bookStartDate: dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
-          bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
-          roomId: dataForBooking?.bookingInfo?.data?._id,
-          roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
-          roomType: dataForBooking?.bookingInfo?.roomType,
-          seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
-          seatNumber: dataForBooking?.bookingInfo?.seatBooking?.seatNumber,
-          bookingId: dataForBooking?._id,
-          branch: dataForBooking?.bookingInfo?.branch?._id,
-          userId: dataForBooking?.userId,
-        },
-      ],
-      { session }
-    );
+    // //step 7 : create rent collection
+    // await RentRoom.create(
+    //   [
+    //     {
+    //       bookStartDate: dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
+    //       bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
+    //       roomId: dataForBooking?.bookingInfo?.roomId,
+    //       roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
+    //       roomType: dataForBooking?.bookingInfo?.roomType,
+    //       seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
+    //       seatNumber: dataForBooking?.bookingInfo?.seatBooking?.seatNumber,
+    //       bookingId: dataForBooking?._id,
+    //       branch: dataForBooking?.bookingInfo?.branch?._id,
+    //       userId: dataForBooking?.userId,
+    //     },
+    //   ],
+    //   { session }
+    // );
 
     // Phone SMS for booking
     const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result[0]?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
@@ -330,7 +330,6 @@ const getOrderFromDB = async (queries) => {
   ];
 
   const result = await OrderModel.aggregate(pipeline);
-  console.log({ result });
 
   return { result, totalCount };
 };

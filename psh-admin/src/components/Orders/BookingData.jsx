@@ -8,6 +8,7 @@ import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
 import { FaWhatsapp } from "react-icons/fa";
+import BookingDatesExtend from "../../pages/edit/BookingDatesExtend";
 
 const BookingData = ({
   booking,
@@ -73,7 +74,6 @@ const BookingData = ({
     <>
       <tr className="bookings_data">
         <td>{(page - 1) * size + index + 1}</td>
-
         <td
           style={{
             width: "140px",
@@ -164,7 +164,7 @@ const BookingData = ({
             {booking?.transactions[0]?.totalReceiveTk
               ? booking?.payableAmount -
                 booking?.transactions[0]?.totalReceiveTk
-              : "---"}
+              : booking?.payableAmount}
             {/* Tk {booking?.dueAmount?.toLocaleString()} */}
           </span>
         </td>
@@ -287,6 +287,11 @@ const BookingData = ({
           )}
           {durationUpdatePrivateRoom && (
             <div>
+              {/* <BookingDatesExtend
+                data={booking}
+                showDurationModal={showDurationModal}
+                setShowDurationModal={setShowDurationModal}
+              /> */}
               <BookingDateUpdate
                 data={durationUpdatePrivateRoom}
                 refetch={refetch}

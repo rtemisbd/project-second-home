@@ -9,6 +9,7 @@ import UseFetch from "../../hooks/useFetch";
 // import useExtraCharge from "../../hooks/useExtraCharge";
 import usePromo from "../../hooks/usePromo";
 import { Modal } from "react-bootstrap";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const BookingDateUpdate = ({
   data,
@@ -17,6 +18,8 @@ const BookingDateUpdate = ({
   setShowDurationModal,
   showDurationModal,
 }) => {
+  console.log({ data });
+
   // const [extraCharge] = useExtraCharge();
   const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
   const [roomBookingDates, setRoomBookingDates] = useState([]);
@@ -394,7 +397,7 @@ const BookingDateUpdate = ({
       if (showMiniumPayment) {
         try {
           const response = await axios.patch(
-            `https://api.psh.com.bd/api/order/${data._id}`,
+            `${baseUrl}/api/order/${data._id}`,
             bookingDataUpdate,
             {
               headers: {
@@ -411,7 +414,7 @@ const BookingDateUpdate = ({
       } else {
         try {
           const response = await axios.patch(
-            `https://api.psh.com.bd/api/order/${data._id}`,
+            `${baseUrl}/api/order/${data._id}`,
             bookingData,
             {
               headers: {
@@ -465,13 +468,11 @@ const BookingDateUpdate = ({
                   borderRadius: "5px",
                 }}
               >
-                <h2 className="text-left fw-bold" style={{ color: "#212A42" }}>
-                  {data?.name}
-                </h2>
-                <div className="d-flex ">
-                  <div>{/* <img src={brachLocationIcon} alt="" /> */}</div>
-                  <p className="text-black">{data.city}</p>
-                </div>
+                <h4 className="text-left " style={{ color: "#212A42" }}>
+                  {data?.bookingInfo?.roomName} -{" "}
+                  {data?.bookingInfo?.roomNumber}
+                </h4>
+
                 <p
                   className=" d-flex justify-content-start "
                   style={{
@@ -481,7 +482,7 @@ const BookingDateUpdate = ({
                     borderRadius: "5px",
                   }}
                 >
-                  {data?.bookingInfo?.roomType}
+                  {data?.bookingInfo?.roomType}-[{data?.branchDetails?.name}]
                 </p>
               </div>
               <div className="mx-2">

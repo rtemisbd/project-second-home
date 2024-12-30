@@ -1,9 +1,6 @@
 import React, { useRef, useEffect, useState } from "react";
-import axios from "axios";
 import ReactToPrint from "react-to-print";
-import jsPDF from "jspdf";
 import "jspdf-autotable";
-import html2canvas from "html2canvas";
 
 import { useLocation } from "react-router-dom";
 import right from "../../assets/img/Right.png";
@@ -31,6 +28,7 @@ const Invoice = () => {
 
   const handleOpen = (value) => setSize(value);
   console.log(transactions);
+  console.log(userEndOrder);
 
   // useEffect(() => {
   //   const fetchData = async () => {
@@ -310,7 +308,9 @@ const Invoice = () => {
                       </p>
                       <p>
                         <span className="font-bold mr-3">Account Number :</span>{" "}
-                        {transactions[length - 1]?.paymentNumber}
+                        {userEndOrder?.paymentNumber
+                          ? userEndOrder.paymentNumber
+                          : transactions[length - 1]?.paymentNumber}
                       </p>
 
                       <p>
@@ -401,9 +401,11 @@ const Invoice = () => {
                           ) : (
                             <p className=" text-[12px]">
                               BDT{" "}
-                              {transactions[
-                                length - 1
-                              ]?.receivedTk?.toLocaleString()}
+                              {userEndOrder?.receivedTk
+                                ? userEndOrder.receivedTk
+                                : transactions[
+                                    length - 1
+                                  ]?.receivedTk?.toLocaleString()}
                             </p>
                           )}
                         </div>
@@ -420,8 +422,15 @@ const Invoice = () => {
                           <p className="ml-[75px]">:</p>
                           <p className=" text-[12px]">
                             BDT{" "}
-                            {transactions[length - 1]?.payableAmount -
-                              transactions[length - 1]?.receivedTk}{" "}
+                            {userEndOrder?.receivedTk
+                              ? userEndOrder?.payableAmount -
+                                userEndOrder.receivedTk
+                              : userEndOrder?.payableAmount -
+                                transactions[
+                                  length - 1
+                                ]?.receivedTk?.toLocaleString()}
+                            {/* {transactions[length - 1]?.payableAmount -
+                              transactions[length - 1]?.receivedTk}{" "} */}
                             {/* {userEndOrder?.dueAmount?.toLocaleString()} */}
                           </p>
                         </div>

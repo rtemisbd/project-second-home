@@ -71,7 +71,6 @@ const call_back = async (req, res) => {
         dataForBooking.paymentType = "bkash";
         dataForBooking.status = "Approved";
         const result = await OrderModel.create([dataForBooking], { session });
-        console.log({ result });
 
         // Step 6: Create user transaction
         await Transaction.create(
@@ -102,7 +101,7 @@ const call_back = async (req, res) => {
               bookStartDate:
                 dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
               bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
-              roomId: dataForBooking?.bookingInfo?.data?._id,
+              roomId: dataForBooking?.bookingInfo?.roomId,
               roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
               roomType: dataForBooking?.bookingInfo?.roomType,
               seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
@@ -116,7 +115,8 @@ const call_back = async (req, res) => {
         );
 
         // Phone SMS for booking
-        const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result[0]?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+
+        const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
         await bookingSms(bookingMessage);
 
