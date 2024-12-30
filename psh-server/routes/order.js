@@ -5,6 +5,7 @@ import {
   getOrder,
   getSingleOrder,
   updateBooking,
+  updateBookingOrder,
 } from "../controllers/order.js";
 
 import uploader from "../middleware/uploader.js";
@@ -32,6 +33,7 @@ router.get(
 router.route("/:user").get(getMyBooking);
 router.get("/:id", getSingleOrder);
 
-router.route("/:id").patch(updateBooking);
+// router.route("/:id").patch(updateBooking);
+router.route("/:id").patch(updateBookingOrder);
 
 export default router;

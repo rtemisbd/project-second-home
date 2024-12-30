@@ -109,27 +109,8 @@ const createOrderByManualBkash = async (payload) => {
       { session }
     );
 
-    // //step 7 : create rent collection
-    // await RentRoom.create(
-    //   [
-    //     {
-    //       bookStartDate: dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
-    //       bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
-    //       roomId: dataForBooking?.bookingInfo?.roomId,
-    //       roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
-    //       roomType: dataForBooking?.bookingInfo?.roomType,
-    //       seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
-    //       seatNumber: dataForBooking?.bookingInfo?.seatBooking?.seatNumber,
-    //       bookingId: dataForBooking?._id,
-    //       branch: dataForBooking?.bookingInfo?.branch?._id,
-    //       userId: dataForBooking?.userId,
-    //     },
-    //   ],
-    //   { session }
-    // );
-
     // Phone SMS for booking
-    const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result[0]?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
 
     await bookingSms(bookingMessage);
 
@@ -334,26 +315,96 @@ const getOrderFromDB = async (queries) => {
   return { result, totalCount };
 };
 
-const getOrderByIdFromDB = async (id) => {
-  const rentRooms = await RentRoom.find({
-    roomId: propertyId,
-    bookingStatus: { $in: ["Booked", "Reserved"] },
-  }).select({
-    bookStartDate: 1,
-    bookEndDate: 1,
-    bookingStatus: 1,
-    roomType: 1,
-    seatId: 1,
-    seatNumber: 1,
-    roomNumber: 1,
-    roomId: 1,
-  });
-  const result = await OrderModel.findById(id);
+const updateBookingStatusIntoDB = async (payload) => {
+  // update booking status
+  if (payload.body?.status) {
+    await OrderModel.findByIdAndUpdate(
+      payload.id,
+      { $set: { status: payload.body.status } },
+      { new: true }
+    );
+  }
 
-  return result;
+  // find the booking
+  const booking = await OrderModel.findById(payload.id);
+  if (booking?.status === "Approved") {
+    // create rentDate when booking status is approved
+    await RentRoom.create({
+      bookStartDate: booking?.bookingInfo?.rentDate?.bookStartDate,
+      bookEndDate: booking?.bookingInfo?.rentDate?.bookEndDate,
+      roomId: booking?.bookingInfo?.roomId,
+      roomNumber: booking?.bookingInfo?.roomNumber,
+      seatId: booking?.bookingInfo?.seatBooking?._id,
+      seatNumber: booking?.bookingInfo?.seatBooking?.seatNumber,
+      roomType: booking?.bookingInfo?.roomType,
+      bookingId: booking?._id,
+      branch: booking?.bookingInfo?.branch?._id,
+      userId: booking?.userId,
+    });
+    // if promo code used then user property usedPromo update
+    await User.updateOne(
+      { phone: booking?.email },
+      {
+        $push: {
+          usedPromo: booking?.bookingInfo?.usedPromo,
+        },
+      },
+      { new: true }
+    );
+
+    // Phone Sms for Confirmation
+
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${booking?.bookingId}.%20Check-in%3A%${booking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${booking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+
+    bookingSms(bookingMessage)
+      .then((response) => {
+        // console.log("Response from SMS API:", response);
+      })
+      .catch((error) => {
+        // console.error("Error while sending SMS:", error);
+      });
+  }
+  if (booking?.status === "Canceled") {
+    // delete rentDate when booking status is cancel
+    await RentRoom.deleteMany({
+      bookStartDate: booking?.bookingInfo?.rentDate.bookStartDate,
+      bookEndDate: booking?.bookingInfo?.rentDate.bookEndDate,
+      roomNumber: booking?.bookingInfo?.roomNumber,
+      roomId: booking?.bookingInfo?.roomId,
+      bookingId: booking?._id,
+      userId: booking?.userId,
+    });
+
+    // if have promo code then remove promo code
+    await User.updateOne(
+      { phone: booking?.email },
+
+      {
+        $pull: {
+          usedPromo: {
+            promo: booking?.bookingInfo?.usedPromo?.promo,
+          },
+        },
+      }
+    );
+
+    // Phone Sms for Cancel
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${booking?.bookingId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
+
+    bookingSms(bookingMessage)
+      .then((response) => {
+        // console.log("Response from SMS API:", response);
+        // Handle response data as needed
+      })
+      .catch((error) => {
+        // console.error("Error while sending SMS:", error);
+        // Handle error
+      });
+  }
 };
 
 export const orderServices = {
   createOrderIntoDB,
   getOrderFromDB,
+  updateBookingStatusIntoDB,
 };

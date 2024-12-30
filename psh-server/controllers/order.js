@@ -982,3 +982,18 @@ export const updateBooking = async (req, res, next) => {
     next(err);
   }
 };
+
+export const updateBookingOrder = catchAsync(async (req, res, next) => {
+  const result = await orderServices.updateBookingStatusIntoDB({
+    id: req.params.id,
+    body: req.body,
+  });
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    data: result,
+    message:
+      "Thank You! Your Booking Successfully Done, We will contact you very soon.",
+  });
+});

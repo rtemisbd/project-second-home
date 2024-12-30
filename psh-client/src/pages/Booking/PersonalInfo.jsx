@@ -92,6 +92,7 @@ const PersonalInfo = () => {
       }));
     }
   }, [singleUser]);
+  console.log({ singleUser });
 
   const anchorClick = (e) => {
     anchorClickHandler(e);
@@ -198,6 +199,8 @@ const PersonalInfo = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  console.log(dataForBooking);
 
   return (
     <div>
