@@ -366,13 +366,14 @@ const updateBookingStatusIntoDB = async (payload) => {
   }
   if (booking?.status === "Canceled") {
     // delete rentDate when booking status is cancel
-    await RentRoom.deleteMany({
-      bookStartDate: booking?.bookingInfo?.rentDate.bookStartDate,
-      bookEndDate: booking?.bookingInfo?.rentDate.bookEndDate,
-      roomNumber: booking?.bookingInfo?.roomNumber,
-      roomId: booking?.bookingInfo?.roomId,
+    await RentRoom.deleteOne({
+      // bookStartDate: booking?.bookingInfo?.rentDate.bookStartDate,
+      // bookEndDate: booking?.bookingInfo?.rentDate.bookEndDate,
+      // roomNumber: booking?.bookingInfo?.roomNumber,
+      // roomId: booking?.bookingInfo?.roomId,
+      // seatId: booking?.bookingInfo?.seatBooking?._id,
       bookingId: booking?._id,
-      userId: booking?.userId,
+      // userId: booking?.userId,
     });
 
     // if have promo code then remove promo code

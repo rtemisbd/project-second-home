@@ -287,12 +287,13 @@ const BookingData = ({
           )}
           {durationUpdatePrivateRoom && (
             <div>
-              {/* <BookingDatesExtend
+              <BookingDatesExtend
                 data={booking}
+                extraCharge={extraCharge}
                 showDurationModal={showDurationModal}
                 setShowDurationModal={setShowDurationModal}
-              /> */}
-              <BookingDateUpdate
+              />
+              {/* <BookingDateUpdate
                 data={durationUpdatePrivateRoom}
                 refetch={refetch}
                 extraCharge={extraCharge}
@@ -300,7 +301,7 @@ const BookingData = ({
                 setShowDurationModal={setShowDurationModal}
                 setIsIncludeFood={setIsIncludeFood}
                 isIncludeFood={isIncludeFood}
-              />
+              /> */}
             </div>
           )}
         </td>

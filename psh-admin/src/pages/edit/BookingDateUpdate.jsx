@@ -18,7 +18,7 @@ const BookingDateUpdate = ({
   setShowDurationModal,
   showDurationModal,
 }) => {
-  console.log({ data });
+  console.log(data);
 
   // const [extraCharge] = useExtraCharge();
   const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
@@ -41,20 +41,18 @@ const BookingDateUpdate = ({
   const [totalRentAmount, setTotalRentAmount] = useState(
     parseInt(data?.bookingInfo?.totalAmount)
   );
-  const [payableAmount, setPayableAmount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(data?.payableAmount);
   const [promos] = usePromo();
   const [userPromo, setUserPromo] = useState({});
   const [discountTk, setDisCountTk] = useState(0);
 
-  const [isAdjustmen, setIsAdjustment] = useState(false);
+  const [isAdjustment, setIsAdjustment] = useState(false);
   const [bookedDates, setBookedDates] = useState([]);
 
-  const { room, loading, error } = UseFetch(
-    `property/${data?.bookingInfo?.data?._id}`
-  );
+  const { room } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
 
   useEffect(() => {
-    setBookedDates(room?.rentRooms);
+    setBookedDates(room?.property?.rentRooms);
   }, [room]);
   // Get Total Days this Year
   function getDaysInCurrentYear() {
@@ -117,13 +115,12 @@ const BookingDateUpdate = ({
 
     if (
       customerRent?.remainingDays &&
-      data?.bookingInfo?.data?.dAmountForDay &&
+      room?.property?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
-        () =>
-          data?.bookingInfo?.data?.dAmountForDay * customerRent?.remainingDays
+        () => room?.property?.dAmountForDay * customerRent?.remainingDays
       );
     } else if (
       customerRent?.months !== undefined &&
@@ -131,25 +128,23 @@ const BookingDateUpdate = ({
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.data?.dAmountForMonth * customerRent?.months +
-          data?.bookingInfo?.data?.dAmountForDay * customerRent?.days
+          room?.property?.dAmountForMonth * customerRent?.months +
+          room?.property?.dAmountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(
-        () => data?.bookingInfo?.data?.dAmountForYear * customerRent?.years
-      );
+      setSubtotal(() => room?.property?.dAmountForYear * customerRent?.years);
     }
     if (subTotal) {
-      const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
-      setVatTaxt(parseInt(getvatTax));
+      const getVatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
+      setVatTaxt(parseInt(getVatTax));
     }
     // minimum Payment
     if (
-      customerRent.remainingDays > 3 &&
+      customerRent.remainingDays &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.data?.dAmountForDay * 3;
+      const minimum = room?.property?.dAmountForDay;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
 
       setShowMinimumPayment(true);
@@ -304,8 +299,6 @@ const BookingDateUpdate = ({
     promos,
     data?.bookingInfo?.usedPromo?.promo,
     data?.bookingInfo?.promoCodeDiscount,
-    customerRent?.remainingDays,
-
     subTotal,
     vatTax,
     days,
@@ -316,9 +309,10 @@ const BookingDateUpdate = ({
     customerRent?.days,
     customerRent?.months,
     customerRent?.years,
-    data?.bookingInfo?.data?.dAmountForDay,
-    data?.bookingInfo?.data?.dAmountForMonth,
-    data?.bookingInfo?.data?.dAmountForYear,
+    customerRent?.remainingDays,
+    room?.property?.dAmountForDay,
+    room?.property?.dAmountForMonth,
+    room?.property?.dAmountForYear,
     data?.bookingInfo?.rentDate?.bookStartDate,
     data?.branchDetails?.foodAmount,
     room,
@@ -328,7 +322,7 @@ const BookingDateUpdate = ({
   ]);
 
   const bookingData = {
-    data: data?.bookingInfo?.data,
+    data: room,
     branch: data?.bookingInfo?.branch,
     subTotal: subTotal,
     foodAmount: isIncludeFood
@@ -363,6 +357,7 @@ const BookingDateUpdate = ({
     },
     adjustmentAmount: data?.adjustmentAmount,
   };
+  console.log({ payableAmount });
 
   const handleBookingDate = async () => {
     // If show minimum payment and full Payment Option
@@ -663,7 +658,7 @@ const BookingDateUpdate = ({
                 <div className="d-flex justify-content-between mt-2">
                   <p className="ml-5">
                     {" "}
-                    {isAdjustmen ? "Previous Adjustment" : "Discount"}{" "}
+                    {isAdjustment ? "Previous Adjustment" : "Discount"}{" "}
                   </p>
                   <p>-BDT {discountTk}</p>
                 </div>
