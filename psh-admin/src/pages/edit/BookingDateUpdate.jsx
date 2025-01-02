@@ -3,7 +3,7 @@ import React, { useEffect, useState } from "react";
 // import styles from "./BookingUpdate.module.css";
 import DatePicker from "react-datepicker";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import UseFetch from "../../hooks/useFetch";
 // import useExtraCharge from "../../hooks/useExtraCharge";
@@ -747,6 +747,7 @@ const BookingDateUpdate = ({
           </div>
         </Modal.Body>
       </Modal>
+      <ToastContainer className="toast-position" position="top-center" />
     </>
   );
 };

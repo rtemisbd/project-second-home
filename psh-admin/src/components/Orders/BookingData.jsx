@@ -289,6 +289,7 @@ const BookingData = ({
             <div>
               <BookingDatesExtend
                 data={booking}
+                refetch={refetch}
                 extraCharge={extraCharge}
                 showDurationModal={showDurationModal}
                 setShowDurationModal={setShowDurationModal}

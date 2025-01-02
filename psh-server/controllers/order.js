@@ -976,7 +976,7 @@ export const updateBooking = async (req, res, next) => {
     // res.status(200).json(updateOrder);
     res.status(200).json({
       status: "Success",
-      message: "Succefully Done",
+      message: "Successfully Done",
     });
   } catch (err) {
     next(err);
@@ -994,6 +994,6 @@ export const updateBookingOrder = catchAsync(async (req, res, next) => {
     success: true,
     data: result,
     message:
-      "Thank You! Your Booking Successfully Done, We will contact you very soon.",
+      "Thank You! Your Booking Has Been Successfully Updated, We will contact you very soon.",
   });
 });

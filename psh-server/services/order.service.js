@@ -316,34 +316,37 @@ const getOrderFromDB = async (queries) => {
 };
 
 const updateBookingStatusIntoDB = async (payload) => {
-  // update booking status
-  if (payload.body?.status) {
-    await OrderModel.findByIdAndUpdate(
-      payload.id,
-      { $set: { status: payload.body.status } },
-      { new: true }
-    );
-  }
+  const updateOrder = await OrderModel.findByIdAndUpdate(
+    payload.id,
+    payload.body,
+    { new: true }
+  );
 
   // find the booking
   const booking = await OrderModel.findById(payload.id);
-  if (booking?.status === "Approved") {
-    // create rentDate when booking status is approved
-    await RentRoom.create({
-      bookStartDate: booking?.bookingInfo?.rentDate?.bookStartDate,
-      bookEndDate: booking?.bookingInfo?.rentDate?.bookEndDate,
-      roomId: booking?.bookingInfo?.roomId,
-      roomNumber: booking?.bookingInfo?.roomNumber,
-      seatId: booking?.bookingInfo?.seatBooking?._id,
-      seatNumber: booking?.bookingInfo?.seatBooking?.seatNumber,
-      roomType: booking?.bookingInfo?.roomType,
-      bookingId: booking?._id,
-      branch: booking?.bookingInfo?.branch?._id,
-      userId: booking?.userId,
-    });
+  const newRent = {
+    bookStartDate: booking?.bookingInfo?.rentDate?.bookStartDate,
+    bookEndDate: booking?.bookingInfo?.rentDate?.bookEndDate,
+    roomId: booking?.bookingInfo?.roomId,
+    roomNumber: booking?.bookingInfo?.roomNumber,
+    seatId: booking?.bookingInfo?.seatBooking?._id,
+    seatNumber: booking?.bookingInfo?.seatBooking?.seatNumber,
+    roomType: booking?.bookingInfo?.roomType,
+    bookingId: booking?._id,
+    branch: booking?.bookingInfo?.branch?._id,
+    userId: booking?.userId,
+  };
+  if (booking?.status === "Approved" || booking?.status === "Processing") {
+    const existRent = await RentRoom.findOne({ bookingId: booking._id });
+    if (existRent) {
+      await RentRoom.findByIdAndUpdate(existRent._id, newRent, { new: true });
+    } else {
+      await RentRoom.create(newRent);
+    }
+
     // if promo code used then user property usedPromo update
     await User.updateOne(
-      { phone: booking?.email },
+      { phone: booking?.phone },
       {
         $push: {
           usedPromo: booking?.bookingInfo?.usedPromo,
@@ -367,13 +370,7 @@ const updateBookingStatusIntoDB = async (payload) => {
   if (booking?.status === "Canceled") {
     // delete rentDate when booking status is cancel
     await RentRoom.deleteOne({
-      // bookStartDate: booking?.bookingInfo?.rentDate.bookStartDate,
-      // bookEndDate: booking?.bookingInfo?.rentDate.bookEndDate,
-      // roomNumber: booking?.bookingInfo?.roomNumber,
-      // roomId: booking?.bookingInfo?.roomId,
-      // seatId: booking?.bookingInfo?.seatBooking?._id,
       bookingId: booking?._id,
-      // userId: booking?.userId,
     });
 
     // if have promo code then remove promo code
@@ -393,14 +390,8 @@ const updateBookingStatusIntoDB = async (payload) => {
     const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${booking?.bookingId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
 
     bookingSms(bookingMessage)
-      .then((response) => {
-        // console.log("Response from SMS API:", response);
-        // Handle response data as needed
-      })
-      .catch((error) => {
-        // console.error("Error while sending SMS:", error);
-        // Handle error
-      });
+      .then((response) => {})
+      .catch((error) => {});
   }
 };
 
