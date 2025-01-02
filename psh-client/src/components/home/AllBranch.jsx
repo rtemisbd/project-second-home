@@ -83,7 +83,7 @@ const AllBranch = () => {
                               style={{
                                 display: "flex",
                                 justifyContent: "start",
-                                width: "317px",
+                                width: "324px",
                                 height: "48px",
                                 padding: "44px 20px 0px 10px",
                                 alignItems: "center",
