@@ -9,6 +9,7 @@ import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
 import { FaWhatsapp } from "react-icons/fa";
 import BookingDatesExtend from "../../pages/edit/BookingDatesExtend";
+import BookingSeatDateExtend from "../../pages/edit/BookingSeatDateExtend";
 
 const BookingData = ({
   booking,
@@ -60,8 +61,10 @@ const BookingData = ({
   const handleSeatShow = (seatData) => {
     setShowSeatUpdateDuration(true);
     setDurationUpdateDataSeat(seatData);
+    setShowDurationModal(true);
   };
   const handleShowDetails = (detailsData) => {
+    setShowDurationModal(true);
     setShowDetails(true);
     setBookingDetails(detailsData);
   };
@@ -274,13 +277,20 @@ const BookingData = ({
           {booking?.bookingInfo?.roomType === "Shared Room" &&
           durationUpdateDataSeat ? (
             <div>
-              <BookingDateSetUpdate
+              <BookingSeatDateExtend
+                data={booking}
+                refetch={refetch}
+                extraCharge={extraCharge}
+                showDurationModal={showDurationModal}
+                setShowDurationModal={setShowDurationModal}
+              />
+              {/* <BookingDateSetUpdate
                 data={durationUpdateDataSeat}
                 refetch={refetch}
                 extraCharge={extraCharge}
                 setShowSeatUpdateDuration={setShowSeatUpdateDuration}
                 showSeatUpdateDuration={showSeatUpdateDuration}
-              />
+              /> */}
             </div>
           ) : (
             ""
