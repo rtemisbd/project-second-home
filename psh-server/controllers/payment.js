@@ -70,6 +70,10 @@ const call_back = async (req, res) => {
 
         dataForBooking.paymentType = "bkash";
         dataForBooking.status = "Approved";
+        dataForBooking.paymentNumber = data?.customerMsisdn;
+        dataForBooking.transactionId = data.trxID;
+        dataForBooking.receivedTk = parseInt(data?.amount);
+
         const result = await OrderModel.create([dataForBooking], { session });
 
         // Step 6: Create user transaction

@@ -20,32 +20,6 @@ const Invoice = () => {
   const location = useLocation();
   const userEndOrder = location.state;
   const [transactions] = useUserTransactions();
-
-  const [branch, SetBranch] = useState([]);
-  const [bookingBranch, SetBookingBranch] = useState({});
-
-  const [size, setSize] = useState(null);
-
-  const handleOpen = (value) => setSize(value);
-  console.log(transactions);
-  console.log(userEndOrder);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`${serverBaseUrl}/branch`);
-  //       SetBranch(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   const findOrderBranch = branch.find(
-  //     (branch) => branch?._id === userEndOrder?.bookingInfo?.branch
-  //   );
-  //   SetBookingBranch(findOrderBranch);
-  //   fetchData();
-  // }, [userEndOrder?.bookingInfo?.branch, branch]);
-
   const { pathname } = useLocation();
 
   useEffect(() => {
@@ -297,7 +271,7 @@ const Invoice = () => {
                     <div className="total-amount-left">
                       <p className=" font-bold mb-2 ">
                         <span className="text-[#35B0A7] p-1 rounded-sm">
-                          Payment Received By
+                          Payment History
                         </span>
                       </p>
                       <p>
@@ -310,14 +284,15 @@ const Invoice = () => {
                         <span className="font-bold mr-3">Account Number :</span>{" "}
                         {userEndOrder?.paymentNumber
                           ? userEndOrder.paymentNumber
-                          : transactions[length - 1]?.paymentNumber}
+                          : transactions[transactions?.length - 1]
+                              ?.paymentNumber}
                       </p>
 
                       <p>
                         <span className="font-bold mr-3">
                           Transaction ID <span className="ml-[10px]">:</span>
                         </span>{" "}
-                        {transactions[length - 1]?.transactionId}
+                        {transactions[transactions?.length - 1]?.transactionId}
                       </p>
                     </div>
                     <div>
@@ -348,7 +323,7 @@ const Invoice = () => {
                           </p>
                         </div>
                         <div className="flex justify-between">
-                          <p className="font-bold">Addmission Fee</p>
+                          <p className="font-bold">Admission Fee</p>
                           <p className="mx-5">:</p>
                           <p className="">
                             BDT{" "}
@@ -395,18 +370,13 @@ const Invoice = () => {
                         <div className="paid-amount flex justify-between">
                           <p className="font-bold text-[12px]">Paid</p>{" "}
                           <p className="ml-[55px]">:</p>
-                          {transactions?.length === 1 &&
-                          transactions[0]?.acceptableStatus !== "Accepted" ? (
-                            <p className="text-red-500">Pending</p>
-                          ) : (
+                          {transactions?.length >= 1 ? (
                             <p className=" text-[12px]">
                               BDT{" "}
-                              {userEndOrder?.receivedTk
-                                ? userEndOrder.receivedTk
-                                : transactions[
-                                    length - 1
-                                  ]?.receivedTk?.toLocaleString()}
+                              {userEndOrder?.transactions[0]?.totalReceiveTk}
                             </p>
+                          ) : (
+                            <p className="text-red-500">Pending</p>
                           )}
                         </div>
                         <hr className="mt-1" />
@@ -422,15 +392,10 @@ const Invoice = () => {
                           <p className="ml-[75px]">:</p>
                           <p className=" text-[12px]">
                             BDT{" "}
-                            {userEndOrder?.receivedTk
-                              ? userEndOrder?.payableAmount -
-                                userEndOrder.receivedTk
-                              : userEndOrder?.payableAmount -
-                                transactions[
-                                  length - 1
-                                ]?.receivedTk?.toLocaleString()}
-                            {/* {transactions[length - 1]?.payableAmount -
-                              transactions[length - 1]?.receivedTk}{" "} */}
+                            {userEndOrder?.payableAmount -
+                              userEndOrder?.transactions[0]?.totalReceiveTk}
+                            {/* {transactions[transactions?.length - 1]?.payableAmount -
+                              transactions[transactions?.length - 1]?.receivedTk}{" "} */}
                             {/* {userEndOrder?.dueAmount?.toLocaleString()} */}
                           </p>
                         </div>
