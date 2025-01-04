@@ -316,11 +316,7 @@ const getOrderFromDB = async (queries) => {
 };
 
 const updateBookingStatusIntoDB = async (payload) => {
-  const updateOrder = await OrderModel.findByIdAndUpdate(
-    payload.id,
-    payload.body,
-    { new: true }
-  );
+  await OrderModel.findByIdAndUpdate(payload.id, payload.body, { new: true });
 
   // find the booking
   const booking = await OrderModel.findById(payload.id);
@@ -356,17 +352,19 @@ const updateBookingStatusIntoDB = async (payload) => {
     );
 
     // Phone Sms for Confirmation
+    if (booking?.status === "Approved") {
+      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${booking?.bookingId}.%20Check-in%3A%${booking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${booking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
-    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${booking?.bookingId}.%20Check-in%3A%${booking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${booking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
-
-    bookingSms(bookingMessage)
-      .then((response) => {
-        // console.log("Response from SMS API:", response);
-      })
-      .catch((error) => {
-        // console.error("Error while sending SMS:", error);
-      });
+      bookingSms(bookingMessage)
+        .then((response) => {
+          // console.log("Response from SMS API:", response);
+        })
+        .catch((error) => {
+          // console.error("Error while sending SMS:", error);
+        });
+    }
   }
+
   if (booking?.status === "Canceled") {
     // delete rentDate when booking status is cancel
     await RentRoom.deleteOne({
