@@ -5,16 +5,18 @@ import {
   getOrder,
   getSingleOrder,
   updateBooking,
+  updateBookingOrder,
 } from "../controllers/order.js";
 
 import uploader from "../middleware/uploader.js";
 import auth from "../middleware/auth.js";
 import { ENUM_USER_ROLE } from "../enums/user.js";
+import bkash_auth from "../middleware/payment.js";
 
 const router = express.Router();
 
 // router.post("/", createOrder);
-router.post("/", uploader, createOrder);
+router.post("/", bkash_auth, createOrder);
 
 router.get(
   "/",
@@ -27,9 +29,11 @@ router.get(
   ),
   getOrder
 );
+// router.get("/", getOrder);
 router.route("/:user").get(getMyBooking);
 router.get("/:id", getSingleOrder);
 
-router.route("/:id").patch(updateBooking);
+// router.route("/:id").patch(updateBooking);
+router.route("/:id").patch(updateBookingOrder);
 
 export default router;

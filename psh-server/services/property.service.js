@@ -345,6 +345,7 @@ const getSinglePropertyFromDB = async (propertyId) => {
     roomType: 1,
     seatId: 1,
     seatNumber: 1,
+    bookingId: 1,
   });
   // console.log(rentRooms);
 

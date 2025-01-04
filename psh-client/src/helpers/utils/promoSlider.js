@@ -1,9 +1,9 @@
-export const propertySlider = (projects) => ({
-  perPage: 1,
+export const promoSlider = (projects) => ({
+  //   perPage: 1,
   perMove: 1,
-  gap: "20px",
+  gap: "24px",
   pagination: false,
-  // arrows: false,
+  // arrows: true,
   width: "100%",
   height: "auto",
   drag: true,
@@ -12,7 +12,6 @@ export const propertySlider = (projects) => ({
       perPage: 1,
       focus: "center",
       arrows: false,
-
       width: "100%",
       height: "auto",
     },
@@ -46,24 +45,20 @@ export const propertySlider = (projects) => ({
       arrows: false,
     },
     1024: {
-      perPage: 4,
-      arrows: projects?.length > 5 ? true : false,
+      perPage: 3,
+      arrows: projects?.length > 3 ? true : false,
     },
     1280: {
-      perPage: 4,
-      arrows: projects?.length > 5 ? true : false,
+      perPage: 3,
+      arrows: projects?.length > 3 ? true : false,
     },
     1880: {
-      perPage: 4,
-      arrows: projects?.length > 5 ? true : false,
+      perPage: 3,
+      arrows: projects?.length > 3 ? true : false,
     },
     2560: {
-      perPage: 4,
-      arrows: projects?.length > 5 ? true : false,
+      perPage: 3,
+      arrows: projects?.length > 3 ? true : false,
     },
-    // 2560: {
-    //   perPage: 3,
-    //   arrows: projects?.length > 3 ? true : false,
-    // },
   },
 });

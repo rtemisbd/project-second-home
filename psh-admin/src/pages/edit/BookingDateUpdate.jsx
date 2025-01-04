@@ -3,12 +3,13 @@ import React, { useEffect, useState } from "react";
 // import styles from "./BookingUpdate.module.css";
 import DatePicker from "react-datepicker";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import axios from "axios";
 import UseFetch from "../../hooks/useFetch";
 // import useExtraCharge from "../../hooks/useExtraCharge";
 import usePromo from "../../hooks/usePromo";
 import { Modal } from "react-bootstrap";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const BookingDateUpdate = ({
   data,
@@ -17,6 +18,8 @@ const BookingDateUpdate = ({
   setShowDurationModal,
   showDurationModal,
 }) => {
+  console.log(data);
+
   // const [extraCharge] = useExtraCharge();
   const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
   const [roomBookingDates, setRoomBookingDates] = useState([]);
@@ -38,20 +41,18 @@ const BookingDateUpdate = ({
   const [totalRentAmount, setTotalRentAmount] = useState(
     parseInt(data?.bookingInfo?.totalAmount)
   );
-  const [payableAmount, setPayableAmount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(data?.payableAmount);
   const [promos] = usePromo();
   const [userPromo, setUserPromo] = useState({});
   const [discountTk, setDisCountTk] = useState(0);
 
-  const [isAdjustmen, setIsAdjustment] = useState(false);
+  const [isAdjustment, setIsAdjustment] = useState(false);
   const [bookedDates, setBookedDates] = useState([]);
 
-  const { room, loading, error } = UseFetch(
-    `property/${data?.bookingInfo?.data?._id}`
-  );
+  const { room } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
 
   useEffect(() => {
-    setBookedDates(room?.rentRooms);
+    setBookedDates(room?.property?.rentRooms);
   }, [room]);
   // Get Total Days this Year
   function getDaysInCurrentYear() {
@@ -114,13 +115,12 @@ const BookingDateUpdate = ({
 
     if (
       customerRent?.remainingDays &&
-      data?.bookingInfo?.data?.dAmountForDay &&
+      room?.property?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
       setSubtotal(
-        () =>
-          data?.bookingInfo?.data?.dAmountForDay * customerRent?.remainingDays
+        () => room?.property?.dAmountForDay * customerRent?.remainingDays
       );
     } else if (
       customerRent?.months !== undefined &&
@@ -128,25 +128,23 @@ const BookingDateUpdate = ({
     ) {
       setSubtotal(
         () =>
-          data?.bookingInfo?.data?.dAmountForMonth * customerRent?.months +
-          data?.bookingInfo?.data?.dAmountForDay * customerRent?.days
+          room?.property?.dAmountForMonth * customerRent?.months +
+          room?.property?.dAmountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(
-        () => data?.bookingInfo?.data?.dAmountForYear * customerRent?.years
-      );
+      setSubtotal(() => room?.property?.dAmountForYear * customerRent?.years);
     }
     if (subTotal) {
-      const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
-      setVatTaxt(parseInt(getvatTax));
+      const getVatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
+      setVatTaxt(parseInt(getVatTax));
     }
     // minimum Payment
     if (
-      customerRent.remainingDays > 3 &&
+      customerRent.remainingDays &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.data?.dAmountForDay * 3;
+      const minimum = room?.property?.dAmountForDay;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
 
       setShowMinimumPayment(true);
@@ -301,8 +299,6 @@ const BookingDateUpdate = ({
     promos,
     data?.bookingInfo?.usedPromo?.promo,
     data?.bookingInfo?.promoCodeDiscount,
-    customerRent?.remainingDays,
-
     subTotal,
     vatTax,
     days,
@@ -313,9 +309,10 @@ const BookingDateUpdate = ({
     customerRent?.days,
     customerRent?.months,
     customerRent?.years,
-    data?.bookingInfo?.data?.dAmountForDay,
-    data?.bookingInfo?.data?.dAmountForMonth,
-    data?.bookingInfo?.data?.dAmountForYear,
+    customerRent?.remainingDays,
+    room?.property?.dAmountForDay,
+    room?.property?.dAmountForMonth,
+    room?.property?.dAmountForYear,
     data?.bookingInfo?.rentDate?.bookStartDate,
     data?.branchDetails?.foodAmount,
     room,
@@ -325,7 +322,7 @@ const BookingDateUpdate = ({
   ]);
 
   const bookingData = {
-    data: data?.bookingInfo?.data,
+    data: room,
     branch: data?.bookingInfo?.branch,
     subTotal: subTotal,
     foodAmount: isIncludeFood
@@ -360,6 +357,7 @@ const BookingDateUpdate = ({
     },
     adjustmentAmount: data?.adjustmentAmount,
   };
+  console.log({ payableAmount });
 
   const handleBookingDate = async () => {
     // If show minimum payment and full Payment Option
@@ -394,7 +392,7 @@ const BookingDateUpdate = ({
       if (showMiniumPayment) {
         try {
           const response = await axios.patch(
-            `https://api.psh.com.bd/api/order/${data._id}`,
+            `${baseUrl}/api/order/${data._id}`,
             bookingDataUpdate,
             {
               headers: {
@@ -411,7 +409,7 @@ const BookingDateUpdate = ({
       } else {
         try {
           const response = await axios.patch(
-            `https://api.psh.com.bd/api/order/${data._id}`,
+            `${baseUrl}/api/order/${data._id}`,
             bookingData,
             {
               headers: {
@@ -465,13 +463,11 @@ const BookingDateUpdate = ({
                   borderRadius: "5px",
                 }}
               >
-                <h2 className="text-left fw-bold" style={{ color: "#212A42" }}>
-                  {data?.name}
-                </h2>
-                <div className="d-flex ">
-                  <div>{/* <img src={brachLocationIcon} alt="" /> */}</div>
-                  <p className="text-black">{data.city}</p>
-                </div>
+                <h4 className="text-left " style={{ color: "#212A42" }}>
+                  {data?.bookingInfo?.roomName} -{" "}
+                  {data?.bookingInfo?.roomNumber}
+                </h4>
+
                 <p
                   className=" d-flex justify-content-start "
                   style={{
@@ -481,7 +477,7 @@ const BookingDateUpdate = ({
                     borderRadius: "5px",
                   }}
                 >
-                  {data?.bookingInfo?.roomType}
+                  {data?.bookingInfo?.roomType}-[{data?.branchDetails?.name}]
                 </p>
               </div>
               <div className="mx-2">
@@ -662,7 +658,7 @@ const BookingDateUpdate = ({
                 <div className="d-flex justify-content-between mt-2">
                   <p className="ml-5">
                     {" "}
-                    {isAdjustmen ? "Previous Adjustment" : "Discount"}{" "}
+                    {isAdjustment ? "Previous Adjustment" : "Discount"}{" "}
                   </p>
                   <p>-BDT {discountTk}</p>
                 </div>
@@ -751,6 +747,7 @@ const BookingDateUpdate = ({
           </div>
         </Modal.Body>
       </Modal>
+      <ToastContainer className="toast-position" position="top-center" />
     </>
   );
 };

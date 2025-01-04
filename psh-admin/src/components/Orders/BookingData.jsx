@@ -8,6 +8,8 @@ import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
 import { FaWhatsapp } from "react-icons/fa";
+import BookingDatesExtend from "../../pages/edit/BookingDatesExtend";
+import BookingSeatDateExtend from "../../pages/edit/BookingSeatDateExtend";
 
 const BookingData = ({
   booking,
@@ -18,56 +20,51 @@ const BookingData = ({
   page,
   size,
 }) => {
+  // For Status Modal
+  const [statusModalData, setStatusModalData] = useState(null);
+  const [showStatusModal, setShowStatusModal] = useState(false);
+  // For Payment Modal
+  const [paymentModalData, setPaymentModalData] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  // For Privet Room Modal
+  const [showDurationModal, setShowDurationModal] = useState(false);
+  const [durationUpdatePrivateRoom, setDurationUpdatePrivateRoom] =
+    useState(null);
+  const [isIncludeFood, setIsIncludeFood] = useState(false);
+  // For Seat Update Duration Modal
+  const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
+  const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
+  // Details Modal
+  const [bookingDetails, setBookingDetails] = useState(null);
+  const [showDetails, setShowDetails] = useState(false);
+
   // const formattedDate = new Date(booking?.createdAt).toLocaleString();
   const formattedTime = new Date(booking?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
-
-  // For Status Modal
-  const [statusModalData, setStatusModalData] = useState(null);
-
-  const [showStatusModal, setShowStatusModal] = useState(false);
 
   const handleStatusShow = (statusData) => {
     setShowStatusModal(true);
     setStatusModalData(statusData);
   };
 
-  // For Payment Modal
-  const [paymentModalData, setPaymentModalData] = useState(null);
-
-  const [showPaymentModal, setShowPaymentModal] = useState(false);
-
   const handlePaymentShow = (paymentData) => {
     setShowPaymentModal(true);
     setPaymentModalData(paymentData);
   };
-
-  // For Privet Room Modal
-  const [showDurationModal, setShowDurationModal] = useState(false);
-  const [durationUpdatePrivateRoom, setDurationUpdatePrivateRoom] =
-    useState(null);
 
   const handleDurationShow = (privateRoomData) => {
     setShowDurationModal(true);
     setDurationUpdatePrivateRoom(privateRoomData);
   };
 
-  const [isIncludeFood, setIsIncludeFood] = useState(false);
-
-  // For Seat Update Duration Modal
-  const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
-  const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
   const handleSeatShow = (seatData) => {
     setShowSeatUpdateDuration(true);
     setDurationUpdateDataSeat(seatData);
+    setShowDurationModal(true);
   };
-
-  // Details Modal
-  const [bookingDetails, setBookingDetails] = useState(null);
-  const [showDetails, setShowDetails] = useState(false);
-
   const handleShowDetails = (detailsData) => {
+    setShowDurationModal(true);
     setShowDetails(true);
     setBookingDetails(detailsData);
   };
@@ -80,7 +77,6 @@ const BookingData = ({
     <>
       <tr className="bookings_data">
         <td>{(page - 1) * size + index + 1}</td>
-
         <td
           style={{
             width: "140px",
@@ -103,7 +99,7 @@ const BookingData = ({
           {" "}
           {booking?.bookingInfo?.roomType === "Shared Room"
             ? booking?.bookingInfo?.seatBooking?.seatNumber
-            : booking?.bookingInfo?.data?.roomNumber}
+            : booking?.bookingInfo?.roomNumber}
         </td>
         <td
           style={{
@@ -149,6 +145,15 @@ const BookingData = ({
             {booking?.paymentStatus}
           </span>
         </td>
+
+        <td>
+          <p className="fw-bold">
+            Tk{" "}
+            {booking?.transactions[0]?.totalReceiveTk
+              ? booking?.transactions[0]?.totalReceiveTk?.toLocaleString()
+              : "---"}
+          </p>
+        </td>
         <td>
           {" "}
           <span
@@ -158,13 +163,13 @@ const BookingData = ({
             }}
           >
             {" "}
-            Tk {booking?.dueAmount?.toLocaleString()}
+            TK{" "}
+            {booking?.transactions[0]?.totalReceiveTk
+              ? booking?.payableAmount -
+                booking?.transactions[0]?.totalReceiveTk
+              : booking?.payableAmount}
+            {/* Tk {booking?.dueAmount?.toLocaleString()} */}
           </span>
-        </td>
-        <td>
-          <p className="fw-bold">
-            Tk {booking?.totalReceiveTk?.toLocaleString()}
-          </p>
         </td>
         <td>
           <div className=" d-flex ">
@@ -215,7 +220,7 @@ const BookingData = ({
             target="_blank"
             rel="noopener noreferrer"
           >
-            <button class="btn btn-light position-relative">
+            <button class="btn position-relative">
               <FaWhatsapp
                 style={{
                   width: "32px",
@@ -256,12 +261,8 @@ const BookingData = ({
               }`}
               type="button"
               className={`rounded ${
-                booking?.status === "Approved" ? "bg-white" : ""
+                booking?.status === "Approved" ? "bg-white" : "#35b0a7"
               }`}
-              style={{
-                backgroundColor:
-                  booking?.status === "Approved" ? "white" : "#35b0a7",
-              }}
               disabled={booking?.status === "Approved" ? true : false}
               onClick={() => {
                 booking?.bookingInfo?.roomType === "Shared Room"
@@ -276,20 +277,34 @@ const BookingData = ({
           {booking?.bookingInfo?.roomType === "Shared Room" &&
           durationUpdateDataSeat ? (
             <div>
-              <BookingDateSetUpdate
+              <BookingSeatDateExtend
+                data={booking}
+                refetch={refetch}
+                extraCharge={extraCharge}
+                showDurationModal={showDurationModal}
+                setShowDurationModal={setShowDurationModal}
+              />
+              {/* <BookingDateSetUpdate
                 data={durationUpdateDataSeat}
                 refetch={refetch}
                 extraCharge={extraCharge}
                 setShowSeatUpdateDuration={setShowSeatUpdateDuration}
                 showSeatUpdateDuration={showSeatUpdateDuration}
-              />
+              /> */}
             </div>
           ) : (
             ""
           )}
           {durationUpdatePrivateRoom && (
             <div>
-              <BookingDateUpdate
+              <BookingDatesExtend
+                data={booking}
+                refetch={refetch}
+                extraCharge={extraCharge}
+                showDurationModal={showDurationModal}
+                setShowDurationModal={setShowDurationModal}
+              />
+              {/* <BookingDateUpdate
                 data={durationUpdatePrivateRoom}
                 refetch={refetch}
                 extraCharge={extraCharge}
@@ -297,7 +312,7 @@ const BookingData = ({
                 setShowDurationModal={setShowDurationModal}
                 setIsIncludeFood={setIsIncludeFood}
                 isIncludeFood={isIncludeFood}
-              />
+              /> */}
             </div>
           )}
         </td>

@@ -15,7 +15,7 @@ const PaymentPage = () => {
     }
   };
   return (
-    <div className="my-72 flex justify-center items-center">
+    <div className="flex justify-center items-center min-h-[54vh]">
       <button onClick={pay}>Pay bkash</button>
     </div>
   );

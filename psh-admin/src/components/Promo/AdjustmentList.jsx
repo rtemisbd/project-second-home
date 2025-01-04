@@ -11,6 +11,7 @@ import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import LoadingState from "../../pages/LoadingState/LoadingState";
 import { Spinner } from "react-bootstrap";
 import AdjustmentTable from "./AdjustmentTable";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const AdjustmentList = () => {
   const dispatch = useDispatch();
@@ -50,7 +51,7 @@ const AdjustmentList = () => {
         });
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/adjustment?${queryParams.toString()}`,
+          `${baseUrl}/api/adjustment?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -73,6 +74,7 @@ const AdjustmentList = () => {
       refetchOnWindowFocus: false,
     }
   );
+  console.log(data);
 
   // handle Accept Adjustment
   const handleAccept = async (adjustment) => {
@@ -84,7 +86,7 @@ const AdjustmentList = () => {
     try {
       dispatch(placeLoadingShow(true));
       await axios.patch(
-        `https://api.psh.com.bd/api/adjustment/${adjustment._id}`,
+        `${baseUrl}/api/adjustment/${adjustment._id}`,
         adjustmentData,
         {
           headers: {
@@ -106,7 +108,7 @@ const AdjustmentList = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/adjustment/${id}`;
+      const url = `${baseUrl}/api/adjustment/${id}`;
       fetch(url, {
         method: "DELETE",
       })

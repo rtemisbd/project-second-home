@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
+import { baseUrl } from "../utils/getBaseURL";
 
 const usePromo = () => {
   const [promos, setPromos] = useState([]);
 
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/promo`)
+    fetch(`${baseUrl}/api/promo`)
       .then((res) => res.json())
       .then((data) => setPromos(data));
   }, []);

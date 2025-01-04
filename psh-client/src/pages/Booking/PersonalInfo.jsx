@@ -9,11 +9,6 @@ import { useLocation } from "react-router-dom";
 
 import cashImg from "../../assets/img/Cash-1.png";
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
-import MobileBanking from "../Payment/MobileBanking";
-import CashOn from "../Payment/CashOn";
-import CreditCard from "../Payment/CreditCard";
-import BankTransfer from "../Payment/BankTransfer";
-
 import useExtraCharge from "../../hooks/useExtraCharge";
 import "../Payment/PaymentToggle.css";
 import "./PersonalInfo.css";
@@ -23,6 +18,8 @@ import LoadingState from "../LoadingState/LoadingState";
 import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import MobileBanking from "../Payment/MobileBanking";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);
@@ -30,32 +27,27 @@ const PersonalInfo = () => {
   const dispatch = useDispatch();
   const [singleUser, setSingleUser] = useState({});
   const [bookingItem, setBookingItem] = useState({});
-  const [validityType, setValidityType] = useState();
-  const [showMobile, setShowMobile] = useState(true);
-  const [showPaymentArrive, setShowPaymentArrive] = useState(false);
-  const [showCreditCard, setShowCreditCard] = useState(false);
-  const [showBankTransfer, setShowBankTransfer] = useState(false);
-  const [bookingExtend, setBookingExtend] = useState(false);
-  const [birthDay, setBirthDay] = useState(new Date());
-  const [isActive1, setIsActive1] = useState(true);
-  const [isActive2, setIsActive2] = useState(false);
-  const [isActive3, setIsActive3] = useState(false);
-  const [isActive4, setIsActive4] = useState(false);
+  const [amountForPay, setAmountForPay] = useState(0);
+  const [isBlur, setIsBlur] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [selectMethod, setSelectMethod] = useState("app");
+  const [requiredMessage, setRequiredMessage] = useState(false);
+  const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
+  const [isLessAmount, setIsLessAmount] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const [scrollY, setScrollY] = useState(0);
+
+  const [paymentNumber, setPaymentNumber] = useState(null);
+  const [receivedTk, setReceivedTk] = useState(null);
+
+  const [dataForBooking, setDataForBooking] = useState({
+    arrivalTime: "",
+    bookingExtend: false,
+  });
+
   const [extraCharge] = useExtraCharge(bookingItem);
-
-  // get month Last Day
-  function getLastDayOfMonth() {
-    const today = new Date(bookingItem?.rentDate?.bookStartDate);
-    const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Months are zero-indexed, so we add 1.
-    const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
-    return lastDay;
-  }
-
-  let toggleClassCheck1 = isActive1 ? "active" : "";
-  let toggleClassCheck2 = isActive2 ? "active" : "";
-  let toggleClassCheck3 = isActive3 ? "active" : "";
-  let toggleClassCheck4 = isActive4 ? "active" : "";
+  const { pathname } = useLocation();
 
   // find branch
   useEffect(() => {
@@ -68,132 +60,119 @@ const PersonalInfo = () => {
       navigate("/");
     }
   }, []);
+
   // Get Single singleUser
   useEffect(() => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
       .then((res) => res.json())
       .then((data) => {
         setSingleUser(data);
-        setValidityType(data?.validityType ? data?.validityType : "Select One");
+        // setValidityType(data?.validityType ? data?.validityType : "Select One");
       });
   }, [user?._id]);
+
+  useEffect(() => {
+    if (singleUser) {
+      setDataForBooking((prevData) => ({
+        ...prevData,
+        userId: singleUser?._id || "",
+        fullName: singleUser?.firstName || "",
+        phone: singleUser?.phone || "",
+        address: singleUser?.userAddress || "",
+        validityType: singleUser?.validityType || "",
+        emergencyContactName: singleUser?.emergencyContact?.contactName || "",
+        emergencyRelationC: singleUser?.emergencyContact?.relation || "",
+        emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
+        arrivalTime: "09 AM To 10 AM",
+        bookingInfo: bookingItem,
+        branch: bookingItem?.branch?._id,
+        totalAmount: bookingItem?.totalAmount,
+        payableAmount: bookingItem?.payableAmount,
+        discount: bookingItem?.discount,
+      }));
+    }
+  }, [singleUser]);
+  console.log({ singleUser });
 
   const anchorClick = (e) => {
     anchorClickHandler(e);
   };
 
-  const bookingOrder = async (e) => {
-    e.preventDefault();
+  // get month Last Day
+  function getLastDayOfMonth() {
+    const today = new Date(bookingItem?.rentDate?.bookStartDate);
+    const year = today.getFullYear();
+    const month = today.getMonth() + 1; // Months are zero-indexed, so we add 1.
+    const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
+    return lastDay;
+  }
 
-    const address = e.target.address.value;
-    const birthDate = birthDay?.toISOString()?.split("T")[0];
-    const emergencyContactName = e.target.ecName.value;
-    const emergencyRelationC = e.target.ecRelation.value;
-    const emergencyContact = e.target.ecNumber.value;
-    const arrivalTime = e.target.arrivalTime.value;
-    const request = e.target.request.value;
-    const paymentType = e.target?.payment?.value;
-    const bkashNumber = e.target?.bkashNumber?.value;
-    const bkashTrx = e.target?.bkashTrx?.value;
-    const nagadNumber = e.target?.nagadNumber?.value;
-    const nagadTrx = e.target?.nagadTrx?.value;
-    const dutchNumber = e.target?.dutchNumber?.value;
-    const dutchTrx = e.target?.dutchTrx?.value;
-
-    const customerType = "";
-    const whichOfMonthPayment = "";
-    const adjustmentAmount = 0;
-    const receivedTk = Number(e.target?.receivedTk?.value)
-      ? Number(e.target?.receivedTk?.value)
-      : 0;
-    const totalReceiveTk = 0;
-    const paymentStatus = "Unpaid";
-    if (validityType === "Select One") {
-      return toast.error("Sorry! Please Select Verification Type");
+  const handlePaymentOption = () => {
+    console.log(dataForBooking);
+    if (agreeTerms) {
+      setIsBlur(true);
+      setShowPayment(true);
+    } else {
+      setRequiredMessage(true);
     }
-    if (
-      emergencyContact?.length !== 11 ||
-      emergencyContact?.substring(0, 2) !== "01"
-    ) {
-      return toast.error("Sorry! you gave a wrong phone number");
+  };
+
+  const handleUserInputAmount = (e) => {
+    const value = e.target.value;
+    if (value < bookingItem.minimumPayment) {
+      setIsLessAmount(true);
+    } else {
+      setIsLessAmount(false);
+      setAmountForPay(value);
     }
-    const formData = new FormData();
-    // Booking Data Append
+  };
 
-    formData.append("bookingInfo", JSON.stringify(bookingItem));
-    formData.append("fullName", singleUser?.firstName);
-    formData.append("userId", singleUser?._id);
-    formData.append("email", singleUser?.email);
-    formData.append("phone", singleUser?.phone);
-    formData.append("address", address);
-    formData.append("birthDate", birthDate);
-    formData.append("emergencyContactName", emergencyContactName);
-    formData.append("emergencyRelationC", emergencyRelationC);
-    formData.append("emergencyContact", emergencyContact);
-    formData.append("validityType", validityType);
-    formData.append("arrivalTime", arrivalTime);
-    formData.append("request", request);
-    formData.append("paymentType", paymentType);
-    formData.append(
-      "paymentNumber",
-      bkashNumber
-        ? bkashNumber
-        : "" || nagadNumber
-        ? nagadNumber
-        : "" || dutchNumber
-        ? dutchNumber
-        : ""
-    );
-    formData.append(
-      "transactionId",
-      bkashTrx
-        ? bkashTrx
-        : "" || nagadTrx
-        ? nagadTrx
-        : "" || dutchTrx
-        ? dutchTrx
-        : ""
-    );
-
-    formData.append("customerType", customerType);
-    formData.append("whichOfMonthPayment", whichOfMonthPayment);
-    formData.append("adjustmentAmount", adjustmentAmount);
-    formData.append("receivedTk", receivedTk);
-    formData.append("totalAmount", bookingItem?.totalAmount);
-    formData.append("payableAmount", bookingItem?.payableAmount);
-    formData.append("discount", bookingItem?.discount);
-    formData.append("totalReceiveTk", totalReceiveTk);
-    formData.append("foodAmount", bookingItem?.foodAmount);
-    formData.append("isIncludeFood", bookingItem?.isIncludeFood);
-    formData.append("dueAmount", bookingItem?.payableAmount - totalReceiveTk);
-    formData.append("paymentStatus", paymentStatus);
-    formData.append("bookingExtend", bookingExtend);
-
-    // save order information to the database
+  const handlePayByBkash = async (amount) => {
     try {
       dispatch(placeLoadingShow(true));
+      if (selectMethod === "manual") {
+        dataForBooking.receivedTk = receivedTk;
+        dataForBooking.paymentNumber = paymentNumber;
+      }
 
-      await axios.post(`${serverBaseUrl}/order`, formData);
-
-      toast.success("Booking successfully done");
+      const { data } = await axios.post(
+        `${serverBaseUrl}/order`,
+        { amount, dataForBooking, selectMethod },
+        { withCredentials: true }
+      );
+      // console.log(data?.data?.bkashURL);
+      window.location.href = await data?.data?.bkashURL;
       dispatch(placeLoadingShow(false));
+      toast.success("Booking successfully done");
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
 
-      navigate("/booking-now");
+      // navigate("/booking-now");
     } catch (error) {
-      dispatch(placeLoadingShow(false));
+      console.log(error);
 
+      dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");
     }
-    e.target.reset();
+  };
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    // if (name === "validityType" && value === "Select One") {
+    //   return toast.error("Sorry! Please Select Verification Type");
+    // }
+    // if (
+    //   (name === "contactNumber" && value?.length !== 11) ||
+    //   value?.substring(0, 2) !== "01"
+    // ) {
+    //   return toast.error("Sorry! you gave a wrong phone number");
+    // }
+    setDataForBooking((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
   };
 
   // handle Scrooled
-  const [isScrolled, setIsScrolled] = useState(false);
-
-  const [scrollY, setScrollY] = useState(0);
-
   const handleScroll = () => {
     setScrollY(window.scrollY);
   };
@@ -217,16 +196,21 @@ const PersonalInfo = () => {
   }, [scrollY]);
 
   // Page location top to path dependency
-  const { pathname } = useLocation();
-
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  console.log(dataForBooking);
+
   return (
     <div>
       <LoadingState />
-      <form onSubmit={bookingOrder} className="custom-container user_info_page">
+      <form
+        // onSubmit={bookingOrder}
+        className={`custom-container user_info_page ${
+          isBlur ? "blur-lg relative h-[100vh] md:h-[80vh] overflow-hidden" : ""
+        }`}
+      >
         <div
           className="flex items-center gap-x-3 mt-3  cursor-pointer"
           onClick={() => {
@@ -257,13 +241,14 @@ const PersonalInfo = () => {
                     type="text"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="firstName"
-                    defaultValue={singleUser ? singleUser.firstName : ""}
+                    defaultValue={singleUser ? singleUser?.firstName : ""}
                     required
-                    disabled={singleUser.firstName ? true : false}
+                    disabled={singleUser?.firstName ? true : false}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
+                    onChange={handleInputChange}
                   />
                 </div>
 
@@ -276,28 +261,30 @@ const PersonalInfo = () => {
                     name="phone"
                     required
                     disabled
-                    defaultValue={singleUser ? singleUser.phone : ""}
+                    defaultValue={singleUser ? singleUser?.phone : ""}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
+                    onChange={handleInputChange}
                   />
                 </div>
 
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Address">Address</label>
-
                   <input
                     type="text"
                     placeholder="Address "
                     className="text-black personal-info rounded 
-                  lg:w-[350px] md:w-[300px] sm:w-full"
+                        lg:w-[350px] md:w-[300px] sm:w-full"
                     name="address"
-                    defaultValue={singleUser ? singleUser.userAddress : ""}
+                    // defaultValue={singleUser ? singleUser?.userAddress : ""}
+                    value={dataForBooking.address}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
+                    onChange={handleInputChange}
                   />
                 </div>
 
@@ -305,16 +292,40 @@ const PersonalInfo = () => {
                   <label htmlFor="">Choose Your Identity Verification</label>
                   <select
                     className="personal-info lg:w-[350px] md:w-[300px] sm:w-full h-[45px] rounded"
-                    onChange={(e) => setValidityType(e.target.value)}
+                    name="validityType"
+                    onChange={handleInputChange}
                     defaultValue={singleUser?.validityType}
                     // disabled={singleUser?.validityType ? true : false}
-                    required={validityType === "Select One"}
+                    // required={validityType === "Select One"}
+                    required
                   >
                     <option selected>Select One</option>
-                    <option value="National ID Card">National ID Card</option>
-                    <option value="Passport">Passport</option>
-                    <option value="Driving Licence">Driving Licence</option>
-                    <option value="Birth Certificate">Birth Certificate</option>
+                    <option
+                      selected={singleUser?.validityType === "National ID Card"}
+                      value="National ID Card"
+                    >
+                      National ID Card
+                    </option>
+                    <option
+                      selected={singleUser?.validityType === "Passport"}
+                      value="Passport"
+                    >
+                      Passport
+                    </option>
+                    <option
+                      selected={singleUser?.validityType === "Driving Licence"}
+                      value="Driving Licence"
+                    >
+                      Driving Licence
+                    </option>
+                    <option
+                      selected={
+                        singleUser?.validityType === "Birth Certificate"
+                      }
+                      value="Birth Certificate"
+                    >
+                      Birth Certificate
+                    </option>
                   </select>
                 </div>
               </div>
@@ -335,12 +346,14 @@ const PersonalInfo = () => {
                     placeholder="Guardian Contact Name *"
                     type="text"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
-                    name="ecName"
+                    name="emergencyContactName"
                     defaultValue={singleUser?.emergencyContact?.contactName}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
+                    // onChange={(e) => setEmergencyContactName(e.target.value)}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
@@ -349,27 +362,31 @@ const PersonalInfo = () => {
                     placeholder="Relationship *"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     type="text"
-                    name="ecRelation"
+                    name="emergencyRelationC"
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
                     defaultValue={singleUser?.emergencyContact?.relation}
+                    // onChange={(e) => setEmergencyRelationC(e.target.value)}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Contact Number">Mobile Number</label>
                   <input
                     type="text"
-                    placeholder="Gardian Contact Number *"
+                    placeholder="Guardian Contact Number *"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
-                    name="ecNumber"
+                    name="contactNumber"
                     required
                     defaultValue={singleUser?.emergencyContact?.contactNumber}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
                     }}
+                    // onChange={(e) => setEmergencyContact(e.target.value)}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -388,6 +405,7 @@ const PersonalInfo = () => {
                     padding: "0px 10px",
                   }}
                   name="arrivalTime"
+                  onChange={handleInputChange}
                 >
                   <option disabled>Time of Arrival</option>
                   <option>09 AM To 10 AM</option>
@@ -404,6 +422,7 @@ const PersonalInfo = () => {
                     name="request"
                     cols="30"
                     rows="3"
+                    onChange={handleInputChange}
                   ></textarea>
                 </div>
               </div>
@@ -412,113 +431,15 @@ const PersonalInfo = () => {
                 meet your needs
               </p>
             </div>
-            {/* Payment Option */}
-            <h2 className="flex justify-left font-bold mb-5 text-xl mt-10">
-              Payment Options :
-            </h2>
-            <div className="text-left">
-              <span
-                className={`summary text-sm font-bold ${toggleClassCheck1} `}
-                onClick={() => {
-                  return (
-                    setShowMobile(true),
-                    setShowPaymentArrive(false),
-                    setShowCreditCard(false),
-                    setShowBankTransfer(false),
-                    setIsActive1(true),
-                    setIsActive2(false),
-                    setIsActive3(false),
-                    setIsActive4(false)
-                  );
-                }}
-                style={{
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                MOBILE BANKING
-              </span>
-              <span
-                className={`specification text-sm font-bold ${toggleClassCheck2}`}
-                onClick={() => {
-                  return (
-                    setShowMobile(false),
-                    setShowPaymentArrive(true),
-                    setShowCreditCard(false),
-                    setShowBankTransfer(false),
-                    setIsActive1(false),
-                    setIsActive2(true),
-                    setIsActive3(false),
-                    setIsActive4(false)
-                  );
-                }}
-                style={{
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                CASH
-              </span>
-              <span
-                className={`author text-sm font-bold ${toggleClassCheck3}`}
-                onClick={() => {
-                  return (
-                    setShowMobile(false),
-                    setShowPaymentArrive(false),
-                    setShowCreditCard(true),
-                    setShowBankTransfer(false),
-                    setIsActive1(false),
-                    setIsActive2(false),
-                    setIsActive3(true),
-                    setIsActive4(false)
-                  );
-                }}
-                style={{
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                CREDIT CARD
-              </span>
-              <span
-                className={`customer-review text-sm font-bold ${toggleClassCheck4}`}
-                onClick={() => {
-                  return (
-                    setShowMobile(false),
-                    setShowPaymentArrive(false),
-                    setShowCreditCard(false),
-                    setShowBankTransfer(true),
-                    setIsActive1(false),
-                    setIsActive2(false),
-                    setIsActive3(false),
-                    setIsActive4(true)
-                  );
-                }}
-                style={{
-                  border: "none",
-                  cursor: "pointer",
-                }}
-              >
-                BANK TRANSFER
-              </span>
-
-              {showMobile ? (
-                <MobileBanking bookingItem={bookingItem}></MobileBanking>
-              ) : null}
-              {showPaymentArrive ? <CashOn></CashOn> : null}
-              {showCreditCard ? <CreditCard></CreditCard> : null}
-              {showBankTransfer ? <BankTransfer></BankTransfer> : null}
-            </div>
-
-            <div className="flex items-center mt-20">
+            {/* <div className="flex items-start mt-20">
               <div>
                 <img src={cashImg} alt="" />
               </div>
-              <p className="text-lg text-[]">
+              <p className="text-lg ">
                 NOTE : You could pay directly in our structure with any kind of
                 credit card or cash.
               </p>
-            </div>
+            </div> */}
           </div>
 
           {/* Cart for Lg */}
@@ -1276,9 +1197,10 @@ const PersonalInfo = () => {
                   <div>
                     <input
                       type="checkbox"
-                      name="terms"
+                      name="bookingExtend"
                       id=""
-                      onClick={() => setBookingExtend(!bookingExtend)}
+                      value={true}
+                      onClick={handleInputChange}
                     />
                   </div>
                   <p className="text-left pl-3 text-[#35B0A7] font-bold text-[12px]">
@@ -1287,7 +1209,17 @@ const PersonalInfo = () => {
                 </div>
                 <div className="flex px-4 mt-1 text-black  mb-1">
                   <div>
-                    <input type="checkbox" name="terms" required id="" />
+                    <input
+                      type="checkbox"
+                      name="terms"
+                      required
+                      id="terms"
+                      // checked={agreeTerms}
+                      onChange={() => {
+                        setAgreeTerms(!agreeTerms);
+                        setRequiredMessage(false);
+                      }}
+                    />
                   </div>
                   <p className="text-left pl-3 text-[12px]">
                     I agree with our{" "}
@@ -1308,13 +1240,19 @@ const PersonalInfo = () => {
                     </Link>
                   </p>
                 </div>
-
-                <input
-                  type="submit"
+                {requiredMessage && (
+                  <p className="text-sm text-red-600 font-medium px-4">
+                    Please check the box for agree our Terms of use and Privacy
+                    Policy
+                  </p>
+                )}
+                <button
+                  type="button"
+                  onClick={handlePaymentOption}
                   className="text-[1rem] p-2 cursor-pointer bg-[#35B0A7] hover:bg-[#02625a] w-full text-white h-[35px]"
-                  value="Confirm Booking"
-                  // disabled
-                />
+                >
+                  Continue Payment
+                </button>
               </div>
               <div
                 style={{
@@ -1371,6 +1309,175 @@ const PersonalInfo = () => {
           toastOptions={{ position: "top-center" }}
         ></Toaster>
       </form>
+
+      {showPayment && (
+        <div
+          style={{
+            boxShadow:
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25) ",
+            borderRadius: "3px",
+            backgroundColor: "white",
+          }}
+          className="bg-white z-50 absolute top-[15%] lg:top-[20%] w-[96%] lg:w-[50%] left-2 md:left-4 lg:left-1/4 lg:right-1/2"
+        >
+          <div
+            style={{
+              backgroundColor: "#35B0A7",
+              height: "35px",
+              borderRadius: "3px 3px 0px 0px",
+            }}
+            className="flex justify-end items-center pr-2"
+          >
+            <button
+              onClick={() => {
+                setShowPayment(false);
+                setIsBlur(false);
+              }}
+            >
+              <IoCloseCircleOutline color="white" size={28} />
+            </button>
+          </div>
+          <div className="my-4 flex items-center mx-4">
+            <input
+              type="radio"
+              id="app"
+              name="method"
+              value="app"
+              defaultChecked
+              className=" mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+            <span className="text-[15px] mr-2">Pay By BKash</span>
+            <input
+              type="radio"
+              id="manual"
+              name="method"
+              value="manual"
+              // className="mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+              <span className="text-[15px]">Manual BKash</span>
+          </div>
+          <div>
+            {selectMethod === "app" ? (
+              <div className="my-4 flex justify-center mx-4">
+                <div>
+                  <h2 className="font-medium text-center mb-4">
+                    How much do you want to pay now?
+                  </h2>
+                  <div className="flex flex-wrap gap-4">
+                    <button
+                      onClick={() =>
+                        handlePayByBkash(bookingItem?.minimumPayment)
+                      }
+                      className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                    >
+                      Minimum - {bookingItem?.minimumPayment} ৳
+                    </button>
+                    <button
+                      onClick={() => handlePayByBkash(bookingItem?.totalAmount)}
+                      className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                    >
+                      Total Amount - {bookingItem?.totalAmount} ৳
+                    </button>
+                    <button
+                      onClick={() => setShowUserInputForPayment(true)}
+                      className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                    >
+                      Custom Amount
+                    </button>
+                  </div>
+                  {showUserInputForPayment && (
+                    <div>
+                      <div className="flex justify-center w-full my-4">
+                        <input
+                          type="number"
+                          placeholder="Enter your amount"
+                          className="border px-3 py-2 rounded-l-xl w-[66%] md:w-[80%] "
+                          name="amountForPay"
+                          onChange={handleUserInputAmount}
+                        />
+                        <button
+                          onClick={() => handlePayByBkash(amountForPay)}
+                          className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
+                          disabled={isLessAmount}
+                        >
+                          Pay Now
+                        </button>
+                      </div>
+                      {isLessAmount && (
+                        <p className="text-sm text-red-600">
+                          Please Pay Atleast ৳ {bookingItem.minimumPayment}
+                        </p>
+                      )}
+                    </div>
+                  )}
+                </div>
+              </div>
+            ) : (
+              <div className="mx-4 mb-4">
+                <p className="text-left font-bold my-2">
+                  bkash (Merchant) :{" "}
+                  {bookingItem?.branch?.branchBkashNumber
+                    ? bookingItem?.branch?.branchBkashNumber
+                    : ""}{" "}
+                </p>
+                <p>1. Select Make Payment</p>
+                <p>2. Enter The Merchant Number (01407001410)</p>
+                <p>
+                  3. Enter The Amount You Want To Pay{" "}
+                  <span className="text-[#35B0A7]">
+                    (minimum amount to pay : ৳{bookingItem?.minimumPayment})
+                  </span>
+                </p>
+                <p className="text-left my-2">
+                  Please fill the form to submit your booking
+                </p>
+
+                <div className="mt-3">
+                  <div>
+                    <p className="text-[1rem]">
+                      bKash Number (from which you make payment) :{" "}
+                    </p>
+                  </div>
+                  <div className="w-[250px]">
+                    <input
+                      className="mt-2 ps-2  border h-8 w-[250px]"
+                      name="bkashNumber"
+                      required
+                      type="text"
+                      placeholder="017xxxxxxxx"
+                      onChange={(e) => setPaymentNumber(e.target.value)}
+                    />
+                  </div>
+                </div>
+
+                <div className="mt-3">
+                  <div>
+                    <p>How much money have you send :</p>
+                  </div>
+                  <div className="w-[250px]">
+                    <input
+                      className=" mt-2 ps-2 border h-8 w-[250px]"
+                      name="receivedTk"
+                      required
+                      type="text"
+                      placeholder="Sending Amount"
+                      onChange={(e) => setReceivedTk(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <button
+                  onClick={() => handlePayByBkash(receivedTk)}
+                  className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
+                >
+                  Place Booking Now
+                </button>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

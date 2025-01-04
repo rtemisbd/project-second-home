@@ -4,6 +4,7 @@ import withReactContent from "sweetalert2-react-content";
 import { Toaster } from "react-hot-toast";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
+import { baseUrl } from "../../utils/getBaseURL";
 // import { isAlreadyBookings } from "../../utils/bookingChecking";
 
 const OrderStatusUpdate = ({
@@ -53,10 +54,7 @@ const OrderStatusUpdate = ({
         ...newPost,
       };
 
-      await axios.patch(
-        `https://api.psh.com.bd/api/order/${_id}`,
-        updatedStatus
-      );
+      await axios.patch(`${baseUrl}/api/order/${_id}`, updatedStatus);
       MySwal.fire("Updated", "success");
       refetch();
     } catch (err) {

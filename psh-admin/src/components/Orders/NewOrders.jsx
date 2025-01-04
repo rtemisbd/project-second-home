@@ -339,14 +339,14 @@ const NewOrders = () => {
                   style={{ height: "30px", width: "120px" }}
                   onChange={(e) => setBookingStatus(e.target.value)}
                   id="bookingStatusId"
-                  value={bookingStatus}
+                  // value={bookingStatus}
                 >
-                  <option>All</option>
+                  <option value="All">All</option>
 
-                  <option>Pending</option>
-                  <option>Approved</option>
-                  <option>Canceled</option>
-                  <option>Processing</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Canceled">Canceled</option>
+                  <option value="Processing">Processing</option>
                 </select>
               </div>
               <div>

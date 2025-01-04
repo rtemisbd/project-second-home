@@ -1,71 +1,135 @@
-import mongoose from "mongoose";
+import mongoose, { startSession } from "mongoose";
 import OrderModel from "../models/Order.js";
 import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import RentRoom from "../models/RentRoom.js";
+import { getValue, setValue } from "node-global-storage";
+import axios from "axios";
+import config from "../config/index.js";
+import { v4 as uuidv4 } from "uuid";
+import { bkash_headers } from "../utils/bkash_headers.js";
+import Transaction from "../models/Transaction.js";
+import { bookingSms } from "../SMS/BookingSms.js";
 
 const createOrderIntoDB = async (payload) => {
-  const {
-    email,
-    bookingInfo,
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData
-  } = payload;
+  const { amount, dataForBooking, selectMethod } = payload;
+  const session = await startSession();
+  try {
+    session.startTransaction();
 
-  const user = await User.findOne({ phone });
+    // Set user context
+    setValue("userId", dataForBooking?.userId);
 
-  const bookingInfoParse = JSON.parse(bookingInfo);
+    // Step 1: Update user information
+    const userUpdate = {
+      firstName: dataForBooking?.fullName,
+      phone: dataForBooking?.phone,
+      userAddress: dataForBooking?.address,
+      validityType: dataForBooking?.validityType,
+      emergencyContact: {
+        contactName: dataForBooking?.emergencyContactName,
+        relation: dataForBooking?.emergencyRelationC,
+        contactNumber: dataForBooking?.emergencyContact,
+      },
+    };
+    const updatedUser = await User.updateOne(
+      { phone: dataForBooking?.phone },
+      { $set: userUpdate },
+      { runValidators: true, session }
+    );
 
-  const branch = bookingInfoParse?.branch;
+    // Step 2: Generate booking ID
+    const generateId = await generateBookingId();
+    dataForBooking.bookingId = generateId;
 
-  const generateId = await generateBookingId();
+    if (selectMethod === "manual") {
+      const result = await createOrderByManualBkash(dataForBooking);
+      return result;
+    } else {
+      // Step 3: Create payment request via bKash
+      const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
+      const { data } = await axios.post(
+        config.bkash_create_payment_url,
+        {
+          mode: "0011",
+          payerReference: " ",
+          callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
+          amount,
+          currency: "BDT",
+          intent: "sale",
+          merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
+        },
+        {
+          headers: await bkash_headers(getValue("id_token")),
+        }
+      );
 
-  const newOrder = new OrderModel({
-    bookingInfo: bookingInfoParse,
-    bookingId: generateId,
-    email,
-    branch,
+      // Commit the transaction
+      await session.commitTransaction();
+      return { bkashURL: data.bkashURL };
+    }
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Error in createOrderIntoDB:", error);
+    return { error: error.message };
+  } finally {
+    session.endSession();
+  }
+};
 
-    fullName,
-    fatherName,
-    motherName,
-    phone,
-    address,
-    passport,
-    birthDate,
-    gender,
-    nid,
-    validityType,
-    validityNumber,
-    employeeStatus,
-    emplyeeIncome,
-    emergencyContactName,
-    emergencyRelationC,
-    emergencyContact,
-    ...bookingData,
-  });
-  newOrder.customerType = newOrder.bookingInfo.customerRent?.daysDifference
-    ? "Walk-in Guest"
-    : "Monthly";
+const createOrderByManualBkash = async (payload) => {
+  const session = await startSession();
+  try {
+    session.startTransaction();
 
-  // Booking Save to Database
-  const result = await newOrder.save();
-  return result;
+    const dataForBooking = payload;
+
+    dataForBooking.paymentType = "bkash";
+    const result = await OrderModel.create([dataForBooking], { session });
+
+    // Step 6: Create user transaction
+    await Transaction.create(
+      [
+        {
+          orderId: result[0]?._id,
+          branch: dataForBooking?.branch,
+          paymentDate: new Date(),
+          totalAmount: dataForBooking?.bookingInfo?.totalAmount,
+          payableAmount: dataForBooking?.payableAmount,
+          paymentType: "bkash",
+          receivedTk: dataForBooking?.receivedTk,
+          paymentNumber: dataForBooking?.paymentNumber,
+          // transactionId: data.trxID,
+          userId: getValue("userId"),
+          userPhone: dataForBooking?.phone,
+          userName: dataForBooking?.fullName,
+          acceptableStatus: "Pending",
+        },
+      ],
+      { session }
+    );
+
+    // Phone SMS for booking
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+
+    await bookingSms(bookingMessage);
+
+    // Commit the transaction
+    await session.commitTransaction();
+    return {
+      bkashURL: `${config.client_url}/success`,
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    console.error("Error during payment execution:", error);
+    return {
+      bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
+        error.message
+      )}`,
+    };
+  } finally {
+    session.endSession();
+  }
 };
 
 const getOrderFromDB = async (queries) => {
@@ -78,8 +142,8 @@ const getOrderFromDB = async (queries) => {
     paymentStatus,
     runningStatus,
     guestType,
-    // filteredName,
     filteredPhone,
+    // status
   } = queries;
   const today = new Date();
   const formattedDate = today.toISOString().split("T")[0];
@@ -97,8 +161,8 @@ const getOrderFromDB = async (queries) => {
     matchStage.paymentStatus = paymentStatus;
   if (bookingStatus && bookingStatus !== "All")
     matchStage.status = bookingStatus;
-  // if (filteredName && filteredName !== "") matchStage.fullName = filteredName;
-  if (filteredPhone && filteredPhone !== "") matchStage.phone = filteredPhone;
+  if (filteredPhone && filteredPhone !== "")
+    matchStage.phone = { $regex: `^${filteredPhone}` };
   if (fromDate && toDate) {
     matchStage.createdAt = {
       $gte: new Date(fromDate),
@@ -145,7 +209,8 @@ const getOrderFromDB = async (queries) => {
             },
           },
           { $unwind: "$branchDetails" },
-          // get transaction by order Id
+
+          //get transaction by order Id
           {
             $lookup: {
               from: "transactions",
@@ -250,26 +315,88 @@ const getOrderFromDB = async (queries) => {
   return { result, totalCount };
 };
 
-const getOrderByIdFromDB = async (id) => {
-  const rentRooms = await RentRoom.find({
-    roomId: propertyId,
-    bookingStatus: { $in: ["Booked", "Reserved"] },
-  }).select({
-    bookStartDate: 1,
-    bookEndDate: 1,
-    bookingStatus: 1,
-    roomType: 1,
-    seatId: 1,
-    seatNumber: 1,
-    roomNumber: 1,
-    roomId: 1,
-  });
-  const result = await OrderModel.findById(id);
+const updateBookingStatusIntoDB = async (payload) => {
+  const updateOrder = await OrderModel.findByIdAndUpdate(
+    payload.id,
+    payload.body,
+    { new: true }
+  );
 
-  return result;
+  // find the booking
+  const booking = await OrderModel.findById(payload.id);
+  const newRent = {
+    bookStartDate: booking?.bookingInfo?.rentDate?.bookStartDate,
+    bookEndDate: booking?.bookingInfo?.rentDate?.bookEndDate,
+    roomId: booking?.bookingInfo?.roomId,
+    roomNumber: booking?.bookingInfo?.roomNumber,
+    seatId: booking?.bookingInfo?.seatBooking?._id,
+    seatNumber: booking?.bookingInfo?.seatBooking?.seatNumber,
+    roomType: booking?.bookingInfo?.roomType,
+    bookingId: booking?._id,
+    branch: booking?.bookingInfo?.branch?._id,
+    userId: booking?.userId,
+  };
+  if (booking?.status === "Approved" || booking?.status === "Processing") {
+    const existRent = await RentRoom.findOne({ bookingId: booking._id });
+    if (existRent) {
+      await RentRoom.findByIdAndUpdate(existRent._id, newRent, { new: true });
+    } else {
+      await RentRoom.create(newRent);
+    }
+
+    // if promo code used then user property usedPromo update
+    await User.updateOne(
+      { phone: booking?.phone },
+      {
+        $push: {
+          usedPromo: booking?.bookingInfo?.usedPromo,
+        },
+      },
+      { new: true }
+    );
+
+    // Phone Sms for Confirmation
+
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${booking?.bookingId}.%20Check-in%3A%${booking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${booking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+
+    bookingSms(bookingMessage)
+      .then((response) => {
+        // console.log("Response from SMS API:", response);
+      })
+      .catch((error) => {
+        // console.error("Error while sending SMS:", error);
+      });
+  }
+  if (booking?.status === "Canceled") {
+    // delete rentDate when booking status is cancel
+    await RentRoom.deleteOne({
+      bookingId: booking?._id,
+    });
+
+    // if have promo code then remove promo code
+    await User.updateOne(
+      { phone: booking?.email },
+
+      {
+        $pull: {
+          usedPromo: {
+            promo: booking?.bookingInfo?.usedPromo?.promo,
+          },
+        },
+      }
+    );
+
+    // Phone Sms for Cancel
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${booking?.bookingId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
+
+    bookingSms(bookingMessage)
+      .then((response) => {})
+      .catch((error) => {});
+  }
 };
 
 export const orderServices = {
   createOrderIntoDB,
   getOrderFromDB,
+  updateBookingStatusIntoDB,
 };

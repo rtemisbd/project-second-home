@@ -32,8 +32,8 @@ const BookingsTable = ({
             <th>Discount</th>
             <th>Payable Tk</th>
             <th>Payment Status</th>
-            <th>Due Amount</th>
             <th>Total Receive</th>
+            <th>Due Amount</th>
             <th>Status</th>
             <th>Contact</th>
             <th>Details</th>

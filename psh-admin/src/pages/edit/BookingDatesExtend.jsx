@@ -1,41 +1,20 @@
-import React, { useEffect, useState } from "react";
-
-import DatePicker from "react-datepicker";
+import { useEffect, useState } from "react";
+import { Modal } from "react-bootstrap";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
-import { toast } from "react-toastify";
+import DatePicker from "react-datepicker";
 import UseFetch from "../../hooks/useFetch";
-import axios from "axios";
-import Modal from "react-bootstrap/Modal";
 import usePromo from "../../hooks/usePromo";
+import axios from "axios";
 import { baseUrl } from "../../utils/getBaseURL";
+import { toast } from "react-toastify";
 
-const BookingDateSetUpdate = ({
+const BookingDatesExtend = ({
   data,
   refetch,
   extraCharge,
-  showSeatUpdateDuration,
-  setShowSeatUpdateDuration,
+  showDurationModal,
+  setShowDurationModal,
 }) => {
-  // console.log(data);
-
-  const {
-    room,
-    loading,
-    error,
-    refetch: roomFetch,
-  } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
-  console.log(room);
-
-  // const [extraCharge, setExtraCharge] = useState([]);
-  const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
-  const [promos] = usePromo();
-  const [userPromo, setUserPromo] = useState({});
-  const [discountTk, setDisCountTk] = useState(0);
-  const [seatBookingDates, setSeatBookingDates] = useState([]);
-  const [isAdjustmen, setIsAdjustment] = useState(false);
-
-  const [showMiniumPayment, setShowMinimumPayment] = useState(false);
-
   const [startDate, setStartDate] = useState(
     data?.bookingInfo?.rentDate?.bookStartDate
   );
@@ -43,7 +22,42 @@ const BookingDateSetUpdate = ({
     data?.bookingInfo?.rentDate?.bookEndDate
   );
   const [customerRent, setCustomerRent] = useState({});
+  const [isAdjustment, setIsAdjustment] = useState(false);
+  const [isIncludeFood, setIsIncludeFood] = useState(
+    data?.bookingInfo?.isIncludeFood
+  );
+  const [userPromo, setUserPromo] = useState({});
 
+  const [payableAmount, setPayableAmount] = useState(data?.payableAmount || 0);
+  const [subTotal, setSubTotal] = useState(data?.bookingInfo?.subTotal || 0);
+  const [foodAmount, setFoodAmount] = useState(data?.bookingInfo?.foodAmount);
+  const [vatTax, setVatTax] = useState(
+    (subTotal * extraCharge[0]?.vatTax) / 100
+  );
+  const [addMissionFee, setAddMissionFee] = useState(0);
+  const [securityFee, setSecurityFee] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(
+    data?.bookingInfo?.totalAmount
+  );
+  const [discount, setDiscount] = useState(data?.discount || 0);
+  const [minimumPayment, setMinimumPayment] = useState(
+    data?.bookingInfo?.minimumPayment || 0
+  );
+  const [rentRooms, setRentRooms] = useState([]);
+
+  //fetch already booked dates for this specific room
+  const { room } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
+  const [promos] = usePromo();
+  const { bookingInfo } = data;
+
+  // set rent room collection
+  useEffect(() => {
+    setRentRooms(
+      room?.rentRooms?.filter((dates) => dates.bookingId !== data._id)
+    );
+  }, [data._id, room?.rentRooms]);
+
+  const handleDurationClose = () => setShowDurationModal(false);
   // Get Total Days this Year
   function getDaysInCurrentYear() {
     const currentDate = new Date(startDate);
@@ -74,42 +88,8 @@ const BookingDateSetUpdate = ({
   const months = Math.floor(remainingDays / getLastDayOfMonth());
   const days = remainingDays % getLastDayOfMonth();
 
-  // date handle
-  const [subTotal, setSubtotal] = useState(data?.bookingInfo?.subTotal);
-
-  const [vatTax, setVatTaxt] = useState(
-    (subTotal * extraCharge[0]?.vatTax) / 100
-  );
-
-  const [addMissionFee, setAddmissionFee] = useState(0);
-
-  const [securityFee, setSecurityFee] = useState(0);
-
-  const [minimumPayment, setMinimumPayment] = useState(0);
-
-  const [totalRentAmount, setTotalRentAmount] = useState(
-    parseInt(data?.bookingInfo?.totalAmount)
-  );
-  const [payableAmount, setPayableAmount] = useState(0);
-
+  //  Calculation Start
   useEffect(() => {
-    setIsIncludeFood(data?.isIncludeFood);
-  }, []);
-
-  useEffect(() => {
-    // If used promo this booking User then find-out promo
-    const promo = promos.find(
-      (promo) => promo?.promoCode === data?.bookingInfo?.usedPromo?.promo
-    );
-    setUserPromo(promo);
-    setVatTaxt((subTotal * extraCharge[0]?.vatTax) / 100);
-
-    // find Already Booking Dates
-    if (room) {
-      setSeatBookingDates(room?.rentRooms);
-    }
-
-    // Date Calculation Start
     if (years < 1 && months < 1) {
       setCustomerRent({ daysDifference, remainingDays });
     } else if (years < 1 && months > 0) {
@@ -119,343 +99,231 @@ const BookingDateSetUpdate = ({
     } else {
       setCustomerRent({ months, days, years, remainingDays });
     }
-    // Date Calculation End
 
+    // amount calculation
+    // subtotal
     if (
       customerRent?.remainingDays &&
-      data?.bookingInfo?.seatBooking?.dAmountForDay &&
       customerRent?.months === undefined &&
       customerRent?.years === undefined
     ) {
-      setSubtotal(
-        () =>
-          data?.bookingInfo?.seatBooking?.dAmountForDay *
-          customerRent?.remainingDays
-      );
-    } else if (
-      customerRent?.months !== undefined &&
-      customerRent?.years === undefined
-    ) {
-      setSubtotal(
-        () =>
-          data?.bookingInfo?.seatBooking?.dAmountForMonth *
-            customerRent?.months +
-          data?.bookingInfo?.seatBooking?.dAmountForDay * customerRent?.days
+      setSubTotal(room?.property?.dAmountForDay * customerRent?.remainingDays);
+    } else if (customerRent?.months >= 1 && customerRent?.years === undefined) {
+      setSubTotal(
+        room?.property?.dAmountForMonth * customerRent?.months +
+          room?.property?.dAmountForDay * customerRent?.days
       );
     } else {
-      setSubtotal(
-        () =>
-          data?.bookingInfo?.seatBooking?.dAmountForYear * customerRent?.years
-      );
+      setSubTotal(room?.property?.dAmountForYear * customerRent?.years);
     }
+
+    // set promo
+    const promo = promos.find(
+      (promo) => promo?.promoCode === data?.bookingInfo?.usedPromo?.promo
+    );
+    setUserPromo(promo);
+
+    // set vat
     if (subTotal) {
-      const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
-      setVatTaxt(parseInt(getvatTax));
+      const getVatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
+      setVatTax(parseInt(getVatTax));
     }
-    // minimum Payment
+
+    // set security, admission, minimum , food amount
     if (
-      customerRent.remainingDays > 3 &&
-      customerRent?.months === undefined &&
+      customerRent.remainingDays &&
+      (customerRent?.months === undefined || customerRent?.months <= 1) &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.seatBooking?.dAmountForDay * 3;
+      const minimum = data?.bookingInfo?.minimumPayment;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
-
-      setAddmissionFee(0);
-
+      setAddMissionFee(0);
       setSecurityFee(0);
-      setShowMinimumPayment(true);
     } else if (
       customerRent?.months >= 2 &&
       customerRent?.months < 6 &&
       customerRent?.years === undefined
     ) {
       setMinimumPayment(extraCharge[0]?.securityFee);
-
-      setAddmissionFee(extraCharge[0]?.admissionFee);
-
+      setAddMissionFee(extraCharge[0]?.admissionFee);
       setSecurityFee(extraCharge[0]?.securityFee);
-
-      setShowMinimumPayment(true);
     } else if (customerRent?.months >= 6 && customerRent?.years === undefined) {
       setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
-
-      setAddmissionFee(extraCharge[0]?.upto6MonthsAdmissionFee);
-
+      setAddMissionFee(extraCharge[0]?.upto6MonthsAdmissionFee);
       setSecurityFee(extraCharge[0]?.upto6MonthsSecurityFee);
-
-      setShowMinimumPayment(true);
     } else if (customerRent?.years !== undefined) {
       setMinimumPayment(extraCharge[0]?.for1YearSecurityFee);
-
-      setAddmissionFee(extraCharge[0]?.for1YearAdmissionFee);
-
+      setAddMissionFee(extraCharge[0]?.for1YearAdmissionFee);
       setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
-
-      setShowMinimumPayment(true);
     } else {
-      setMinimumPayment(0);
-      setShowMinimumPayment(false);
+      setMinimumPayment(data?.bookingInfo?.minimumPayment);
     }
 
-    // total Amount
+    // set food amount
+    if (isIncludeFood) {
+      setFoodAmount(
+        data?.branchDetails?.foodAmount * customerRent.remainingDays
+      );
+    } else {
+      setFoodAmount(0);
+    }
+    // set total amount
+    setTotalAmount(
+      subTotal + foodAmount + vatTax + addMissionFee + securityFee
+    );
+
+    // set discount
+
     if (customerRent?.months >= 2) {
-      const totalAmountForMonths =
-        parseInt(subTotal + vatTax + addMissionFee + securityFee) +
-        (isIncludeFood
-          ? data?.branchDetails?.foodAmount * customerRent.remainingDays
-          : 0);
-
-      setTotalRentAmount(parseInt(totalAmountForMonths));
-
       if (
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
         const discount = data?.bookingInfo?.promoCodeDiscount / 100;
-        setDisCountTk(
+        setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
-            ? totalAmountForMonths * discount
+            ? totalAmount * discount
             : data?.adjustmentAmount
         );
-
-        setPayableAmount(
-          parseInt(
-            customerRent?.remainingDays >= userPromo?.minimumDays
-              ? totalAmountForMonths - totalAmountForMonths * discount
-              : totalAmountForMonths
-          )
-        );
       } else {
-        setDisCountTk(data?.adjustmentAmount);
-        setPayableAmount(
-          parseInt(totalAmountForMonths - data?.adjustmentAmount)
-        );
+        setDiscount(data?.adjustmentAmount);
+
         setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
       }
-
-      // setminimumPayment(addMissionFee);
     } else if (
       customerRent?.months === 0 &&
       customerRent?.years !== undefined
     ) {
-      const totalAmountForMonths =
-        parseInt(subTotal + vatTax + addMissionFee + securityFee) +
-        (isIncludeFood
-          ? data?.branchDetails?.foodAmount * customerRent.remainingDays
-          : 0);
-
-      setTotalRentAmount(parseInt(totalAmountForMonths));
-
       if (
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
         const discount = data?.bookingInfo?.promoCodeDiscount / 100;
-        setDisCountTk(
+        setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
-            ? totalAmountForMonths * discount
+            ? totalAmount * discount
             : data?.adjustmentAmount
         );
-
-        setPayableAmount(
-          parseInt(
-            customerRent?.remainingDays >= userPromo?.minimumDays
-              ? totalAmountForMonths - totalAmountForMonths * discount
-              : totalAmountForMonths
-          )
-        );
       } else {
-        setDisCountTk(data?.adjustmentAmount);
-        setPayableAmount(
-          parseInt(totalAmountForMonths - data?.adjustmentAmount)
-        );
+        setDiscount(data?.adjustmentAmount);
         setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
       }
-      // setminimumPayment(addMissionFee);
     } else {
-      const totalAmountForDays =
-        parseInt(subTotal + vatTax) +
-        (isIncludeFood
-          ? data?.branchDetails?.foodAmount * customerRent.remainingDays
-          : 0);
-
-      setTotalRentAmount(parseInt(totalAmountForDays));
       if (
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
         const discount = data?.bookingInfo?.promoCodeDiscount / 100;
-        setDisCountTk(
+        setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
-            ? totalAmountForDays * discount
+            ? totalAmount * discount
             : data?.adjustmentAmount
         );
-
-        setPayableAmount(
-          parseInt(
-            customerRent?.remainingDays >= userPromo?.minimumDays
-              ? totalAmountForDays - totalAmountForDays * discount
-              : totalAmountForDays
-          )
-        );
       } else {
-        setDisCountTk(data?.adjustmentAmount);
-        setPayableAmount(parseInt(totalAmountForDays - data?.adjustmentAmount));
+        setDiscount(data?.adjustmentAmount);
         setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
       }
-      // setminimumPayment(0);
+    }
+    // set payable amount
+    if (discount > 0) {
+      setPayableAmount(totalAmount - discount);
+    } else {
+      setPayableAmount(totalAmount);
     }
   }, [
-    startDate,
-    endDate,
-    isIncludeFood,
-    data?.adjustmentAmount,
-    userPromo?.minimumDays,
-    promos,
-    data?.bookingInfo?.usedPromo?.promo,
-    data?.bookingInfo?.promoCodeDiscount,
-
-    customerRent?.remainingDays,
-
-    subTotal,
-    vatTax,
     days,
-    months,
-    years,
     daysDifference,
+    months,
     remainingDays,
+    years,
+    addMissionFee,
     customerRent?.days,
     customerRent?.months,
+    customerRent.remainingDays,
     customerRent?.years,
-    data?.bookingInfo?.rentDate?.bookStartDate,
-    data?.bookingInfo?.rentDate?.bookEndDate,
-    data?.bookingInfo?.seatBooking._id,
-    data?.bookingInfo?.seatBooking?.dAmountForDay,
-    data?.bookingInfo?.seatBooking?.dAmountForMonth,
-    data?.bookingInfo?.seatBooking?.dAmountForYear,
-    room,
-    addMissionFee,
+    discount,
+    foodAmount,
+    promos,
+    room?.property?.dAmountForDay,
+    room?.property?.dAmountForMonth,
+    room?.property?.dAmountForYear,
+    isIncludeFood,
+    data?.bookingInfo?.minimumPayment,
     securityFee,
-    extraCharge,
+    subTotal,
+    totalAmount,
+    userPromo?.minimumDays,
+    vatTax,
+    data?.adjustmentAmount,
+    data?.bookingInfo?.promoCodeDiscount,
+    data?.bookingInfo?.usedPromo?.promo,
     data?.branchDetails?.foodAmount,
-    // extraCharge[0]?.admissionFee,
-    // extraCharge[0]?.securityFee,
-    // extraCharge[0]?.vatTax,
+    extraCharge,
   ]);
 
-  const bookingData = {
-    roomId: data?.bookingInfo?.roomId,
-    branch: data?.bookingInfo?.branch,
-    customerType: data?.customerType,
-    whichOfMonthPayment: data?.whichOfMonthPayment,
-    seatBooking: data?.bookingInfo?.seatBooking,
-    subTotal: subTotal,
-    foodAmount: isIncludeFood
-      ? data?.branchDetails?.foodAmount * customerRent.remainingDays
-      : 0,
-    isIncludeFood: isIncludeFood,
-    promoCodeDiscount: data?.bookingInfo?.promoCodeDiscount,
-    discount: discountTk,
-    vatTax: vatTax,
-    totalAmount: totalRentAmount,
-    payableAmount: payableAmount,
-    dueAmount: payableAmount - data?.totalReceiveTk,
-    roomName: data?.bookingInfo?.roomName,
-    roomNumber: data?.bookingInfo?.roomNumber,
-    roomType: data?.bookingInfo?.roomType,
-    rentDate: {
-      bookStartDate: new Date(startDate)?.toISOString()?.split("T")[0],
-      bookEndDate: new Date(endDate)?.toISOString()?.split("T")[0],
-    },
-    customerRent: customerRent,
-    previousDate: {
-      bookStartDate: data?.bookingInfo?.rentDate?.bookStartDate,
-      bookEndDate: data?.bookingInfo?.rentDate?.bookEndDate,
-    },
+  // date format
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
 
-    usedPromo: {
-      promo: data?.bookingInfo?.usedPromo?.promo,
-      usedDate: data?.bookingInfo?.usedPromo?.usedDate,
-    },
-    adjustmentAmount: data?.adjustmentAmount,
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const year = String(date.getFullYear());
+
+    return `${year}-${month}-${day}`;
   };
 
+  // handle booking update
   const handleBookingDate = async () => {
-    // If show minimum payment and full Payment Option
+    const dataForBackend = {
+      ...data,
+      dueAmount: payableAmount - data?.transactions[0]?.totalReceiveTk,
+      discount: discount || 0,
+      payableAmount,
+      totalAmount,
+      bookingInfo: {
+        ...bookingInfo,
+        addMissionFee,
+        customerRent,
+        discount,
+        foodAmount,
+        fullPayment: payableAmount,
+        isIncludeFood,
+        minimumPayment,
+        payableAmount,
+        rentDate: {
+          bookStartDate: formatDate(startDate),
+          bookEndDate: formatDate(endDate),
+        },
+        securityFee,
+        subTotal,
+        totalAmount,
+        vatTax,
+      },
+    };
 
-    let bookingDataUpdate = {};
-    if (showMiniumPayment) {
-      bookingDataUpdate = {
-        ...bookingData,
-        addMissionFee: addMissionFee,
-        securityFee: securityFee,
-        minimumPayment: minimumPayment,
-      };
-    }
-
-    // Already Booking Handle
-    let bookings = seatBookingDates?.map((rent) => new Date(rent?.bookEndDate));
-    function validPeriod(startDate, endDate, bookings) {
-      let valid = true;
-
-      for (let i = 0; i < bookings?.length; i++) {
-        const date = bookings[i];
-        if (startDate <= date && date <= endDate) {
-          valid = false;
-          break;
+    try {
+      const response = await axios.patch(
+        `${baseUrl}/api/order/${data._id}`,
+        dataForBackend,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
-      }
+      );
 
-      return valid;
-    }
-
-    if (validPeriod(startDate, endDate, bookings)) {
-      if (showMiniumPayment) {
-        try {
-          const response = await axios.patch(
-            `${baseUrl}/api/order/${data._id}`,
-            bookingDataUpdate,
-            {
-              headers: {
-                "Content-Type": "application/json",
-              },
-            }
-          );
-
-          toast.success(response.data.message);
-          refetch();
-          roomFetch();
-        } catch (error) {
-          return toast.error(error.response?.data?.message);
-        }
-      } else {
-        try {
-          await axios.patch(`${baseUrl}/api/order/${data._id}`, bookingData, {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          });
-
-          toast.success("Success");
-          refetch();
-          roomFetch();
-        } catch (error) {
-          return toast.error(error?.response?.data?.message);
-        }
-      }
-    } else {
-      toast.error("Sorry ! You Select Already Booking Dates");
+      toast.success(response.data.message);
+      refetch();
+    } catch (error) {
+      return toast.error(error.response.data.message);
     }
   };
-
-  const handleClose = () => setShowSeatUpdateDuration(false);
 
   return (
     <>
-      <Modal show={showSeatUpdateDuration} onHide={handleClose}>
+      <Modal show={showDurationModal} onHide={handleDurationClose}>
         <Modal.Header closeButton>
-          <Modal.Title> Booking Update Duration</Modal.Title>
+          <Modal.Title>Booking Update Duration</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div className=" ml-3">
@@ -477,6 +345,7 @@ const BookingDateSetUpdate = ({
                   borderRadius: "3px 3px 0px 0px",
                 }}
               ></div>
+              {/* about booking name */}
               <div
                 className="px-3 py-2 m-3"
                 style={{
@@ -484,13 +353,11 @@ const BookingDateSetUpdate = ({
                   borderRadius: "5px",
                 }}
               >
-                <h2 className="text-left fw-bold" style={{ color: "#212A42" }}>
-                  {data?.name}
-                </h2>
-                <div className="d-flex ">
-                  <div>{/* <img src={brachLocationIcon} alt="" /> */}</div>
-                  <p className="text-black">{data.city}</p>
-                </div>
+                <h4 className="text-left " style={{ color: "#212A42" }}>
+                  {data?.bookingInfo?.roomName} -{" "}
+                  {data?.bookingInfo?.roomNumber}
+                </h4>
+
                 <p
                   className=" d-flex justify-content-start "
                   style={{
@@ -500,9 +367,10 @@ const BookingDateSetUpdate = ({
                     borderRadius: "5px",
                   }}
                 >
-                  {data?.bookingInfo?.roomType}
+                  {data?.bookingInfo?.roomType}-[{data?.branchDetails?.name}]
                 </p>
               </div>
+              {/* day month year */}
               <div className="mx-2">
                 <ul className="d-flex justify-content-evenly list-unstyled calcaulation">
                   <li className=" border py-1">
@@ -551,7 +419,7 @@ const BookingDateSetUpdate = ({
                   </li>
                 </ul>
               </div>
-
+              {/* check in check out */}
               <div className="d-flex justify-content-between gap-3 total-area text-black px-2 mt-3">
                 <div>
                   <p className="text-left font-bold mb-1">Check-In</p>
@@ -560,7 +428,7 @@ const BookingDateSetUpdate = ({
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => setStartDate(date)}
                     // showIcon
-                    excludeDateIntervals={seatBookingDates?.map((rent) => {
+                    excludeDateIntervals={rentRooms?.map((rent) => {
                       return {
                         start: subDays(new Date(rent?.bookStartDate), 1),
                         end: addDays(new Date(rent?.bookEndDate), 0),
@@ -570,13 +438,13 @@ const BookingDateSetUpdate = ({
                   />
                 </div>
                 <div>
-                  <p className="text-left  font-bold mb-1">Check-Out</p>
+                  <p className="text-left font-bold mb-1">Check-Out</p>
                   <DatePicker
                     selected={new Date(endDate)}
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => setEndDate(date)}
                     // showIcon
-                    excludeDateIntervals={seatBookingDates?.map((rent) => {
+                    excludeDateIntervals={rentRooms?.map((rent) => {
                       return {
                         start: subDays(new Date(rent?.bookStartDate), 1),
                         end: addDays(new Date(rent?.bookEndDate), 0),
@@ -586,6 +454,7 @@ const BookingDateSetUpdate = ({
                   />
                 </div>
               </div>
+              {/* total duration */}
               <div className="d-flex justify-content-between mt-5 justify-items-center px-5">
                 <p className="text-left fw-bold mb-1 ">Total Duration = </p>
                 <div>
@@ -612,7 +481,7 @@ const BookingDateSetUpdate = ({
                   />
                 </div>
               </div>
-
+              {/* calculation */}
               <div className="text-black pr-3 mt-3 fw-medium">
                 <div className="d-flex justify-content-between ">
                   <div className="ml-5 ">
@@ -625,16 +494,11 @@ const BookingDateSetUpdate = ({
                     <div className="ml-5 ">
                       <p>Food</p>
                     </div>
-                    <p>
-                      BDT{" "}
-                      {data?.branchDetails?.foodAmount *
-                        customerRent?.remainingDays}
-                    </p>
+                    <p>BDT {foodAmount}</p>
                   </div>
                 ) : (
                   ""
                 )}
-
                 <div className="d-flex justify-content-between">
                   <div className="ml-5 ">
                     <p>VAT</p>
@@ -647,12 +511,7 @@ const BookingDateSetUpdate = ({
                     <div className="ml-5 ">
                       <p>Admission Fee</p>
                     </div>
-                    <p>
-                      BDT{" "}
-                      {customerRent.months >= 2 || customerRent.years
-                        ? addMissionFee
-                        : 0}
-                    </p>
+                    <p>BDT {addMissionFee}</p>
                   </div>
                 ) : (
                   ""
@@ -662,12 +521,7 @@ const BookingDateSetUpdate = ({
                     <div className="ml-5">
                       <p>Security Fee</p>
                     </div>
-                    <p>
-                      BDT{" "}
-                      {customerRent.months >= 2 || customerRent.years
-                        ? securityFee
-                        : 0}
-                    </p>
+                    <p>BDT {securityFee}</p>
                   </div>
                 ) : (
                   ""
@@ -676,21 +530,21 @@ const BookingDateSetUpdate = ({
                 <hr className="mt-3 ml-5 text-black" />
                 <div className="d-flex justify-content-between mt-2">
                   <p className="ml-5">Total Amount</p>
-                  <p>BDT {totalRentAmount}</p>
+                  <p>BDT {totalAmount}</p>
                 </div>
+
                 <div className="d-flex justify-content-between mt-2">
                   <p className="ml-5">
                     {" "}
-                    {isAdjustmen ? "Previous Adjustment" : "Discount"}{" "}
+                    {isAdjustment ? "Previous Adjustment" : "Discount"}{" "}
                   </p>
-                  <p>-BDT {discountTk}</p>
+                  <p>- BDT {discount}</p>
                 </div>
                 <div className="d-flex justify-content-between mt-2">
                   <p className="ml-5">Payable Amount</p>
                   <p>BDT {payableAmount}</p>
                 </div>
-
-                {(customerRent?.months >= 1 &&
+                {(customerRent?.months >= 2 &&
                   customerRent?.years === undefined) ||
                 (customerRent?.months === 0 &&
                   customerRent?.years !== undefined) ? (
@@ -706,7 +560,7 @@ const BookingDateSetUpdate = ({
 
                 <div
                   className={`d-flex justify-content-between ${
-                    (customerRent?.months >= 1 &&
+                    (customerRent?.months >= 2 &&
                       customerRent?.years === undefined) ||
                     (customerRent?.months === 0 && customerRent?.years >= 1)
                       ? "d-none"
@@ -718,32 +572,33 @@ const BookingDateSetUpdate = ({
                   </div>
                   <p> BDT {minimumPayment}</p>
                 </div>
-                {data?.branchDetails?.foodAmount === 0 ? (
-                  ""
-                ) : (
-                  <div className="d-flex gap-3 ms-3">
-                    <input
-                      style={{
-                        cursor: "pointer",
-                      }}
-                      type="checkbox"
-                      name="terms"
-                      id="food"
-                      defaultChecked={isIncludeFood}
-                      onClick={() => setIsIncludeFood(!isIncludeFood)}
-                    />
-                    <label
-                      htmlFor="food"
-                      style={{
-                        cursor: "pointer",
-                        marginTop: "8px",
-                      }}
-                    >
-                      Including Foods (2 Meals in a Day)
-                    </label>
-                  </div>
-                )}
               </div>
+              {data?.branchDetails?.foodAmount === 0 ? (
+                ""
+              ) : (
+                <div className="d-flex gap-3 ms-3">
+                  <input
+                    style={{
+                      cursor: "pointer",
+                    }}
+                    type="checkbox"
+                    name="terms"
+                    id="food"
+                    defaultChecked={isIncludeFood}
+                    onClick={() => setIsIncludeFood(!isIncludeFood)}
+                  />
+                  <label
+                    htmlFor="food"
+                    style={{
+                      cursor: "pointer",
+                      marginTop: "8px",
+                    }}
+                  >
+                    Including Foods (2 Meals in a Day)
+                  </label>
+                </div>
+              )}
+
               <div
                 className={` d-flex justify-content-center justify-items-center mt-5 `}
                 style={{
@@ -765,6 +620,8 @@ const BookingDateSetUpdate = ({
                     Update Booking Duration
                   </button>
                 </div>
+
+                {/* end */}
               </div>
             </div>
           </div>
@@ -773,4 +630,5 @@ const BookingDateSetUpdate = ({
     </>
   );
 };
-export default BookingDateSetUpdate;
+
+export default BookingDatesExtend;

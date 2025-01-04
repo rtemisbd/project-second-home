@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { Link } from "react-router-dom";
 import {
   Card,
@@ -6,91 +6,40 @@ import {
   CardBody,
   Typography,
 } from "@material-tailwind/react";
-import Slider from "react-slick";
-
-import UseFetch from "../../hooks/useFetch";
-import LeftArrow from "../../assets/img/arrow2.png";
-import RightArrow from "../../assets/img/arrow1.png";
 import "./styles/AllBranch.css";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+
+import { branchSlider } from "../../helpers/utils/branchSlider";
+import UseFetch from "../../hooks/useFetch";
 
 const AllBranch = () => {
   const { data } = UseFetch(`branch`);
+  const splideRef = useRef(null); // Ref to control Splide instance
+  const [activeIndex, setActiveIndex] = useState(0);
 
-  const [lastSlideIndex, setLastSlideIndex] = useState(0);
-  const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === 0) {
-      return null;
-    } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
+  const totalSlides = data.length;
+
+  // Update active index on slide movement
+  const handleMove = (splide) => {
+    setActiveIndex(splide.index);
+  };
+
+  // Handle previous button click
+  const handlePrevClick = () => {
+    if (splideRef.current) {
+      splideRef.current.splide.go("<");
     }
   };
-  const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 3) {
-      return null;
-    } else {
-      return <img src={RightArrow} alt="nextArrow" {...props} />;
+
+  // Handle next button click
+  const handleNextClick = () => {
+    if (splideRef.current) {
+      splideRef.current.splide.go(">");
     }
   };
-  const settings = {
-    dots: false,
-    slidesToShow: 4,
-    slidesToScroll: 1,
-    initialSlide: 0,
-    afterChange: (index) => {
-      setLastSlideIndex(index);
-    },
-    adaptiveHeight: true,
-    infinite: false,
-    speed: 400,
-    arrows: data?.length > 4 ? true : false,
-    autoplay: false,
-    swipeToSlide: true,
-    prevArrow: <SlickArrowLeft />,
-    nextArrow: <SlickArrowRight />,
-    className: "mx-[-15px]",
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
 
-          dots: false,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 800,
-        settings: {
-          slidesToShow: 2,
-
-          initialSlide: 2,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          className: `center ms-[-8px] ${
-            lastSlideIndex >= data?.length - 1 ? "only-forMobile" : ""
-          }`,
-          afterChange: (index) => {
-            setLastSlideIndex(index);
-          },
-          centerMode: true,
-          slidesToShow: 1,
-
-          infinite: false,
-          arrows: false,
-
-          speed: 400,
-          cssEase: "ease-out",
-          swipeToSlide: true,
-        },
-      },
-    ],
-  };
+  const isFirstSlide = activeIndex === 0;
+  const isLastSlide = activeIndex === totalSlides - 1;
 
   return (
     <div>
@@ -103,62 +52,92 @@ const AllBranch = () => {
             <span className="mt-2 text-[1rem]">
               Our available Branches for your stay
             </span>
-            <div className="all_branch mt-4 slider_margin card-slider">
-              <Slider {...settings}>
-                {data?.map((item) => (
-                  <div className="items-start" key={item?._id}>
-                    <Link to={`/branch/${item?.name}`}>
-                      <Card
-                        shadow={false}
-                        className="relative grid h-[12rem] items-end justify-center overflow-hidden text-center"
-                      >
-                        <CardHeader
-                          floated={false}
+            <div className="all_branch slider_margin  pl-12 md:pl-0 relative">
+              {/* Splide Slider */}
+              <Splide
+                ref={splideRef}
+                options={branchSlider(data)} // Options from utils
+                onMove={handleMove} // Update active slide on move
+              >
+                {data.map((item) => (
+                  <SplideSlide key={item?._id}>
+                    <div className="items-start" key={item?._id}>
+                      <Link to={`/branch/${item?.name}`}>
+                        <Card
                           shadow={false}
-                          color="transparent"
-                          className={`absolute inset-0 m-0 rounded-none bg-cover bg-center`}
-                          style={{
-                            backgroundImage: `url('${item.photos[0]}')`,
-                          }}
+                          className="relative grid h-[12rem] items-end justify-center overflow-hidden text-center"
                         >
-                          <div className="to-bg-black-10 absolute inset-0 bg-gradient-to-t from-black/80 " />
-                        </CardHeader>
-                        <CardBody className="relative ">
-                          <div
+                          <CardHeader
+                            floated={false}
+                            shadow={false}
+                            color="transparent"
+                            className={`absolute inset-0 m-0 rounded-none bg-cover bg-center`}
                             style={{
-                              display: "flex",
-                              justifyContent: "start",
-                              width: "317px",
-                              height: "48px",
-                              padding: "44px 20px 0px 10px",
-                              alignItems: "center",
-                              flexShrink: 0,
-                              background: "rgba(39, 179, 177, 0.80)",
-                              marginBottom: "-24px",
+                              backgroundImage: `url('${item.photos[0]}')`,
                             }}
                           >
-                            <i
-                              className="fa-solid fa-location-dot text-white me-3 mt-1"
+                            <div className="to-bg-black-10 absolute inset-0 bg-gradient-to-t from-black/80 " />
+                          </CardHeader>
+                          <CardBody className="relative ">
+                            <div
                               style={{
-                                marginBottom: "42px",
-                              }}
-                            ></i>
-                            <Typography
-                              variant="h5"
-                              className="mb-0 text-white text-[1rem] "
-                              style={{
-                                marginBottom: "35px",
+                                display: "flex",
+                                justifyContent: "start",
+                                width: "324px",
+                                height: "48px",
+                                padding: "44px 20px 0px 10px",
+                                alignItems: "center",
+                                flexShrink: 0,
+                                background: "rgba(39, 179, 177, 0.80)",
+                                marginBottom: "-24px",
                               }}
                             >
-                              {item.name}
-                            </Typography>
-                          </div>
-                        </CardBody>
-                      </Card>
-                    </Link>
-                  </div>
+                              <i
+                                className="fa-solid fa-location-dot text-white me-3 mt-1"
+                                style={{
+                                  marginBottom: "42px",
+                                }}
+                              ></i>
+                              <Typography
+                                variant="h5"
+                                className="mb-0 text-white text-[1rem] "
+                                style={{
+                                  marginBottom: "35px",
+                                }}
+                              >
+                                {item.name}
+                              </Typography>
+                            </div>
+                          </CardBody>
+                        </Card>
+                      </Link>
+                    </div>
+                  </SplideSlide>
                 ))}
-              </Slider>
+              </Splide>
+
+              {/* Custom Arrow Buttons */}
+              <div className="absolute top-1/2 w-full flex justify-between items-center z-50 text-xl font-bold">
+                {/* Left Arrow */}
+                {!isFirstSlide && (
+                  <button
+                    className="splide__arrow splide__arrow--prev "
+                    onClick={handlePrevClick}
+                  >
+                    {"<"}
+                  </button>
+                )}
+
+                {/* Right Arrow */}
+                {!isLastSlide && (
+                  <button
+                    className="splide__arrow splide__arrow--next"
+                    onClick={handleNextClick}
+                  >
+                    {">"}
+                  </button>
+                )}
+              </div>
             </div>
           </div>
         </div>

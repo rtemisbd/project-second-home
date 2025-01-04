@@ -3,14 +3,12 @@ import { getValue, setValue } from "node-global-storage";
 import { v4 as uuidv4 } from "uuid";
 import Payment from "../models/payment.js";
 import config from "../config/index.js";
-
-// Function to generate headers for bkash API
-const bkash_headers = async () => ({
-  "Content-Type": "application/json",
-  Accept: "application/json",
-  authorization: getValue("id_token"),
-  "x-app-key": config.bkash_api_key,
-});
+import { bkash_headers } from "../utils/bkash_headers.js";
+import { startSession } from "mongoose";
+import { bookingSms } from "../SMS/BookingSms.js";
+import OrderModel from "../models/Order.js";
+import Transaction from "../models/Transaction.js";
+import RentRoom from "../models/RentRoom.js";
 
 // Function to create a payment
 const payment_create = async (req, res) => {
@@ -25,7 +23,7 @@ const payment_create = async (req, res) => {
       {
         mode: "0011",
         payerReference: " ",
-        callbackURL: "http://localhost:8000/api/bkash/payment/callback",
+        callbackURL: `${config.server_url}/bkash/payment/callback`,
         amount,
         currency: "BDT",
         intent: "sale",
@@ -41,46 +39,103 @@ const payment_create = async (req, res) => {
     return res.status(401).json({ error: error.message });
   }
 };
+// customerMsisdn
 
 // Callback function after payment
 const call_back = async (req, res) => {
-  const { paymentID, status } = req.query;
+  const { paymentID, status, callbackData } = req.query;
 
   if (status === "cancel" || status === "failure") {
-    return res.redirect(`http://localhost:5173/error?message=${status}`);
+    return res.redirect(`${config.client_url}/error?message=${status}`);
   }
 
   if (status === "success") {
+    const session = await startSession();
     try {
+      session.startTransaction();
+
+      // Step 4: Execute payment via bKash
+
       const { data } = await axios.post(
         config.bkash_execute_payment_url,
         { paymentID },
         {
-          headers: await bkash_headers(),
+          headers: await bkash_headers(getValue("id_token")),
         }
       );
 
       if (data && data.statusCode === "0000") {
-        // Using getValue to retrieve userId from global storage
-        await Payment.create({
-          userId: getValue("userId"),
-          paymentID,
-          trxID: data.trxID,
-          date: data.paymentExecuteTime,
-          amount: parseInt(data.amount),
-        });
+        // Step 5: Create order
+        const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
+        console.log({ dataForBooking });
+        dataForBooking.paymentType = "bkash";
+        dataForBooking.status = "Approved";
+        const result = await OrderModel.create([dataForBooking], { session });
 
-        return res.redirect(`http://localhost:5173/success`);
-      } else {
-        return res.redirect(
-          `http://localhost:5173/error?message=${data.statusMessage}`
+        // Step 6: Create user transaction
+        await Transaction.create(
+          [
+            {
+              orderId: result[0]?._id,
+              branch: dataForBooking?.branch,
+              paymentDate: new Date(),
+              totalAmount: dataForBooking?.bookingInfo?.totalAmount,
+              payableAmount: dataForBooking?.payableAmount,
+              paymentType: "bkash",
+              receivedTk: parseInt(data?.amount),
+              paymentNumber: data?.customerMsisdn,
+              transactionId: data.trxID,
+              userId: getValue("userId"),
+              userPhone: dataForBooking?.phone,
+              userName: dataForBooking?.fullName,
+              acceptableStatus: "Accepted",
+            },
+          ],
+          { session }
         );
+
+        //step 7 : create rent collection
+        await RentRoom.create(
+          [
+            {
+              bookStartDate:
+                dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
+              bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
+              roomId: dataForBooking?.bookingInfo?.roomId,
+              roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
+              roomType: dataForBooking?.bookingInfo?.roomType,
+              seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
+              seatNumber: dataForBooking?.bookingInfo?.seatBooking?.seatNumber,
+              bookingId: dataForBooking?._id,
+              branch: dataForBooking?.bookingInfo?.branch?._id,
+              userId: dataForBooking?.userId,
+            },
+          ],
+          { session }
+        );
+
+        // Phone SMS for booking
+
+        const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+
+        await bookingSms(bookingMessage);
+
+        // Commit the transaction
+        await session.commitTransaction();
+        return res.redirect(`${config.client_url}/success`);
+      } else {
+        throw new Error(data.statusMessage || "Payment execution failed");
       }
     } catch (error) {
+      await session.abortTransaction();
       console.error("Error during payment execution:", error);
       return res.redirect(
-        `http://localhost:5173/error?message=${error.message}`
+        `${config.client_url}/error?message=${encodeURIComponent(
+          error.message
+        )}`
       );
+    } finally {
+      session.endSession();
     }
   }
 };

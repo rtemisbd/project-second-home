@@ -204,7 +204,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 <label htmlFor="" className="fw-medium">
                   Room Title
                 </label>
-                <p> {data?.bookingInfo?.data?.name}</p>
+                <p> {data?.bookingInfo?.roomName}</p>
               </div>
             )}
             {data?.bookingInfo?.roomType === "Shared Room" ? (
@@ -230,7 +230,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 <label htmlFor="" className="fw-medium">
                   Room Number
                 </label>
-                <p> {data?.bookingInfo?.data?.roomNumber}</p>
+                <p> {data?.bookingInfo?.roomNumber}</p>
               </div>
             )}
 
@@ -342,14 +342,20 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Total Payment
               </label>
-              <p>Tk {data?.totalReceiveTk?.toLocaleString()}</p>
+              <p>
+                Tk {data?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+                {/* {data?.totalReceiveTk?.toLocaleString()} */}
+              </p>
             </div>
 
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Due Amount
               </label>
-              <p> Tk {data?.dueAmount?.toLocaleString()}</p>
+              <p>
+                Tk {data?.payableAmount - data?.transactions[0]?.totalReceiveTk}
+                {/* {data?.dueAmount?.toLocaleString()} */}
+              </p>
             </div>
 
             <div className="col-lg-3">
@@ -465,7 +471,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                         transaction?.paymentType === "nagad" ? (
                           <span>
                             {" "}
-                            {transaction?.paymentType},{" "}
+                            {transaction?.paymentType} :{" "}
                             {transaction?.paymentNumber}, Trx :{" "}
                             {transaction?.transactionId}
                           </span>

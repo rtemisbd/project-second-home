@@ -1,9 +1,22 @@
 import mongoose from "mongoose";
 import Transaction from "../models/Transaction.js";
 
+const createTransportIntoDB = async (payload) => {
+  const result = await Transaction.create(payload);
+  return result;
+};
+
 const getAllTransactionFromDB = async (queries) => {
-  const { fromDate, toDate, branch, paymentType, phone, bookingId, status } =
-    queries;
+  const {
+    fromDate,
+    toDate,
+    branch,
+    paymentType,
+    paymentNumber,
+    phone,
+    bookingId,
+    status,
+  } = queries;
 
   let matchStage = {};
 
@@ -18,6 +31,9 @@ const getAllTransactionFromDB = async (queries) => {
   }
   if (status && status !== "All") {
     matchStage.acceptableStatus = status;
+  }
+  if (paymentNumber && paymentNumber !== "") {
+    matchStage.paymentNumber = paymentNumber;
   }
   if (phone && phone !== "") matchStage.userPhone = phone;
   if (fromDate && toDate) {
@@ -65,6 +81,7 @@ const getAllTransactionFromDB = async (queries) => {
       },
     },
     { $unwind: "$orderDetails" },
+
     {
       $match: {
         ...(bookingId ? { "orderDetails.bookingId": bookingId } : {}),
@@ -132,12 +149,24 @@ const getAllTransactionFromDB = async (queries) => {
 
 // Function to get transaction by ID
 const getTransactionByIdFromDB = async (id) => {
-  const result = await Transaction.findById(id);
+  if (id.length > 11) {
+    const result = await Transaction.findById(id);
+    return result;
+  } else {
+    const result = await Transaction.find({ userPhone: id });
+    return result;
+  }
+};
+// Function to get transaction by OrderId
+const getTransactionByOrderIdFromDB = async (orderId) => {
+  const result = await Transaction.find({ orderId });
   return result;
 };
 
 // Exporting the transaction services
 export const transactionServices = {
+  createTransportIntoDB,
   getAllTransactionFromDB,
   getTransactionByIdFromDB,
+  getTransactionByOrderIdFromDB,
 };

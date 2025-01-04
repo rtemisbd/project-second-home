@@ -1,148 +1,110 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
-import Slider from "react-slick";
-import { IoIosArrowForward } from "react-icons/io";
-
+import { useState, useRef } from "react";
+import { Splide, SplideSlide } from "@splidejs/react-splide";
+import "@splidejs/react-splide/css";
 import UseFetch from "../../hooks/useFetch";
-import LeftArrow from "../../assets/img/arrow2.png";
-import RightArrow from "../../assets/img/arrow1.png";
+import { Link } from "react-router-dom";
+import { promoSlider } from "../../helpers/utils/promoSlider";
+
 import "./styles/AllPromo.css";
+import { IoIosArrowForward } from "react-icons/io";
 
 const PromoOffer = () => {
   const { data } = UseFetch(`promo`);
-  // const [filteredProducts, setFilteredProducts] = useState([]);
-
-  // useEffect(() => {
-  //   filterProducts();
-  // }, [data]);
+  const splideRef = useRef(null); // Ref to control Splide instance
+  const [activeIndex, setActiveIndex] = useState(0);
 
   const promoFiltering = data.filter(
     (promo) => promo.isPublished === "Published"
   );
-  //console.log(promoFiltering);
 
-  const [lastSlideIndex, setLastSlideIndex] = useState(0);
-  const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === 0) {
-      return null;
-    } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
+  const totalSlides = promoFiltering.length;
+
+  // Update active index on slide movement
+  const handleMove = (splide) => {
+    setActiveIndex(splide.index);
+  };
+
+  // Handle previous button click
+  const handlePrevClick = () => {
+    if (splideRef.current) {
+      splideRef.current.splide.go("<");
     }
   };
-  const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    if (lastSlideIndex === data?.length - 3) {
-      return null;
-    } else {
-      return <img src={RightArrow} alt="nextArrow" {...props} />;
+
+  // Handle next button click
+  const handleNextClick = () => {
+    if (splideRef.current) {
+      splideRef.current.splide.go(">");
     }
   };
-  const settings = {
-    dots: false,
-    slidesToShow: 3,
-    slidesToScroll: 1,
-    initialSlide: 0,
-    afterChange: (index) => {
-      setLastSlideIndex(index);
-    },
-    adaptiveHeight: true,
-    infinite: false,
-    speed: 400,
-    arrows: data?.length > 3 ? true : false,
-    autoplay: false,
-    swipeToSlide: true,
-    prevArrow: <SlickArrowLeft />,
-    nextArrow: <SlickArrowRight />,
-    className: "mx-[-15px]",
-    responsive: [
-      {
-        breakpoint: 1200,
-        settings: {
-          slidesToShow: 3,
 
-          dots: false,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 800,
-        settings: {
-          slidesToShow: 2,
-
-          initialSlide: 2,
-
-          autoplaySpeed: 3000,
-        },
-      },
-      {
-        breakpoint: 640,
-        settings: {
-          className: `center ms-[-8px] ${
-            lastSlideIndex >= data?.length - 1 ? "only-forMobile" : ""
-          }`,
-          afterChange: (index) => {
-            setLastSlideIndex(index);
-          },
-          centerMode: true,
-          slidesToShow: 1,
-
-          infinite: false,
-          arrows: false,
-
-          speed: 400,
-          cssEase: "ease-out",
-          swipeToSlide: true,
-        },
-      },
-    ],
-  };
+  const isFirstSlide = activeIndex === 0;
+  const isLastSlide = activeIndex === totalSlides - 1;
 
   return (
     <div>
       <div className="mt-5">
-        <div className="">
-          <div className="">
-            <h2 className="text-xl font-bold text-gray-900">Promo Offers</h2>
-            <div className="flex justify-between items-center">
-              <p className="mb-2">Our best Discount Offers for you</p>
-              <p>
-                <Link
-                  to="/promo"
-                  className="flex items-center hover:text-[#27b3b1]"
-                >
-                  See More
-                  <IoIosArrowForward />
-                </Link>
-              </p>
-            </div>
-            <div className="all_recommended slider_margin promo-slider">
-              <Slider {...settings}>
-                {promoFiltering
-                  ?.slice()
-                  ?.reverse()
-                  .map((item, i) => (
-                    <div key={i} className="group relative">
-                      <Link to={`/promo/${item?._id}`}>
-                        <div className="relative w-full overflow-hidden rounded-r-lg rounded-l-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
-                          {item?.homePageCover?.length > 0 ? (
-                            <img
-                              src={item?.homePageCover[0]}
-                              alt=""
-                              className="promo_img"
-                              style={{
-                                maxWidth: "110%",
+        <div>
+          <h2 className="text-xl font-bold text-gray-900">Promo Offers</h2>
+          <div className="flex justify-between items-end my-2">
+            <p>Our best Discount Offers for you</p>
+            <p>
+              <Link
+                to="/promo"
+                className="flex items-center hover:text-[#27b3b1]"
+              >
+                See More
+                <IoIosArrowForward />
+              </Link>
+            </p>
+          </div>
+          <div className="all_promo slider_margin promo-slider pl-12 md:pl-0 relative">
+            {/* Splide Slider */}
+            <Splide
+              ref={splideRef}
+              options={promoSlider(promoFiltering)} // Options from utils
+              onMove={handleMove} // Update active slide on move
+            >
+              {promoFiltering.map((item) => (
+                <SplideSlide key={item?._id}>
+                  <div className="group relative shadow">
+                    <Link to={`/promo/${item?._id}`}>
+                      <div className="relative w-full overflow-hidden rounded-lg bg-white sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75">
+                        {item?.homePageCover?.length > 0 && (
+                          <img
+                            src={item?.homePageCover[0]}
+                            alt=""
+                            className="promo_img h-[200px] md:h-[240px]"
+                          />
+                        )}
+                      </div>
+                    </Link>
+                  </div>
+                </SplideSlide>
+              ))}
+            </Splide>
 
-                                height: "220px",
-                              }}
-                            />
-                          ) : (
-                            ""
-                          )}
-                        </div>
-                      </Link>
-                    </div>
-                  ))}
-              </Slider>
+            {/* Custom Arrow Buttons */}
+            <div className="absolute top-1/2 w-full flex justify-between items-center z-50 text-xl font-bold">
+              {/* Left Arrow */}
+              {!isFirstSlide && (
+                <button
+                  className="splide__arrow splide__arrow--prev "
+                  onClick={handlePrevClick}
+                >
+                  {"<"}
+                </button>
+              )}
+
+              {/* Right Arrow */}
+              {!isLastSlide && (
+                <button
+                  className="splide__arrow splide__arrow--next"
+                  onClick={handleNextClick}
+                >
+                  {">"}
+                </button>
+              )}
             </div>
           </div>
         </div>

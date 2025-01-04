@@ -319,7 +319,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   }
 
   const bookingData = {
-    data: data,
+    // data: data,
     subTotal: subTotal,
     foodAmount: isIncludeFood
       ? data?.branch?.foodAmount * customerRent.remainingDays
@@ -1183,13 +1183,13 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             data?.endDate > startDate
               ? " opacity-75"
               : "opacity-100"
-          }cursor-pointer `}
+          } `}
           onClick={handleAddItem}
           style={{ cursor: "pointer" }}
         >
           <div>
             <button
-              className={`text-[16px] p-2 text-white bg-transparent   cursor-pointer  ${
+              className={`text-[16px] p-2 text-white bg-transparent cursor-pointer ${
                 data?.endDate === endDate ||
                 data?.endDate > endDate ||
                 data?.endDate > startDate
@@ -1214,7 +1214,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
         ) : (
           <div>
             <div
-              className="flex justify-center mb-4 fixed bottom-0 z-40"
+              className="flex justify-center mb-4 fixed bottom-0 z-40 cursor-pointer"
               style={{ width: "95%" }}
             >
               <a
