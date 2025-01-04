@@ -551,14 +551,69 @@ export const getSingleOrder = async (req, res, next) => {
 };
 export const getMyBooking = async (req, res, next) => {
   try {
-    // const email = req.query.email;
     const user = req.params.user;
-    const order = await OrderModel.find({ phone: user }).populate("branch");
+    const matchStage = {};
+    if (user) {
+      matchStage.phone = user;
+    }
+
+    const pipeline = [
+      { $match: matchStage },
+      {
+        $lookup: {
+          from: "branches",
+          localField: "branch",
+          foreignField: "_id",
+          as: "branch",
+        },
+      },
+      { $unwind: "$branch" },
+
+      //get transaction by order Id
+      {
+        $lookup: {
+          from: "transactions",
+          let: { orderId: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $and: [
+                    { $eq: ["$orderId", "$$orderId"] },
+                    { $eq: ["$acceptableStatus", "Accepted"] },
+                  ],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalReceiveTk: { $sum: "$receivedTk" },
+                allProperties: { $push: "$$ROOT" },
+              },
+            },
+          ],
+          as: "transactions",
+        },
+      },
+    ];
+
+    const order = await OrderModel.aggregate(pipeline);
     res.status(200).json(order);
   } catch (err) {
     next(err);
   }
 };
+// export const getMyBooking = async (req, res, next) => {
+//   try {
+//     // const email = req.query.email;
+//     const user = req.params.user;
+//     const order = await OrderModel.find({ phone: user }).populate("branch");
+//     res.status(200).json(order);
+//   } catch (err) {
+//     next(err);
+//   }
+// };
 export const updateBooking = async (req, res, next) => {
   try {
     const findSingleOrder = await OrderModel.findOne({ _id: req.params.id });

@@ -399,11 +399,7 @@ const Invoice = () => {
                           {transactions?.length >= 1 ? (
                             <p className=" text-[12px]">
                               BDT{" "}
-                              {userEndOrder?.receivedTk
-                                ? userEndOrder.receivedTk
-                                : transactions[
-                                    transactions?.length - 1
-                                  ]?.receivedTk?.toLocaleString()}
+                              {userEndOrder?.transactions[0]?.totalReceiveTk}
                             </p>
                           ) : (
                             <p className="text-red-500">Pending</p>
@@ -422,15 +418,10 @@ const Invoice = () => {
                           <p className="ml-[75px]">:</p>
                           <p className=" text-[12px]">
                             BDT{" "}
-                            {userEndOrder?.receivedTk
-                              ? userEndOrder?.payableAmount -
-                                userEndOrder.receivedTk
-                              : userEndOrder?.payableAmount -
-                                transactions[
-                                  transactions?.length - 1
-                                ]?.receivedTk?.toLocaleString()}
-                            {/* {transactions[length - 1]?.payableAmount -
-                              transactions[length - 1]?.receivedTk}{" "} */}
+                            {userEndOrder?.payableAmount -
+                              userEndOrder?.transactions[0]?.totalReceiveTk}
+                            {/* {transactions[transactions?.length - 1]?.payableAmount -
+                              transactions[transactions?.length - 1]?.receivedTk}{" "} */}
                             {/* {userEndOrder?.dueAmount?.toLocaleString()} */}
                           </p>
                         </div>
