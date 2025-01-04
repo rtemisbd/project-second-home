@@ -77,6 +77,7 @@ app.use(
       "http://localhost:5173",
       "https://adminps.psh.com.bd",
       "http://localhost:3000",
+      "https://psh.com.bd",
     ],
     credentials: true,
   })
