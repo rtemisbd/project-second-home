@@ -137,7 +137,7 @@ const PersonalInfo = () => {
 
       const { data } = await axios.post(
         `${serverBaseUrl}/order`,
-        { amount: 1, dataForBooking, selectMethod },
+        { amount, dataForBooking, selectMethod },
         { withCredentials: true }
       );
       // console.log(data?.data?.bkashURL);
