@@ -277,7 +277,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Future Extend{" "}
               </label>
-              <p> {data?.bookingExtend === true ? "Yes" : "No"}</p>
+              <p> {data?.bookingInfo?.bookingExtend === true ? "Yes" : "No"}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -286,9 +286,9 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               </label>
               <p>
                 {" "}
-                {data?.isIncludeFood === true
+                {data?.bookingInfo.isIncludeFood === true
                   ? "Yes"
-                  : data?.isIncludeFood === false
+                  : data?.bookingInfo?.isIncludeFood === false
                   ? "No"
                   : "Yes"}
               </p>

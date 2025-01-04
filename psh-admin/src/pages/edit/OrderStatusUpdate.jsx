@@ -14,7 +14,6 @@ const OrderStatusUpdate = ({
   setShowStatusModal,
 }) => {
   const { _id, status } = data;
-  console.log({ status });
   const [newStatus, setNewStatus] = useState(status);
 
   const MySwal = withReactContent(Swal);
