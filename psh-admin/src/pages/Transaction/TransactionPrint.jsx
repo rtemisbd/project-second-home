@@ -66,7 +66,10 @@ const TransactionPrint = ({ transaction, refetch }) => {
             data-bs-toggle="modal"
             data-bs-target={`#transactionStatus${transaction._id}`}
             className="d-flex btn mt-2 "
-            // disabled={transaction?.acceptableStatus === "Accepted"}
+            disabled={
+              transaction?.acceptableStatus === "Accepted" &&
+              user?.role === "subAdmin1"
+            }
             style={{ border: "none" }}
           >
             <BiSolidEdit style={{ width: "30px", height: "30px" }} />
