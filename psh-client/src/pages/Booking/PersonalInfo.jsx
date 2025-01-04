@@ -92,7 +92,6 @@ const PersonalInfo = () => {
       }));
     }
   }, [singleUser]);
-  console.log({ singleUser });
 
   const anchorClick = (e) => {
     anchorClickHandler(e);
@@ -102,13 +101,12 @@ const PersonalInfo = () => {
   function getLastDayOfMonth() {
     const today = new Date(bookingItem?.rentDate?.bookStartDate);
     const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Months are zero-indexed, so we add 1.
-    const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
+    const month = today.getMonth() + 1;
+    const lastDay = new Date(year, month, 0).getDate();
     return lastDay;
   }
 
   const handlePaymentOption = () => {
-    console.log(dataForBooking);
     if (agreeTerms) {
       setIsBlur(true);
       setShowPayment(true);
@@ -137,7 +135,7 @@ const PersonalInfo = () => {
 
       const { data } = await axios.post(
         `${serverBaseUrl}/order`,
-        { amount, dataForBooking, selectMethod },
+        { amount: 1, dataForBooking, selectMethod },
         { withCredentials: true }
       );
       // console.log(data?.data?.bkashURL);
@@ -149,8 +147,6 @@ const PersonalInfo = () => {
 
       // navigate("/booking-now");
     } catch (error) {
-      console.log(error);
-
       dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");
     }
@@ -199,8 +195,6 @@ const PersonalInfo = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
-
-  console.log(dataForBooking);
 
   return (
     <div>

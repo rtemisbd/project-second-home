@@ -3,8 +3,8 @@ import { BiSolidEdit } from "react-icons/bi";
 import OrderStatusUpdate from "../../pages/edit/OrderStatusUpdate";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import SeeOrderDetails from "./SeeOrderDetails";
-import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
-import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
+// import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
+// import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
 import { FaWhatsapp } from "react-icons/fa";
@@ -151,7 +151,7 @@ const BookingData = ({
             Tk{" "}
             {booking?.transactions[0]?.totalReceiveTk
               ? booking?.transactions[0]?.totalReceiveTk?.toLocaleString()
-              : "---"}
+              : "0"}
           </p>
         </td>
         <td>

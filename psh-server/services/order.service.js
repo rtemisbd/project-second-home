@@ -32,7 +32,7 @@ const createOrderIntoDB = async (payload) => {
         contactNumber: dataForBooking?.emergencyContact,
       },
     };
-    const updatedUser = await User.updateOne(
+    await User.updateOne(
       { phone: dataForBooking?.phone },
       { $set: userUpdate },
       { runValidators: true, session }
