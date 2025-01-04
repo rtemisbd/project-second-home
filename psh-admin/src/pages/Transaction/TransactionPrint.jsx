@@ -9,7 +9,7 @@ import UpdateTransaction from "./UpdateTransaction";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import { formatDate } from "../../utils/dateConvert";
 
-const TransactionPrint = ({ transaction }) => {
+const TransactionPrint = ({ transaction, refetch }) => {
   const { user } = useContext(AuthContext);
   const dispatch = useDispatch();
 
@@ -66,6 +66,8 @@ const TransactionPrint = ({ transaction }) => {
             data-bs-toggle="modal"
             data-bs-target={`#transactionStatus${transaction._id}`}
             className="d-flex btn mt-2 "
+            // disabled={transaction?.acceptableStatus === "Accepted"}
+            style={{ border: "none" }}
           >
             <BiSolidEdit style={{ width: "30px", height: "30px" }} />
           </button>
@@ -75,8 +77,8 @@ const TransactionPrint = ({ transaction }) => {
         <div>
           <TransactionStatusUpdate
             data={transaction}
-            // refetch={refetch}
-            handleClose={handleClose}
+            refetch={refetch}
+            // handleClose={handleClose}
           />
         </div>
       </td>
