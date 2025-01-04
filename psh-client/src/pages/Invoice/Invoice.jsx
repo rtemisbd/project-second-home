@@ -20,32 +20,6 @@ const Invoice = () => {
   const location = useLocation();
   const userEndOrder = location.state;
   const [transactions] = useUserTransactions();
-
-  // const [branch, SetBranch] = useState([]);
-  // const [bookingBranch, SetBookingBranch] = useState({});
-
-  // const [size, setSize] = useState(null);
-
-  // const handleOpen = (value) => setSize(value);
-  console.log(transactions);
-  console.log(userEndOrder);
-
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.get(`${serverBaseUrl}/branch`);
-  //       SetBranch(response.data);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   };
-  //   const findOrderBranch = branch.find(
-  //     (branch) => branch?._id === userEndOrder?.bookingInfo?.branch
-  //   );
-  //   SetBookingBranch(findOrderBranch);
-  //   fetchData();
-  // }, [userEndOrder?.bookingInfo?.branch, branch]);
-
   const { pathname } = useLocation();
 
   useEffect(() => {
