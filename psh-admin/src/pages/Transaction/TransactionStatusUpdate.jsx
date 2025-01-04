@@ -7,12 +7,13 @@ import { useDispatch } from "react-redux";
 import LoadingState from "../LoadingState/LoadingState";
 import { baseUrl } from "../../utils/getBaseURL";
 
-const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
+const TransactionStatusUpdate = ({ data, refetch }) => {
   const { _id, name, seatNumber, desc, acceptableStatus } = data;
+  const [user, setUser] = useState(data);
+
   const dispatch = useDispatch();
 
-  // const handleClose = () => dispatch(placeLoadingShow(false));
-  const [user, setUser] = useState(data);
+  const handleClose = () => dispatch(placeLoadingShow(false));
 
   const handleOnBlur = (e) => {
     const field = e.target.name;
@@ -42,8 +43,8 @@ const TransactionStatusUpdate = ({ data, refetch, handleClose }) => {
       };
 
       await axios.patch(`${baseUrl}/api/transaction/${_id}`, updatedStatus);
-      toast("Updated", "success");
       handleClose();
+      toast("Updated", "success");
       refetch();
     } catch (err) {
       // console.log(err);

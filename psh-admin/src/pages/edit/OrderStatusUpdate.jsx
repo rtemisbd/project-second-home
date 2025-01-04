@@ -14,27 +14,29 @@ const OrderStatusUpdate = ({
   setShowStatusModal,
 }) => {
   const { _id, status } = data;
-
-  const [user, setUser] = useState(data);
+  console.log({ status });
+  const [newStatus, setNewStatus] = useState(status);
 
   const MySwal = withReactContent(Swal);
 
   const handleOnBlur = (e) => {
-    const field = e.target.name;
+    // const field = e.target.name;
     const value = e.target.value;
-    const newInfo = { ...user };
-    if (field === "status") {
-      newInfo[field] = value;
-    }
-    newInfo[field] = value;
-    setUser(newInfo);
+    setNewStatus(value);
+
+    // const newInfo = { ...user };
+    // if (field === "status") {
+    //   newInfo[field] = value;
+    // }
+    // newInfo[field] = value;
+    // setUser(newInfo);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (status === user?.status) {
-      return MySwal.fire(`Sorry Already ${user?.status}`);
+    if (newStatus === data?.status) {
+      return MySwal.fire(`Sorry Already ${data?.status}`);
     }
     // const inputStartDate = new Date(minus1dFromStartDate)
     //   .toISOString()
@@ -46,15 +48,15 @@ const OrderStatusUpdate = ({
     //   inputEndDate,
     //   seatBooking?.rentDate
     // );
-    const newPost = {
-      ...user,
-    };
+    // const newPost = {
+    //   ...user,
+    // };
     try {
-      const updatedStatus = {
-        ...newPost,
-      };
-
-      await axios.patch(`${baseUrl}/api/order/${_id}`, updatedStatus);
+      // const updatedStatus = {
+      //   ...newPost,
+      // };
+      data.status = newStatus;
+      await axios.patch(`${baseUrl}/api/order/${_id}`, data);
       MySwal.fire("Updated", "success");
       refetch();
     } catch (err) {
@@ -86,7 +88,7 @@ const OrderStatusUpdate = ({
                       className="main_form"
                       style={{ width: "450px" }}
                       onBlur={handleOnBlur}
-                      defaultValue={user.status}
+                      defaultValue={data?.status}
                     >
                       <option value="Pending">Pending</option>
                       <option value="Processing">Processing</option>

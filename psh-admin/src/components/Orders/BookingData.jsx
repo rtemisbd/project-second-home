@@ -108,7 +108,7 @@ const BookingData = ({
         >
           {" "}
           <p className="fw-bold">Tk {booking?.totalAmount?.toLocaleString()}</p>
-          {booking?.isIncludeFood === true ? (
+          {booking?.bookingInfo?.isIncludeFood === true ? (
             <p
               className="fw-bold"
               style={{

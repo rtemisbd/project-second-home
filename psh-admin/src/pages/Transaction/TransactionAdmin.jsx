@@ -377,6 +377,7 @@ const TransactionAdmin = () => {
                         data.map((transaction) => (
                           <TransactionPrint
                             transaction={transaction}
+                            refetch={refetch}
                             key={transaction?._id}
                           />
                         ))
