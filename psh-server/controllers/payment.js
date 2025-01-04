@@ -67,9 +67,13 @@ const call_back = async (req, res) => {
       if (data && data.statusCode === "0000") {
         // Step 5: Create order
         const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
-        console.log({ dataForBooking });
+
         dataForBooking.paymentType = "bkash";
         dataForBooking.status = "Approved";
+        dataForBooking.paymentNumber = data?.customerMsisdn;
+        dataForBooking.transactionId = data.trxID;
+        dataForBooking.receivedTk = parseInt(data?.amount);
+
         const result = await OrderModel.create([dataForBooking], { session });
 
         // Step 6: Create user transaction
