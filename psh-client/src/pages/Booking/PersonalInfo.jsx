@@ -139,11 +139,15 @@ const PersonalInfo = () => {
         { withCredentials: true }
       );
       // console.log(data?.data?.bkashURL);
-      window.location.href = await data?.data?.bkashURL;
-      dispatch(placeLoadingShow(false));
-      toast.success("Booking successfully done");
-      localStorage.removeItem("bookingItem");
-      localStorage.removeItem("seatItem");
+      if (data?.data?.bkashURL) {
+        window.location.href = await data?.data?.bkashURL;
+        dispatch(placeLoadingShow(false));
+        toast.success("Booking successfully done");
+        localStorage.removeItem("bookingItem");
+        localStorage.removeItem("seatItem");
+      } else {
+        toast("Something went wrong");
+      }
 
       // navigate("/booking-now");
     } catch (error) {
