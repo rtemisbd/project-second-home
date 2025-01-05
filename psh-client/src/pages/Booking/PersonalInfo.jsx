@@ -146,7 +146,7 @@ const PersonalInfo = () => {
         localStorage.removeItem("bookingItem");
         localStorage.removeItem("seatItem");
       } else {
-        toast("Something went wrong");
+        toast.error("something went wrong");
       }
 
       // navigate("/booking-now");
