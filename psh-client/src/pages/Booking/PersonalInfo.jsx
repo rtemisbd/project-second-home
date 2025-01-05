@@ -148,7 +148,7 @@ const PersonalInfo = () => {
       } else {
         dispatch(placeLoadingShow(false));
         toast.error("something went wrong");
-        console.log(data);
+        // console.log(data);
       }
 
       // navigate("/booking-now");

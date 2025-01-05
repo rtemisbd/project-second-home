@@ -35,12 +35,13 @@ const payment_create = async (req, res) => {
     );
     return res.status(200).json({ bkashURL: data.bkashURL });
   } catch (error) {
-    console.error("Error during payment creation:", error);
+    // console.error("Error during payment creation:", error);
     return res.status(401).json({ error: error.message });
   }
 };
 // customerMsisdn
 
+// Callback function after payment
 // Callback function after payment
 const call_back = async (req, res) => {
   const { paymentID, status, callbackData } = req.query;
@@ -56,13 +57,17 @@ const call_back = async (req, res) => {
 
       // Step 4: Execute payment via bKash
 
-      const { data } = await axios.post(
-        config.bkash_execute_payment_url,
-        { paymentID },
-        {
-          headers: await bkash_headers(getValue("id_token")),
-        }
-      );
+      const response = await fetch(config.bkash_execute_payment_url, {
+        method: "POST",
+        headers: await bkash_headers(getValue("id_token")),
+        body: JSON.stringify({ paymentID }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
 
       if (data && data.statusCode === "0000") {
         // Step 5: Create order

@@ -10,8 +10,6 @@ import OrderStatusUpdate from "../../pages/edit/OrderStatusUpdate";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import { BiSolidEdit } from "react-icons/bi";
 import SeeOrderDetails from "./SeeOrderDetails";
-import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
-import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import { useQuery } from "react-query";
 import Payment from "../../pages/edit/Payment";
 import { ToastContainer, toast } from "react-toastify";
@@ -24,6 +22,8 @@ import img from "../../img/new/style.png";
 import { Spinner } from "react-bootstrap";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
+import BookingSeatDateExtend from "../../pages/edit/BookingSeatDateExtend";
+import BookingDatesExtend from "../../pages/edit/BookingDatesExtend";
 
 const ManagerOrdersList = () => {
   const MySwal = withReactContent(Swal);
@@ -380,7 +380,7 @@ const ManagerOrdersList = () => {
             {/* Modal order Date Update */}
             {row?.bookingInfo?.roomType === "Shared Room" ? (
               <div>
-                <BookingDateSetUpdate
+                <BookingSeatDateExtend
                   data={row}
                   refetch={refetch}
                   extraCharge={extraCharge}
@@ -388,7 +388,7 @@ const ManagerOrdersList = () => {
               </div>
             ) : (
               <div>
-                <BookingDateUpdate
+                <BookingDatesExtend
                   data={row}
                   refetch={refetch}
                   extraCharge={extraCharge}

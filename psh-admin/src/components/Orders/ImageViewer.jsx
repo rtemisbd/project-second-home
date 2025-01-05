@@ -2,6 +2,7 @@ import React from "react";
 
 // import "./SeeOrderDetails.css";
 import "./styles/SeeOrderDetails.css";
+import { baseUrl } from "../../utils/getBaseURL";
 const ImageViewer = ({ data }) => {
   return (
     <div className="">
@@ -31,7 +32,7 @@ const ImageViewer = ({ data }) => {
               <div className="col-lg-3 mb-3">
                 <div>
                   <img
-                    src={`https://api.psh.com.bd/${data?.image}`}
+                    src={`${baseUrl}/${data?.image}`}
                     alt=""
                     style={{ width: "400px" }}
                   />
@@ -40,7 +41,7 @@ const ImageViewer = ({ data }) => {
               <div className="col-lg-3">
                 <div>
                   <img
-                    src={`https://api.psh.com.bd/${data?.gardianImg}`}
+                    src={`${baseUrl}/${data?.gardianImg}`}
                     alt=""
                     style={{ width: "400px" }}
                   />
