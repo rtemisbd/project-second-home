@@ -3,8 +3,6 @@ import { BiSolidEdit } from "react-icons/bi";
 import OrderStatusUpdate from "../../pages/edit/OrderStatusUpdate";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import SeeOrderDetails from "./SeeOrderDetails";
-// import BookingDateSetUpdate from "../../pages/edit/BookingDateSetUpdate";
-// import BookingDateUpdate from "../../pages/edit/BookingDateUpdate";
 import Payment from "../../pages/edit/Payment";
 import { formatDate } from "../../utils/dateConvert";
 import { FaWhatsapp } from "react-icons/fa";
@@ -284,13 +282,6 @@ const BookingData = ({
                 showDurationModal={showDurationModal}
                 setShowDurationModal={setShowDurationModal}
               />
-              {/* <BookingDateSetUpdate
-                data={durationUpdateDataSeat}
-                refetch={refetch}
-                extraCharge={extraCharge}
-                setShowSeatUpdateDuration={setShowSeatUpdateDuration}
-                showSeatUpdateDuration={showSeatUpdateDuration}
-              /> */}
             </div>
           ) : (
             ""
@@ -304,15 +295,6 @@ const BookingData = ({
                 showDurationModal={showDurationModal}
                 setShowDurationModal={setShowDurationModal}
               />
-              {/* <BookingDateUpdate
-                data={durationUpdatePrivateRoom}
-                refetch={refetch}
-                extraCharge={extraCharge}
-                showDurationModal={showDurationModal}
-                setShowDurationModal={setShowDurationModal}
-                setIsIncludeFood={setIsIncludeFood}
-                isIncludeFood={isIncludeFood}
-              /> */}
             </div>
           )}
         </td>
