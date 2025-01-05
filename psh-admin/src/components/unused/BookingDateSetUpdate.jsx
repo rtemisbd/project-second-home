@@ -3,11 +3,11 @@ import React, { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { toast } from "react-toastify";
-import UseFetch from "../../hooks/useFetch";
+import UseFetch from "../../../hooks/useFetch";
 import axios from "axios";
 import Modal from "react-bootstrap/Modal";
-import usePromo from "../../hooks/usePromo";
-import { baseUrl } from "../../utils/getBaseURL";
+import usePromo from "../../../hooks/usePromo";
+import { baseUrl } from "../../../utils/getBaseURL";
 
 const BookingDateSetUpdate = ({
   data,

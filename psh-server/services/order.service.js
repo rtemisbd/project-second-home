@@ -83,7 +83,6 @@ const createOrderByManualBkash = async (payload) => {
     session.startTransaction();
 
     const dataForBooking = payload;
-
     dataForBooking.paymentType = "bkash";
     const result = await OrderModel.create([dataForBooking], { session });
 
