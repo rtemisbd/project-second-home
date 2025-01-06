@@ -5,7 +5,8 @@ import { baseUrl } from "../../utils/getBaseURL";
 import useBranch from "../../hooks/useBranch";
 import useCategory from "../../hooks/useCategory";
 import { useSelector } from "react-redux";
-import Pagination from "../../components/Pagination/Pagination";
+import DetailOverview from "../../components/BookOverview/DetailOverview";
+// import Pagination from "../../components/Pagination/Pagination";
 
 const RoomOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -28,6 +29,9 @@ const RoomOverview = () => {
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
   const [monthIndex, setMonthIndex] = useState(null);
+
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detail, setDetail] = useState(null);
 
   const { allBranch } = useBranch();
   const { categories } = useCategory();
@@ -237,9 +241,14 @@ const RoomOverview = () => {
             new Date(bs.bookStartDate) <= new Date(date) &&
             new Date(bs.bookEndDate) >= new Date(date)
         );
-
     return booking?.bookingStatus;
   };
+
+  const handleShowDetails = (room) => {
+    setShowDetailModal(true);
+    setDetail(room);
+  };
+  console.log(detail);
 
   return (
     <div className="wrapper">
@@ -375,6 +384,10 @@ const RoomOverview = () => {
                             height: "44px",
                             padding: "0px",
                             border: "1px solid #35b0a7",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            handleShowDetails(room);
                           }}
                         >
                           {getBookingStatus(room, date) ? (
@@ -420,6 +433,13 @@ const RoomOverview = () => {
             </div>
           </div>
         </section>
+        {showDetailModal && (
+          <DetailOverview
+            detail={detail}
+            setShowDetailModal={setShowDetailModal}
+            handleShowDetails={handleShowDetails}
+          />
+        )}
       </div>
       {/* <Pagination totalDataCount={totalDataCount} /> */}
     </div>
