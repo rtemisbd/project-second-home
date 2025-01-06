@@ -364,7 +364,7 @@ const updateBookingStatusIntoDB = async (payload) => {
     }
   }
 
-  if (booking?.status === "Canceled") {
+  if (booking?.status === "Pending" || booking?.status === "Canceled") {
     // delete rentDate when booking status is cancel
     await RentRoom.deleteOne({
       bookingId: booking?._id,

@@ -32,6 +32,8 @@ const RoomOverview = () => {
 
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [detail, setDetail] = useState(null);
+  const [bookingInfo, setBookingInfo] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const { allBranch } = useBranch();
   const { categories } = useCategory();
@@ -241,14 +243,59 @@ const RoomOverview = () => {
             new Date(bs.bookStartDate) <= new Date(date) &&
             new Date(bs.bookEndDate) >= new Date(date)
         );
+
     return booking?.bookingStatus;
   };
 
-  const handleShowDetails = (room) => {
+  const handleShowDetails = (room, date) => {
+    setSelectedDate(date);
+
     setShowDetailModal(true);
     setDetail(room);
+    if (room?.categoryDetails?.name === "Shared Room") {
+      if (getBookingStatus(room, date)) {
+        setBookingInfo(
+          bookedSeats.filter(
+            (bs) =>
+              bs.seatNumber === room.seatNumber &&
+              new Date(bs.bookStartDate) <= new Date(date) &&
+              new Date(bs.bookEndDate) >= new Date(date)
+          )
+        );
+      } else {
+        setBookingInfo(
+          reserved.filter(
+            (bs) =>
+              bs.seatNumber === room.seatNumber &&
+              new Date(bs.bookStartDate) <= new Date(date) &&
+              new Date(bs.bookEndDate) >= new Date(date)
+          )
+        );
+      }
+    } else {
+      if (getBookingStatus(room, date)) {
+        setBookingInfo(
+          bookedRooms.filter(
+            (br) =>
+              br.roomNumber === room.roomNumber &&
+              new Date(br.bookStartDate) <= new Date(date) &&
+              new Date(br.bookEndDate) >= new Date(date)
+          )
+        );
+      } else {
+        setBookingInfo(
+          reserved.filter(
+            (br) =>
+              br.roomNumber === room.roomNumber &&
+              new Date(br.bookStartDate) <= new Date(date) &&
+              new Date(br.bookEndDate) >= new Date(date)
+          )
+        );
+      }
+    }
   };
-  console.log(detail);
+
+  console.log({ detail, bookingInfo });
 
   return (
     <div className="wrapper">
@@ -387,7 +434,7 @@ const RoomOverview = () => {
                             cursor: "pointer",
                           }}
                           onClick={() => {
-                            handleShowDetails(room);
+                            handleShowDetails(room, date);
                           }}
                         >
                           {getBookingStatus(room, date) ? (
@@ -436,6 +483,8 @@ const RoomOverview = () => {
         {showDetailModal && (
           <DetailOverview
             detail={detail}
+            bookingInfo={bookingInfo}
+            date={selectedDate}
             setShowDetailModal={setShowDetailModal}
             handleShowDetails={handleShowDetails}
           />

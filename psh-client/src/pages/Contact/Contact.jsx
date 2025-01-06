@@ -82,9 +82,9 @@ const Contact = () => {
                 <button className=" bg-[#00bbb4] text-white px-16  text-left rounded-lg py-2">
                   <p>Call us</p> <p>+8801647647404</p>
                 </button>
-                <button className="bg-[#00bbb4] px-16 text-left rounded-lg py-2 text-white">
+                {/* <button className="bg-[#00bbb4] px-16 text-left rounded-lg py-2 text-white">
                   <p>Mail us</p> <p>help@psh.com.bd</p>
-                </button>
+                </button> */}
               </div>
               <p className="mt-10 md:text-[60px] sm:text-[30px] text-center text-[#00bbb4] font-semibold">
                 “ Project Second Home is for Everyone Safety and Friendly ”
