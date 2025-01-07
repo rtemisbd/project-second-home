@@ -5,7 +5,8 @@ import { baseUrl } from "../../utils/getBaseURL";
 import useBranch from "../../hooks/useBranch";
 import useCategory from "../../hooks/useCategory";
 import { useSelector } from "react-redux";
-import Pagination from "../../components/Pagination/Pagination";
+import DetailOverview from "../../components/BookOverview/DetailOverview";
+// import Pagination from "../../components/Pagination/Pagination";
 
 const RoomOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -28,6 +29,11 @@ const RoomOverview = () => {
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
   const [monthIndex, setMonthIndex] = useState(null);
+
+  const [showDetailModal, setShowDetailModal] = useState(false);
+  const [detail, setDetail] = useState(null);
+  const [bookingInfo, setBookingInfo] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(null);
 
   const { allBranch } = useBranch();
   const { categories } = useCategory();
@@ -241,6 +247,56 @@ const RoomOverview = () => {
     return booking?.bookingStatus;
   };
 
+  const handleShowDetails = (room, date) => {
+    setSelectedDate(date);
+
+    setShowDetailModal(true);
+    setDetail(room);
+    if (room?.categoryDetails?.name === "Shared Room") {
+      if (getBookingStatus(room, date)) {
+        setBookingInfo(
+          bookedSeats.filter(
+            (bs) =>
+              bs.seatNumber === room.seatNumber &&
+              new Date(bs.bookStartDate) <= new Date(date) &&
+              new Date(bs.bookEndDate) >= new Date(date)
+          )
+        );
+      } else {
+        setBookingInfo(
+          reserved.filter(
+            (bs) =>
+              bs.seatNumber === room.seatNumber &&
+              new Date(bs.bookStartDate) <= new Date(date) &&
+              new Date(bs.bookEndDate) >= new Date(date)
+          )
+        );
+      }
+    } else {
+      if (getBookingStatus(room, date)) {
+        setBookingInfo(
+          bookedRooms.filter(
+            (br) =>
+              br.roomNumber === room.roomNumber &&
+              new Date(br.bookStartDate) <= new Date(date) &&
+              new Date(br.bookEndDate) >= new Date(date)
+          )
+        );
+      } else {
+        setBookingInfo(
+          reserved.filter(
+            (br) =>
+              br.roomNumber === room.roomNumber &&
+              new Date(br.bookStartDate) <= new Date(date) &&
+              new Date(br.bookEndDate) >= new Date(date)
+          )
+        );
+      }
+    }
+  };
+
+  console.log({ detail, bookingInfo });
+
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
@@ -375,6 +431,10 @@ const RoomOverview = () => {
                             height: "44px",
                             padding: "0px",
                             border: "1px solid #35b0a7",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => {
+                            handleShowDetails(room, date);
                           }}
                         >
                           {getBookingStatus(room, date) ? (
@@ -420,6 +480,15 @@ const RoomOverview = () => {
             </div>
           </div>
         </section>
+        {showDetailModal && (
+          <DetailOverview
+            detail={detail}
+            bookingInfo={bookingInfo}
+            date={selectedDate}
+            setShowDetailModal={setShowDetailModal}
+            handleShowDetails={handleShowDetails}
+          />
+        )}
       </div>
       {/* <Pagination totalDataCount={totalDataCount} /> */}
     </div>

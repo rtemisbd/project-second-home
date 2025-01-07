@@ -226,17 +226,6 @@ const Footer = () => {
                         </div>
                         <p>+8801647647404</p>
                       </div>
-                      <div
-                        className="text-white text-[14px] flex items-center gap-x-1"
-                        style={{ marginTop: -3 }}
-                      >
-                        <div>
-                          <AiOutlineMail
-                            style={{ width: "16px", height: "16px" }}
-                          />
-                        </div>
-                        <p>help@psh.com.bd</p>
-                      </div>
                     </div>
                     <p className="text-white text-[14px] mt-2">
                       Operational Hour

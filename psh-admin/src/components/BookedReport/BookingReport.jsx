@@ -5,6 +5,7 @@ import BookingReportData from "./BookingReportsData";
 import "./BookingReport.css";
 import { formatDate } from "../../utils/dateConvert";
 import { Spinner } from "react-bootstrap";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const BookingReports = () => {
   const [checkingDate, setCheckingDate] = useState(new Date());
@@ -21,7 +22,7 @@ const BookingReports = () => {
         });
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/rent-rooms?${queryParams.toString()}`,
+          `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
           {
             method: "GET",
           }
@@ -44,7 +45,7 @@ const BookingReports = () => {
   );
   // Get All Branch
   // useEffect(() => {
-  //   fetch(`https://api.psh.com.bd/api/branch`)
+  //   fetch(`${baseUrl}/api/branch`)
   //     .then((res) => res.json())
   //     .then((data) => setAllBranch(data));
   // }, []);
