@@ -69,7 +69,7 @@ const createOrderIntoDB = async (payload) => {
 
       // Commit the transaction
       await session.commitTransaction();
-      return { bkashURL: data.bkashURL };
+      return { bkashURL: data?.bkashURL };
     }
   } catch (error) {
     await session.abortTransaction();

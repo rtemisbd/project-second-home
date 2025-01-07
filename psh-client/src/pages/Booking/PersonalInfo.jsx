@@ -140,14 +140,14 @@ const PersonalInfo = () => {
       );
       // console.log(data?.data?.bkashURL);
       if (await data?.data?.bkashURL) {
-        window.location.href = data?.data?.bkashURL;
+        window.location.href = await data?.data?.bkashURL;
         dispatch(placeLoadingShow(false));
         toast.success("Booking successfully done");
         localStorage.removeItem("bookingItem");
         localStorage.removeItem("seatItem");
       } else {
         dispatch(placeLoadingShow(false));
-        toast.error("Something went wrong! Please try again.");
+        toast.error("something went wrong");
         // console.log(data);
       }
 
