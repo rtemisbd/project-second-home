@@ -1,16 +1,13 @@
 import React, { useContext, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/UserProvider";
 import { useForm } from "react-hook-form";
 import { Switch } from "@material-tailwind/react";
 import toast, { Toaster } from "react-hot-toast";
-import LoadingState from "../LoadingState/LoadingState";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { IoReturnUpBack } from "react-icons/io5";
-import { FaArrowRightLong } from "react-icons/fa6";
 import { IoIosArrowBack } from "react-icons/io";
 
 const UserAuthentication = () => {
@@ -116,6 +113,7 @@ const UserAuthentication = () => {
 
     const user = loginUser(phone, password);
     if (user) {
+      // toast.success("Login Successfully!");
       if (window.history.length > 1) {
         navigate(-1);
       } else {
@@ -168,7 +166,7 @@ const UserAuthentication = () => {
       dispatch(placeLoadingShow(false));
       toast.success("Please Check Your Phone Number");
       setUserMessage(
-        "Enter the OTP (One Time Password) that has been sent to your registered Email"
+        "Enter the OTP (One Time Password) that has been sent to your registered Phone Number"
       );
       setShowSignIn(false);
       setShowSignUp(false);

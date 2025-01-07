@@ -69,12 +69,23 @@ const DetailOverview = ({
               {detail?.branchDetails?.name}]
             </p>
             <hr />
+            <ul
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                fontWeight: "bold",
+              }}
+            >
+              <li>Per Day : BDT {detail?.dAmountForDay}</li>
+              <li>Per Month : BDT {detail?.dAmountForMonth}</li>
+            </ul>
             <h4>
               {" "}
               {bookingInfo.length
                 ? "Booked for:"
                 : `Available for : ${formatDate(date)}`}
             </h4>
+
             {bookingInfo?.map((info) => (
               <div
                 key={info._id}
@@ -96,16 +107,16 @@ const DetailOverview = ({
             ))}
           </div>
           {/* for new booking */}
-          <div
+          {/* <div
             style={{
               display: "flex",
               justifyContent: "end",
               marginRight: "20px",
             }}
           >
-            <Link to="/">Book Now</Link>
+            <Link to="/dashboard/create-booking">Book Now</Link>
           </div>
-        </div>
+        </div> */}
       </Modal.Body>
     </Modal>
   );
