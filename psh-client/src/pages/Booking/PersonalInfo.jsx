@@ -49,6 +49,7 @@ const PersonalInfo = () => {
   const [extraCharge] = useExtraCharge(bookingItem);
   const { pathname } = useLocation();
 
+  let bkashError;
   // find branch
   useEffect(() => {
     const bookingItem = localStorage.getItem("bookingItem");
@@ -140,7 +141,14 @@ const PersonalInfo = () => {
       );
       // console.log(data?.data?.bkashURL);
 
-      window.location.href = data?.data?.bkashURL;
+      if (data?.data?.bkashURL !== undefined) {
+        window.location.href = data?.data?.bkashURL;
+      } else {
+        bkashError = (
+          <p className="text-red-500">Network Error, Please try again</p>
+        );
+      }
+
       dispatch(placeLoadingShow(false));
       toast.success("Booking successfully done");
       localStorage.removeItem("bookingItem");
@@ -1360,6 +1368,7 @@ const PersonalInfo = () => {
                   <h2 className="font-medium text-center mb-4">
                     How much do you want to pay now?
                   </h2>
+                  {bkashError && bkashError}
                   <div className="flex flex-wrap gap-4">
                     <button
                       onClick={() =>
