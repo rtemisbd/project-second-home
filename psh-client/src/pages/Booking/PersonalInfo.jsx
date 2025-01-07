@@ -144,10 +144,10 @@ const PersonalInfo = () => {
       if (data?.data?.bkashURL !== undefined) {
         window.location.href = data?.data?.bkashURL;
       } else {
-        console.log(data?.data?.bkashURL);
-        return (bkashError = (
+        bkashError = (
           <p className="text-red-500">Network Error, Please try again</p>
-        ));
+        );
+        console.log(data?.data?.bkashURL);
       }
 
       dispatch(placeLoadingShow(false));
