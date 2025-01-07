@@ -4,6 +4,7 @@ import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import RentRoom from "../models/RentRoom.js";
 import { getValue, setValue } from "node-global-storage";
+import axios from "axios";
 import config from "../config/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { bkash_headers } from "../utils/bkash_headers.js";
@@ -47,10 +48,9 @@ const createOrderIntoDB = async (payload) => {
     } else {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-      const response = await fetch(config.bkash_create_payment_url, {
-        method: "POST",
-        headers: await bkash_headers(getValue("id_token")),
-        body: JSON.stringify({
+      const { data } = await axios.post(
+        config.bkash_create_payment_url,
+        {
           mode: "0011",
           payerReference: " ",
           callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
@@ -58,25 +58,19 @@ const createOrderIntoDB = async (payload) => {
           currency: "BDT",
           intent: "sale",
           merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
-        }),
-      });
-
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
-      }
-
-      const data = await response.json();
-      if (!data?.bkashURL) {
-        throw new Error("bKash response does not contain a valid URL");
-      }
+        },
+        {
+          headers: await bkash_headers(getValue("id_token")),
+        }
+      );
 
       // Commit the transaction
       await session.commitTransaction();
-      return { bkashURL: data?.bkashURL };
+      return { bkashURL: data.bkashURL };
     }
   } catch (error) {
     await session.abortTransaction();
-    console.error("Error in createOrderIntoDB:", error); // Added logging for debugging
+    console.error("Error in createOrderIntoDB:", error);
     return { error: error.message };
   } finally {
     session.endSession();
@@ -114,16 +108,8 @@ const createOrderByManualBkash = async (payload) => {
       { session }
     );
 
-    // Validate phone number and bookingId before using them
-    const phone = result[0]?.phone;
-    const bookingId = result[0]?.bookingId;
-
-    if (!phone || !bookingId) {
-      throw new Error("Phone or booking ID is missing");
-    }
-
     // Phone SMS for booking
-    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
 
     await bookingSms(bookingMessage);
 
@@ -144,130 +130,6 @@ const createOrderByManualBkash = async (payload) => {
     session.endSession();
   }
 };
-
-// const createOrderIntoDB = async (payload) => {
-//   const { amount, dataForBooking, selectMethod } = payload;
-//   const session = await startSession();
-//   try {
-//     session.startTransaction();
-
-//     // Set user context
-//     setValue("userId", dataForBooking?.userId);
-
-//     // Step 1: Update user information
-//     const userUpdate = {
-//       firstName: dataForBooking?.fullName,
-//       phone: dataForBooking?.phone,
-//       userAddress: dataForBooking?.address,
-//       validityType: dataForBooking?.validityType,
-//       emergencyContact: {
-//         contactName: dataForBooking?.emergencyContactName,
-//         relation: dataForBooking?.emergencyRelationC,
-//         contactNumber: dataForBooking?.emergencyContact,
-//       },
-//     };
-//     await User.updateOne(
-//       { phone: dataForBooking?.phone },
-//       { $set: userUpdate },
-//       { runValidators: true, session }
-//     );
-
-//     // Step 2: Generate booking ID
-//     const generateId = await generateBookingId();
-//     dataForBooking.bookingId = generateId;
-
-//     if (selectMethod === "manual") {
-//       const result = await createOrderByManualBkash(dataForBooking);
-//       return result;
-//     } else {
-//       // Step 3: Create payment request via bKash
-//       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-//       const response = await fetch(config.bkash_create_payment_url, {
-//         method: "POST",
-//         headers: await bkash_headers(getValue("id_token")),
-//         body: JSON.stringify({
-//           mode: "0011",
-//           payerReference: " ",
-//           callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
-//           amount,
-//           currency: "BDT",
-//           intent: "sale",
-//           merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
-//         }),
-//       });
-
-//       if (!response.ok) {
-//         throw new Error(`Error: ${response.status} ${response.statusText}`);
-//       }
-
-//       const data = await response.json();
-
-//       // Commit the transaction
-//       await session.commitTransaction();
-//       return { bkashURL: data?.bkashURL };
-//     }
-//   } catch (error) {
-//     await session.abortTransaction();
-//     // console.error("Error in createOrderIntoDB:", error);
-//     return { error: error.message };
-//   } finally {
-//     session.endSession();
-//   }
-// };
-
-// const createOrderByManualBkash = async (payload) => {
-//   const session = await startSession();
-//   try {
-//     session.startTransaction();
-
-//     const dataForBooking = payload;
-//     dataForBooking.paymentType = "bkash";
-//     const result = await OrderModel.create([dataForBooking], { session });
-
-//     // Step 6: Create user transaction
-//     await Transaction.create(
-//       [
-//         {
-//           orderId: result[0]?._id,
-//           branch: dataForBooking?.branch,
-//           paymentDate: new Date(),
-//           totalAmount: dataForBooking?.bookingInfo?.totalAmount,
-//           payableAmount: dataForBooking?.payableAmount,
-//           paymentType: "bkash",
-//           receivedTk: dataForBooking?.receivedTk,
-//           paymentNumber: dataForBooking?.paymentNumber,
-//           // transactionId: data.trxID,
-//           userId: getValue("userId"),
-//           userPhone: dataForBooking?.phone,
-//           userName: dataForBooking?.fullName,
-//           acceptableStatus: "Pending",
-//         },
-//       ],
-//       { session }
-//     );
-
-//     // Phone SMS for booking
-//     const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
-
-//     await bookingSms(bookingMessage);
-
-//     // Commit the transaction
-//     await session.commitTransaction();
-//     return {
-//       bkashURL: `${config.client_url}/success`,
-//     };
-//   } catch (error) {
-//     await session.abortTransaction();
-//     console.error("Error during payment execution:", error);
-//     return {
-//       bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
-//         error.message
-//       )}`,
-//     };
-//   } finally {
-//     session.endSession();
-//   }
-// };
 
 const getOrderFromDB = async (queries) => {
   const {
