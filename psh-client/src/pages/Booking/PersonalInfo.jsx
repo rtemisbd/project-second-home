@@ -161,6 +161,7 @@ const PersonalInfo = () => {
       toast.error("Something is wrong");
     }
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     // if (name === "validityType" && value === "Select One") {
