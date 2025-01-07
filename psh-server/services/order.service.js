@@ -62,21 +62,27 @@ const createOrderIntoDB = async (payload) => {
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `bKash API Error: ${response.status} ${response.statusText}`
+        );
       }
 
       const data = await response.json();
+
+      // Log the API response for debugging
+      console.log("bKash API Response:", data);
+
       if (!data?.bkashURL) {
         throw new Error("bKash response does not contain a valid URL");
       }
 
       // Commit the transaction
       await session.commitTransaction();
-      return { bkashURL: data?.bkashURL };
+      return { bkashURL: data.bkashURL };
     }
   } catch (error) {
     await session.abortTransaction();
-    console.error("Error in createOrderIntoDB:", error); // Added logging for debugging
+    console.error("Error in createOrderIntoDB:", error);
     return { error: error.message };
   } finally {
     await session.endSession();
