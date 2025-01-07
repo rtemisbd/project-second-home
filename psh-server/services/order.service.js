@@ -79,7 +79,7 @@ const createOrderIntoDB = async (payload) => {
     console.error("Error in createOrderIntoDB:", error); // Added logging for debugging
     return { error: error.message };
   } finally {
-    session.endSession();
+    await session.endSession();
   }
 };
 

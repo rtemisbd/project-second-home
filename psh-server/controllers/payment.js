@@ -71,7 +71,9 @@ const call_back = async (req, res) => {
 
       if (data && data.statusCode === "0000") {
         // Step 5: Create order
-        const dataForBooking = JSON.parse(decodeURIComponent(callbackData));
+        const dataForBooking = await JSON.parse(
+          decodeURIComponent(callbackData)
+        );
 
         dataForBooking.paymentType = "bkash";
         dataForBooking.status = "Approved";
@@ -131,20 +133,20 @@ const call_back = async (req, res) => {
 
         // Commit the transaction
         await session.commitTransaction();
-        return res.redirect(`${config.client_url}/success`);
+        return await res.redirect(`${config.client_url}/success`);
       } else {
         throw new Error(data.statusMessage || "Payment execution failed");
       }
     } catch (error) {
       await session.abortTransaction();
       console.error("Error during payment execution:", error);
-      return res.redirect(
+      return await res.redirect(
         `${config.client_url}/error?message=${encodeURIComponent(
           error.message
         )}`
       );
     } finally {
-      session.endSession();
+      await session.endSession();
     }
   }
 };
