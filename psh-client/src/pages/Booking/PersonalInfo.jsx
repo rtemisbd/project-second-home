@@ -139,8 +139,8 @@ const PersonalInfo = () => {
         { withCredentials: true }
       );
       // console.log(data?.data?.bkashURL);
-      if (await data?.data?.bkashURL) {
-        window.location.href = await data?.data?.bkashURL;
+      if (data?.data?.bkashURL) {
+        window.location.href = data?.data?.bkashURL;
         dispatch(placeLoadingShow(false));
         toast.success("Booking successfully done");
         localStorage.removeItem("bookingItem");
