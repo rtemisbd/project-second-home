@@ -27,10 +27,7 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(
-      req.body.password || config.default_password,
-      10
-    );
+    const hashedPassword = await bcrypt.hash(req.body.password, 10);
 
     const user = new User({
       firstName,
