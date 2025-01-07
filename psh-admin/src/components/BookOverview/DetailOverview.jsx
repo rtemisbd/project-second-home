@@ -115,8 +115,8 @@ const DetailOverview = ({
             }}
           >
             <Link to="/dashboard/create-booking">Book Now</Link>
-          </div>
-        </div> */}
+          </div> */}
+        </div>
       </Modal.Body>
     </Modal>
   );
