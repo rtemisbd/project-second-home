@@ -4,7 +4,6 @@ import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import RentRoom from "../models/RentRoom.js";
 import { getValue, setValue } from "node-global-storage";
-import axios from "axios";
 import config from "../config/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { bkash_headers } from "../utils/bkash_headers.js";
@@ -48,9 +47,10 @@ const createOrderIntoDB = async (payload) => {
     } else {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-      const { data } = await axios.post(
-        config.bkash_create_payment_url,
-        {
+      const response = await fetch(config.bkash_create_payment_url, {
+        method: "POST",
+        headers: await bkash_headers(getValue("id_token")),
+        body: JSON.stringify({
           mode: "0011",
           payerReference: " ",
           callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
@@ -58,11 +58,14 @@ const createOrderIntoDB = async (payload) => {
           currency: "BDT",
           intent: "sale",
           merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
-        },
-        {
-          headers: await bkash_headers(getValue("id_token")),
-        }
-      );
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error(`Error: ${response.status} ${response.statusText}`);
+      }
+
+      const data = await response.json();
 
       // Commit the transaction
       await session.commitTransaction();
@@ -70,7 +73,7 @@ const createOrderIntoDB = async (payload) => {
     }
   } catch (error) {
     await session.abortTransaction();
-    console.error("Error in createOrderIntoDB:", error);
+    // console.error("Error in createOrderIntoDB:", error);
     return { error: error.message };
   } finally {
     session.endSession();
