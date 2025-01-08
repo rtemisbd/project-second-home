@@ -118,7 +118,7 @@ const PersonalInfo = () => {
 
   const handleUserInputAmount = async (e) => {
     const value = await e.target.value;
-    if (value < bookingItem.minimumPayment) {
+    if ((await value) < bookingItem.minimumPayment) {
       setIsLessAmount(true);
     } else {
       setIsLessAmount(false);
@@ -148,7 +148,12 @@ const PersonalInfo = () => {
         bkashError = (
           <p className="text-red-500">Network Error, Please try again</p>
         );
-        console.log(data?.data?.bkashURL);
+        const hasReloaded = sessionStorage.getItem("hasReloaded");
+
+        if (!hasReloaded) {
+          sessionStorage.setItem("hasReloaded", "true");
+          window.location.reload();
+        }
       }
 
       dispatch(placeLoadingShow(false));
@@ -1374,7 +1379,9 @@ const PersonalInfo = () => {
                   <div className="flex flex-wrap gap-4">
                     <button
                       onClick={async () =>
-                        await handlePayByBkash(bookingItem?.minimumPayment)
+                        await handlePayByBkash(
+                          await bookingItem?.minimumPayment
+                        )
                       }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
@@ -1382,7 +1389,7 @@ const PersonalInfo = () => {
                     </button>
                     <button
                       onClick={async () =>
-                        await handlePayByBkash(bookingItem?.totalAmount)
+                        await handlePayByBkash(await bookingItem?.totalAmount)
                       }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
@@ -1407,7 +1414,7 @@ const PersonalInfo = () => {
                         />
                         <button
                           onClick={async () =>
-                            await handlePayByBkash(amountForPay)
+                            await handlePayByBkash(await amountForPay)
                           }
                           className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
                           disabled={isLessAmount}
