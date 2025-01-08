@@ -154,7 +154,6 @@ const PersonalInfo = () => {
           sessionStorage.setItem("hasReloaded", "true");
           window.location.reload();
         }
-        // console.log(data);
       }
 
       dispatch(placeLoadingShow(false));
