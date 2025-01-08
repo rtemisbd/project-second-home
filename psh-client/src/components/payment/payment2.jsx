@@ -1,11 +1,12 @@
 import React from "react";
 import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const PaymentPage = () => {
   const pay = async () => {
     try {
       const { data } = await axios.post(
-        "http://localhost:8000/api/bkash/payment/create",
+        `${serverBaseUrl}/bkash/payment/create`,
         { amount: 1, orderId: 1 },
         { withCredentials: true }
       );
