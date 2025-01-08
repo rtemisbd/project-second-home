@@ -116,8 +116,8 @@ const PersonalInfo = () => {
     }
   };
 
-  const handleUserInputAmount = (e) => {
-    const value = e.target.value;
+  const handleUserInputAmount = async (e) => {
+    const value = await e.target.value;
     if (value < bookingItem.minimumPayment) {
       setIsLessAmount(true);
     } else {
@@ -143,6 +143,7 @@ const PersonalInfo = () => {
 
       if (data?.data?.bkashURL !== undefined) {
         window.location.href = data?.data?.bkashURL;
+        toast.success("Booking successfully done");
       } else {
         bkashError = (
           <p className="text-red-500">Network Error, Please try again</p>
@@ -151,7 +152,6 @@ const PersonalInfo = () => {
       }
 
       dispatch(placeLoadingShow(false));
-      toast.success("Booking successfully done");
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
 
@@ -1373,15 +1373,17 @@ const PersonalInfo = () => {
                   {bkashError && bkashError}
                   <div className="flex flex-wrap gap-4">
                     <button
-                      onClick={() =>
-                        handlePayByBkash(bookingItem?.minimumPayment)
+                      onClick={async () =>
+                        await handlePayByBkash(bookingItem?.minimumPayment)
                       }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
                       Minimum - {bookingItem?.minimumPayment} ৳
                     </button>
                     <button
-                      onClick={() => handlePayByBkash(bookingItem?.totalAmount)}
+                      onClick={async () =>
+                        await handlePayByBkash(bookingItem?.totalAmount)
+                      }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
                       Total Amount - {bookingItem?.totalAmount} ৳
@@ -1404,7 +1406,9 @@ const PersonalInfo = () => {
                           onChange={handleUserInputAmount}
                         />
                         <button
-                          onClick={() => handlePayByBkash(amountForPay)}
+                          onClick={async () =>
+                            await handlePayByBkash(amountForPay)
+                          }
                           className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
                           disabled={isLessAmount}
                         >

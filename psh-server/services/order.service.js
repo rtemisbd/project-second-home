@@ -13,7 +13,7 @@ import { bookingSms } from "../SMS/BookingSms.js";
 const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking, selectMethod } = payload;
   const session = await startSession();
-  let retryCount = 3; // Retry logic: retry up to 3 times
+
   let responseData = null;
 
   try {
@@ -50,54 +50,42 @@ const createOrderIntoDB = async (payload) => {
     } else {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-      let attempt = 0;
 
-      while (attempt < retryCount) {
-        try {
-          const response = await fetch(config.bkash_create_payment_url, {
-            method: "POST",
-            headers: await bkash_headers(getValue("id_token")),
-            body: JSON.stringify({
-              mode: "0011",
-              payerReference: " ",
-              callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
-              amount,
-              currency: "BDT",
-              intent: "sale",
-              merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
-            }),
-          });
+      try {
+        const response = await fetch(config.bkash_create_payment_url, {
+          method: "POST",
+          headers: await bkash_headers(getValue("id_token")),
+          body: JSON.stringify({
+            mode: "0011",
+            payerReference: " ",
+            callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
+            amount,
+            currency: "BDT",
+            intent: "sale",
+            merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
+          }),
+        });
 
-          // Log the raw response for debugging
-          const data = await response.json();
-          // console.log("bKash API Response Attempt:", attempt + 1, data);
+        // Log the raw response for debugging
+        const data = await response.json();
 
-          if (!response.ok || !data?.bkashURL) {
-            // Retry on failure or missing URL
-            throw new Error("bKash response missing bkashURL, retrying...");
-          }
-
-          responseData = data;
-          break; // Exit the loop if successful
-        } catch (error) {
-          // console.error("Error during bKash payment creation:", error);
-          attempt += 1;
-          if (attempt >= retryCount) {
-            throw new Error(
-              "Max retry attempts reached for bKash payment creation."
-            );
-          }
+        if (!response.ok || !data?.bkashURL) {
+          throw new Error("bKash response missing bkashURL, retrying...");
         }
-      }
 
-      if (!responseData) {
-        throw new Error("bKash URL not returned after retries");
+        responseData = data;
+      } catch (error) {
+        // console.error("Error during bKash payment creation:", error);
       }
-
-      // Commit the transaction
-      await session.commitTransaction();
-      return { bkashURL: responseData?.bkashURL };
     }
+
+    if (!responseData) {
+      throw new Error("bKash URL not returned after retries");
+    }
+
+    // Commit the transaction
+    await session.commitTransaction();
+    return { bkashURL: responseData?.bkashURL };
   } catch (error) {
     await session.abortTransaction();
     // console.error("Error in createOrderIntoDB:", error);
