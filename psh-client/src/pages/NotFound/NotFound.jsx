@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import Navmenu from "../../components/shared/NavMenu";
@@ -6,6 +6,15 @@ import Footer from "../../components/shared/Footer";
 import "./NotFound.css";
 
 const NotFound = () => {
+  useEffect(() => {
+    const hasReloaded = sessionStorage.getItem("hasReloaded");
+
+    if (!hasReloaded) {
+      sessionStorage.setItem("hasReloaded", "true");
+      window.location.reload();
+    }
+  }, []);
+
   return (
     <>
       <Navmenu />
