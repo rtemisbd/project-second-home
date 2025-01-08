@@ -20,7 +20,7 @@ const createOrderIntoDB = async (payload) => {
     session.startTransaction();
 
     // Set user context
-    setValue("userId", dataForBooking?.userId);
+    await setValue("userId", dataForBooking?.userId);
 
     // Step 1: Update user information
     const userUpdate = {
@@ -96,7 +96,7 @@ const createOrderIntoDB = async (payload) => {
 
       // Commit the transaction
       await session.commitTransaction();
-      return { bkashURL: responseData.bkashURL };
+      return { bkashURL: responseData?.bkashURL };
     }
   } catch (error) {
     await session.abortTransaction();
