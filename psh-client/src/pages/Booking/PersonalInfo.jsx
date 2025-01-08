@@ -141,19 +141,19 @@ const PersonalInfo = () => {
       );
       // console.log(data?.data?.bkashURL);
 
-      if (data?.data?.bkashURL !== undefined) {
+      if ((await data?.data?.bkashURL) !== undefined) {
         window.location.href = await data?.data?.bkashURL;
         toast.success("Booking successfully done");
       } else {
-        bkashError = (
-          <p className="text-red-500">Network Error, Please try again</p>
-        );
         const hasReloaded = sessionStorage.getItem("hasReloaded");
-
         if (!hasReloaded) {
           sessionStorage.setItem("hasReloaded", "true");
           window.location.reload();
         }
+
+        bkashError = (
+          <p className="text-red-500">Network Error, Please try again</p>
+        );
       }
 
       dispatch(placeLoadingShow(false));
