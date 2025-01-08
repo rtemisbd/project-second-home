@@ -142,7 +142,7 @@ const PersonalInfo = () => {
       // console.log(data?.data?.bkashURL);
 
       if (data?.data?.bkashURL !== undefined) {
-        window.location.href = data?.data?.bkashURL;
+        window.location.href = await data?.data?.bkashURL;
         toast.success("Booking successfully done");
       } else {
         bkashError = (

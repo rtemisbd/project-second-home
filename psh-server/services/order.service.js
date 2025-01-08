@@ -51,32 +51,45 @@ const createOrderIntoDB = async (payload) => {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
 
-      try {
-        const response = await fetch(config.bkash_create_payment_url, {
-          method: "POST",
-          headers: await bkash_headers(getValue("id_token")),
-          body: JSON.stringify({
-            mode: "0011",
-            payerReference: " ",
-            callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
-            amount,
-            currency: "BDT",
-            intent: "sale",
-            merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
-          }),
-        });
+      // try {
+      //   const response = await fetch(config.bkash_create_payment_url, {
+      //     method: "POST",
+      //     headers: await bkash_headers(await getValue("id_token")),
+      //     body: JSON.stringify({
+      //       mode: "0011",
+      //       payerReference: " ",
+      //       callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
+      //       amount,
+      //       currency: "BDT",
+      //       intent: "sale",
+      //       merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
+      //     }),
+      //   });
+      //   const data = await response.json();
 
-        // Log the raw response for debugging
-        const data = await response.json();
+      //   if (!response.ok || !data?.bkashURL) {
+      //     throw new Error("bKash response missing bkashURL, retrying...");
+      //   }
 
-        if (!response.ok || !data?.bkashURL) {
-          throw new Error("bKash response missing bkashURL, retrying...");
-        }
-
-        responseData = data;
-      } catch (error) {
-        // console.error("Error during bKash payment creation:", error);
-      }
+      //   responseData = data;
+      // } catch (error) {
+      //   // console.error("Error during bKash payment creation:", error);
+      // }
+      const response = await fetch(config.bkash_create_payment_url, {
+        method: "POST",
+        headers: await bkash_headers(await getValue("id_token")),
+        body: JSON.stringify({
+          mode: "0011",
+          payerReference: " ",
+          callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
+          amount,
+          currency: "BDT",
+          intent: "sale",
+          merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
+        }),
+      });
+      const data = await response.json();
+      responseData = data;
     }
 
     if (!responseData) {
