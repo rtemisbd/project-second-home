@@ -134,28 +134,33 @@ const PersonalInfo = () => {
         dataForBooking.paymentNumber = paymentNumber;
       }
 
-      const { data } = await axios.post(
-        `${serverBaseUrl}/order`,
-        { amount, dataForBooking, selectMethod },
-        { withCredentials: true }
-      );
-      // console.log(data?.data?.bkashURL);
-
-      if ((await data?.data?.bkashURL) !== undefined) {
-        window.location.href = await data?.data?.bkashURL;
-        toast.success("Booking successfully done");
-      } else {
-        const hasReloaded = sessionStorage.getItem("hasReloaded");
-        if (!hasReloaded) {
-          sessionStorage.setItem("hasReloaded", "true");
-          window.location.reload();
-        }
-
-        bkashError = (
-          <p className="text-red-500">Network Error, Please try again</p>
+      if (amount && dataForBooking) {
+        const { data } = await axios.post(
+          `${serverBaseUrl}/order`,
+          { amount, dataForBooking, selectMethod },
+          { withCredentials: true }
         );
-      }
 
+        if ((await data?.data?.bkashURL) !== undefined) {
+          window.location.href = await data?.data?.bkashURL;
+          toast.success("Booking successfully done");
+        } else {
+          const hasReloaded = sessionStorage.getItem("hasReloaded");
+          if (!hasReloaded) {
+            sessionStorage.setItem("hasReloaded", "true");
+            window.location.reload();
+          }
+
+          bkashError = (
+            <p className="text-red-500">Network Error, Please try again</p>
+          );
+        }
+      } else {
+        setShowPayment(false);
+        setIsBlur(false);
+        dispatch(placeLoadingShow(false));
+        toast.error("Something is wrong! Please try again.");
+      }
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
