@@ -46,18 +46,20 @@ const call_back = async (req, res) => {
   const { paymentID, status, callbackData } = await req.query;
 
   if (status === "cancel" || status === "failure") {
-    return res.redirect(`${config.client_url}/error?message=${status}`);
+    return await res.redirect(`${config.client_url}/error?message=${status}`);
   }
 
   if (status === "success") {
     const session = await startSession();
     try {
       session.startTransaction();
-
+      const token = await getValidToken(getValue("id_token"));
       // Step 4: Execute payment via bKash
       const response = await fetch(config.bkash_execute_payment_url, {
         method: "POST",
-        headers: await bkash_headers(getValue("id_token")),
+        headers: await bkash_headers(token),
+        // headers: await bkash_headers(getValue("id_token")),
+        // headers: await bkash_headers(getValidToken(await getValue("id_token"))),
         body: JSON.stringify({ paymentID }),
       });
 
