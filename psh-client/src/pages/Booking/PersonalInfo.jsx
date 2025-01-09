@@ -155,6 +155,7 @@ const PersonalInfo = () => {
             <p className="text-red-500">Network Error, Please try again</p>
           );
         }
+        console.log({ data });
       } else {
         setShowPayment(false);
         setIsBlur(false);

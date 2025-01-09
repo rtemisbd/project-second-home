@@ -21,6 +21,7 @@ export default {
   bkash_api_key: process.env.BKASH_API_KEY,
   bkash_secret_key: process.env.BKASH_SECRET_KEY,
   bkash_grant_token_url: process.env.bkash_grant_token_url,
+  bkash_refresh_token_url: process.env.bkash_refresh_token_url,
   bkash_create_payment_url: process.env.bkash_create_payment_url,
   bkash_execute_payment_url: process.env.bkash_execute_payment_url,
   bkash_refund_transaction_url: process.env.bkash_refund_transaction_url,

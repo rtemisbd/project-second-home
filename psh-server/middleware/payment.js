@@ -27,7 +27,7 @@ const bkash_auth = async (req, res, next) => {
 
     next();
   } catch (error) {
-    console.error("Error in bkash_auth:", error);
+    // console.error("Error in bkash_auth:", error);
     return res.status(401).json({ error: error.message });
   }
 };
