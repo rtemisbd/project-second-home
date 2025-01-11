@@ -152,10 +152,10 @@ const PersonalInfo = () => {
             <p className="text-red-500">Network Error, Please try again</p>
           );
           console.log({ data });
+          setShowPayment(false);
+          setIsBlur(false);
         }
       } else {
-        setShowPayment(false);
-        setIsBlur(false);
         dispatch(placeLoadingShow(false));
         toast.error("Something is wrong! Please try again.");
       }
