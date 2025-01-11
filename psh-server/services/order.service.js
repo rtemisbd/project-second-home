@@ -52,7 +52,7 @@ const createOrderIntoDB = async (payload) => {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
       const token = await getValidToken(getValue("id_token"));
-      console.log(await bkash_headers(getValidToken(getValue("id_token"))));
+
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
         headers: await bkash_headers(token),

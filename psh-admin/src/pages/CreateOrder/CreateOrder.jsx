@@ -4,8 +4,6 @@ import toast from "react-hot-toast";
 import { baseUrl } from "../../utils/getBaseURL";
 
 const CreateOrder = () => {
-  const [showSignIn, setShowSignIn] = useState(true);
-  const [showSignUp, setShowSignUp] = useState(false);
   const [showOtpPage, setShowOtpPage] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");

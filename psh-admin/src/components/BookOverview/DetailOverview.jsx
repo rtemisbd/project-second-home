@@ -107,7 +107,7 @@ const DetailOverview = ({
             ))}
           </div>
           {/* for new booking */}
-          {/* <div
+          <div
             style={{
               display: "flex",
               justifyContent: "end",
@@ -115,7 +115,7 @@ const DetailOverview = ({
             }}
           >
             <Link to="/dashboard/create-booking">Book Now</Link>
-          </div> */}
+          </div>
         </div>
       </Modal.Body>
     </Modal>
