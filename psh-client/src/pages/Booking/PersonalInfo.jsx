@@ -134,12 +134,12 @@ const PersonalInfo = () => {
       if (amount && dataForBooking) {
         const { data } = await axios.post(
           `${serverBaseUrl}/order`,
-          { amount: 1, dataForBooking, selectMethod },
+          { amount, dataForBooking, selectMethod },
           { withCredentials: true }
         );
-        console.log({ response: data });
 
         window.location.href = data?.data?.bkashURL;
+        console.log({ response: data });
         // toast.success("Booking successfully done");
       } else {
         setShowPayment(false);

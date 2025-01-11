@@ -80,7 +80,6 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
     //   throw new Error("bKash URL not returned after retries");
     // }
 
-    // Commit the transaction
     await session.commitTransaction();
     return { bkashURL: responseData?.bkashURL };
   } catch (error) {
