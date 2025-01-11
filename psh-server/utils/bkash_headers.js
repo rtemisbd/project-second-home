@@ -15,18 +15,10 @@ import { getValidToken } from "./getValidToken.js";
 export const bkash_headers = (id_token) => {
   // console.log(id_token);
 
-  try {
-    // Retrieve a valid token
-    // const id_token = await getValidToken();
-
-    return {
-      "Content-Type": "application/json",
-      Accept: "application/json",
-      Authorization: id_token,
-      "X-App-Key": config.bkash_api_key,
-    };
-  } catch (error) {
-    // console.error("Error generating bKash headers:", error);
-    throw new Error("Failed to generate valid bKash headers");
-  }
+  return {
+    "Content-Type": "application/json",
+    Accept: "application/json",
+    Authorization: id_token,
+    "X-App-Key": config.bkash_api_key,
+  };
 };
