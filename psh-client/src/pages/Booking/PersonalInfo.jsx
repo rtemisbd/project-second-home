@@ -26,9 +26,7 @@ const PersonalInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [singleUser, setSingleUser] = useState({});
-  const [bookingItem, setBookingItem] = useState(
-    JSON.parse(localStorage.getItem("bookingItem"))
-  );
+  const [bookingItem, setBookingItem] = useState({});
   // const [bookingItem, setBookingItem] = useState({});
   const [amountForPay, setAmountForPay] = useState(0);
   const [isBlur, setIsBlur] = useState(false);
@@ -54,13 +52,13 @@ const PersonalInfo = () => {
 
   let bkashError;
 
-  const storedBookingItem = localStorage.getItem("bookingItem");
   useEffect(() => {
+    const storedBookingItem = localStorage.getItem("bookingItem");
     if (storedBookingItem) {
       const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
       setBookingItem(parseToJson);
     }
-  }, [storedBookingItem]);
+  }, []);
 
   // Get Single singleUser
   useEffect(() => {
