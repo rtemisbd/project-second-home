@@ -69,11 +69,12 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
         }),
       });
       const data = await response.json();
-      console.log({ response });
+      // console.log({ response });
+      console.log({ data });
 
       responseData = data;
     }
-    console.log({ data });
+    // console.log({ data });
 
     // if (!responseData) {
     //   throw new Error("bKash URL not returned after retries");
