@@ -15,6 +15,8 @@ const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking, selectMethod } = payload;
   const session = await startSession();
 
+  let responseData = null;
+
   try {
     session.startTransaction();
 
@@ -66,15 +68,16 @@ const createOrderIntoDB = async (payload) => {
         }),
       });
       const data = await response.json();
+      responseData = data;
     }
 
-    if (!data) {
+    if (!responseData) {
       throw new Error("bKash URL not returned after retries");
     }
 
     // Commit the transaction
     await session.commitTransaction();
-    return { bkashURL: data?.bkashURL };
+    return { bkashURL: responseData?.bkashURL };
   } catch (error) {
     await session.abortTransaction();
     // console.error("Error in createOrderIntoDB:", error);
