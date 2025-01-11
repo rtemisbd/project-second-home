@@ -22,8 +22,8 @@ export const bkash_headers = async (id_token) => {
     return {
       "Content-Type": "application/json",
       Accept: "application/json",
-      authorization: id_token,
-      "x-app-key": config.bkash_api_key,
+      Authorization: id_token,
+      "X-App-Key": config.bkash_api_key,
     };
   } catch (error) {
     // console.error("Error generating bKash headers:", error);
