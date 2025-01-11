@@ -15,8 +15,14 @@ import config from "../config/index.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 
 export const createOrder = catchAsync(async (req, res, next) => {
+  const bkash_auth_token = req.bkash_auth_token;
+  // console.log({ bkash_auth_token });
+
   // Booking Save to Database
-  const result = await orderServices.createOrderIntoDB(req.body);
+  const result = await orderServices.createOrderIntoDB(
+    req.body,
+    bkash_auth_token
+  );
 
   sendResponse(res, {
     statusCode: 200,
