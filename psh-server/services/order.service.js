@@ -55,7 +55,7 @@ const createOrderIntoDB = async (payload) => {
 
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
-        headers: await bkash_headers(token),
+        headers: bkash_headers(token),
         // headers: await bkash_headers(await getValue("id_token")),
         body: JSON.stringify({
           mode: "0011",

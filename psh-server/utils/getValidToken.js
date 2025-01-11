@@ -10,16 +10,11 @@ import bkash_auth from "../middleware/payment.js";
 export const getValidToken = async (tokenCache) => {
   //   tokenCache = null;
   if (tokenCache && !isTokenExpired(tokenCache)) {
-    return tokenCache;
+    tokenCache;
+  } else {
+    tokenCache = await refreshToken();
+    setValue("id_token", tokenCache); // Set the refreshed token in storage
   }
-
-  //   console.log("Token is invalid or expired. Fetching a new one...");
-  tokenCache = await refreshToken();
-  if (!tokenCache) {
-    throw new Error("Failed to refresh token");
-  }
-
-  setValue("id_token", tokenCache); // Set the refreshed token in storage
   return tokenCache;
 };
 

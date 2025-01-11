@@ -12,7 +12,7 @@ import { getValidToken } from "./getValidToken.js";
 // });
 
 // Function to generate headers for bKash API
-export const bkash_headers = async (id_token) => {
+export const bkash_headers = (id_token) => {
   // console.log(id_token);
 
   try {
