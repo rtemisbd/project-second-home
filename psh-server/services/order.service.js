@@ -71,9 +71,9 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
       responseData = data;
     }
 
-    if (!responseData) {
-      throw new Error("bKash URL not returned after retries");
-    }
+    // if (!responseData) {
+    //   throw new Error("bKash URL not returned after retries");
+    // }
 
     // Commit the transaction
     await session.commitTransaction();
