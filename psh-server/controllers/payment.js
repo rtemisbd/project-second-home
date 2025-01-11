@@ -44,7 +44,7 @@ const payment_create = async (req, res) => {
 // Callback function after payment
 const call_back = async (req, res) => {
   const { paymentID, status, callbackData, token } = await req.query;
-  // console.log({ token });
+  console.log({ from_caLLback: token });
 
   if (status === "cancel" || status === "failure") {
     return await res.redirect(`${config.client_url}/error?message=${status}`);

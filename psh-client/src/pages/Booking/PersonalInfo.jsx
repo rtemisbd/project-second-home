@@ -54,16 +54,13 @@ const PersonalInfo = () => {
 
   let bkashError;
 
-  // const storedBookingItem = localStorage.getItem("bookingItem");
-
-  // useEffect(() => {
-  //   if (storedBookingItem) {
-  //     const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
-  //     setBookingItem(parseToJson);
-  //   } else {
-  //     navigate("/");
-  //   }
-  // }, []);
+  const storedBookingItem = localStorage.getItem("bookingItem");
+  useEffect(() => {
+    if (storedBookingItem) {
+      const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
+      setBookingItem(parseToJson);
+    }
+  }, [storedBookingItem]);
 
   // Get Single singleUser
   useEffect(() => {
@@ -142,23 +139,18 @@ const PersonalInfo = () => {
           { amount: 1, dataForBooking, selectMethod },
           { withCredentials: true }
         );
+        console.log({ response: data });
 
-        if ((await data?.data?.bkashURL) !== undefined) {
-          window.location.href = await data?.data?.bkashURL;
-          toast.success("Booking successfully done");
-        } else {
-          // window.location.reload();
-          bkashError = (
-            <p className="text-red-500">Network Error, Please try again</p>
-          );
-          console.log({ data });
-          setShowPayment(false);
-          setIsBlur(false);
-        }
+        window.location.href = data?.data?.bkashURL;
+        // toast.success("Booking successfully done");
       } else {
+        setShowPayment(false);
+        setIsBlur(false);
         dispatch(placeLoadingShow(false));
         toast.error("Something is wrong! Please try again.");
       }
+      setShowPayment(false);
+      setIsBlur(false);
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
