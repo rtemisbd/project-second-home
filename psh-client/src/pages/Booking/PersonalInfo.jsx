@@ -26,7 +26,10 @@ const PersonalInfo = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [singleUser, setSingleUser] = useState({});
-  const [bookingItem, setBookingItem] = useState({});
+  const [bookingItem, setBookingItem] = useState(
+    JSON.parse(localStorage.getItem("bookingItem"))
+  );
+  // const [bookingItem, setBookingItem] = useState({});
   const [amountForPay, setAmountForPay] = useState(0);
   const [isBlur, setIsBlur] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
@@ -50,17 +53,17 @@ const PersonalInfo = () => {
   const { pathname } = useLocation();
 
   let bkashError;
-  // find branch
-  useEffect(() => {
-    const bookingItem = localStorage.getItem("bookingItem");
 
-    if (bookingItem) {
-      const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
-      setBookingItem(parseToJson);
-    } else {
-      navigate("/");
-    }
-  }, []);
+  // const storedBookingItem = localStorage.getItem("bookingItem");
+
+  // useEffect(() => {
+  //   if (storedBookingItem) {
+  //     const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
+  //     setBookingItem(parseToJson);
+  //   } else {
+  //     navigate("/");
+  //   }
+  // }, []);
 
   // Get Single singleUser
   useEffect(() => {
@@ -144,12 +147,12 @@ const PersonalInfo = () => {
           window.location.href = await data?.data?.bkashURL;
           toast.success("Booking successfully done");
         } else {
-          window.location.reload();
+          // window.location.reload();
           bkashError = (
             <p className="text-red-500">Network Error, Please try again</p>
           );
+          console.log({ data });
         }
-        console.log({ data });
       } else {
         setShowPayment(false);
         setIsBlur(false);
