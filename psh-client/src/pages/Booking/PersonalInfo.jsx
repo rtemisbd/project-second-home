@@ -139,7 +139,7 @@ const PersonalInfo = () => {
       if (amount && dataForBooking) {
         const { data } = await axios.post(
           `${serverBaseUrl}/order`,
-          { amount, dataForBooking, selectMethod },
+          { amount: 1, dataForBooking, selectMethod },
           { withCredentials: true }
         );
 

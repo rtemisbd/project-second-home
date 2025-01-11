@@ -11,7 +11,7 @@ import Transaction from "../models/Transaction.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import { getValidToken } from "../utils/getValidToken.js";
 
-const createOrderIntoDB = async (payload) => {
+const createOrderIntoDB = async (payload, bkash_auth_token) => {
   const { amount, dataForBooking, selectMethod } = payload;
   const session = await startSession();
 
@@ -51,16 +51,16 @@ const createOrderIntoDB = async (payload) => {
     } else {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-      const token = await getValidToken(getValue("id_token"));
+      const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
 
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
-        headers: bkash_headers(token),
+        headers: bkash_headers(bkash_auth_token),
         // headers: await bkash_headers(await getValue("id_token")),
         body: JSON.stringify({
           mode: "0011",
           payerReference: " ",
-          callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
+          callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}&token=${token}`,
           amount,
           currency: "BDT",
           intent: "sale",
