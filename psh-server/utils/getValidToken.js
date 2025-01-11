@@ -80,10 +80,10 @@ const refreshToken = async () => {
   } catch (error) {
     // Error handling
     if (error.response) {
-      console.error(
-        "Error refreshing token: Response from server:",
-        error.response.data
-      );
+      // console.error(
+      //   "Error refreshing token: Response from server:",
+      //   error.response.data
+      // );
       throw new Error(
         `Failed to refresh token: ${error.response.status} ${
           error.response.data.message || ""

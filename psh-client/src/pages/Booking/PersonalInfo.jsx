@@ -133,7 +133,6 @@ const PersonalInfo = () => {
         dataForBooking.receivedTk = receivedTk;
         dataForBooking.paymentNumber = paymentNumber;
       }
-
       if (amount && dataForBooking) {
         const { data } = await axios.post(
           `${serverBaseUrl}/order`,
@@ -145,12 +144,7 @@ const PersonalInfo = () => {
           window.location.href = await data?.data?.bkashURL;
           toast.success("Booking successfully done");
         } else {
-          const hasReloaded = sessionStorage.getItem("hasReloaded");
-          if (!hasReloaded) {
-            sessionStorage.setItem("hasReloaded", "true");
-            window.location.reload();
-          }
-
+          window.location.reload();
           bkashError = (
             <p className="text-red-500">Network Error, Please try again</p>
           );
