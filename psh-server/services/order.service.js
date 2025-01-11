@@ -86,7 +86,7 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
   } catch (error) {
     await session.abortTransaction();
     // console.error("Error in createOrderIntoDB:", error);
-    return { error: error.message };
+    return { error: error };
   } finally {
     await session.endSession();
   }
