@@ -52,6 +52,7 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
       const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
+      console.log({ callbackData, token });
 
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
@@ -68,8 +69,11 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
         }),
       });
       const data = await response.json();
+      console.log({ response });
+
       responseData = data;
     }
+    console.log({ data });
 
     // if (!responseData) {
     //   throw new Error("bKash URL not returned after retries");
