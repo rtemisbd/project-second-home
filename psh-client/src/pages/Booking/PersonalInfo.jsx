@@ -137,9 +137,9 @@ const PersonalInfo = () => {
           { amount: 1, dataForBooking, selectMethod },
           { withCredentials: true }
         );
-        console.log({ response: data });
 
         window.location.href = data?.data?.bkashURL;
+        console.log({ response: data });
         // toast.success("Booking successfully done");
       } else {
         setShowPayment(false);
