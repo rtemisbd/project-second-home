@@ -10,7 +10,6 @@ import { bkash_headers } from "../utils/bkash_headers.js";
 import Transaction from "../models/Transaction.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import { getValidToken } from "../utils/getValidToken.js";
-import jwt from "jsonwebtoken";
 
 const createOrderIntoDB = async (payload, bkash_auth_token) => {
   const { amount, dataForBooking, selectMethod } = payload;
@@ -52,23 +51,20 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
     } else {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-      // const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
-      const token = jwt.decode(bkash_auth_token);
-      console.log("Decoded Token:", token);
-
-      console.log({ callbackData, token });
-      console.log("Config in production:", {
-        user: config.bkash_userName,
-        password: config.bkash_password,
-        apiKey: config.bkash_api_key,
-        secretKey: config.bkash_secret_key,
-        createPaymentUrl: config.bkash_create_payment_url,
-        headers: bkash_headers(token),
-      });
+      const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
+      // console.log({ callbackData, token });
+      // console.log("Config in production:", {
+      // user: config.bkash_userName,
+      //   password: config.bkash_password,
+      //   apiKey: config.bkash_api_key,
+      //   secretKey: config.bkash_secret_key,
+      //   createPaymentUrl: config.bkash_create_payment_url,
+      //   headers: bkash_headers(bkash_auth_token),
+      // });
 
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
-        headers: bkash_headers(token),
+        headers: bkash_headers(bkash_auth_token),
         // headers: await bkash_headers(await getValue("id_token")),
         body: JSON.stringify({
           mode: "0011",
@@ -82,7 +78,7 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
       });
       const data = await response.json();
       // console.log({ response });
-      console.log({ line81: data });
+      // console.log({ line81: data });
 
       responseData = data;
     }

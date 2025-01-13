@@ -18,8 +18,7 @@ export const bkash_headers = (id_token) => {
   return {
     "Content-Type": "application/json",
     Accept: "application/json",
-    // Authorization: id_token,
-    Authorization: `Bearer ${id_token}`,
+    Authorization: id_token,
     "X-App-Key": config.bkash_api_key,
   };
 };
