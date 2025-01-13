@@ -554,7 +554,7 @@ const UserAuthentication = () => {
                       <div>
                         <form onSubmit={handleResentOtp}>
                           <button
-                            // onClick={generateRandomCode}
+                            onClick={generateRandomCode}
                             className="underline hover:text-[#02625a] text-[#35B0A7] cursor-pointer"
                             // disabled={formattedTime <= 0 ? false : true}
                           >

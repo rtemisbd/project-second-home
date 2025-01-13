@@ -27,7 +27,10 @@ export const createUser = async (req, res) => {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    const hashedPassword = await bcrypt.hash(req.body.password, 10);
+    const hashedPassword = await bcrypt.hash(
+      req.body.password || config.user_default_password,
+      10
+    );
 
     const user = new User({
       firstName,
@@ -89,11 +92,11 @@ export const sendOtp = async (req, res, next) => {
 
       bookingSms(bookingMessage)
         .then((response) => {
-          console.log("Response from SMS API:", response);
+          // console.log("Response from SMS API:", response);
           // Handle response data as needed
         })
         .catch((error) => {
-          console.error("Error while sending SMS:", error);
+          // console.error("Error while sending SMS:", error);
           // Handle error
         });
 

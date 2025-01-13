@@ -1,7 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
-import toast from "react-hot-toast";
 import { baseUrl } from "../../utils/getBaseURL";
+import toast, { Toaster } from "react-hot-toast";
 
 const CreateOrder = () => {
   const [showOtpPage, setShowOtpPage] = useState(false);
@@ -21,9 +21,10 @@ const CreateOrder = () => {
   const [user, setUser] = useState(null);
 
   const generateRandomCode = () => {
-    // Generate a random 6-digit number
+    // Generate a random 5-digit number
     const newRandomCode = Math.floor(10000 + Math.random() * 90000);
-    setRandomCode(newRandomCode);
+
+    return newRandomCode;
   };
 
   // Format the remaining seconds as minutes:seconds
@@ -45,45 +46,52 @@ const CreateOrder = () => {
 
   const handleOtp = async (e) => {
     e.preventDefault();
-    // const parseToJson = JSON.parse(localStorage.getItem("otp"));
-    // if (Number(otp.join("")) === randomCode) {
-    //   await registerUser(firstName, email, phone, password);
 
-    //   // dispatch(placeLoadingShow(false));
-    //   // navigate(location.state?.from || "/");
-    //   if (window.history.length > 1) {
-    //     navigate(-1);
-    //   } else {
-    //     navigate("/");
-    //   }
-    //   // localStorage.removeItem("otp");
-    // } else {
-    //   return toast.error("Incorrect OTP. Please try again.");
-    // }
+    if (Number(otp.join("")) === randomCode) {
+      try {
+        const response = await axios.post(`${baseUrl}/api/users`, {
+          firstName,
+          phone,
+        });
+
+        if (response.status === 200) {
+          toast.success("Congratulations! Your account has been created.");
+          const { data } = response;
+          setUser(data.user);
+        } else if (response.status === 400) {
+          setErrorMessage("User already exists for this phone.");
+        } else {
+          setErrorMessage("Registration failed");
+        }
+      } catch (error) {
+        if (error.response && error.response.status === 401) {
+          setErrorMessage(error.response.data.message);
+        } else if (error.response && error.response.status === 400) {
+          setErrorMessage("User already exists for this phone.");
+          setShowOtpPage(false);
+          return;
+        } else if (error.response && error.response.status === 404) {
+          setErrorMessage(error.response.data.message);
+        } else {
+          setErrorMessage("An error occurred. Please try again later.");
+        }
+      }
+      setShowOtpPage(false);
+    } else {
+      return toast.error("Incorrect OTP. Please try again.");
+    }
   };
 
   const handleResentOtp = async (e) => {
     e.preventDefault();
     setSeconds(120);
+    const generatedOtTP = generateRandomCode();
 
-    const intervalId = setInterval(() => {
-      // Decrease the remaining seconds by 1
-      setSeconds((prevSeconds) => prevSeconds - 1);
-    }, 1000);
-    setTimeout(() => {
-      clearInterval(intervalId);
-    }, 60000);
-    toast.success("Please Check Your Phone Number");
-  };
-
-  const handleSendOTP = async (e) => {
-    e.preventDefault();
-    generateRandomCode();
-    setShowOtpPage(true);
+    setRandomCode(generatedOtTP);
 
     // const parseToJson = JSON.parse(localStorage.getItem("otp"));
     const otpData = {
-      customerOtp: randomCode,
+      customerOtp: generatedOtTP,
       phone: phone,
     };
 
@@ -99,8 +107,55 @@ const CreateOrder = () => {
       }, 60000);
 
       toast.success("Please Check Your Phone Number");
+      setShowOtpPage(true);
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+
+      return toast.error(error?.response?.data?.message);
+    }
+
+    const intervalId = setInterval(() => {
+      // Decrease the remaining seconds by 1
+      setSeconds((prevSeconds) => prevSeconds - 1);
+    }, 1000);
+    setTimeout(() => {
+      clearInterval(intervalId);
+    }, 60000);
+    toast.success("Please Check Your Phone Number");
+  };
+
+  const handleSendOTP = async (e) => {
+    e.preventDefault();
+    if (phone?.length !== 11 || phone?.substring(0, 2) !== "01") {
+      return toast.error(
+        "This number is wrong! Please enter a valid phone number."
+      );
+    }
+    const generatedOtTP = generateRandomCode();
+
+    setRandomCode(generatedOtTP);
+
+    // const parseToJson = JSON.parse(localStorage.getItem("otp"));
+    const otpData = {
+      customerOtp: generatedOtTP,
+      phone: phone,
+    };
+
+    try {
+      await axios.post(`${baseUrl}/api/users/send-otp`, otpData);
+
+      const intervalId = setInterval(() => {
+        // Decrease the remaining seconds by 1
+        setSeconds((prevSeconds) => prevSeconds - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(intervalId);
+      }, 60000);
+
+      toast.success("Please Check Your Phone Number");
+      setShowOtpPage(true);
+    } catch (error) {
+      // console.log(error);
 
       return toast.error(error?.response?.data?.message);
     }
@@ -109,18 +164,29 @@ const CreateOrder = () => {
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
-        <section className="content customize_list">
-          <div>
+        <section
+          className="content customize_list"
+          style={{
+            // border: "3px solid white",
+            background: "white",
+            width: "60%",
+            margin: "auto",
+            padding: "32px 0px",
+          }}
+        >
+          <div className="content customize_list">
             <h2>Create New User</h2>
             <form onSubmit={handleSendOTP}>
-              <div style={{ display: "flex", gap: "20px" }}>
+              <div
+                style={{ display: "flex", gap: "20px", justifyItems: "end" }}
+              >
                 <div>
                   <span>Full Name </span>
                   <br />
                   <input
                     type="text"
                     name="firstName"
-                    placeholder="Enter phone number "
+                    placeholder="Enter user name "
                     onChange={(e) => setFirstName(e.target.value)}
                   />
                 </div>
@@ -134,19 +200,29 @@ const CreateOrder = () => {
                     onChange={(e) => setPhone(e.target.value)}
                   />
                 </div>
-              </div>
-
-              <div className="mt-2">
-                <button style={{ padding: "2px 16px" }}>Create User</button>
+                <div>
+                  <button
+                    style={{
+                      height: "30px",
+                      marginTop: "23px",
+                      padding: "0px 6px",
+                      borderRadius: "2px",
+                    }}
+                  >
+                    Create User
+                  </button>
+                </div>
               </div>
             </form>
           </div>
           {/* otp form */}
-          {showOtpPage && (
-            <div>
+          {showOtpPage ? (
+            <div
+              className="content customize_list mt-5"
+              // style={{ marginTop: "28px" }}
+            >
               <h2>Verification</h2>
               <p>Enter the OTP (One Time Password)</p>
-              <p className="mt-5">{phone}</p>
 
               <form onSubmit={handleOtp}>
                 <div style={{ display: "flex", gap: "3px" }}>
@@ -161,23 +237,40 @@ const CreateOrder = () => {
                         maxLength="1"
                         style={{
                           border: "2px solid black",
-                          height: "50px",
-                          width: "50px",
+                          height: "48px",
+                          width: "48px",
+                          marginRight: "2px",
+                          borderRadius: "6px",
+                          textAlign: "center",
                         }}
                       />
                     </div>
                   ))}
                 </div>
-                <button type="submit">Verify</button>
+                <button
+                  type="submit"
+                  style={{
+                    height: "36px",
+                    marginTop: "23px",
+                    padding: "0px 12px",
+                    borderRadius: "4px",
+                  }}
+                >
+                  Verify
+                </button>
               </form>
-              <p className="mt-2 text-sm">
+              <p>
                 Didn't receive any OTP?{" "}
                 <div>
                   <form onSubmit={handleResentOtp}>
                     <button
-                      // onClick={generateRandomCode}
-                      className="underline hover:text-[#02625a] text-[#35B0A7] cursor-pointer"
-                      // disabled={formattedTime <= 0 ? false : true}
+                      style={{
+                        background: "none",
+                        color: "#35B0A7",
+                        padding: "0px",
+                        textDecoration: "underline",
+                        marginTop: "-8px",
+                      }}
                     >
                       Re-send {formattedTime <= 0 ? "" : `(${formattedTime}s)`}
                     </button>
@@ -187,7 +280,13 @@ const CreateOrder = () => {
 
               <p>{message}</p>
             </div>
+          ) : (
+            <></>
           )}
+          <Toaster
+            containerStyle={{ top: 200, zIndex: "100000" }}
+            toastOptions={{ position: "top-center" }}
+          ></Toaster>
         </section>
       </div>
     </div>
