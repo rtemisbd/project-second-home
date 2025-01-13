@@ -55,13 +55,10 @@ const call_back = async (req, res) => {
     try {
       session.startTransaction();
       // Step 4: Execute payment via bKash
-      // const decodedToken = await JSON.parse(decodeURIComponent(token));
-      // const decodedToken = jwt.decode(bkash_auth_token);
-      // console.log("Decoded Token:", decodedToken);
-
+      const decodedToken = await JSON.parse(decodeURIComponent(token));
       const response = await fetch(config.bkash_execute_payment_url, {
         method: "POST",
-        headers: bkash_headers(token),
+        headers: bkash_headers(decodedToken),
         body: JSON.stringify({ paymentID }),
       });
 

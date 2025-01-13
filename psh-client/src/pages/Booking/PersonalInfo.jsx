@@ -32,7 +32,7 @@ const PersonalInfo = () => {
   const [isBlur, setIsBlur] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [selectMethod, setSelectMethod] = useState("app");
+  const [selectMethod, setSelectMethod] = useState("manual");
   const [requiredMessage, setRequiredMessage] = useState(false);
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [isLessAmount, setIsLessAmount] = useState(false);
@@ -1341,7 +1341,7 @@ const PersonalInfo = () => {
             </button>
           </div>
           <div className="my-4 flex items-center mx-4">
-            <input
+            {/* <input
               type="radio"
               id="app"
               name="method"
@@ -1350,12 +1350,13 @@ const PersonalInfo = () => {
               className=" mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-            <span className="text-[15px] mr-2">Pay By BKash</span>
+            <span className="text-[15px] mr-2">Pay By BKash</span> */}
             <input
               type="radio"
               id="manual"
               name="method"
               value="manual"
+              defaultChecked
               // className="mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
