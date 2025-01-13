@@ -69,7 +69,7 @@ import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
 import StudySpace from "./components/StudySpace/StudySpace";
 import RoomOverview from "./pages/roomOverview/RoomOverview";
-import CreateOrder from "./pages/CreateOrder/CreateOrder";
+import CreateUser from "./pages/CreateUser/CreateUser";
 
 function App() {
   return (
@@ -156,7 +156,7 @@ function App() {
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
         {/* testing new overview */}
         <Route path="booking-overview" element={<RoomOverview />} />
-        <Route path="create-booking" element={<CreateOrder />} />
+        <Route path="create-user/:roomId" element={<CreateUser />} />
       </Route>
 
       <Route path="*" element={<NotFound />}></Route>

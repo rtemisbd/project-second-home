@@ -114,7 +114,7 @@ const DetailOverview = ({
               marginRight: "20px",
             }}
           >
-            <Link to="/dashboard/create-booking">Book Now</Link>
+            <Link to={`/dashboard/create-user/${detail?._id}`}>Book Now</Link>
           </div>
         </div>
       </Modal.Body>

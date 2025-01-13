@@ -2,8 +2,10 @@ import axios from "axios";
 import React, { useState } from "react";
 import { baseUrl } from "../../utils/getBaseURL";
 import toast, { Toaster } from "react-hot-toast";
+import { useParams } from "react-router-dom";
 
-const CreateOrder = () => {
+const CreateUser = () => {
+  const { roomId } = useParams();
   const [showOtpPage, setShowOtpPage] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
@@ -11,19 +13,13 @@ const CreateOrder = () => {
   const [randomCode, setRandomCode] = useState(null);
 
   const [otp, setOtp] = useState(["", "", "", "", ""]);
-  const [message, setMessage] = useState("");
-  const [userMessage, setUserMessage] = useState("");
-
-  const [errorMessage, setErrorMessage] = useState("");
-
   const [seconds, setSeconds] = useState(120);
 
-  const [user, setUser] = useState(null);
+  console.log(roomId);
 
+  // Generate a random 5-digit number
   const generateRandomCode = () => {
-    // Generate a random 5-digit number
     const newRandomCode = Math.floor(10000 + Math.random() * 90000);
-
     return newRandomCode;
   };
 
@@ -56,24 +52,22 @@ const CreateOrder = () => {
 
         if (response.status === 200) {
           toast.success("Congratulations! Your account has been created.");
-          const { data } = response;
-          setUser(data.user);
         } else if (response.status === 400) {
-          setErrorMessage("User already exists for this phone.");
+          toast.error("User already exists for this phone.");
         } else {
-          setErrorMessage("Registration failed");
+          toast.error("Registration failed");
         }
       } catch (error) {
         if (error.response && error.response.status === 401) {
-          setErrorMessage(error.response.data.message);
+          toast.error(error.response.data.message);
         } else if (error.response && error.response.status === 400) {
-          setErrorMessage("User already exists for this phone.");
+          toast.error("User already exists for this phone.");
           setShowOtpPage(false);
           return;
         } else if (error.response && error.response.status === 404) {
-          setErrorMessage(error.response.data.message);
+          toast.error(error.response.data.message);
         } else {
-          setErrorMessage("An error occurred. Please try again later.");
+          toast.error("An error occurred. Please try again later.");
         }
       }
       setShowOtpPage(false);
@@ -277,8 +271,6 @@ const CreateOrder = () => {
                   </form>
                 </div>
               </p>
-
-              <p>{message}</p>
             </div>
           ) : (
             <></>
@@ -293,4 +285,4 @@ const CreateOrder = () => {
   );
 };
 
-export default CreateOrder;
+export default CreateUser;
