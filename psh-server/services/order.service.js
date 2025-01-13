@@ -78,7 +78,7 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
       });
       const data = await response.json();
       // console.log({ response });
-      console.log({ data });
+      console.log({ line81: data });
 
       responseData = data;
     }
