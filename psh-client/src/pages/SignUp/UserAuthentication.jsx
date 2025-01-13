@@ -184,13 +184,31 @@ const UserAuthentication = () => {
     e.preventDefault();
     setSeconds(120);
 
-    const intervalId = setInterval(() => {
-      // Decrease the remaining seconds by 1
-      setSeconds((prevSeconds) => prevSeconds - 1);
-    }, 1000);
-    setTimeout(() => {
-      clearInterval(intervalId);
-    }, 60000);
+    const otpData = {
+      customerOtp: randomCode,
+      email: email,
+      phone: phone,
+    };
+
+    try {
+      dispatch(placeLoadingShow(true));
+      await axios.post(`${serverBaseUrl}/users/send-otp`, otpData);
+      const intervalId = setInterval(() => {
+        setSeconds((prevSeconds) => prevSeconds - 1);
+      }, 1000);
+      setTimeout(() => {
+        clearInterval(intervalId);
+      }, 60000);
+      dispatch(placeLoadingShow(false));
+      setUserMessage(
+        "Enter the OTP (One Time Password) that has been sent to your registered Phone Number"
+      );
+    } catch (error) {
+      dispatch(placeLoadingShow(false));
+
+      return toast.error(error?.response?.data?.message);
+    }
+
     toast.success("Please Check Your Phone Number");
   };
 
