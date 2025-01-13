@@ -53,6 +53,14 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
       const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
       console.log({ callbackData, token });
+      console.log("Config in production:", {
+        user: config.bkash_userName,
+        password: config.bkash_password,
+        apiKey: config.bkash_api_key,
+        secretKey: config.bkash_secret_key,
+        createPaymentUrl: config.bkash_create_payment_url,
+        headers: bkash_headers(bkash_auth_token),
+      });
 
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
@@ -75,10 +83,6 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
       responseData = data;
     }
     // console.log({ data });
-
-    // if (!responseData) {
-    //   throw new Error("bKash URL not returned after retries");
-    // }
 
     await session.commitTransaction();
     return { bkashURL: responseData?.bkashURL };
