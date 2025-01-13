@@ -73,7 +73,7 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
           amount,
           currency: "BDT",
           intent: "sale",
-          merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
+          merchantInvoiceNumber: `Inv${uuidv4().substring(0, 7)}`,
         }),
       });
       const data = await response.json();
