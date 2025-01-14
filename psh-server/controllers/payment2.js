@@ -9,6 +9,9 @@ import { generateBookingId } from "../utils/generateBookingId.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import RentRoom from "../models/RentRoom.js";
 import Transaction from "../models/Transaction.js";
+import User from "../models/User.js";
+import { createOrderByManualBkash } from "../services/order.service.js";
+import sendResponse from "../shared/sendResponse.js";
 
 // Helper to prepare bkash headers
 const bkashHeaders = async () => {
@@ -22,35 +25,42 @@ const bkashHeaders = async () => {
 
 // Create Payment Method
 const paymentCreate = async (req, res) => {
-  const { amount, selectMethod, ...dataForBooking } = req.body;
+  const { amount, selectMethod, dataForBooking } = req.body;
+  // If Manual Payment
+  if (selectMethod === "manual") {
+    const result = await createOrderByManualBkash(dataForBooking);
 
-  // if (selectMethod === "manual") {
-  //   const result = await createOrderByManualBkash(dataForBooking);
-  //   return result;
-  // } else {
+    sendResponse(res, {
+      statusCode: 200,
+      success: true,
+      data: result,
+      message:
+        "Thank You! Your Booking Successfully Done, We will contact you very soon.",
+    });
+  } else {
+    setValue("dataForBooking", dataForBooking);
 
-  setValue("dataForBooking", dataForBooking);
+    try {
+      const { data } = await axios.post(
+        config.bkash_create_payment_url,
+        {
+          mode: "0011",
+          payerReference: " ",
+          callbackURL: `${config.server_url}/bkash/payment/callback`,
+          amount: amount,
+          currency: "BDT",
+          intent: "sale",
+          merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
+        },
+        {
+          headers: await bkashHeaders(),
+        }
+      );
 
-  try {
-    const { data } = await axios.post(
-      config.bkash_create_payment_url,
-      {
-        mode: "0011",
-        payerReference: " ",
-        callbackURL: "http://localhost:5000/api/bkash/payment/callback",
-        amount: amount,
-        currency: "BDT",
-        intent: "sale",
-        merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
-      },
-      {
-        headers: await bkashHeaders(),
-      }
-    );
-
-    return res.status(200).json({ data });
-  } catch (error) {
-    return res.status(401).json({ error: error.message });
+      return res.status(200).json({ bkashURL: data.bkashURL });
+    } catch (error) {
+      return res.status(401).json({ error: error.message });
+    }
   }
 };
 
@@ -60,7 +70,7 @@ const callBack = async (req, res) => {
   const dataForBooking = getValue("dataForBooking");
 
   if (status === "cancel" || status === "failure") {
-    return res.redirect(`http://localhost:5173/error?message=${status}`);
+    return res.redirect(`${config.client_url}/error?message=${status}`);
   }
 
   // Start MongoDB session for transaction
@@ -80,16 +90,16 @@ const callBack = async (req, res) => {
 
       if (data && data.statusCode === "0000") {
         // Create payment data within the session
-        const paymentData = new Payment2({
-          userId: getValue("userId"), // Use the stored userId
-          paymentID,
-          trxID: data.trxID,
-          date: data.paymentExecuteTime,
-          amount: parseInt(data.amount),
-        });
+        // const paymentData = new Payment2({
+        //   userId: getValue("userId"), // Use the stored userId
+        //   paymentID,
+        //   trxID: data.trxID,
+        //   date: data.paymentExecuteTime,
+        //   amount: parseInt(data.amount),
+        // });
 
-        // Save payment data within the session
-        await paymentData.save({ session });
+        // // Save payment data within the session
+        // await paymentData.save({ session });
         // Step 2: Generate booking ID
         const generateId = await generateBookingId();
 
@@ -116,7 +126,7 @@ const callBack = async (req, res) => {
           receivedTk: parseInt(data?.amount),
           paymentNumber: data?.customerMsisdn,
           transactionId: data.trxID,
-          userId: getValue("userId"),
+          userId: dataForBooking?.userId,
           userPhone: dataForBooking?.phone,
           userName: dataForBooking?.fullName,
           acceptableStatus: "Accepted",
@@ -157,7 +167,7 @@ const callBack = async (req, res) => {
         };
         // Update user information in the database
         await User.updateOne(
-          { phone: bookingData?.phone },
+          { _id: dataForBooking?.userId },
           { $set: userUpdate },
           { runValidators: true, session }
         );
@@ -166,22 +176,22 @@ const callBack = async (req, res) => {
         await session.commitTransaction();
         session.endSession();
 
-        return res.redirect(`http://localhost:5173/success`);
+        return res.redirect(`${config.client_url}/success`);
       } else {
         // Abort transaction if payment execution failed
         await session.abortTransaction();
         session.endSession();
         return res.redirect(
-          `http://localhost:5173/error?message=${data.statusMessage}`
+          `${config.client_url}/error?message=${data.statusMessage}`
         );
       }
     } catch (error) {
       // Abort transaction if any error occurs
       await session.abortTransaction();
       session.endSession();
-      console.log(error);
+      //   console.log(error);
       return res.redirect(
-        `http://localhost:5173/error?message=${error.message}`
+        `${config.client_url}/error?message=${error.message}`
       );
     }
   }

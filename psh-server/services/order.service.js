@@ -94,7 +94,7 @@ const createOrderIntoDB = async (payload) => {
   }
 };
 
-const createOrderByManualBkash = async (payload) => {
+export const createOrderByManualBkash = async (payload) => {
   const session = await startSession();
   try {
     session.startTransaction();
@@ -116,7 +116,7 @@ const createOrderByManualBkash = async (payload) => {
           receivedTk: dataForBooking?.receivedTk,
           paymentNumber: dataForBooking?.paymentNumber,
           // transactionId: data.trxID,
-          userId: getValue("userId"),
+          userId: dataForBooking?.userId,
           userPhone: dataForBooking?.phone,
           userName: dataForBooking?.fullName,
           acceptableStatus: "Pending",
@@ -137,7 +137,7 @@ const createOrderByManualBkash = async (payload) => {
     };
   } catch (error) {
     await session.abortTransaction();
-    console.error("Error during payment execution:", error);
+    // console.error("Error during payment execution:", error);
     return {
       bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
         error.message

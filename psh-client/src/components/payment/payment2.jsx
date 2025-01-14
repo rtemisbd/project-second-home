@@ -17,6 +17,7 @@ const PaymentPage = () => {
       );
       console.log(data);
       window.location.href = data?.data?.bkashURL;
+      // window.location.href = data.bkashURL;
       return data;
     } catch (error) {
       console.log(error);
