@@ -71,16 +71,29 @@ dotenv.config();
 // app.options("*", cors());
 
 // app.use(cors());
+const allowedOrigins = [
+  "http://localhost:5173",
+  "https://adminps.psh.com.bd",
+  "http://localhost:3000",
+  "https://psh.com.bd",
+  "https://www.psh.com.bd",
+];
+
+// CORS configuration
 app.use(
   cors({
-    origin: [
-      "http://localhost:5173",
-      "https://adminps.psh.com.bd",
-      "http://localhost:3000",
-      "https://psh.com.bd",
-      "https://www.psh.com.bd",
-    ],
+    origin: function (origin, callback) {
+      if (!origin) return callback(null, true);
+      if (allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error("Not allowed by CORS"));
+      }
+    },
     credentials: true,
+    methods: ["GET", "POST", "PUT", "PATCH", "DELETE"],
+    allowedHeaders: ["Content-Type", "x-api-key", "Authorization"],
+    optionsSuccessStatus: 200,
   })
 );
 

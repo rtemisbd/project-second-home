@@ -10,15 +10,19 @@ import { v4 as uuidv4 } from "uuid";
 import { bkash_headers } from "../utils/bkash_headers.js";
 import Transaction from "../models/Transaction.js";
 import { bookingSms } from "../SMS/BookingSms.js";
+import { getValidToken } from "../utils/getValidToken.js";
 
-const createOrderIntoDB = async (payload) => {
+const createOrderIntoDB = async (payload, bkash_auth_token) => {
   const { amount, dataForBooking, selectMethod } = payload;
   const session = await startSession();
+
+  let responseData = null;
+
   try {
     session.startTransaction();
 
     // Set user context
-    setValue("userId", dataForBooking?.userId);
+    await setValue("userId", dataForBooking?.userId);
 
     // Step 1: Update user information
     const userUpdate = {
@@ -48,30 +52,45 @@ const createOrderIntoDB = async (payload) => {
     } else {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
-      const { data } = await axios.post(
-        config.bkash_create_payment_url,
-        {
+      const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
+      // console.log({ callbackData, token });
+      // console.log("Config in production:", {
+      // user: config.bkash_userName,
+      //   password: config.bkash_password,
+      //   apiKey: config.bkash_api_key,
+      //   secretKey: config.bkash_secret_key,
+      //   createPaymentUrl: config.bkash_create_payment_url,
+      //   headers: bkash_headers(bkash_auth_token),
+      // });
+
+      const response = await fetch(config.bkash_create_payment_url, {
+        method: "POST",
+        headers: bkash_headers(bkash_auth_token),
+        // headers: await bkash_headers(await getValue("id_token")),
+        body: JSON.stringify({
           mode: "0011",
           payerReference: " ",
-          callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}`,
+          callbackURL: `${config.server_url}/bkash/payment/callback?callbackData=${callbackData}&token=${token}`,
           amount,
           currency: "BDT",
           intent: "sale",
-          merchantInvoiceNumber: `Inv${uuidv4().substring(0, 5)}`,
-        },
-        {
-          headers: await bkash_headers(getValue("id_token")),
-        }
-      );
+          merchantInvoiceNumber: `Inv${uuidv4().substring(0, 4)}`,
+        }),
+      });
+      const data = await response.json();
+      // console.log({ response });
+      // console.log({ line81: data });
 
-      // Commit the transaction
-      await session.commitTransaction();
-      return { bkashURL: data.bkashURL };
+      responseData = data;
     }
+    // console.log({ data });
+
+    await session.commitTransaction();
+    return { bkashURL: responseData?.bkashURL };
   } catch (error) {
     await session.abortTransaction();
-    console.error("Error in createOrderIntoDB:", error);
-    return { error: error.message };
+    // console.error("Error in createOrderIntoDB:", error);
+    return { error: error };
   } finally {
     await session.endSession();
   }

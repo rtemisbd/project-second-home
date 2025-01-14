@@ -42,29 +42,30 @@ const payment_create = async (req, res) => {
 // customerMsisdn
 
 // Callback function after payment
-// Callback function after payment
 const call_back = async (req, res) => {
-  const { paymentID, status, callbackData } = req.query;
+  const { paymentID, status, callbackData, token } = await req.query;
+  console.log({ from_caLLback: token });
 
   if (status === "cancel" || status === "failure") {
-    return res.redirect(`${config.client_url}/error?message=${status}`);
+    return await res.redirect(`${config.client_url}/error?message=${status}`);
   }
 
   if (status === "success") {
     const session = await startSession();
     try {
       session.startTransaction();
-
       // Step 4: Execute payment via bKash
-
+      const decodedToken = await JSON.parse(decodeURIComponent(token));
       const response = await fetch(config.bkash_execute_payment_url, {
         method: "POST",
-        headers: await bkash_headers(getValue("id_token")),
+        headers: bkash_headers(decodedToken),
         body: JSON.stringify({ paymentID }),
       });
 
       if (!response.ok) {
-        throw new Error(`Error: ${response.status} ${response.statusText}`);
+        throw new Error(
+          `Error executing payment: ${response.status} ${response.statusText}`
+        );
       }
 
       const data = await response.json();
@@ -105,7 +106,7 @@ const call_back = async (req, res) => {
           { session }
         );
 
-        //step 7 : create rent collection
+        // Step 7: Create rent collection
         await RentRoom.create(
           [
             {
@@ -126,7 +127,6 @@ const call_back = async (req, res) => {
         );
 
         // Phone SMS for booking
-
         const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${dataForBooking?.bookingId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
         await bookingSms(bookingMessage);

@@ -16,7 +16,6 @@ const BookNow = () => {
       setEndOrder(lastOrder);
     }
   }, [userOrder, user]);
-  console.log(endOrder);
 
   const getInvoice = () => {
     navigate("/invoice", { state: endOrder });

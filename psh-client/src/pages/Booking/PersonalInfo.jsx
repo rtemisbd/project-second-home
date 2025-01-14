@@ -27,11 +27,12 @@ const PersonalInfo = () => {
   const dispatch = useDispatch();
   const [singleUser, setSingleUser] = useState({});
   const [bookingItem, setBookingItem] = useState({});
+  // const [bookingItem, setBookingItem] = useState({});
   const [amountForPay, setAmountForPay] = useState(0);
   const [isBlur, setIsBlur] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [selectMethod, setSelectMethod] = useState("app");
+  const [selectMethod, setSelectMethod] = useState("manual");
   const [requiredMessage, setRequiredMessage] = useState(false);
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [isLessAmount, setIsLessAmount] = useState(false);
@@ -50,15 +51,12 @@ const PersonalInfo = () => {
   const { pathname } = useLocation();
 
   let bkashError;
-  // find branch
-  useEffect(() => {
-    const bookingItem = localStorage.getItem("bookingItem");
 
-    if (bookingItem) {
+  useEffect(() => {
+    const storedBookingItem = localStorage.getItem("bookingItem");
+    if (storedBookingItem) {
       const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
       setBookingItem(parseToJson);
-    } else {
-      navigate("/");
     }
   }, []);
 
@@ -116,9 +114,9 @@ const PersonalInfo = () => {
     }
   };
 
-  const handleUserInputAmount = (e) => {
-    const value = e.target.value;
-    if (value < bookingItem.minimumPayment) {
+  const handleUserInputAmount = async (e) => {
+    const value = await e.target.value;
+    if ((await value) < bookingItem.minimumPayment) {
       setIsLessAmount(true);
     } else {
       setIsLessAmount(false);
@@ -133,25 +131,25 @@ const PersonalInfo = () => {
         dataForBooking.receivedTk = receivedTk;
         dataForBooking.paymentNumber = paymentNumber;
       }
-
-      const { data } = await axios.post(
-        `${serverBaseUrl}/order`,
-        { amount, dataForBooking, selectMethod },
-        { withCredentials: true }
-      );
-      // console.log(data?.data?.bkashURL);
-
-      if (data?.data?.bkashURL !== undefined) {
-        window.location.href = data?.data?.bkashURL;
-      } else {
-        bkashError = (
-          <p className="text-red-500">Network Error, Please try again</p>
+      if (amount && dataForBooking) {
+        const { data } = await axios.post(
+          `${serverBaseUrl}/order`,
+          { amount, dataForBooking, selectMethod },
+          { withCredentials: true }
         );
-        console.log(data?.data?.bkashURL);
-      }
 
+        window.location.href = data?.data?.bkashURL;
+        console.log({ response: data });
+        // toast.success("Booking successfully done");
+      } else {
+        setShowPayment(false);
+        setIsBlur(false);
+        dispatch(placeLoadingShow(false));
+        toast.error("Something is wrong! Please try again.");
+      }
+      setShowPayment(false);
+      setIsBlur(false);
       dispatch(placeLoadingShow(false));
-      toast.success("Booking successfully done");
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
 
@@ -161,6 +159,7 @@ const PersonalInfo = () => {
       toast.error("Something is wrong");
     }
   };
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     // if (name === "validityType" && value === "Select One") {
@@ -1342,7 +1341,7 @@ const PersonalInfo = () => {
             </button>
           </div>
           <div className="my-4 flex items-center mx-4">
-            <input
+            {/* <input
               type="radio"
               id="app"
               name="method"
@@ -1351,12 +1350,13 @@ const PersonalInfo = () => {
               className=" mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-            <span className="text-[15px] mr-2">Pay By BKash</span>
+            <span className="text-[15px] mr-2">Pay By BKash</span> */}
             <input
               type="radio"
               id="manual"
               name="method"
               value="manual"
+              defaultChecked
               // className="mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
@@ -1372,15 +1372,19 @@ const PersonalInfo = () => {
                   {bkashError && bkashError}
                   <div className="flex flex-wrap gap-4">
                     <button
-                      onClick={() =>
-                        handlePayByBkash(bookingItem?.minimumPayment)
+                      onClick={async () =>
+                        await handlePayByBkash(
+                          await bookingItem?.minimumPayment
+                        )
                       }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
                       Minimum - {bookingItem?.minimumPayment} ৳
                     </button>
                     <button
-                      onClick={() => handlePayByBkash(bookingItem?.totalAmount)}
+                      onClick={async () =>
+                        await handlePayByBkash(await bookingItem?.totalAmount)
+                      }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
                       Total Amount - {bookingItem?.totalAmount} ৳
@@ -1403,7 +1407,9 @@ const PersonalInfo = () => {
                           onChange={handleUserInputAmount}
                         />
                         <button
-                          onClick={() => handlePayByBkash(amountForPay)}
+                          onClick={async () =>
+                            await handlePayByBkash(await amountForPay)
+                          }
                           className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
                           disabled={isLessAmount}
                         >

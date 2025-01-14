@@ -1,11 +1,13 @@
 import React from "react";
 import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const PaymentPage = () => {
   const pay = async () => {
     try {
+      console.log(serverBaseUrl);
       const { data } = await axios.post(
-        "http://localhost:8000/api/bkash/payment/create",
+        `${serverBaseUrl}/bkash/payment/create`,
         { amount: 1, orderId: 1 },
         { withCredentials: true }
       );
@@ -16,7 +18,7 @@ const PaymentPage = () => {
   };
   return (
     <div className="flex justify-center items-center min-h-[54vh]">
-      <button onClick={pay}>Pay bkash</button>
+      <button onClick={pay}>Pay bkash..</button>
     </div>
   );
 };
