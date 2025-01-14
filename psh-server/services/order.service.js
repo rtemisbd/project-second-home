@@ -130,6 +130,26 @@ export const createOrderByManualBkash = async (payload) => {
 
     await bookingSms(bookingMessage);
 
+    // Start Update user information
+    const userUpdate = {
+      firstName: dataForBooking?.fullName,
+      phone: dataForBooking?.phone,
+      userAddress: dataForBooking?.address,
+      validityType: dataForBooking?.validityType,
+      emergencyContact: {
+        contactName: dataForBooking?.emergencyContactName,
+        relation: dataForBooking?.emergencyRelationC,
+        contactNumber: dataForBooking?.emergencyContact,
+      },
+    };
+
+    await User.updateOne(
+      { _id: dataForBooking?.userId },
+      { $set: userUpdate },
+      { runValidators: true, session }
+    );
+    // End Update User
+
     // Commit the transaction
     await session.commitTransaction();
     return {

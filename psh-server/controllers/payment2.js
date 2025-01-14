@@ -2,7 +2,7 @@ import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
 import { getValue, setValue } from "node-global-storage";
 import config from "../config/index.js";
-import Payment2 from "../models/paymentModel.js";
+
 import OrderModel from "../models/Order.js";
 import mongoose from "mongoose"; // MongoDB session handling
 import { generateBookingId } from "../utils/generateBookingId.js";
@@ -26,6 +26,15 @@ const bkashHeaders = async () => {
 // Create Payment Method
 const paymentCreate = async (req, res) => {
   const { amount, selectMethod, dataForBooking } = req.body;
+
+  // Find User
+  const findUser = await User.findOne({
+    _id: dataForBooking?.userId,
+  });
+
+  if (!findUser) {
+    return new Error("Sorry! User Not Found"); //   User Not Exist
+  }
   // If Manual Payment
   if (selectMethod === "manual") {
     const result = await createOrderByManualBkash(dataForBooking);
@@ -89,33 +98,20 @@ const callBack = async (req, res) => {
       );
 
       if (data && data.statusCode === "0000") {
-        // Create payment data within the session
-        // const paymentData = new Payment2({
-        //   userId: getValue("userId"), // Use the stored userId
-        //   paymentID,
-        //   trxID: data.trxID,
-        //   date: data.paymentExecuteTime,
-        //   amount: parseInt(data.amount),
-        // });
-
-        // // Save payment data within the session
-        // await paymentData.save({ session });
-        // Step 2: Generate booking ID
+        // Start Create Booking
         const generateId = await generateBookingId();
 
         dataForBooking.bookingId = generateId;
-
         dataForBooking.status = "Approved";
-
-        // const result = await OrderModel.create([dataForBooking], { session });
 
         const orderData = new OrderModel({
           ...dataForBooking,
         });
 
         const result = await orderData.save({ session });
+        // End Create Booking
 
-        // Step 6: Create user transaction
+        // Start Create user transaction
         const newTransaction = new Transaction({
           orderId: result?._id,
           branch: dataForBooking?.branch,
@@ -133,7 +129,9 @@ const callBack = async (req, res) => {
         });
 
         await newTransaction.save({ session });
-        // Step 7: Create rent collection
+        // End Create User Transaction
+
+        // Create rent collection
         const newRent = new RentRoom({
           bookStartDate: dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
           bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
@@ -147,13 +145,14 @@ const callBack = async (req, res) => {
           userId: dataForBooking?.userId,
         });
         await newRent.save({ session });
+        //  End Create Rent Collection
 
         // Phone SMS for booking
         const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${dataForBooking?.bookingId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
         await bookingSms(bookingMessage);
 
-        // Step 1: Update user information
+        // Start Update user information
         const userUpdate = {
           firstName: dataForBooking?.fullName,
           phone: dataForBooking?.phone,
@@ -165,12 +164,13 @@ const callBack = async (req, res) => {
             contactNumber: dataForBooking?.emergencyContact,
           },
         };
-        // Update user information in the database
+
         await User.updateOne(
           { _id: dataForBooking?.userId },
           { $set: userUpdate },
           { runValidators: true, session }
         );
+        // End Update User
 
         // Commit the transaction if both operations are successful
         await session.commitTransaction();
@@ -186,10 +186,9 @@ const callBack = async (req, res) => {
         );
       }
     } catch (error) {
-      // Abort transaction if any error occurs
+      // Abort transaction if any error founds
       await session.abortTransaction();
       session.endSession();
-      //   console.log(error);
       return res.redirect(
         `${config.client_url}/error?message=${error.message}`
       );
@@ -198,156 +197,15 @@ const callBack = async (req, res) => {
 };
 
 // Refund Method
-const refund = async (req, res) => {
-  const { trxID } = req.params;
-
-  // Start MongoDB session for transaction
-  const session = await mongoose.startSession();
-  session.startTransaction();
-
-  try {
-    const payment = await Payment2.findOne({ trxID }).session(session);
-
-    const { data } = await axios.post(
-      process.env.bkash_refund_transaction_url,
-      {
-        paymentID: payment.paymentID,
-        amount: payment.amount,
-        trxID,
-        sku: "payment",
-        reason: "cashback",
-      },
-      {
-        headers: await bkashHeaders(),
-      }
-    );
-
-    if (data && data.statusCode === "0000") {
-      // Commit the transaction if refund is successful
-      await session.commitTransaction();
-      session.endSession();
-      return res.status(200).json({ message: "refund success" });
-    } else {
-      // Abort transaction if refund failed
-      await session.abortTransaction();
-      session.endSession();
-      return res.status(404).json({ error: "refund failed" });
-    }
-  } catch (error) {
-    // Abort transaction if any error occurs
-    await session.abortTransaction();
-    session.endSession();
-    return res.status(404).json({ error: "refund failed" });
-  }
-};
-
-export const PaymentController2 = {
-  paymentCreate,
-  callBack,
-  refund,
-};
-// import axios from "axios";
-// import { v4 as uuidv4 } from "uuid";
-// import { getValue, setValue } from "node-global-storage";
-// import config from "../config/index.js";
-// import Payment2 from "../models/paymentModel.js";
-// import OrderModel from "../models/Order.js";
-
-// // Helper to prepare bkash headers
-// const bkashHeaders = async () => {
-//   return {
-//     "Content-Type": "application/json",
-//     Accept: "application/json",
-//     authorization: getValue("id_token"),
-//     "X-App-Key": config.bkash_api_key,
-//   };
-// };
-
-// // Create Payment Method
-// const paymentCreate = async (req, res) => {
-//   const { amount, userId, ...bookingData } = req.body;
-//   setValue("userId", userId); // Store the userId for future reference
-//   setValue("bookingData", bookingData); // Store bookingData for use in callback
-
-//   try {
-//     const { data } = await axios.post(
-//       config.bkash_create_payment_url,
-//       {
-//         mode: "0011",
-//         payerReference: " ",
-//         callbackURL: "http://localhost:5000/api/bkash/payment/callback",
-//         amount: amount,
-//         currency: "BDT",
-//         intent: "sale",
-//         merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
-//       },
-//       {
-//         headers: await bkashHeaders(),
-//       }
-//     );
-
-//     return res.status(200).json({ data });
-//   } catch (error) {
-//     return res.status(401).json({ error: error.message });
-//   }
-// };
-
-// // Callback Method
-// const callBack = async (req, res) => {
-//   const { paymentID, status } = req.query;
-//   const bookingData = getValue("bookingData"); // Retrieve booking data from the temporary store
-
-//   if (status === "cancel" || status === "failure") {
-//     return res.redirect(`http://localhost:5173/error?message=${status}`);
-//   }
-
-//   if (status === "success") {
-//     try {
-//       const { data } = await axios.post(
-//         config.bkash_execute_payment_url,
-//         { paymentID },
-//         {
-//           headers: await bkashHeaders(),
-//         }
-//       );
-
-//       if (data && data.statusCode === "0000") {
-//         // Save the payment details
-//         await Payment2.create({
-//           userId: Math.random() * 10 + 1, // Ideally, this should come from user session or JWT
-//           paymentID,
-//           trxID: data.trxID,
-//           date: data.paymentExecuteTime,
-//           amount: parseInt(data.amount),
-//         });
-
-//         // Now save the order data
-//         const orderData = new OrderModel({
-//           ...bookingData, // Use the stored booking data here
-//         });
-//         await orderData.save();
-
-//         return res.redirect(`http://localhost:5173/success`);
-//       } else {
-//         return res.redirect(
-//           `http://localhost:5173/error?message=${data.statusMessage}`
-//         );
-//       }
-//     } catch (error) {
-//       console.log(error);
-//       return res.redirect(
-//         `http://localhost:5173/error?message=${error.message}`
-//       );
-//     }
-//   }
-// };
-
-// // Refund Method
 // const refund = async (req, res) => {
 //   const { trxID } = req.params;
 
+//   // Start MongoDB session for transaction
+//   const session = await mongoose.startSession();
+//   session.startTransaction();
+
 //   try {
-//     const payment = await Payment2.findOne({ trxID });
+//     const payment = await Payment2.findOne({ trxID }).session(session);
 
 //     const { data } = await axios.post(
 //       process.env.bkash_refund_transaction_url,
@@ -364,17 +222,25 @@ export const PaymentController2 = {
 //     );
 
 //     if (data && data.statusCode === "0000") {
+//       // Commit the transaction if refund is successful
+//       await session.commitTransaction();
+//       session.endSession();
 //       return res.status(200).json({ message: "refund success" });
 //     } else {
+//       // Abort transaction if refund failed
+//       await session.abortTransaction();
+//       session.endSession();
 //       return res.status(404).json({ error: "refund failed" });
 //     }
 //   } catch (error) {
+//     // Abort transaction if any error occurs
+//     await session.abortTransaction();
+//     session.endSession();
 //     return res.status(404).json({ error: "refund failed" });
 //   }
 // };
 
-// export const PaymentController2 = {
-//   paymentCreate,
-//   callBack,
-//   refund,
-// };
+export const PaymentController2 = {
+  paymentCreate,
+  callBack,
+};

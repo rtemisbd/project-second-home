@@ -32,7 +32,7 @@ const PersonalInfo = () => {
   const [isBlur, setIsBlur] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
-  const [selectMethod, setSelectMethod] = useState("manual");
+  const [selectMethod, setSelectMethod] = useState("app");
   const [requiredMessage, setRequiredMessage] = useState(false);
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [isLessAmount, setIsLessAmount] = useState(false);
@@ -1348,7 +1348,7 @@ const PersonalInfo = () => {
               id="app"
               name="method"
               value="app"
-              // defaultChecked
+              defaultChecked
               className=" mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
@@ -1358,7 +1358,7 @@ const PersonalInfo = () => {
               id="manual"
               name="method"
               value="manual"
-              defaultChecked
+              // defaultChecked
               // className="mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
