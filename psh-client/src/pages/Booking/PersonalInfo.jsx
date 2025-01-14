@@ -1408,7 +1408,7 @@ const PersonalInfo = () => {
                         />
                         <button
                           onClick={async () =>
-                            await handlePayByBkash(await amountForPay)
+                            await handlePayByBkash(amountForPay)
                           }
                           className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
                           disabled={isLessAmount}

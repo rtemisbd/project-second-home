@@ -4,15 +4,13 @@ import User from "../models/User.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import RentRoom from "../models/RentRoom.js";
 import { getValue, setValue } from "node-global-storage";
-import axios from "axios";
 import config from "../config/index.js";
 import { v4 as uuidv4 } from "uuid";
 import { bkash_headers } from "../utils/bkash_headers.js";
 import Transaction from "../models/Transaction.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import { getValidToken } from "../utils/getValidToken.js";
 
-const createOrderIntoDB = async (payload, bkash_auth_token) => {
+const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking, selectMethod } = payload;
   const session = await startSession();
 
