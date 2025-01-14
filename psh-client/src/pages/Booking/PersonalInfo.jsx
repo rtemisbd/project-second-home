@@ -1341,16 +1341,16 @@ const PersonalInfo = () => {
             </button>
           </div>
           <div className="my-4 flex items-center mx-4">
-            {/* <input
+            <input
               type="radio"
               id="app"
               name="method"
               value="app"
-              defaultChecked
+              // defaultChecked
               className=" mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-            <span className="text-[15px] mr-2">Pay By BKash</span> */}
+            <span className="text-[15px] mr-2">Pay By BKash</span>
             <input
               type="radio"
               id="manual"
