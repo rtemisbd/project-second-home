@@ -3,19 +3,21 @@ import React, { useState } from "react";
 import { baseUrl } from "../../utils/getBaseURL";
 import toast, { Toaster } from "react-hot-toast";
 import { useParams } from "react-router-dom";
+import CreateNewOrder from "../../components/Orders/CreateNewOrder";
 
 const CreateUser = () => {
-  const { roomId } = useParams();
+  const { roomId: id } = useParams();
   const [showOtpPage, setShowOtpPage] = useState(false);
+  const [createNewOrder, setCreateNewOrder] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
+
+  const [user, setUser] = useState(null);
 
   const [randomCode, setRandomCode] = useState(null);
 
   const [otp, setOtp] = useState(["", "", "", "", ""]);
   const [seconds, setSeconds] = useState(120);
-
-  console.log(roomId);
 
   // Generate a random 5-digit number
   const generateRandomCode = () => {
@@ -52,6 +54,8 @@ const CreateUser = () => {
 
         if (response.status === 200) {
           toast.success("Congratulations! Your account has been created.");
+          setUser(response?.data?.user);
+          setCreateNewOrder(true);
         } else if (response.status === 400) {
           toast.error("User already exists for this phone.");
         } else {
@@ -158,128 +162,135 @@ const CreateUser = () => {
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
-        <section
-          className="content customize_list"
-          style={{
-            // border: "3px solid white",
-            background: "white",
-            width: "60%",
-            margin: "auto",
-            padding: "32px 0px",
-          }}
-        >
-          <div className="content customize_list">
-            <h2>Create New User</h2>
-            <form onSubmit={handleSendOTP}>
-              <div
-                style={{ display: "flex", gap: "20px", justifyItems: "end" }}
-              >
-                <div>
-                  <span>Full Name </span>
-                  <br />
-                  <input
-                    type="text"
-                    name="firstName"
-                    placeholder="Enter user name "
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <span>Phone Number</span>
-                  <br />
-                  <input
-                    type="text"
-                    name="phone"
-                    placeholder="Enter phone number "
-                    onChange={(e) => setPhone(e.target.value)}
-                  />
-                </div>
-                <div>
-                  <button
-                    style={{
-                      height: "30px",
-                      marginTop: "23px",
-                      padding: "0px 6px",
-                      borderRadius: "2px",
-                    }}
-                  >
-                    Create User
-                  </button>
-                </div>
-              </div>
-            </form>
-          </div>
-          {/* otp form */}
-          {showOtpPage ? (
-            <div
-              className="content customize_list mt-5"
-              // style={{ marginTop: "28px" }}
-            >
-              <h2>Verification</h2>
-              <p>Enter the OTP (One Time Password)</p>
-
-              <form onSubmit={handleOtp}>
-                <div style={{ display: "flex", gap: "3px" }}>
-                  {otp.map((digit, index) => (
-                    <div key={index}>
-                      <input
-                        type="text"
-                        id={`otp-${index}`}
-                        name={`otp-${index}`}
-                        value={digit}
-                        onChange={(e) => handleOtpChange(index, e.target.value)}
-                        maxLength="1"
-                        style={{
-                          border: "2px solid black",
-                          height: "48px",
-                          width: "48px",
-                          marginRight: "2px",
-                          borderRadius: "6px",
-                          textAlign: "center",
-                        }}
-                      />
-                    </div>
-                  ))}
-                </div>
-                <button
-                  type="submit"
-                  style={{
-                    height: "36px",
-                    marginTop: "23px",
-                    padding: "0px 12px",
-                    borderRadius: "4px",
-                  }}
+        {createNewOrder ? (
+          <CreateNewOrder id={id} user={user} />
+        ) : (
+          <section
+            className="content customize_list"
+            style={{
+              // border: "3px solid white",
+              background: "white",
+              width: "60%",
+              margin: "auto",
+              padding: "32px 0px",
+            }}
+          >
+            <div className="content customize_list">
+              <h2>Create New User</h2>
+              <form onSubmit={handleSendOTP}>
+                <div
+                  style={{ display: "flex", gap: "20px", justifyItems: "end" }}
                 >
-                  Verify
-                </button>
-              </form>
-              <p>
-                Didn't receive any OTP?{" "}
-                <div>
-                  <form onSubmit={handleResentOtp}>
+                  <div>
+                    <span>Full Name </span>
+                    <br />
+                    <input
+                      type="text"
+                      name="firstName"
+                      placeholder="Enter user name "
+                      onChange={(e) => setFirstName(e.target.value)}
+                    />
+                  </div>
+                  <div>
+                    <span>Phone Number</span>
+                    <br />
+                    <input
+                      type="text"
+                      name="phone"
+                      placeholder="Enter phone number "
+                      onChange={(e) => setPhone(e.target.value)}
+                    />
+                  </div>
+                  <div>
                     <button
                       style={{
-                        background: "none",
-                        color: "#35B0A7",
-                        padding: "0px",
-                        textDecoration: "underline",
-                        marginTop: "-8px",
+                        height: "30px",
+                        marginTop: "23px",
+                        padding: "0px 6px",
+                        borderRadius: "2px",
                       }}
                     >
-                      Re-send {formattedTime <= 0 ? "" : `(${formattedTime}s)`}
+                      Create User
                     </button>
-                  </form>
+                  </div>
                 </div>
-              </p>
+              </form>
             </div>
-          ) : (
-            <></>
-          )}
-          <Toaster
-            containerStyle={{ top: 200, zIndex: "100000" }}
-            toastOptions={{ position: "top-center" }}
-          ></Toaster>
-        </section>
+            {/* otp form */}
+            {showOtpPage ? (
+              <div
+                className="content customize_list mt-5"
+                // style={{ marginTop: "28px" }}
+              >
+                <h2>Verification</h2>
+                <p>Enter the OTP (One Time Password)</p>
+
+                <form onSubmit={handleOtp}>
+                  <div style={{ display: "flex", gap: "3px" }}>
+                    {otp.map((digit, index) => (
+                      <div key={index}>
+                        <input
+                          type="text"
+                          id={`otp-${index}`}
+                          name={`otp-${index}`}
+                          value={digit}
+                          onChange={(e) =>
+                            handleOtpChange(index, e.target.value)
+                          }
+                          maxLength="1"
+                          style={{
+                            border: "2px solid black",
+                            height: "48px",
+                            width: "48px",
+                            marginRight: "2px",
+                            borderRadius: "6px",
+                            textAlign: "center",
+                          }}
+                        />
+                      </div>
+                    ))}
+                  </div>
+                  <button
+                    type="submit"
+                    style={{
+                      height: "36px",
+                      marginTop: "23px",
+                      padding: "0px 12px",
+                      borderRadius: "4px",
+                    }}
+                  >
+                    Verify
+                  </button>
+                </form>
+                <p>
+                  Didn't receive any OTP?{" "}
+                  <div>
+                    <form onSubmit={handleResentOtp}>
+                      <button
+                        style={{
+                          background: "none",
+                          color: "#35B0A7",
+                          padding: "0px",
+                          textDecoration: "underline",
+                          marginTop: "-8px",
+                        }}
+                      >
+                        Re-send{" "}
+                        {formattedTime <= 0 ? "" : `(${formattedTime}s)`}
+                      </button>
+                    </form>
+                  </div>
+                </p>
+              </div>
+            ) : (
+              <></>
+            )}
+            <Toaster
+              containerStyle={{ top: 200, zIndex: "100000" }}
+              toastOptions={{ position: "top-center" }}
+            ></Toaster>
+          </section>
+        )}
       </div>
     </div>
   );

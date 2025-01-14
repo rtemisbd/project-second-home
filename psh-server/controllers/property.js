@@ -328,7 +328,7 @@ export const getSinglePropertys = catchAsync(async (req, res, next) => {
   const propertyId = req.params.id;
   const { property, rentRooms } =
     await propertyServices.getSinglePropertyFromDB(propertyId);
-  res.status(200).json({ property, rentRooms });
+  return res.status(200).json({ property, rentRooms });
 
   // sendResponse(res, {
   //   statusCode: 200,

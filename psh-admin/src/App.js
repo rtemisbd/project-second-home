@@ -156,7 +156,7 @@ function App() {
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
         {/* testing new overview */}
         <Route path="booking-overview" element={<RoomOverview />} />
-        <Route path="create-user/:roomId" element={<CreateUser />} />
+        <Route path="create-order/:roomId" element={<CreateUser />} />
       </Route>
 
       <Route path="*" element={<NotFound />}></Route>
