@@ -9,9 +9,8 @@ import { v4 as uuidv4 } from "uuid";
 import { bkash_headers } from "../utils/bkash_headers.js";
 import Transaction from "../models/Transaction.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import { getValidToken } from "../utils/getValidToken.js";
 
-const createOrderIntoDB = async (payload, bkash_auth_token) => {
+const createOrderIntoDB = async (payload) => {
   const { amount, dataForBooking, selectMethod } = payload;
   const session = await startSession();
 
@@ -95,12 +94,14 @@ const createOrderIntoDB = async (payload, bkash_auth_token) => {
   }
 };
 
-const createOrderByManualBkash = async (payload) => {
+export const createOrderByManualBkash = async (payload) => {
   const session = await startSession();
   try {
     session.startTransaction();
 
     const dataForBooking = payload;
+    const generateId = await generateBookingId();
+    dataForBooking.bookingId = generateId;
     dataForBooking.paymentType = "bkash";
     const result = await OrderModel.create([dataForBooking], { session });
 
@@ -117,7 +118,7 @@ const createOrderByManualBkash = async (payload) => {
           receivedTk: dataForBooking?.receivedTk,
           paymentNumber: dataForBooking?.paymentNumber,
           // transactionId: data.trxID,
-          userId: getValue("userId"),
+          userId: dataForBooking?.userId,
           userPhone: dataForBooking?.phone,
           userName: dataForBooking?.fullName,
           acceptableStatus: "Pending",
@@ -126,16 +127,8 @@ const createOrderByManualBkash = async (payload) => {
       { session }
     );
 
-    // Validate phone number and bookingId before using them
-    const phone = result[0]?.phone;
-    const bookingId = result[0]?.bookingId;
-
-    if (!phone || !bookingId) {
-      throw new Error("Phone or booking ID is missing");
-    }
-
     // Phone SMS for booking
-    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
 
     await bookingSms(bookingMessage);
 
@@ -146,7 +139,7 @@ const createOrderByManualBkash = async (payload) => {
     };
   } catch (error) {
     await session.abortTransaction();
-    console.error("Error during payment execution:", error);
+    // console.error("Error during payment execution:", error);
     return {
       bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
         error.message

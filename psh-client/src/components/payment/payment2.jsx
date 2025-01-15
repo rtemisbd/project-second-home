@@ -4,20 +4,28 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const PaymentPage = () => {
   const pay = async () => {
+    const bookingData = {
+      amount: 1,
+      orderId: 1,
+      userName: "Alamin",
+    };
     try {
       const { data } = await axios.post(
         `${serverBaseUrl}/bkash/payment/create`,
-        { amount: 1, orderId: 1 },
+        bookingData,
         { withCredentials: true }
       );
-      window.location.href = data.bkashURL;
+      console.log(data);
+      window.location.href = data?.data?.bkashURL;
+      // window.location.href = data.bkashURL;
+      return data;
     } catch (error) {
       console.log(error);
     }
   };
   return (
     <div className="flex justify-center items-center min-h-[54vh]">
-      <button onClick={pay}>Pay bkash</button>
+      <button onClick={pay}>Pay bkash..</button>
     </div>
   );
 };

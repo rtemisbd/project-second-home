@@ -23,8 +23,8 @@ const bkash_auth = async (req, res, next) => {
       }
     );
 
-    // setValue("id_token", data?.id_token);
-    req.bkash_auth_token = data.id_token;
+    setValue("id_token", data?.id_token);
+    // req.bkash_auth_token = data.id_token;
 
     next();
   } catch (error) {

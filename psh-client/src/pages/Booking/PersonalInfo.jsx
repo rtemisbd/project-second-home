@@ -131,15 +131,17 @@ const PersonalInfo = () => {
         dataForBooking.receivedTk = receivedTk;
         dataForBooking.paymentNumber = paymentNumber;
       }
+
       if (amount && dataForBooking) {
         const { data } = await axios.post(
-          `${serverBaseUrl}/order`,
+          `${serverBaseUrl}/bkash/payment/create`,
           { amount, dataForBooking, selectMethod },
           { withCredentials: true }
         );
 
-        window.location.href = data?.data?.bkashURL;
-        console.log({ response: data });
+        window.location.href =
+          selectMethod === "manual" ? data?.data?.bkashURL : data.bkashURL;
+
         // toast.success("Booking successfully done");
       } else {
         setShowPayment(false);
@@ -1360,7 +1362,7 @@ const PersonalInfo = () => {
               // className="mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-              <span className="text-[15px]">Manual BKash</span>
+            <span className="text-[15px]">Manual BKash</span>
           </div>
           <div>
             {selectMethod === "app" ? (
@@ -1372,19 +1374,15 @@ const PersonalInfo = () => {
                   {bkashError && bkashError}
                   <div className="flex flex-wrap gap-4">
                     <button
-                      onClick={async () =>
-                        await handlePayByBkash(
-                          await bookingItem?.minimumPayment
-                        )
+                      onClick={() =>
+                        handlePayByBkash(bookingItem?.minimumPayment)
                       }
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
                       Minimum - {bookingItem?.minimumPayment} ৳
                     </button>
                     <button
-                      onClick={async () =>
-                        await handlePayByBkash(await bookingItem?.totalAmount)
-                      }
+                      onClick={() => handlePayByBkash(bookingItem?.totalAmount)}
                       className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                     >
                       Total Amount - {bookingItem?.totalAmount} ৳
@@ -1407,9 +1405,7 @@ const PersonalInfo = () => {
                           onChange={handleUserInputAmount}
                         />
                         <button
-                          onClick={async () =>
-                            await handlePayByBkash(await amountForPay)
-                          }
+                          onClick={() => handlePayByBkash(amountForPay)}
                           className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
                           disabled={isLessAmount}
                         >
