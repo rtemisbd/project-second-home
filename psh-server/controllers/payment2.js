@@ -50,6 +50,7 @@ const paymentCreate = async (req, res) => {
       message:
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
+
   } else if (selectMethod === "cash") {
     const result = await createOrderByCash(dataForBooking);
     sendResponse(res, {
@@ -59,6 +60,7 @@ const paymentCreate = async (req, res) => {
       message:
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
+
   } else {
     setValue("dataForBooking", dataForBooking);
 
