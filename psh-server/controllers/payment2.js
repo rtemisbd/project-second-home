@@ -9,10 +9,12 @@ import { bookingSms } from "../SMS/BookingSms.js";
 import RentRoom from "../models/RentRoom.js";
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
+
 import {
   createOrderByCash,
   createOrderByManualBkash,
 } from "../services/order.service.js";
+
 import sendResponse from "../shared/sendResponse.js";
 
 // Helper to prepare bkash headers
@@ -48,6 +50,7 @@ const paymentCreate = async (req, res) => {
       message:
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
+
   } else if (selectMethod === "cash") {
     const result = await createOrderByCash(dataForBooking);
     sendResponse(res, {
@@ -57,6 +60,7 @@ const paymentCreate = async (req, res) => {
       message:
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
+
   } else {
     setValue("dataForBooking", dataForBooking);
 
@@ -175,6 +179,7 @@ const callBack = async (req, res) => {
             contactNumber: dataForBooking?.emergencyContact,
           },
         };
+
         await User.updateOne(
           { _id: dataForBooking?.userId },
           { $set: userUpdate },
