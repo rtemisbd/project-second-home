@@ -6,12 +6,13 @@ import { useParams } from "react-router-dom";
 import CreateNewOrder from "../../components/Orders/CreateNewOrder";
 
 const CreateUser = () => {
-  const { roomId: id } = useParams();
+  const { category, roomId: id } = useParams();
   const [showOtpPage, setShowOtpPage] = useState(false);
   const [createNewOrder, setCreateNewOrder] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
 
+  const [allUser, setAllUser] = useState(null);
   const [user, setUser] = useState(null);
 
   const [randomCode, setRandomCode] = useState(null);
@@ -163,7 +164,7 @@ const CreateUser = () => {
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
         {createNewOrder ? (
-          <CreateNewOrder id={id} user={user} />
+          <CreateNewOrder category={category} id={id} user={user} />
         ) : (
           <section
             className="content customize_list"

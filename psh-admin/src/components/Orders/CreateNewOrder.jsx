@@ -6,11 +6,13 @@ import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import useExtraCharge from "../../hooks/useExtraCharge";
-import { toast } from "react-toastify";
 
-const CreateNewOrder = ({ id, user }) => {
+import toast, { Toaster } from "react-hot-toast";
+import useCategory from "../../hooks/useCategory";
+
+const CreateNewOrder = ({ category, id, user }) => {
   const [extraCharge] = useExtraCharge();
-  console.log(id, user);
+  const { categories } = useCategory();
 
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
@@ -19,6 +21,9 @@ const CreateNewOrder = ({ id, user }) => {
 
   const [room, setRoom] = useState(null);
   const [rentDates, setRentDate] = useState(null);
+  const [selectedCategory, setSelectedCategory] = useState(
+    categories.find((item) => item._id === category)
+  );
 
   const [isIncludeFood, setIsIncludeFood] = useState(false);
 
@@ -59,17 +64,23 @@ const CreateNewOrder = ({ id, user }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const { data } = await axios.get(`${baseUrl}/api/property/${id}`);
-        setRoom(data?.property);
-        setRentDate(data?.rentRooms);
+        if (selectedCategory?.name === "Private Room") {
+          const { data } = await axios.get(`${baseUrl}/api/property/${id}`);
+
+          setRoom(data?.property);
+          setRentDate(data?.rentRooms);
+        } else {
+          const { data } = await axios.get(`${baseUrl}/api/seats/${id}`);
+
+          setRoom(data?.data?.seat);
+          setRentDate(data?.data?.rentRooms);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
     };
     fetchData();
-  }, [id]);
-
-  console.log({ room, rentDates });
+  }, [id, selectedCategory]);
 
   useEffect(() => {
     dispatch(toTalRent());
@@ -199,6 +210,7 @@ const CreateNewOrder = ({ id, user }) => {
         roomName: room?.name,
         roomNumber: room?.roomNumber,
         roomType: room?.category?.name,
+        seatBooking: room?.category?.name === "Shared Room" ? room : null,
         branch: room?.branch,
         rentDate: {
           bookStartDate: new Date(startDate).toISOString().split("T")[0],
@@ -210,16 +222,14 @@ const CreateNewOrder = ({ id, user }) => {
       dataForBooking.branch = room?.branch?._id;
       dataForBooking.totalAmount = totalAmount;
       dataForBooking.payableAmount = payableAmount;
-      console.log(dataForBooking);
 
       const { data } = await axios.post(
         `${baseUrl}/api/bkash/payment/create`,
         { amount: null, dataForBooking, selectMethod: "cash" },
         { withCredentials: true }
       );
-      console.log(data);
 
-      if (data?.data?.status === "true") {
+      if (data?.data?.status === true) {
         toast.success("Booking Added!");
       }
     } catch (error) {
@@ -708,6 +718,10 @@ const CreateNewOrder = ({ id, user }) => {
           </div>
         </div>
       </div>
+      <Toaster
+        containerStyle={{ top: 200, zIndex: "100000" }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
     </div>
   );
 };
