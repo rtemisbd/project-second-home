@@ -10,7 +10,7 @@ export const CreatePromo = async (req, res, next) => {
 };
 export const getPromo = async (req, res, next) => {
   try {
-    const promo = await Promo.find({});
+    const promo = await Promo.find({}).sort({ createdAt: -1 });
     res.status(200).json(promo);
   } catch (err) {
     next(err);

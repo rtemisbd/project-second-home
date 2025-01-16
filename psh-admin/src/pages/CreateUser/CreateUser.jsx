@@ -8,7 +8,7 @@ import CreateNewOrder from "../../components/Orders/CreateNewOrder";
 const CreateUser = () => {
   const { roomId: id } = useParams();
   const [showOtpPage, setShowOtpPage] = useState(false);
-  const [createNewOrder, setCreateNewOrder] = useState(true);
+  const [createNewOrder, setCreateNewOrder] = useState(false);
   const [firstName, setFirstName] = useState("");
   const [phone, setPhone] = useState("");
 

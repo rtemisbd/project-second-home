@@ -51,20 +51,10 @@ const createOrderIntoDB = async (payload) => {
       // Step 3: Create payment request via bKash
       const callbackData = encodeURIComponent(JSON.stringify(dataForBooking));
       const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
-      // console.log({ callbackData, token });
-      // console.log("Config in production:", {
-      // user: config.bkash_userName,
-      //   password: config.bkash_password,
-      //   apiKey: config.bkash_api_key,
-      //   secretKey: config.bkash_secret_key,
-      //   createPaymentUrl: config.bkash_create_payment_url,
-      //   headers: bkash_headers(bkash_auth_token),
-      // });
 
       const response = await fetch(config.bkash_create_payment_url, {
         method: "POST",
         headers: bkash_headers(bkash_auth_token),
-        // headers: await bkash_headers(await getValue("id_token")),
         body: JSON.stringify({
           mode: "0011",
           payerReference: " ",
@@ -76,8 +66,6 @@ const createOrderIntoDB = async (payload) => {
         }),
       });
       const data = await response.json();
-      // console.log({ response });
-      // console.log({ line81: data });
 
       responseData = data;
     }
@@ -100,6 +88,8 @@ export const createOrderByManualBkash = async (payload) => {
     session.startTransaction();
 
     const dataForBooking = payload;
+    const generateId = await generateBookingId();
+    dataForBooking.bookingId = generateId;
     dataForBooking.paymentType = "bkash";
     const result = await OrderModel.create([dataForBooking], { session });
 
@@ -163,6 +153,55 @@ export const createOrderByManualBkash = async (payload) => {
         error.message
       )}`,
     };
+  } finally {
+    session.endSession();
+  }
+};
+export const createOrderByCash = async (payload) => {
+  const session = await startSession();
+  try {
+    session.startTransaction();
+
+    const dataForBooking = payload;
+    const generateId = await generateBookingId();
+    dataForBooking.bookingId = generateId;
+    dataForBooking.paymentType = "Cash";
+    const result = await OrderModel.create([dataForBooking], { session });
+
+    // Phone SMS for booking
+    const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
+
+    await bookingSms(bookingMessage);
+
+    // Start Update user information
+    const userUpdate = {
+      firstName: dataForBooking?.fullName,
+      phone: dataForBooking?.phone,
+      userAddress: dataForBooking?.address,
+      validityType: dataForBooking?.validityType,
+      emergencyContact: {
+        contactName: dataForBooking?.emergencyContactName,
+        relation: dataForBooking?.emergencyRelationC,
+        contactNumber: dataForBooking?.emergencyContact,
+      },
+    };
+
+    await User.updateOne(
+      { _id: dataForBooking?.userId },
+      { $set: userUpdate },
+      { runValidators: true, session }
+    );
+    // End Update User
+
+    // Commit the transaction
+    await session.commitTransaction();
+    return {
+      status: true,
+    };
+  } catch (error) {
+    await session.abortTransaction();
+    // console.error("Error during payment execution:", error);
+    return { error };
   } finally {
     session.endSession();
   }
@@ -433,4 +472,5 @@ export const orderServices = {
   createOrderIntoDB,
   getOrderFromDB,
   updateBookingStatusIntoDB,
+  createOrderByCash,
 };
