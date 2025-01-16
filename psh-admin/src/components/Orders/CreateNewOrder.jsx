@@ -6,10 +6,11 @@ import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import useExtraCharge from "../../hooks/useExtraCharge";
+import { toast } from "react-toastify";
 
 const CreateNewOrder = ({ id, user }) => {
   const [extraCharge] = useExtraCharge();
-  console.log(user);
+  console.log(id, user);
 
   const dispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
@@ -33,6 +34,19 @@ const CreateNewOrder = ({ id, user }) => {
 
   const [minimumPayment, setMinimumPayment] = useState(0);
 
+  const [dataForBooking, setDataForBooking] = useState({
+    bookingExtend: false,
+    userId: user?._id || "",
+    fullName: user?.firstName || "",
+    phone: user?.phone || "",
+    address: user?.userAddress || "",
+    validityType: user?.validityType || "",
+    emergencyContactName: user?.emergencyContact?.contactName || "",
+    emergencyRelationC: user?.emergencyContact?.relation || "",
+    emergencyContact: user?.emergencyContact?.contactNumber || "",
+    arrivalTime: "09 AM To 10 AM",
+  });
+
   // get month Last Day
   function getLastDayOfMonth() {
     const today = new Date(startDate);
@@ -41,8 +55,6 @@ const CreateNewOrder = ({ id, user }) => {
     const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
     return lastDay;
   }
-
-  console.log(extraCharge);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -64,7 +76,9 @@ const CreateNewOrder = ({ id, user }) => {
     if (customerRent.remainingDays < 1) {
       dispatch(rightDate(addDays(new Date(startDate), 1)));
     }
+  }, [startDate, customerRent.remainingDays, dispatch, endDate]);
 
+  useEffect(() => {
     // amount calculation
     // subtotal
     if (
@@ -131,13 +145,9 @@ const CreateNewOrder = ({ id, user }) => {
 
     setPayableAmount(totalAmount);
   }, [
-    customerRent.remainingDays,
-    startDate,
-    endDate,
     room,
     addMissionFee,
     customerRent,
-    dispatch,
     extraCharge,
     foodAmount,
     isIncludeFood,
@@ -147,28 +157,74 @@ const CreateNewOrder = ({ id, user }) => {
     vatTax,
   ]);
 
-  // handle booking
-  const handleBooking = () => {
-    const dataForBackend = {
-      subTotal,
-      foodAmount,
-      isIncludeFood: isIncludeFood,
+  // useEffect(() => {
+  //   if (user) {
+  //     setDataForBooking((prevData) => ({
+  //       ...prevData,
+  //       userId: user?._id || "",
+  //       fullName: user?.firstName || "",
+  //       phone: user?.phone || "",
+  //       address: user?.userAddress || "",
+  //       validityType: user?.validityType || "",
+  //       emergencyContactName: user?.emergencyContact?.contactName || "",
+  //       emergencyRelationC: user?.emergencyContact?.relation || "",
+  //       emergencyContact: user?.emergencyContact?.contactNumber || "",
+  //       arrivalTime: "09 AM To 10 AM",
+  //       branch: room?.branch?._id,
+  //       totalAmount,
+  //       payableAmount,
+  //     }));
+  //   }
+  // }, [user, payableAmount, room?.branch?._id, totalAmount]);
 
-      vatTax: vatTax,
-      totalAmount,
-      payableAmount: payableAmount,
-      roomId: id,
-      roomName: room?.name,
-      roomNumber: room?.roomNumber,
-      roomType: room?.category?.name,
-      branch: room?.branch,
-      rentDate: {
-        bookStartDate: new Date(startDate).toISOString().split("T")[0],
-        bookEndDate: new Date(endDate).toISOString().split("T")[0],
-      },
-      customerRent: customerRent,
-    };
-    console.log(dataForBackend);
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDataForBooking((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
+  // handle booking
+  const handleBooking = async () => {
+    try {
+      const bookingInfo = {
+        subTotal,
+        foodAmount,
+        isIncludeFood,
+        vatTax,
+        totalAmount,
+        payableAmount,
+        roomId: id,
+        roomName: room?.name,
+        roomNumber: room?.roomNumber,
+        roomType: room?.category?.name,
+        branch: room?.branch,
+        rentDate: {
+          bookStartDate: new Date(startDate).toISOString().split("T")[0],
+          bookEndDate: new Date(endDate).toISOString().split("T")[0],
+        },
+        customerRent,
+      };
+      dataForBooking.bookingInfo = bookingInfo;
+      dataForBooking.branch = room?.branch?._id;
+      dataForBooking.totalAmount = totalAmount;
+      dataForBooking.payableAmount = payableAmount;
+      console.log(dataForBooking);
+
+      const { data } = await axios.post(
+        `${baseUrl}/api/bkash/payment/create`,
+        { amount: null, dataForBooking, selectMethod: "cash" },
+        { withCredentials: true }
+      );
+      console.log(data);
+
+      if (data?.data?.status === "true") {
+        toast.success("Booking Added!");
+      }
+    } catch (error) {
+      toast.error("Something is wrong");
+    }
   };
 
   return (
@@ -182,6 +238,7 @@ const CreateNewOrder = ({ id, user }) => {
             padding: "30px",
           }}
         >
+          {/* information */}
           <div className="">
             <div>
               <h4>
@@ -211,7 +268,7 @@ const CreateNewOrder = ({ id, user }) => {
                         borderRadius: "5px",
                         width: "280px",
                       }}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                     />
                   </div>
 
@@ -230,7 +287,7 @@ const CreateNewOrder = ({ id, user }) => {
                         borderRadius: "5px",
                         width: "280px",
                       }}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                     />
                   </div>
                 </div>
@@ -248,7 +305,7 @@ const CreateNewOrder = ({ id, user }) => {
                       type="text"
                       placeholder="Address "
                       name="address"
-                      // defaultValue={user ? user?.userAddress : ""}
+                      defaultValue={user ? user?.userAddress : ""}
                       value={user?.address}
                       style={{
                         height: "40px",
@@ -258,7 +315,7 @@ const CreateNewOrder = ({ id, user }) => {
                         background: "#F7F7F7",
                         border: "1px solid #CCC",
                       }}
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                     />
                   </div>
 
@@ -275,7 +332,7 @@ const CreateNewOrder = ({ id, user }) => {
                         border: "1px solid #CCC",
                       }}
                       name="validityType"
-                      // onChange={handleInputChange}
+                      onChange={handleInputChange}
                       defaultValue={user?.validityType}
                       // disabled={user?.validityType ? true : false}
                       // required={validityType === "Select One"}
@@ -340,7 +397,7 @@ const CreateNewOrder = ({ id, user }) => {
                       background: "#F7F7F7",
                       border: "1px solid #CCC",
                     }}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                   />
                 </div>
                 <div>
@@ -358,7 +415,7 @@ const CreateNewOrder = ({ id, user }) => {
                       border: "1px solid #CCC",
                     }}
                     defaultValue={user?.emergencyContact?.relation}
-                    // onChange={handleInputChange}
+                    onChange={handleInputChange}
                   />
                 </div>
               </div>
@@ -367,7 +424,7 @@ const CreateNewOrder = ({ id, user }) => {
                 <input
                   type="text"
                   placeholder="Guardian Contact Number *"
-                  name="contactNumber"
+                  name="emergencyContact"
                   required
                   defaultValue={user?.emergencyContact?.contactNumber}
                   style={{
@@ -378,7 +435,7 @@ const CreateNewOrder = ({ id, user }) => {
                     background: "#F7F7F7",
                     border: "1px solid #CCC",
                   }}
-                  // onChange={handleInputChange}
+                  onChange={handleInputChange}
                 />
               </div>
             </div>
