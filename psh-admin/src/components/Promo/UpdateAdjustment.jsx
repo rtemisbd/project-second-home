@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState } from "react";
 import { toast } from "react-toastify";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const UpdateAdjustment = ({ data, refetch }) => {
   const [adjustmentAmount, setAdjustmentAmount] = useState(
@@ -17,15 +18,11 @@ const UpdateAdjustment = ({ data, refetch }) => {
       adjustmentAmount: adjustmentAmount,
     };
     try {
-      await axios.patch(
-        `https://api.psh.com.bd/api/adjustment/${data._id}`,
-        adjustment,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.patch(`${baseUrl}/api/adjustment/${data._id}`, adjustment, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       toast.success("Success");
       refetch();

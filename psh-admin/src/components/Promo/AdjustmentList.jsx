@@ -79,6 +79,7 @@ const AdjustmentList = () => {
   // handle Accept Adjustment
   const handleAccept = async (adjustment) => {
     const adjustmentData = {
+      ...adjustment,
       status: "Accepted",
       adjustmentAmount: adjustment?.adjustmentAmount,
     };

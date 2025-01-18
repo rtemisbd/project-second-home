@@ -130,6 +130,7 @@ const Payment = ({
     e.preventDefault();
 
     const noteForAdjustment = e.target.noteForAdjustment.value;
+    // const adjustmentAmount = parseInt(e.target.discount.value);
 
     //If Discount Amount <= 0
     if (Number(adjustmentAmount) <= 0) {
@@ -151,23 +152,39 @@ const Payment = ({
     }
     setLoading(true);
     const adjustment = {
-      adjustment: adjustmentAmount,
+      booking: data?._id,
+      branch: data?.bookingInfo?.branch,
+      userId: data?.userId,
+      adjustmentAmount: adjustmentAmount,
       noteForAdjustment: noteForAdjustment,
     };
 
     try {
       dispatch(placeLoadingShow(true));
-      await axios.patch(`${baseUrl}/api/order/${data._id}`, adjustment, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-
+      const { data } = await axios.post(
+        `${baseUrl}/api/adjustment`,
+        adjustment
+      );
       setLoading(false);
+
       handleClose();
-      toast.success("Request Success");
-      refetch();
-      handleClickCloseButton();
+      if (data.success) {
+        toast.success("Request Success");
+        refetch();
+        handleClickCloseButton();
+      }
+
+      // await axios.patch(`${baseUrl}/api/order/${data._id}`, adjustment, {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
+
+      // setLoading(false);
+      // handleClose();
+      // toast.success("Request Success");
+      // refetch();
+      // handleClickCloseButton();
     } catch (error) {
       handleClose();
       toast.error(error.response.data.message);
@@ -462,13 +479,15 @@ const Payment = ({
                       </label>{" "}
                       <br />
                       <input
-                        type="number"
+                        type="text"
                         placeholder="Adjustment Amount"
                         id=""
                         className="px-2 rounded"
                         style={{ width: "300px", height: "40px" }}
                         name="discount"
-                        onChange={(e) => setAdjustmentAmount(e.target.value)}
+                        onChange={(e) =>
+                          setAdjustmentAmount(parseInt(e.target.value))
+                        }
                       />{" "}
                       <br />
                     </div>

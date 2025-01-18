@@ -30,6 +30,8 @@ const BookingData = ({
     useState(null);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   // For Seat Update Duration Modal
+  const [discount, setDiscount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(booking.totalAmount);
   const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
   const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
   // Details Modal
@@ -69,6 +71,8 @@ const BookingData = ({
 
   useEffect(() => {
     setIsIncludeFood(booking?.isIncludeFood);
+    setDiscount(booking.adjustments[0]?.totatAdjustmentAmount);
+    setPayableAmount(booking?.totalAmount - discount);
   }, []);
 
   return (
@@ -123,12 +127,13 @@ const BookingData = ({
         </td>
         <td>
           {" "}
-          <p className="fw-bold">Tk {booking?.discount?.toLocaleString()}</p>
+          <p className="fw-bold">Tk {discount}</p>
         </td>
         <td>
           {" "}
           <p className="fw-bold">
-            Tk {booking?.payableAmount?.toLocaleString()}
+            {/* Tk {booking?.payableAmount?.toLocaleString()} */}
+            Tk {payableAmount}
           </p>
         </td>
         <td>
@@ -163,9 +168,8 @@ const BookingData = ({
             {" "}
             TK{" "}
             {booking?.transactions[0]?.totalReceiveTk
-              ? booking?.payableAmount -
-                booking?.transactions[0]?.totalReceiveTk
-              : booking?.payableAmount}
+              ? payableAmount - booking?.transactions[0]?.totalReceiveTk
+              : payableAmount}
             {/* Tk {booking?.dueAmount?.toLocaleString()} */}
           </span>
         </td>
