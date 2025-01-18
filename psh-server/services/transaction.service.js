@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import Transaction from "../models/Transaction.js";
 
-const createTransportIntoDB = async (payload) => {
+const createTransactionIntoDB = async (payload) => {
   const result = await Transaction.create(payload);
   return result;
 };
@@ -165,7 +165,7 @@ const getTransactionByOrderIdFromDB = async (orderId) => {
 
 // Exporting the transaction services
 export const transactionServices = {
-  createTransportIntoDB,
+  createTransactionIntoDB,
   getAllTransactionFromDB,
   getTransactionByIdFromDB,
   getTransactionByOrderIdFromDB,

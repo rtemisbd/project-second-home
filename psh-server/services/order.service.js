@@ -312,6 +312,32 @@ const getOrderFromDB = async (queries) => {
               as: "transactions",
             },
           },
+          {
+            $lookup: {
+              from: "adjustments",
+              let: { orderId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$booking", "$$orderId"] },
+                        { $eq: ["$status", "Accepted"] },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: null,
+                    totatAdjustmentAmount: { $sum: "$adjustmentAmount" },
+                    allProperties: { $push: "$$ROOT" },
+                  },
+                },
+              ],
+              as: "adjustments",
+            },
+          },
         ],
         totalCounts: [
           {

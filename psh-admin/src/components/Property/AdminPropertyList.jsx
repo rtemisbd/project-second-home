@@ -49,13 +49,16 @@ const AdminPropertyList = () => {
 
   const { refetch } = useQuery(["propertyList", page, size], async () => {
     try {
+      // Construct query parameters
       const queryParams = new URLSearchParams({
         page,
         size,
-        fromClient: "true",
+        fromClient: true,
       });
+
+      // Pass the query parameters in the URL
       const response = await axios.get(
-        `${baseUrl}/api/property?${queryParams.toString()}`
+        `${baseUrl}/api/property/admin?${queryParams.toString()}`
       );
 
       console.log("Response Data:", response.data);

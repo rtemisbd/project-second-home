@@ -147,157 +147,114 @@ const getPropertiesFromDB = async (queries) => {
   };
 };
 
-// const getPropertiesFromDB = async (queries) => {
-//   const {
-//     Featured,
-//     isPublished,
-//     furnitured,
-//     category,
-//     gender,
-//     destination,
-//     bedType,
-//     startDate,
-//     endDate,
-//     recommended,
-//     withSharedRoom,
-//   } = queries;
+const getPropertiesFromDBForAdmin = async (queries) => {
+  const { category, destination } = queries;
 
-//   const page = parseInt(queries.page);
-//   const size = parseInt(queries.size);
+  const page = parseInt(queries.page);
+  const size = parseInt(queries.size);
 
-//   let query = {};
-//   if (Featured && Featured !== "") query.Featured = Featured;
-//   if (furnitured && furnitured !== "") query.furnitured = furnitured;
-//   if (gender && gender !== "") query.type = gender;
-//   if (bedType && bedType !== "") query.bedType = bedType;
-//   if (isPublished && isPublished !== "") {
-//     query.isPublished = isPublished;
-//   } else {
-//     query.isPublished = "Published";
-//   }
-//   if (recommended && recommended !== "no") {
-//     query.recommended = recommended;
-//   }
+  // Declare pipeline as an array, adding conditional stages
+  const pipeline = [
+    // Lookup for branches (destination)
+    ...(destination && destination !== ""
+      ? [
+          {
+            $lookup: {
+              from: "branches",
+              // localField: "branch",
+              foreignField: "_id",
+              as: "branchDetails",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                    foodAmount: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: "$branchDetails" },
+          {
+            $match: {
+              "branchDetails.name": destination,
+            },
+          },
+        ]
+      : []),
 
-//   // Declare pipeline as an array, adding conditional stages
-//   const pipeline = [
-//     { $match: query },
+    // Lookup for categories
+    ...(category && category !== ""
+      ? [
+          {
+            $lookup: {
+              from: "categories",
+              localField: "category",
+              foreignField: "_id",
+              as: "categoryDetails",
+              pipeline: [
+                {
+                  $project: {
+                    _id: 1,
+                    name: 1,
+                  },
+                },
+              ],
+            },
+          },
+          { $unwind: "$categoryDetails" },
+          {
+            $match: {
+              "categoryDetails.name": category,
+            },
+          },
+        ]
+      : []),
 
-//     // Lookup for branches (destination)
-//     ...(destination && destination !== ""
-//       ? [
-//           {
-//             $lookup: {
-//               from: "branches",
-//               localField: "branch",
-//               foreignField: "_id",
-//               as: "branchDetails",
-//               pipeline: [
-//                 {
-//                   $project: {
-//                     _id: 1,
-//                     name: 1,
-//                     foodAmount: 1,
-//                   },
-//                 },
-//               ],
-//             },
-//           },
-//           { $unwind: "$branchDetails" },
-//           {
-//             $match: {
-//               "branchDetails.name": destination,
-//             },
-//           },
-//         ]
-//       : []),
+    // Faceted Pagination and Total Counts
+    {
+      $facet: {
+        paginatedResults: [
+          { $sort: { createdAt: -1 } },
+          ...(page >= 1 && size >= 1
+            ? [{ $skip: (page - 1) * size }, { $limit: size }]
+            : []),
+        ],
+        totalCounts: [
+          {
+            $group: {
+              _id: null,
+              totalCount: { $sum: 1 },
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        paginatedResults: 1,
+        totalCount: {
+          $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
+        },
+      },
+    },
+  ];
+  console.log(destination);
 
-//     // Lookup for categories
-//     ...(category && category !== ""
-//       ? [
-//           {
-//             $lookup: {
-//               from: "categories",
-//               localField: "category",
-//               foreignField: "_id",
-//               as: "categoryDetails",
-//               pipeline: [
-//                 {
-//                   $project: {
-//                     _id: 1,
-//                     name: 1,
-//                   },
-//                 },
-//               ],
-//             },
-//           },
-//           { $unwind: "$categoryDetails" },
-//           {
-//             $match: {
-//               "categoryDetails.name": category,
-//             },
-//           },
-//         ]
-//       : []),
+  // Execute the pipeline
+  const properties = await Property.aggregate(pipeline);
 
-//     // Faceted Pagination and Total Counts
-//     {
-//       $facet: {
-//         paginatedResults: [
-//           { $sort: { createdAt: -1 } },
-//           ...(page >= 1 && size >= 1
-//             ? [{ $skip: (page - 1) * size }, { $limit: size }]
-//             : []),
-//         ],
-//         totalCounts: [
-//           {
-//             $group: {
-//               _id: null,
-//               totalCount: { $sum: 1 },
-//             },
-//           },
-//         ],
-//       },
-//     },
-//     {
-//       $project: {
-//         paginatedResults: 1,
-//         totalCount: {
-//           $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
-//         },
-//       },
-//     },
-//   ];
-//   console.log(destination);
+  let allProperties = properties[0]?.paginatedResults || [];
+  let totalCount = properties[0]?.totalCount || 0;
 
-//   // Execute the pipeline
-//   const properties = await Property.aggregate(pipeline);
-
-//   let allProperties = properties[0]?.paginatedResults || [];
-//   let totalCount = properties[0]?.totalCount || 0;
-
-//   // Handle shared room logic
-//   if (withSharedRoom && category !== "Private Room") {
-//     const extractedSeats = await seatServices.getAllSeatsFromDB({
-//       destination,
-//     });
-
-//     allProperties = [
-//       ...allProperties.filter(
-//         (result) => result.categoryDetails.name === "Private Room"
-//       ),
-//       ...extractedSeats,
-//     ];
-//     totalCount += extractedSeats.length;
-//   }
-
-//   return {
-//     properties: allProperties,
-//     totalCount: totalCount,
-//     currentPage: page,
-//     pageSize: size,
-//   };
-// };
+  return {
+    properties: allProperties,
+    totalCount: totalCount,
+    currentPage: page,
+    pageSize: size,
+  };
+};
 
 const getRecommendedPropertiesFromDB = async () => {
   const result = await Property.aggregate([
@@ -366,6 +323,7 @@ const getSinglePropertyFromDB = async (propertyId) => {
 
 export const propertyServices = {
   getPropertiesFromDB,
+  getPropertiesFromDBForAdmin,
   getRecommendedPropertiesFromDB,
   getSinglePropertyFromDB,
 };

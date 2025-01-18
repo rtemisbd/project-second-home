@@ -3,12 +3,13 @@ import {
   getAdjustment,
   updateAdjustment,
   deleteAdjustment,
+  createAdjustment,
 } from "../controllers/adjustment.js";
 
 const router = express.Router();
 
+router.post("/", createAdjustment);
 router.get("/", getAdjustment);
-
 // router.route("/:email").get(getUserTransactions);
 router.route("/:id").delete(deleteAdjustment);
 router.route("/:id").patch(updateAdjustment);
