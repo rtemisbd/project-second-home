@@ -9,6 +9,7 @@ import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 // import LoadingState from "../LoadingState/LoadingState";
 // import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Payment = ({
   data,
@@ -23,7 +24,7 @@ const Payment = ({
   // const isLoadingState = useSelector(
   //   (state) => state?.loadingModal?.isLoadingState
   // );
-  const [paymentType, setPaymentType] = useState("cash");
+  const [paymentType, setPaymentType] = useState("Cash");
   const [customerType, setCustomerType] = useState("Customer Type");
   const paymentOption = ["Receive", "Adjustment"];
   const [paymentOptionValue, setPaymentOptionValue] = useState(0);
@@ -59,9 +60,9 @@ const Payment = ({
     const dueAmount =
       data?.payableAmount - (data?.totalReceiveTk + Number(receivedTk));
 
-    if (data?.dueAmount < Number(receivedTk)) {
-      return toast.warn(`Sorry ! Your Due ${data?.dueAmount}`);
-    }
+    // if (data?.dueAmount < Number(receivedTk)) {
+    //   return toast.warn(`Sorry ! Your Due ${data?.dueAmount}`);
+    // }
 
     if (data?.payableAmount === data?.totalReceiveTk) {
       return toast.warn(`Sorry ! This Order Payment Already Paid`);
@@ -71,6 +72,8 @@ const Payment = ({
     }
     setLoading(true);
     const receivedPayment = {
+      orderId: data?._id,
+      branch: data?.branch,
       paymentDate: e.target?.paymentDate?.value,
       customerType: customerType,
       whichOfMonthPayment: e.target?.whichOfMonthPayment?.value,
@@ -87,29 +90,34 @@ const Payment = ({
       bankName: e.target?.bankName?.value,
       bankHoldingName: e.target?.bankHoldingName?.value,
       receiverName: e.target?.receiverName?.value,
-      acceptableStatus: paymentType === "cash" ? "Accepted" : "Pending",
+      acceptableStatus: paymentType === "Cash" ? "Accepted" : "Pending",
       noteForTransaction: e.target?.noteForTransaction?.value,
+      userId: data?.userId,
+      userPhone: data?.phone,
+      userName: data?.fullName,
     };
 
     try {
       dispatch(placeLoadingShow(true));
-      await axios.patch(
-        `https://api.psh.com.bd/api/order/${data?._id}`,
-        receivedPayment,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
+      const { data } = await axios.post(
+        `${baseUrl}/api/transaction`,
+        receivedPayment
       );
+
+      // await axios.patch(`${baseUrl}/api/order/${data?._id}`, receivedPayment, {
+      //   headers: {
+      //     "Content-Type": "application/json",
+      //   },
+      // });
       e.target.reset();
       setLoading(false);
       // dispatch(placeLoadingShow(false));
       handleClose();
-
-      toast.success("Payment Successfully Done");
-      refetch();
-      handleClickCloseButton();
+      if (data.success) {
+        toast.success("Payment Successfully Done");
+        refetch();
+        handleClickCloseButton();
+      }
     } catch (error) {
       // dispatch(placeLoadingShow(false));
       handleClose();
@@ -118,7 +126,6 @@ const Payment = ({
   };
 
   // Handle Adjustment Request
-
   const handleAdjustment = async (e) => {
     e.preventDefault();
 
@@ -150,15 +157,11 @@ const Payment = ({
 
     try {
       dispatch(placeLoadingShow(true));
-      await axios.patch(
-        `https://api.psh.com.bd/api/order/${data._id}`,
-        adjustment,
-        {
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await axios.patch(`${baseUrl}/api/order/${data._id}`, adjustment, {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
 
       setLoading(false);
       handleClose();
@@ -244,7 +247,7 @@ const Payment = ({
                           <option disabled value="">
                             Payment Type
                           </option>
-                          <option value="cash">Cash</option>
+                          <option value="Cash">Cash</option>
                           <option value="bkash">Bkash</option>
                           <option value="nagad">Nagad</option>
                           <option value="dutch">dutch-bangla</option>
@@ -323,7 +326,7 @@ const Payment = ({
                         ""
                       ) : (
                         <>
-                          {paymentType !== "cash" && paymentType !== "bank" ? (
+                          {paymentType !== "Cash" && paymentType !== "bank" ? (
                             <>
                               <label htmlFor="" className="fs-5 fw-normal">
                                 Payment Number

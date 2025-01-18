@@ -5,6 +5,7 @@ import {
   featuredRoom,
   getBookingReport,
   getPropertys,
+  getPropertysForAdmin,
   getRecommendedPropertys,
   getSinglePropertys,
   updatePropertys,
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.post("/", CreatePropertys);
 router.get("/", getPropertys);
+router.get("/admin/", getPropertysForAdmin);
 router.get("/booking-report", getBookingReport);
 router.patch("/featured", featuredRoom);
 router.get("/:id", getSinglePropertys);

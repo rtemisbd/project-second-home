@@ -4,6 +4,16 @@ import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import { transactionServices } from "../services/transaction.service.js";
 
+export const createTransaction = catchAsync(async (req, res, next) => {
+  const result = await transactionServices.createTransactionIntoDB(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Transaction created successfully!",
+    data: result,
+  });
+});
+
 export const getTransaction = catchAsync(async (req, res, next) => {
   const transactions = await transactionServices.getAllTransactionFromDB(
     req.query
