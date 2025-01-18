@@ -21,9 +21,7 @@ const CreateNewOrder = ({ category, id, user }) => {
 
   const [room, setRoom] = useState(null);
   const [rentDates, setRentDate] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(
-    categories.find((item) => item._id === category)
-  );
+  const [selectedCategory, setSelectedCategory] = useState(null);
 
   const [isIncludeFood, setIsIncludeFood] = useState(false);
 
@@ -62,21 +60,24 @@ const CreateNewOrder = ({ category, id, user }) => {
   }
 
   useEffect(() => {
+    const select = categories.find((item) => item._id === category);
+    setSelectedCategory(select);
+  }, [category, categories]);
+
+  useEffect(() => {
     const fetchData = async () => {
       try {
-        if (selectedCategory?.name === "Private Room") {
+        if (selectedCategory.name === "Private Room") {
           const { data } = await axios.get(`${baseUrl}/api/property/${id}`);
-
           setRoom(data?.property);
           setRentDate(data?.rentRooms);
         } else {
           const { data } = await axios.get(`${baseUrl}/api/seats/${id}`);
-
           setRoom(data?.data?.seat);
           setRentDate(data?.data?.rentRooms);
         }
       } catch (error) {
-        console.error("Error fetching data:", error);
+        // console.error("Error fetching data:", error);
       }
     };
     fetchData();
