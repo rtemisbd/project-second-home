@@ -25,6 +25,7 @@ const Footer = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
     navigate("/");
   };
+
   return (
     <div className="footer-part">
       <div>
@@ -378,7 +379,8 @@ const Footer = () => {
             //   background: "linear-gradient(to right, #020304, #071e37)",
             // }}
           >
-            © 2024 Project Second Home. All rights reserved
+            © {new Date().getFullYear()} Project Second Home. All rights
+            reserved
             <div className="flex ms-5 sm:hidden md:block">
               <Link
                 to={"/terms"}
