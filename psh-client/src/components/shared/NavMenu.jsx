@@ -215,7 +215,7 @@ export default function Navmenu() {
         </Link>
       </Typography>
 
-      <Typography
+      {/* <Typography
         as="li"
         className="p-1 font-normal"
         onClick={() => setNaValue("/study-space")}
@@ -235,7 +235,7 @@ export default function Navmenu() {
           </div>
           <span className="hover:text-[#00bbb4]">Study Space</span>
         </Link>
-      </Typography>
+      </Typography> */}
 
       <Typography
         as="li"

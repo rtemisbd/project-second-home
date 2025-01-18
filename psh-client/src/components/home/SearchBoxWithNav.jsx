@@ -42,7 +42,7 @@ const SearchBoxWithNav = () => {
   const [categoryValue, setCategoryValue] = useState(0);
   const category = ["All", ...data.map((item) => item?.name)];
 
-  const beds = ["All", "Bunk Bed", "Bunk Bed & Single Bed", "King Size Bed"];
+  const beds = ["All", "Bunk Bed", "Single Bed", "King Size Bed"];
   const [bedValue, setBedValue] = useState(0);
 
   const [inputActive, setInputActive] = useState(false);
@@ -380,12 +380,17 @@ const SearchBoxWithNav = () => {
                   </div>
                   <div className="w-[50%] border border-[#00bbb4] rounded">
                     <select
-                      className="pl-5 py-1 gender-sm text-[14px]"
+                      className="pl-5 py-1 gender-sm text-[14px] "
                       value={genderValue}
                       onChange={(e) => handleGenderSelection(e.target.value)}
                     >
                       {gender.map((gender, index) => (
-                        <option key={index} value={index}>
+                        <option
+                          key={index}
+                          value={index}
+                          disabled={gender === "Male"}
+                          className="disabled:cursor-not-allowed"
+                        >
                           {gender}
                         </option>
                       ))}
@@ -407,14 +412,12 @@ const SearchBoxWithNav = () => {
                       {beds.map((bed, index) => {
                         if (
                           (categoryValue === 1 &&
-                            bed !== "All" &&
-                            bed !== "Bunk Bed" &&
-                            bed !== "Bunk Bed & Single Bed") ||
-                          (categoryValue === 2 &&
-                            bed !== "All" &&
                             bed !== "Single Bed" &&
-                            bed !== "Bunk Bed & Single Bed" &&
-                            bed !== "King Size Bed")
+                            bed !== "Single Bed" &&
+                            bed !== "King Size Bed") ||
+                          (categoryValue === 2 &&
+                            bed !== "Bunk Bed" &&
+                            bed !== "Single Bed")
                         ) {
                           return null; // Skip rendering
                         }
@@ -442,7 +445,12 @@ const SearchBoxWithNav = () => {
                       onChange={(e) => handleFurnitureSelection(e.target.value)}
                     >
                       {furnitures.map((furniture, index) => (
-                        <option key={index} value={index}>
+                        <option
+                          key={index}
+                          value={index}
+                          disabled={furniture === "Unfurnished"}
+                          className="disabled:cursor-not-allowed"
+                        >
                           {furniture}
                         </option>
                       ))}

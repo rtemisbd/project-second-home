@@ -381,12 +381,12 @@ const SearchBox = () => {
                 {beds.map((bed, index) => {
                   if (
                     (categoryValue === 1 &&
-                      bed !== "Bunk Bed" &&
-                      bed !== "Single Bed") ||
+                      bed !== "Single Bed" &&
+                      bed !== "Single Bed" &&
+                      bed !== "King Size Bed") ||
                     (categoryValue === 2 &&
-                      bed !== "Single Bed" &&
-                      bed !== "Single Bed" &&
-                      bed !== "King Size Bed")
+                      bed !== "Bunk Bed" &&
+                      bed !== "Single Bed")
                   ) {
                     return null; // Skip rendering
                   }
@@ -426,14 +426,15 @@ const SearchBox = () => {
               </li>
               {furnitures.map((furniture, index) => (
                 <li key={index} className="search_md_bed">
-                  <span
+                  <button
                     onClick={() => handleFurnitureSelection(index)}
+                    disabled={furniture === "Unfurnished"}
                     className={`${
                       FurnishedValue === index ? "bedActive" : "bedNonActive"
-                    }`}
+                    } px-[25px] py-[6px] ml-1 rounded disabled:cursor-not-allowed`}
                   >
                     {furniture}
-                  </span>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -451,14 +452,15 @@ const SearchBox = () => {
               </li>
               {gender.map((gender, index) => (
                 <li key={index} className="search_md_bed">
-                  <span
+                  <button
                     onClick={() => handleGenderSelection(index)}
+                    disabled={gender === "Male"}
                     className={`${
                       genderValue === index ? "bedActive" : "bedNonActive"
-                    }`}
+                    } px-[25px] py-[6px] ml-1 rounded disabled:cursor-not-allowed`}
                   >
                     {gender}
-                  </span>
+                  </button>
                 </li>
               ))}
             </ul>
