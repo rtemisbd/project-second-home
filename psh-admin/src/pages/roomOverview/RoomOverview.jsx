@@ -295,8 +295,6 @@ const RoomOverview = () => {
     }
   };
 
-  console.log({ detail, bookingInfo });
-
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>

@@ -140,9 +140,7 @@ const PersonalInfo = () => {
         );
 
         window.location.href =
-
-          selectMethod === "manual" ? data?.data?.bkashURL : data.bkashURL;
-
+          selectMethod === "manual" ? data?.data?.bkashURL : data?.bkashURL;
 
         // toast.success("Booking successfully done");
       } else {

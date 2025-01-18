@@ -85,7 +85,7 @@ const getSeatByIdFromDB = async (id) => {
     seatId: 1,
     seatNumber: 1,
   });
-  const seat = await Seat.findById(id);
+  const seat = await Seat.findById(id).populate("category branch");
 
   return { seat, rentRooms };
 };

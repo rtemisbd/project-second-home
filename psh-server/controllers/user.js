@@ -473,8 +473,50 @@ export const getAdmin = async (req, res, next) => {
 
 export const getUsers = async (req, res, next) => {
   try {
-    const users = await User.find({}).populate("branch");
-    res.status(200).json(users);
+    const { phone } = req.query;
+    const page = parseInt(req.query?.page, 10) || 1;
+    const size = parseInt(req.query?.size, 10) || 10;
+
+    const matchStage = {};
+    if (phone && phone.trim() !== "")
+      matchStage.phone = { $regex: `^${phone}` };
+
+    const pipeline = [
+      { $match: matchStage },
+      {
+        $facet: {
+          totalCount: [{ $count: "count" }],
+          paginatedResults: [
+            { $sort: { createdAt: -1 } },
+            { $skip: (page - 1) * size },
+            { $limit: size },
+            {
+              $lookup: {
+                from: "branches",
+                localField: "branch",
+                foreignField: "_id",
+                as: "branch",
+              },
+            },
+            // { $project: { password: 0 } },
+          ],
+        },
+      },
+    ];
+
+    const results = await User.aggregate(pipeline);
+
+    // Extract total count and paginated results
+    const totalCount = results[0]?.totalCount[0]?.count || 0;
+    const users = results[0]?.paginatedResults || [];
+
+    res.status(200).json({
+      success: true,
+      totalCount,
+      currentPage: page,
+      pageSize: size,
+      users,
+    });
   } catch (err) {
     next(err);
   }

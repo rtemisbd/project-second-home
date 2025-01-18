@@ -165,7 +165,7 @@ export const createOrderByCash = async (payload) => {
     const dataForBooking = payload;
     const generateId = await generateBookingId();
     dataForBooking.bookingId = generateId;
-    dataForBooking.paymentType = "Cash";
+    // dataForBooking.paymentType = "Cash";
     const result = await OrderModel.create([dataForBooking], { session });
 
     // Phone SMS for booking
