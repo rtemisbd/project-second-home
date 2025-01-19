@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import "./styles/SeeOrderDetails.css";
 import { Table } from "react-bootstrap";
@@ -12,6 +12,16 @@ import { formatDate } from "../../utils/dateConvert";
 
 const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const ref = useRef();
+
+  const [discount, setDiscount] = useState(data?.discount || 0);
+  const [payableAmount, setPayableAmount] = useState(data?.payableAmount);
+  useEffect(() => {
+    if (data.adjustments) {
+      setPayableAmount(
+        data.payableAmount - data.adjustments[0]?.totatAdjustmentAmount
+      );
+    }
+  }, [data.adjustments, data.payableAmount, data.totalAmount, discount]);
 
   const handleClose = () => setShowDetails(false);
 
@@ -328,14 +338,18 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Discount
               </label>
-              <p>Tk {data?.discount?.toLocaleString()}</p>
+              <p>
+                Tk{" "}
+                {(data?.discount || 0) +
+                  (data?.adjustments[0]?.totatAdjustmentAmount || 0)}
+              </p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Payable Amount
               </label>
-              <p>Tk {data?.payableAmount?.toLocaleString()}</p>
+              <p>Tk {payableAmount}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -343,7 +357,8 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 Total Payment
               </label>
               <p>
-                Tk {data?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+                Tk{" "}
+                {data?.transactions[0]?.totalReceiveTk?.toLocaleString() || 0}
                 {/* {data?.totalReceiveTk?.toLocaleString()} */}
               </p>
             </div>
@@ -353,7 +368,8 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 Due Amount
               </label>
               <p>
-                Tk {data?.payableAmount - data?.transactions[0]?.totalReceiveTk}
+                Tk{" "}
+                {payableAmount - (data?.transactions[0]?.totalReceiveTk || 0)}
                 {/* {data?.dueAmount?.toLocaleString()} */}
               </p>
             </div>
@@ -496,16 +512,21 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
             <div className=" d-flex justify-content-end gap-5 ">
               <div className="d-flex">
                 <label htmlFor="">Total Amount </label>
-                <p> = Tk {data?.payableAmount?.toLocaleString()}</p>
+                <p> = Tk {payableAmount}</p>
               </div>
               <div className="d-flex">
                 <label htmlFor=""> Total Receive </label>
-                <p> = Tk {data?.totalReceiveTk?.toLocaleString()}</p>
+                <p>
+                  {" "}
+                  = Tk{" "}
+                  {data?.transactions[0]?.totalReceiveTk?.toLocaleString() || 0}
+                </p>
               </div>
               <div className="d-flex">
                 <label htmlFor="">Due Amount </label>
                 <p className="text-danger fw-bold">
-                  = Tk {data?.dueAmount?.toLocaleString()}
+                  = Tk{" "}
+                  {payableAmount - (data?.transactions[0]?.totalReceiveTk || 0)}
                 </p>
               </div>
             </div>

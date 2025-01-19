@@ -30,8 +30,10 @@ const BookingData = ({
     useState(null);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   // For Seat Update Duration Modal
-  const [discount, setDiscount] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(booking.totalAmount);
+  const [discount, setDiscount] = useState(booking?.discount || 0);
+  const [payableAmount, setPayableAmount] = useState(
+    booking?.totalAmount - discount
+  );
   const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
   const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
   // Details Modal
@@ -71,9 +73,16 @@ const BookingData = ({
 
   useEffect(() => {
     setIsIncludeFood(booking?.isIncludeFood);
-    setDiscount(booking.adjustments[0]?.totatAdjustmentAmount);
-    setPayableAmount(booking?.totalAmount - discount);
-  }, []);
+  }, [booking.isIncludeFood]);
+
+  useEffect(() => {
+    if (booking.adjustments[0]?.totatAdjustmentAmount) {
+      let totatDiscount =
+        discount + booking.adjustments[0]?.totatAdjustmentAmount;
+      setDiscount(totatDiscount);
+      setPayableAmount(booking?.totalAmount - discount);
+    }
+  }, [booking.adjustments]);
 
   return (
     <>
