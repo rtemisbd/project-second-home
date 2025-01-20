@@ -18,6 +18,8 @@ const Payment = ({
   showPaymentModal,
   setShowPaymentModal,
 }) => {
+  // console.log(data);
+
   const dispatch = useDispatch();
   const dateInputRef = useRef(null);
 

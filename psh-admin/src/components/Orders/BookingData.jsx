@@ -18,6 +18,8 @@ const BookingData = ({
   page,
   size,
 }) => {
+  console.log(booking);
+
   // For Status Modal
   const [statusModalData, setStatusModalData] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);

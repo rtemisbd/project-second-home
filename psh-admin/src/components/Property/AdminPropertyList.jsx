@@ -43,22 +43,27 @@ const AdminPropertyList = () => {
   const [selectBranch, setSelectBranch] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
 
+  const [branch, setBranch] = useState("");
+  const [category, setCategory] = useState("");
+
   // Get All Branch
   const { allBranch: branches } = useBranch();
   const { categories } = useCategory();
 
-  const { refetch } = useQuery(["propertyList", page, size], async () => {
+  const { refetch } = useQuery(["propertyList", category, branch], async () => {
     try {
       // Construct query parameters
       const queryParams = new URLSearchParams({
-        page,
-        size,
-        fromClient: true,
+        // page,
+        // size,
+        destination: branch,
+        category,
+        withSharedRoom: true,
       });
 
       // Pass the query parameters in the URL
       const response = await axios.get(
-        `${baseUrl}/api/property/admin?${queryParams.toString()}`
+        `${baseUrl}/api/property?${queryParams.toString()}`
       );
 
       console.log("Response Data:", response.data);
@@ -336,7 +341,7 @@ const AdminPropertyList = () => {
                     <label htmlFor="Category">Category: </label>
                   </div>
                   <select
-                    onChange={(e) => setSelectCategory(e.target.value)}
+                    onChange={(e) => setCategory(e.target.value)}
                     style={{
                       height: "30px",
                     }}
@@ -356,7 +361,7 @@ const AdminPropertyList = () => {
                   </div>
 
                   <select
-                    onChange={(e) => setSelectBranch(e.target.value)}
+                    onChange={(e) => setBranch(e.target.value)}
                     style={{
                       height: "30px",
                     }}
@@ -455,7 +460,7 @@ const AdminPropertyList = () => {
               </p>
             )}
           </div>
-          <Pagination totalDataCount={totalDataCount} />
+          {/* <Pagination totalDataCount={totalDataCount} /> */}
         </section>
       </div>
     </div>
