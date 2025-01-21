@@ -42,23 +42,31 @@ const AdminPropertyList = () => {
   const [selectCategory, setSelectCategory] = useState("All");
   const [selectBranch, setSelectBranch] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
+  const [seatNumber, setSeatNumber] = useState("");
+
+  const [branch, setBranch] = useState("");
+  const [category, setCategory] = useState("");
 
   // Get All Branch
   const { allBranch: branches } = useBranch();
   const { categories } = useCategory();
 
-  const { refetch } = useQuery(["propertyList", page, size], async () => {
+  const { refetch } = useQuery(["propertyList", category, branch], async () => {
     try {
       // Construct query parameters
       const queryParams = new URLSearchParams({
-        page,
-        size,
-        fromClient: true,
+        // page,
+        // size,
+        destination: branch,
+        category,
+        withSharedRoom: true,
+        roomNumber,
+        seatNumber,
       });
 
       // Pass the query parameters in the URL
       const response = await axios.get(
-        `${baseUrl}/api/property/admin?${queryParams.toString()}`
+        `${baseUrl}/api/property?${queryParams.toString()}`
       );
 
       console.log("Response Data:", response.data);
@@ -81,7 +89,7 @@ const AdminPropertyList = () => {
   // Re-fetch data whenever `page` or `size` changes
   useEffect(() => {
     refetch();
-  }, [refetch, page, size]);
+  }, [refetch, page, size, roomNumber, seatNumber]);
 
   // Handle Search
 
@@ -133,8 +141,26 @@ const AdminPropertyList = () => {
       text: "Name",
     },
     {
-      dataField: "roomNumber",
-      text: "Room No.",
+      // dataField: "roomNumber",
+      text: "Room /Seat No.",
+      formatter: (cellContent, row) => {
+        return (
+          <>
+            <div className=" d-flex ">
+              <div>
+                {
+                  row?.categoryDetails?.name === "Shared Room" ? (
+                    <p className="fw-bold">Seat : {row?.seatNumber}</p>
+                  ) : (
+                    <p className="fw-bold">Room : {row?.roomNumber}</p>
+                  )
+                  // console.log(row?.categoryDetails?.name)
+                }
+              </div>
+            </div>
+          </>
+        );
+      },
     },
     { dataField: "categoryDetails.name", text: "Category" },
     { dataField: "branchDetails.name", text: "Branch" },
@@ -330,13 +356,13 @@ const AdminPropertyList = () => {
               <div className="col-md-7">
                 <h6 className="college_h6">Property List</h6>
               </div>{" "}
-              <div className="d-flex justify-content-end ">
+              <div className="d-flex justify-content-end">
                 <div>
                   <div>
                     <label htmlFor="Category">Category: </label>
                   </div>
                   <select
-                    onChange={(e) => setSelectCategory(e.target.value)}
+                    onChange={(e) => setCategory(e.target.value)}
                     style={{
                       height: "30px",
                     }}
@@ -356,7 +382,7 @@ const AdminPropertyList = () => {
                   </div>
 
                   <select
-                    onChange={(e) => setSelectBranch(e.target.value)}
+                    onChange={(e) => setBranch(e.target.value)}
                     style={{
                       height: "30px",
                     }}
@@ -370,16 +396,21 @@ const AdminPropertyList = () => {
                   </select>
                 </div>
 
-                <div style={{ marginLeft: 10 }}>
-                  <label htmlFor="">Room No. </label> <br />
+                <div>
+                  <label htmlFor="roomId">Room Number </label> <br />
                   <input
                     type="text"
-                    list="roomNumber"
-                    placeholder="Type Room Number"
+                    value={roomNumber}
+                    style={{ margin: "0px 8px" }}
                     onChange={(e) => setRoomNumber(e.target.value)}
-                    style={{
-                      width: "200px",
-                    }}
+                  />
+                </div>
+                <div>
+                  <label htmlFor="seatId">Seat Number </label> <br />
+                  <input
+                    type="text"
+                    value={seatNumber}
+                    onChange={(e) => setSeatNumber(e.target.value)}
                   />
                 </div>
                 <div style={{ marginLeft: 10, marginTop: 30 }}>
@@ -455,7 +486,7 @@ const AdminPropertyList = () => {
               </p>
             )}
           </div>
-          <Pagination totalDataCount={totalDataCount} />
+          {/* <Pagination totalDataCount={totalDataCount} /> */}
         </section>
       </div>
     </div>

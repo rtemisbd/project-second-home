@@ -4,6 +4,7 @@ import {
   getMyBooking,
   getOrder,
   getSingleOrder,
+  orderCorrection,
   updateBooking,
   updateBookingOrder,
 } from "../controllers/order.js";
@@ -16,6 +17,7 @@ import bkash_auth from "../middleware/payment.js";
 const router = express.Router();
 
 // router.post("/", createOrder);
+// router.get("/order-correction", orderCorrection);
 router.post("/", bkash_auth, createOrder);
 
 router.get(

@@ -16,6 +16,7 @@ import { ToastContainer } from "react-toastify";
 import { useEffect } from "react";
 
 import UserStatusUpdate from "./UserStatusUpdate";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const UserManage = () => {
   const MySwal = withReactContent(Swal);
@@ -30,14 +31,16 @@ const UserManage = () => {
       setUsers(users);
     }
   }, [data]);
-  const { isLoading, refetch } = useQuery([data], () =>
-    fetch(`https://api.psh.com.bd/api/users`, {
-      method: "GET",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        setData(data);
+  const { isLoading, refetch } = useQuery(
+    [data],
+    async () =>
+      await fetch(`${baseUrl}/api/users`, {
+        method: "GET",
       })
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data?.users);
+        })
   );
 
   const columns = [
