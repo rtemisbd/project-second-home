@@ -148,13 +148,19 @@ const getPropertiesFromDB = async (queries) => {
 };
 
 const getPropertiesFromDBForAdmin = async (queries) => {
-  const { category, destination, withSharedRoom } = queries;
+  const { category, destination, withSharedRoom, roomNumber, seatNumber } =
+    queries;
 
   const page = parseInt(queries.page);
   const size = parseInt(queries.size);
+  let query = {};
+  if (roomNumber && roomNumber !== "") {
+    query.roomNumber = { $regex: `^${roomNumber}`, $options: "i" };
+  }
 
   // Declare pipeline as an array, adding conditional stages
   const pipeline = [
+    { $match: query },
     {
       $lookup: {
         from: "branches",
@@ -231,14 +237,16 @@ const getPropertiesFromDBForAdmin = async (queries) => {
   ];
 
   let properties = await Property.aggregate(pipeline);
+  if (seatNumber) properties = [];
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom) {
+  if (withSharedRoom && !roomNumber) {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
       size,
       page,
+      seatNumber,
     });
 
     allProperties = [

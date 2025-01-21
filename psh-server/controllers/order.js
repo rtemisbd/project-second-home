@@ -89,6 +89,13 @@ export const orderCorrection = async (req, res) => {
   console.log("bbjdrgwa");
 
   try {
+    /*
+case 1 : discount == adjustment --> discount = 0
+case 2  : discount > adjustment --> discount = discount - adjustment
+case 3 : discount = 0 && adjustment > 0 ---> discount = 0, 
+
+*/
+
     // Step 1: Aggregate the discount for each order
     const pipeline = [
       // {
@@ -128,15 +135,25 @@ export const orderCorrection = async (req, res) => {
     ];
 
     const results = await OrderModel.aggregate(pipeline);
+    const updatePromises = results.map((order) => {
+      let updatedDiscount;
 
-    const updatePromises = results.map((order) =>
-      OrderModel.updateOne(
+      if (order.discount === 0) {
+        updatedDiscount = 0;
+      } else if (order.discount === order.adjustmentAmount) {
+        updatedDiscount = 0;
+      } else if (order.discount > order.adjustmentAmount) {
+        updatedDiscount = order.discount - order.adjustmentAmount;
+      } else {
+        updatedDiscount = order?.discount;
+      }
+
+      return OrderModel.updateOne(
         { _id: order._id },
-        {
-          $inc: { discount: -order.newDiscount },
-        }
-      )
-    );
+        { $set: { discount: updatedDiscount } }
+      );
+    });
+
     await Promise.all(updatePromises);
     res.status(200).json({ message: "Order discounts Update" });
   } catch (error) {

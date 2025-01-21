@@ -18,7 +18,7 @@ const BookingData = ({
   page,
   size,
 }) => {
-  console.log(booking);
+  // console.log(booking);
 
   // For Status Modal
   const [statusModalData, setStatusModalData] = useState(null);
@@ -32,10 +32,8 @@ const BookingData = ({
     useState(null);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   // For Seat Update Duration Modal
-  const [discount, setDiscount] = useState(booking?.discount || 0);
-  const [payableAmount, setPayableAmount] = useState(
-    booking?.totalAmount - discount
-  );
+  const [discount, setDiscount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(0);
   const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
   const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
   // Details Modal
@@ -78,13 +76,17 @@ const BookingData = ({
   }, [booking.isIncludeFood]);
 
   useEffect(() => {
-    if (booking.adjustments[0]?.totatAdjustmentAmount) {
-      let totatDiscount =
-        discount + booking.adjustments[0]?.totatAdjustmentAmount;
-      setDiscount(totatDiscount);
-      setPayableAmount(booking?.totalAmount - discount);
-    }
-  }, [booking.adjustments]);
+    const totalDiscount = booking?.adjustments?.[0]?.totatAdjustmentAmount || 0;
+    const updatedDiscount = booking?.discount || 0;
+
+    // Update the discount to include adjustments
+    const newDiscount = updatedDiscount + totalDiscount;
+    setDiscount(newDiscount);
+
+    // Calculate and set the payable amount
+    const newPayableAmount = (booking?.totalAmount || 0) - newDiscount;
+    setPayableAmount(newPayableAmount > 0 ? newPayableAmount : 0); // Ensure no negative value
+  }, [booking?.adjustments, booking?.totalAmount, booking?.discount]);
 
   return (
     <>
