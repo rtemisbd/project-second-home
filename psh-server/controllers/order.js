@@ -13,6 +13,7 @@ import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
 import config from "../config/index.js";
 import { generateBookingId } from "../utils/generateBookingId.js";
+import mongoose, { Types } from "mongoose";
 
 export const createOrder = catchAsync(async (req, res, next) => {
   // console.log({ bkash_auth_token });
@@ -28,142 +29,6 @@ export const createOrder = catchAsync(async (req, res, next) => {
       "Thank You! Your Booking Successfully Done, We will contact you very soon.",
   });
 });
-// export const createOrder = catchAsync(async (req, res, next) => {
-//   const {
-//     email,
-//     bookingInfo,
-//     fullName,
-//     fatherName,
-//     motherName,
-//     phone,
-//     address,
-//     passport,
-//     birthDate,
-//     gender,
-//     nid,
-//     validityType,
-//     validityNumber,
-//     // employeeStatus,
-//     // emplyeeIncome,
-//     emergencyContactName,
-//     emergencyRelationC,
-//     emergencyContact,
-//     ...bookingData
-//   } = req.body;
-
-//   const user = await User.findOne({ phone: phone });
-
-//   const bookingInfoParse = JSON.parse(bookingInfo);
-
-//   const branch = bookingInfoParse?.branch;
-
-//   const generateId = await generateBookingId();
-
-//   const newOrder = new OrderModel({
-//     bookingInfo: bookingInfoParse,
-//     bookingId: generateId,
-//     email,
-//     // branch,
-//     fullName,
-//     fatherName,
-//     motherName,
-//     phone,
-//     address,
-//     passport,
-//     birthDate,
-//     gender,
-//     nid,
-//     validityType,
-//     validityNumber,
-//     // employeeStatus,
-//     // emplyeeIncome,
-//     emergencyContactName,
-//     emergencyRelationC,
-//     emergencyContact,
-//     ...bookingData,
-//   });
-
-//   // Booking Save to Database
-//   const result = await newOrder.save();
-//   const objectIdString = result?._id ? result?._id.toString() : "";
-//   const slicedObjectId = objectIdString.slice(19);
-//   // Phone Sms For Booking
-//   const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${result?.phone}&senderid=8809617617196&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${slicedObjectId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
-
-//   bookingSms(bookingMessage)
-//     .then((response) => {
-//       console.log("Response from SMS API:", response);
-//       // Handle response data as needed
-//     })
-//     .catch((error) => {
-//       console.error("Error while sending SMS:", error);
-//       // Handle error
-//     });
-
-//   // User data Update
-//   const userUpdate = {
-//     firstName: fullName,
-//     fatherName: fatherName,
-//     motherName: motherName,
-//     branch: user?.branch,
-//     email: email,
-//     phone: phone,
-//     userAddress: address,
-//     passport: passport,
-//     dateOfBirth: birthDate,
-//     gender: gender,
-//     nationalId: nid,
-//     validityType: validityType,
-//     validityNumber: validityNumber,
-
-//     employmentStatus: {
-//       workAs: employeeStatus,
-//       monthlyIncome: emplyeeIncome,
-//     },
-//     emergencyContact: {
-//       contactName: emergencyContactName,
-//       relation: emergencyRelationC,
-//       contactNumber: emergencyContact,
-//     },
-//   };
-
-//   await User.updateOne(
-//     { phone: phone },
-//     { $set: userUpdate },
-//     { runValidators: true }
-//   );
-
-//   // Create Transaction whent First booking only payment bkash or nagad
-
-//   if (result?.paymentType !== "cash") {
-//     const currentDate = new Date().toISOString().split("T")[0];
-//     const transaction = new Transaction({
-//       orderId: result?._id,
-//       branch: result?.bookingInfo?.branch,
-//       paymentDate: currentDate,
-//       totalAmount: result?.totalAmount,
-//       payableAmount: result?.payableAmount,
-//       receivedTk: result?.receivedTk,
-//       customerType: result?.customerType,
-//       whichOfMonthPayment: result?.whichOfMonthPayment,
-//       paymentType: result?.paymentType,
-//       paymentNumber: result?.paymentNumber,
-//       transactionId: result?.transactionId,
-//       userEmail: result?.email,
-//       userName: result?.fullName,
-//       userId: result?.userId,
-//       userPhone: result?.phone,
-//       acceptableStatus: "Pending",
-//     });
-//     await transaction.save();
-//   }
-//   sendResponse(res, {
-//     statusCode: 200,
-//     success: true,
-//     message:
-//       "Thank You! Your Booking Successfully Done, We will contact you very soon.",
-//   });
-// });
 
 export const getOrder = catchAsync(async (req, res, next) => {
   const { result, totalCount } = await orderServices.getOrderFromDB(req.query);
@@ -201,325 +66,6 @@ export const getOrder = catchAsync(async (req, res, next) => {
   updateOrderPaymentStatus();
 });
 
-// export const getOrder = async (req, res, next) => {
-//   try {
-//     const orderId = req.query?.orderId;
-//     const userId = req.query?.userId;
-//     const fromDate = req.query?.fromDate;
-//     const toDate = req.query?.toDate;
-//     const branch = req.query?.branch;
-//     const paymentStatus = req?.query?.paymentStatus;
-//     const bookingStatus = req?.query?.status;
-//     const page = parseInt(req.query?.page) || 1;
-//     const size = parseInt(req.query?.size) || 10;
-
-//     if (
-//       !orderId &&
-//       !fromDate &&
-//       !toDate &&
-//       !branch &&
-//       !paymentStatus &&
-//       !bookingStatus
-//     ) {
-//       const orders = await OrderModel.find({})
-//         .populate("branch")
-//         .sort({ createdAt: -1 })
-//         .skip(page * size)
-//         .limit(size);
-//       const bookingsTotalCount = await OrderModel.countDocuments({});
-
-//       res.status(200).json({
-//         status: "Success",
-//         message: "Success",
-//         orders,
-//         bookingsTotalCount,
-//       });
-//     } else if (
-//       !orderId &&
-//       !fromDate &&
-//       !toDate &&
-//       branch &&
-//       !paymentStatus &&
-//       !bookingStatus
-//     ) {
-//       const orders = await OrderModel.find({ branch: branch })
-//         .populate("branch")
-//         .sort({ createdAt: -1 })
-//         .skip(page * size)
-//         .limit(size);
-//       const bookingsTotalCount = await OrderModel.countDocuments({
-//         branch: branch,
-//       });
-//       res.status(200).json({
-//         status: "Success",
-//         message: "Success",
-//         orders,
-//         bookingsTotalCount,
-//       });
-//     } else {
-//       const query = {
-//         branch: branch,
-//         _id: orderId,
-//         userId: userId,
-//         createdAt: {
-//           $gte: fromDate,
-//           $lte: toDate,
-//         },
-//         paymentStatus: paymentStatus,
-//         status: bookingStatus,
-//       };
-//       if (paymentStatus === "All") {
-//         // Remove paymentStatus from the query object
-//         delete query.paymentStatus;
-//       }
-
-//       if (bookingStatus === "All") {
-//         // Remove status from the query object
-//         delete query.status;
-//       }
-//       if (branch === "All") {
-//         // Remove status from the query object
-//         delete query.branch;
-//       }
-//       if (orderId === "All") {
-//         // Remove orderId from the query object
-//         delete query._id;
-//       }
-//       if (userId === "All") {
-//         // Remove userId from the query object
-//         delete query.userId;
-//       }
-//       if (!fromDate || !toDate) {
-//         // Remove createdAt from the query object
-//         delete query.createdAt;
-//       }
-
-//       const orders = await OrderModel.find(query)
-//         .populate("branch")
-//         .sort({ createdAt: -1 })
-//         .skip(page * size)
-//         .limit(size);
-//       const bookingsTotalCount = await OrderModel.countDocuments(query);
-//       res.status(200).json({
-//         status: "Success",
-//         message: "Success",
-//         orders,
-//         bookingsTotalCount,
-//       });
-//     }
-
-//     // if totalAmount equal totalReceiveTk
-//     await OrderModel.updateMany(
-//       {
-//         $expr: {
-//           $eq: ["$payableAmount", "$totalReceiveTk"],
-//         },
-//       },
-//       {
-//         $set: {
-//           paymentStatus: "Paid",
-//         },
-//       },
-//       { new: true }
-//     );
-//     // if not Match Total Receive Tk
-//     await OrderModel.updateMany(
-//       {
-//         $expr: {
-//           $ne: ["$payableAmount", "$totalReceiveTk"],
-//         },
-//       },
-//       {
-//         $set: {
-//           paymentStatus: "Unpaid",
-//         },
-//       },
-//       { new: true }
-//     );
-//     // res.status(200).json({
-//     //   orders,
-//     // });
-//   } catch (error) {
-//     res.status(400).json({
-//       status: "failed",
-//       message: "Sorry Order not found",
-//       error: error.message,
-//     });
-//   }
-// };
-
-// export const getOrder = async (req, res, next) => {
-//   try {
-//     const orderId = req.query?.orderId;
-//     const userId = req.query?.userId;
-//     const fromDate = req.query?.fromDate;
-//     const toDate = req.query?.toDate;
-//     const branch = req.query?.branch;
-//     const paymentStatus = req.query?.paymentStatus;
-//     const bookingStatus = req.query?.status;
-//     const page = parseInt(req.query?.page) || 1;
-//     const size = parseInt(req.query?.size) || 10;
-//     let matchStage = {};
-
-//     if (orderId && orderId !== "All") matchStage._id = orderId;
-//     if (userId && userId !== "All") matchStage.userId = userId;
-//     if (branch && branch !== "All")
-//       matchStage.branch = mongoose.Types.ObjectId(branch);
-//     if (paymentStatus && paymentStatus !== "All")
-//       matchStage.paymentStatus = paymentStatus;
-//     if (bookingStatus && bookingStatus !== "All")
-//       matchStage.status = bookingStatus;
-//     if (fromDate && toDate) {
-//       matchStage.createdAt = {
-//         $gte: new Date(fromDate),
-//         $lte: new Date(toDate),
-//       };
-//     }
-
-//     const totalCountsPipeline = [
-//       { $match: matchStage },
-//       {
-//         $group: {
-//           _id: null,
-//           totalCount: { $sum: 1 },
-//         },
-//       },
-//     ];
-
-//     const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
-//     const totalCount =
-//       totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
-
-//     const pipeline = [
-//       { $match: matchStage },
-//       {
-//         $facet: {
-//           paginatedResults: [
-//             { $sort: { createdAt: -1 } },
-//             { $skip: (page - 1) * size },
-//             { $limit: size },
-//             {
-//               $lookup: {
-//                 from: "branches",
-//                 localField: "branch",
-//                 foreignField: "_id",
-//                 as: "branchDetails",
-//               },
-//             },
-//             { $unwind: "$branchDetails" },
-//           ],
-//           totalCounts: [
-//             {
-//               $group: {
-//                 _id: null,
-//                 bookingsTotalCount: { $sum: 1 },
-//                 approvedCount: {
-//                   $sum: { $cond: [{ $eq: ["$status", "Approved"] }, 1, 0] },
-//                 },
-//                 canceledCount: {
-//                   $sum: { $cond: [{ $eq: ["$status", "Canceled"] }, 1, 0] },
-//                 },
-//                 pendingCount: {
-//                   $sum: { $cond: [{ $eq: ["$status", "Pending"] }, 1, 0] },
-//                 },
-//                 processingCount: {
-//                   $sum: { $cond: [{ $eq: ["$status", "Processing"] }, 1, 0] },
-//                 },
-//                 totalBookingAmount: {
-//                   $sum: {
-//                     $cond: [
-//                       {
-//                         $eq: [
-//                           "$status",
-//                           bookingStatus === "All" ? "Approved" : bookingStatus,
-//                         ],
-//                       },
-//                       "$payableAmount",
-//                       0,
-//                     ],
-//                   },
-//                 },
-//                 totalReceiveAmountFilter: {
-//                   $sum: {
-//                     $cond: [
-//                       {
-//                         $eq: [
-//                           "$status",
-//                           bookingStatus === "All" ? "Approved" : bookingStatus,
-//                         ],
-//                       },
-//                       "$totalReceiveTk",
-//                       0,
-//                     ],
-//                   },
-//                 },
-//                 totalDueAmount: {
-//                   $sum: {
-//                     $cond: [
-//                       {
-//                         $eq: [
-//                           "$status",
-//                           bookingStatus === "All" ? "Approved" : bookingStatus,
-//                         ],
-//                       },
-//                       "$dueAmount",
-//                       0,
-//                     ],
-//                   },
-//                 },
-//               },
-//             },
-//           ],
-//         },
-//       },
-//       {
-//         $project: {
-//           paginatedResults: 1,
-//           totalCounts: { $arrayElemAt: ["$totalCounts", 0] },
-//         },
-//       },
-//     ];
-
-//     const results = await OrderModel.aggregate(pipeline);
-//     const orders = results[0]?.paginatedResults || [];
-
-//     const {
-//       // bookingsTotalCount = 0,
-//       approvedCount = 0,
-//       canceledCount = 0,
-//       pendingCount = 0,
-//       processingCount = 0,
-//       totalBookingAmount = 0,
-//       totalReceiveAmountFilter = 0,
-//       totalDueAmount = 0,
-//     } = results[0]?.totalCounts || {};
-
-//     res.status(200).json({
-//       status: "Success",
-//       message: "Orders retrieved successfully",
-//       orders,
-//       bookingsTotalCount: totalCount,
-//       approvedCount,
-//       canceledCount,
-//       pendingCount,
-//       processingCount,
-//       totalBookingAmount,
-//       totalReceiveAmountFilter,
-//       totalDueAmount,
-//     });
-
-//     updateOrderPaymentStatus();
-//   } catch (error) {
-//     res.status(500).json({
-//       status: "failed",
-//       message: "Failed to retrieve orders",
-//       error: error.message,
-//     });
-//   }
-// };
-
-// Separate function to update order payment status
-
 const updateOrderPaymentStatus = async () => {
   try {
     await Promise.all([
@@ -536,6 +82,65 @@ const updateOrderPaymentStatus = async () => {
     ]);
   } catch (error) {
     // console.error("Error updating order payment status:", error);
+  }
+};
+
+export const orderCorrection = async (req, res) => {
+  console.log("bbjdrgwa");
+
+  try {
+    // Step 1: Aggregate the discount for each order
+    const pipeline = [
+      // {
+      //   $match: {
+      //     _id: Types.ObjectId("66b85e82dfc33face3052ab2"),
+      //   },
+      // },
+      {
+        $lookup: {
+          from: "adjustments",
+          let: { booking: "$_id" },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $eq: ["$booking", "$$booking"],
+                },
+              },
+            },
+            {
+              $group: {
+                _id: null,
+                totalDiscount: { $sum: "$adjustmentAmount" },
+              },
+            },
+          ],
+          as: "adjustments",
+        },
+      },
+      {
+        $addFields: {
+          newDiscount: {
+            $ifNull: [{ $arrayElemAt: ["$adjustments.totalDiscount", 0] }, 0],
+          },
+        },
+      },
+    ];
+
+    const results = await OrderModel.aggregate(pipeline);
+
+    const updatePromises = results.map((order) =>
+      OrderModel.updateOne(
+        { _id: order._id },
+        {
+          $inc: { discount: -order.newDiscount },
+        }
+      )
+    );
+    await Promise.all(updatePromises);
+    res.status(200).json({ message: "Order discounts Update" });
+  } catch (error) {
+    res.status(500).json({ error: "error" });
   }
 };
 

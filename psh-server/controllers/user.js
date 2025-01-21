@@ -473,13 +473,19 @@ export const getAdmin = async (req, res, next) => {
 
 export const getUsers = async (req, res, next) => {
   try {
-    const { phone } = req.query;
+    const { phone, usedPromo } = req.query;
     const page = parseInt(req.query?.page, 10) || 1;
     const size = parseInt(req.query?.size, 10) || 10;
 
     const matchStage = {};
     if (phone && phone.trim() !== "")
       matchStage.phone = { $regex: `^${phone}` };
+    // Add filter for usedPromo length > 1 if usedPromo is true
+    if (usedPromo) {
+      matchStage.$expr = {
+        $gt: [{ $size: { $ifNull: ["$usedPromo", []] } }, 1],
+      };
+    }
 
     const pipeline = [
       { $match: matchStage },
@@ -509,8 +515,9 @@ export const getUsers = async (req, res, next) => {
     // Extract total count and paginated results
     const totalCount = results[0]?.totalCount[0]?.count || 0;
     const users = results[0]?.paginatedResults || [];
+    console.log({ users });
 
-    res.status(200).json({
+    return res.status(200).json({
       success: true,
       totalCount,
       currentPage: page,
