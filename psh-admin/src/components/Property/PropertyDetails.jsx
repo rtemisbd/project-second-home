@@ -2,6 +2,8 @@ import React from "react";
 import UseFetch from "../../hooks/useFetch";
 
 const PropertyDetails = ({ show, setShow, data }) => {
+  // console.log(data);
+
   const { data3, loading3, error3, refetch3 } = UseFetch("facilityCategory");
 
   return (
@@ -52,11 +54,11 @@ const PropertyDetails = ({ show, setShow, data }) => {
                 <div className="col-lg-3 mt-2">
                   {" "}
                   <label htmlFor="">Property Type</label>
-                  <p>{data?.category?.name}</p>
+                  <p>{data?.categoryDetails?.name}</p>
                 </div>
                 <div className="col-lg-3">
                   <label htmlFor="">Branch</label>
-                  <p>{data?.branch?.name}</p>
+                  <p>{data?.branchDetails?.name}</p>
                 </div>
                 <div className="col-lg-3">
                   {" "}

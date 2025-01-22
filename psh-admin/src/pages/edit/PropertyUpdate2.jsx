@@ -11,6 +11,8 @@ import { toast } from "react-toastify";
 import { multipleImageUpload } from "../../utils/multipleImageUpload";
 
 const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
+  console.log(data);
+
   const { user } = useContext(AuthContext);
 
   const [files, setFiles] = useState("");

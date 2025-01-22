@@ -2,10 +2,13 @@ import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 
 const getAllSeatsFromDB = async (queries) => {
-  const { destination, seatNumber, size, page } = queries;
+  const { destination, seatNumber, size, page, isPublished } = queries;
   let query = {};
   if (seatNumber && seatNumber !== "") {
     query.seatNumber = { $regex: `^${seatNumber}`, $options: "i" };
+  }
+  if (isPublished && isPublished !== "") {
+    query.isSeatPublished = isPublished;
   }
 
   const pipeline = [

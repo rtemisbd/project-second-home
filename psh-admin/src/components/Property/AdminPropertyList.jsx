@@ -4,7 +4,6 @@ import axios from "axios";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
-import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
 import { Link } from "react-router-dom";
 
@@ -24,7 +23,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
 import { baseUrl } from "../../utils/getBaseURL";
 import useBranch from "../../hooks/useBranch";
-import Pagination from "../Pagination/Pagination";
+
 import useCategory from "../../hooks/useCategory";
 
 const AdminPropertyList = () => {
@@ -33,14 +32,10 @@ const AdminPropertyList = () => {
   const handleClose = () => dispatch(placeLoadingShow(false));
   const { page, size } = useSelector((state) => state.pagination);
   const [data, setData] = useState([]);
-  const [totalDataCount, setTotalDataCount] = useState(0);
-  const [filterData, setFilterData] = useState([]);
+
   const [isLoading, setIsLoading] = useState(false);
   const [isFilter, setIsFilter] = useState(false);
 
-  // const [categories, setCategories] = useState([]);
-  const [selectCategory, setSelectCategory] = useState("All");
-  const [selectBranch, setSelectBranch] = useState("");
   const [roomNumber, setRoomNumber] = useState("");
   const [seatNumber, setSeatNumber] = useState("");
 
@@ -69,16 +64,12 @@ const AdminPropertyList = () => {
         `${baseUrl}/api/property?${queryParams.toString()}`
       );
 
-      console.log("Response Data:", response.data);
-
       // Check if data exists
       if (response?.data?.properties) {
         setData(response.data.properties);
-        setTotalDataCount(response.data.totalCount);
       } else {
         console.log("No properties found");
         setData([]);
-        setTotalDataCount(0);
       }
     } catch (err) {
       console.error("Error fetching properties:", err);
@@ -90,30 +81,6 @@ const AdminPropertyList = () => {
   useEffect(() => {
     refetch();
   }, [refetch, page, size, roomNumber, seatNumber]);
-
-  // Handle Search
-
-  // const handleSearch = async () => {
-  //   setIsLoading(true);
-  //   setIsFilter(true);
-
-  //   try {
-  //     const response = await axios.get(`${baseUrl}/api/property`, {
-  //       params: {
-  //         sCategory: selectCategory !== "All" ? selectCategory : undefined,
-  //         sBranch: selectBranch !== "All" ? selectBranch : undefined,
-  //         roomNumber: roomNumber.toUpperCase(),
-  //       },
-  //       mode: "cors",
-  //     });
-
-  //     setFilterData(response.data);
-  //   } catch (error) {
-  //     console.error(error);
-  //   } finally {
-  //     setIsLoading(false);
-  //   }
-  // };
 
   const columns = [
     {
@@ -148,14 +115,15 @@ const AdminPropertyList = () => {
           <>
             <div className=" d-flex ">
               <div>
-                {
-                  row?.categoryDetails?.name === "Shared Room" ? (
+                {row?.categoryDetails?.name === "Shared Room" ? (
+                  <>
+                    {" "}
                     <p className="fw-bold">Seat : {row?.seatNumber}</p>
-                  ) : (
-                    <p className="fw-bold">Room : {row?.roomNumber}</p>
-                  )
-                  // console.log(row?.categoryDetails?.name)
-                }
+                    <p>Room : {row?.roomNumber}</p>
+                  </>
+                ) : (
+                  <p className="fw-bold">Room : {row?.roomNumber}</p>
+                )}
               </div>
             </div>
           </>
@@ -231,16 +199,30 @@ const AdminPropertyList = () => {
       formatter: (cellContent, row) => {
         return (
           <>
-            <div className=" d-flex ">
+            <div className=" d-flex fw-bold">
               <div>
-                <p
-                  className="fw-bold"
-                  style={{
-                    color: row?.isPublished === "Published" ? "#27b3b1" : "red",
-                  }}
-                >
-                  {row?.isPublished}
-                </p>
+                {row?.categoryDetails?.name === "Shared Room" ? (
+                  <p
+                    style={{
+                      color:
+                        row?.isSeatPublished === "Published"
+                          ? "#27b3b1"
+                          : "red",
+                    }}
+                  >
+                    {" "}
+                    {row?.isSeatPublished}
+                  </p>
+                ) : (
+                  <p
+                    style={{
+                      color:
+                        row?.isPublished === "Published" ? "#27b3b1" : "red",
+                    }}
+                  >
+                    {row?.isPublished}
+                  </p>
+                )}
               </div>
               <button
                 type="button"
@@ -349,7 +331,7 @@ const AdminPropertyList = () => {
                   color: "white",
                 }}
               >
-                Total Room : {isFilter ? filterData?.length : data?.length}
+                Total Room : {data?.length}
               </p>
             </div>
             <div className="row">
@@ -450,7 +432,7 @@ const AdminPropertyList = () => {
                 Please Wait...
                 <Spinner size="sm" animation="grow" />
               </p>
-            ) : data?.length > 0 || filterData?.length > 0 ? (
+            ) : data?.length > 0 ? (
               <div className="card">
                 <div className="card-body card_body_sm">
                   <>
@@ -458,7 +440,7 @@ const AdminPropertyList = () => {
                       bootstrap4
                       keyField="_id"
                       columns={columns}
-                      data={isFilter ? filterData : data}
+                      data={data}
                     >
                       {(props) => (
                         <React.Fragment>
@@ -466,7 +448,7 @@ const AdminPropertyList = () => {
                             bootstrap4
                             keyField="_id"
                             columns={columns}
-                            data={isFilter ? filterData : data}
+                            data={data}
                             {...props.baseProps}
                           />
                           <ToastContainer
