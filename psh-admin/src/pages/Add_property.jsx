@@ -8,6 +8,7 @@ import { useContext } from "react";
 
 import { ToastContainer, toast } from "react-toastify";
 import { multipleImageUpload } from "../utils/multipleImageUpload";
+import { baseUrl } from "../utils/getBaseURL";
 
 const Add_property = () => {
   const { user } = useContext(AuthContext);
@@ -104,7 +105,7 @@ const Add_property = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/category");
+        const response = await axios.get(`${baseUrl}/api/category`);
         setCategories(response.data);
       } catch (error) {
         console.log(error);
@@ -125,7 +126,7 @@ const Add_property = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
+        const response = await axios.get(`${baseUrl}/api/branch`);
         setBranch(response.data);
       } catch (error) {
         console.log(error);
@@ -137,9 +138,7 @@ const Add_property = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "https://api.psh.com.bd/api/facilityCategory"
-        );
+        const response = await axios.get(`${baseUrl}/api/facilityCategory`);
         setFacilities(response.data);
       } catch (error) {
         console.log(error);
@@ -151,9 +150,7 @@ const Add_property = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "https://api.psh.com.bd/api/commonfacility"
-        );
+        const response = await axios.get(`${baseUrl}/api/commonfacility`);
         setCommonaFacilities(response.data);
       } catch (error) {
         console.log(error);
@@ -321,8 +318,8 @@ const Add_property = () => {
         return MySwal.fire("Sorry ! Minimum 5 Photo Required.", "warning");
       }
 
-      await axios.post("https://api.psh.com.bd/api/property", property);
-      MySwal.fire("Your Property!", "successfully added", "success");
+      await axios.post(`${baseUrl}/api/property`, property);
+      await MySwal.fire("Your Property!", "successfully added", "success");
       setDiscountForDay(0);
       setDiscountForMonth(0);
       setDiscountForYear(0);

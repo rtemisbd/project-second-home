@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import { useEffect } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { baseUrl } from "../utils/getBaseURL";
 
 const Add_Facility = () => {
   const [files, setFiles] = useState("");
@@ -12,9 +13,7 @@ const Add_Facility = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "https://api.psh.com.bd/api/facilityCategory"
-        );
+        const response = await axios.get(`${baseUrl}/api/facilityCategory`);
         setCategories(response.data);
       } catch (error) {
         // console.log(error);
@@ -52,7 +51,7 @@ const Add_Facility = () => {
         photos: list,
       };
 
-      await axios.post("https://api.psh.com.bd/api/facility", product);
+      await axios.post(`${baseUrl}/api/facility`, product);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {

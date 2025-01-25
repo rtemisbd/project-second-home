@@ -1,6 +1,11 @@
 import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 
+const createSeatIntoDB = async (payload) => {
+  const result = await Seat.create(payload);
+  return result;
+};
+
 const getAllSeatsFromDB = async (queries) => {
   const { destination, seatNumber, size, page, isPublished } = queries;
   let query = {};
@@ -94,6 +99,7 @@ const getSeatByIdFromDB = async (id) => {
 };
 
 export const seatServices = {
+  createSeatIntoDB,
   getAllSeatsFromDB,
   getSeatByIdFromDB,
 };
