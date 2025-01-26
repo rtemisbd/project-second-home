@@ -78,6 +78,9 @@ const RoomDetails = () => {
       const fetchData = async () => {
         try {
           const response = await fetch(`${serverBaseUrl}/property/${id}`);
+          // const res = await response.json();
+          // console.log(res);
+
           const { property, rentRooms } = await response.json();
           setData(property);
           setPhotos([...property?.photos]);
@@ -128,13 +131,11 @@ const RoomDetails = () => {
   }, []);
 
   const { data: facilities } = UseFetch("facilityCategory");
-  console.log({ facilities });
 
   const recomended = useRecommended();
   const publishedRecomended = recomended?.filter(
     (property) => property?.categoryDetails?.name === data?.category?.name
   );
-  console.log(data);
 
   // modal
 

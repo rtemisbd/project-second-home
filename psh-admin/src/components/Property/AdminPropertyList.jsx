@@ -281,7 +281,7 @@ const AdminPropertyList = () => {
                 </button>
 
                 {/* Modal Order Details */}
-                <PropertyDetails data={row} />
+                <PropertyDetails id={row._id} />
               </div>
 
               {/* <AiOutlineDelete

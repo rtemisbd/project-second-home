@@ -317,7 +317,7 @@ const getSinglePropertyFromDB = async (propertyId) => {
 
   // Find the property by ID
   const property = await Property.findById(propertyId).populate(
-    "category facility review branch"
+    "category facility branch"
   );
 
   if (!property) {
