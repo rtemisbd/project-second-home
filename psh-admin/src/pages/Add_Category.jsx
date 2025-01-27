@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useState, useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { baseUrl } from "../utils/getBaseURL";
 
 const Add_Category = () => {
   const [files, setFiles] = useState("");
@@ -34,7 +35,7 @@ const Add_Category = () => {
         photos: list,
       };
 
-      await axios.post("https://api.psh.com.bd/api/category", product);
+      await axios.post(`${baseUrl}/api/category`, product);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {

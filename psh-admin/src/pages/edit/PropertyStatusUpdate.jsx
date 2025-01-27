@@ -3,11 +3,13 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const PropertyStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
   const { _id, name, seatNumber, desc, status } = data;
 
   const [user, setUser] = useState(data);
+  const [isPublished, setIsPublished] = useState("Unpublished");
 
   const MySwal = withReactContent(Swal);
 
@@ -33,10 +35,10 @@ const PropertyStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
         ...newPost,
       };
 
-      await axios.patch(
-        `https://api.psh.com.bd/api/property/${_id}`,
-        updatedStatus
-      );
+      await axios.patch(`${baseUrl}/api/property/${_id}`, {
+        isPublished,
+      });
+
       MySwal.fire("Updated", "success");
       refetch();
     } catch (err) {
@@ -83,7 +85,8 @@ const PropertyStatusUpdate = ({ data, refetch, setStatusShow, statusShow }) => {
                             id="inputState"
                             className="main_form"
                             style={{ width: "450px" }}
-                            onBlur={handleOnBlur}
+                            // onBlur={handleOnBlur}
+                            onBlur={(e) => setIsPublished(e.target.value)}
                             defaultValue={user.status}
                           >
                             <option value="Published">Published</option>

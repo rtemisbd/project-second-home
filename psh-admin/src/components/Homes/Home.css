@@ -117,12 +117,12 @@
   width: 83%;
 }
 
-/* .modal-content {
-  width: 700px;
-} */
+.detail-model-container .modal-content {
+  width: 760px;
+}
 
 .modal-body {
-  width: 700px;
+  width: 760px;
 }
 
 .card_1 {

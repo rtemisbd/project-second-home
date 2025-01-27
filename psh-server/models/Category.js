@@ -8,13 +8,6 @@ const CategorySchema = new mongoose.Schema(
     photos: {
       type: [String],
     },
-
-    // property: [
-    //   {
-    //     type: mongoose.Schema.Types.ObjectId,
-    //     ref: "Property",
-    //   },
-    // ],
     position: {
       type: String,
       // required: true,

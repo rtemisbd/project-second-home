@@ -9,6 +9,7 @@ import paginationFactory from "react-bootstrap-table2-paginator";
 import BootstrapTable from "react-bootstrap-table-next";
 import Category from "../../pages/edit/Category";
 import { Link } from "react-router-dom";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Facility_Category_list = () => {
   const MySwal = withReactContent(Swal);
@@ -109,12 +110,9 @@ const Facility_Category_list = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(
-          `https://api.psh.com.bd/api/category`,
-          {
-            mode: "cors",
-          }
-        );
+        const { data } = await axios.get(`${baseUrl}/api/facilityCategory`, {
+          mode: "cors",
+        });
         setData(data);
       } catch (error) {
         console.log(error);
@@ -127,7 +125,7 @@ const Facility_Category_list = () => {
   const handleCategory = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/category/${id}`;
+      const url = `${baseUrl}/api/category/${id}`;
       fetch(url, {
         method: "DELETE",
       })

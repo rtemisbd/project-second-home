@@ -30,8 +30,6 @@ const getPropertiesFromDB = async (queries) => {
   if (bedType && bedType !== "") query.bedType = bedType;
   if (isPublished && isPublished !== "") {
     query.isPublished = isPublished;
-  } else {
-    query.isPublished = "Published";
   }
   if (recommended && recommended !== "no") {
     query.recommended = recommended;
@@ -126,6 +124,7 @@ const getPropertiesFromDB = async (queries) => {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
       seatNumber,
+      isPublished,
       size,
       page,
     });
@@ -318,7 +317,7 @@ const getSinglePropertyFromDB = async (propertyId) => {
 
   // Find the property by ID
   const property = await Property.findById(propertyId).populate(
-    "category facility review branch"
+    "category facility branch"
   );
 
   if (!property) {

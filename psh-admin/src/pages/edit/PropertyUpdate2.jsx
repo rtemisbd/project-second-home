@@ -9,6 +9,7 @@ import { useEffect } from "react";
 import { useRef } from "react";
 import { toast } from "react-toastify";
 import { multipleImageUpload } from "../../utils/multipleImageUpload";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
   const { user } = useContext(AuthContext);
@@ -96,7 +97,7 @@ const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/category");
+        const response = await axios.get(`${baseUrl}/api/category`);
         setCategories(response.data);
       } catch (error) {
         // console.log(error);
@@ -109,9 +110,7 @@ const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "https://api.psh.com.bd/api/facilityCategory"
-        );
+        const response = await axios.get(`${baseUrl}/api/facilityCategory`);
         setFacilities(response.data);
       } catch (error) {
         // console.log(error);
@@ -123,9 +122,7 @@ const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          "https://api.psh.com.bd/api/commonfacility"
-        );
+        const response = await axios.get(`${baseUrl}/api/commonfacility`);
         setCommonaFacilities(response.data);
       } catch (error) {
         console.log(error);
@@ -312,10 +309,7 @@ const PropertyUpdate2 = ({ data, refetch, handleClose }) => {
         return MySwal.fire("Sorry ! Minimum 5 Photo Required.", "warning");
       }
 
-      await axios.patch(
-        `https://api.psh.com.bd/api/property/${data?._id}`,
-        product
-      );
+      await axios.patch(`${baseUrl}/api/property/${data?._id}`, product);
       MySwal.fire("Property successfully Update");
       event.target.reset();
       refetch();

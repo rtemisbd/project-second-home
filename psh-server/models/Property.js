@@ -175,13 +175,7 @@ const PropertySchema = new mongoose.Schema(
       ref: "Branch",
       required: true,
     },
-    review: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Review",
-        required: true,
-      },
-    ],
+
     photos: {
       type: [String],
     },

@@ -3,6 +3,7 @@ import Property from "../models/Property.js";
 import Branch from "../models/Branch.js";
 import catchAsync from "../shared/cathAsync.js";
 import { propertyServices } from "../services/property.service.js";
+import { seatServices } from "../services/seat.service.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -28,7 +29,21 @@ export const CreatePropertys = async (req, res, next) => {
       seats: seats,
       ...othersData,
     });
-    await newRoom.save();
+    const createdProperty = await newRoom.save();
+
+    // create individual seats
+    if (seats) {
+      seats.forEach(async (seat) => {
+        const seatPayload = {
+          ...seat,
+          branch: branch._id,
+          category: category._id,
+          roomId: createdProperty._id,
+          roomNumber: createdProperty.roomNumber,
+        };
+        await seatServices.createSeatIntoDB(seatPayload);
+      });
+    }
 
     // Add the product to the category's products array
     category.property.push(newRoom._id);
