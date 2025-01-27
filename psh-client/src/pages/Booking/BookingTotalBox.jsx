@@ -239,9 +239,13 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       return toast.error("Login Required");
     }
     const bookingStartDate = new Date(startDate).toISOString().split("T")[0];
-    if (userPromo?.promoDiscount === 100) {
+    if (
+      userPromo?.promoDiscount === 100 &&
+      data?.category?.name !== "Shared Room"
+    ) {
       return toast.error("Sorry ! this offer only for Shared Room");
     }
+
     // Already Used Promo Checking
     const findLastTimeUsedPromo = singleUser?.usedPromo
       ?.slice()
@@ -283,6 +287,16 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
 
     if (promoCode !== userPromo?.promoCode)
       return toast.error("Sorry! You have Gived the wrong promo code ");
+    //  for Special Discount
+
+    if (userPromo?.promoDiscount === 100) {
+      if (customerRent?.remainingDays > 1) {
+        return toast.error(
+          "Sorry! You can use this promo code only for 1 day booking and you can use this promo code only once."
+        );
+      }
+    }
+
     if (
       customerRent?.remainingDays >= userPromo?.minimumDays &&
       userPromo?.minimumDays !== null
@@ -291,13 +305,23 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     ) {
       if (promoCode === userPromo?.promoCode && !promoCodeCheck) {
         const discount = userPromo?.promoDiscount / 100;
-        setDisCountTk(totalRentAmount * discount);
+
         // setTotalRentAmount(
         //   parseInt(totalRentAmount - totalRentAmount * discount)
         // );
-        setPayableAmount(
-          parseInt(totalRentAmount - totalRentAmount * discount)
-        );
+        if (userPromo?.promoDiscount === 100) {
+          setPayableAmount(parseInt(userPromo?.discountAmount));
+          setDisCountTk(totalRentAmount * discount - userPromo?.discountAmount);
+          // setMinimumPayment(0);
+          setMinimumPayment(userPromo?.discountAmount);
+          setTotalRentAmount(userPromo?.discountAmount);
+        } else {
+          setPayableAmount(
+            parseInt(totalRentAmount - totalRentAmount * discount)
+          );
+          setDisCountTk(totalRentAmount * discount);
+        }
+
         setPromoCodeCheck(true);
       } else {
         toast.error("Sorry! You have Gived the wrong promo code");
