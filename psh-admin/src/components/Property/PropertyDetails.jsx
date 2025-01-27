@@ -3,32 +3,63 @@ import UseFetch from "../../hooks/useFetch";
 import axios from "axios";
 import { baseUrl } from "../../utils/getBaseURL";
 
-const PropertyDetails = ({ show, setShow, id }) => {
+const PropertyDetails = ({ id, category }) => {
   const { data3, loading3, error3, refetch3 } = UseFetch("facilityCategory");
   const [data, setData] = useState(null);
+  const [seat, setSeat] = useState(null);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch(`${baseUrl}/api/property/${id}`);
-        // const res = await response.json();
-        // console.log(res);
+    if (category === "Private Room") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${baseUrl}/api/property/${id}`);
 
-        const { property } = await response.json();
-        setData(property);
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      }
-    };
+          const { property } = await response.json();
+          setData(property);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
 
-    fetchData();
-  }, [id]);
+      fetchData();
+    }
+    if (category === "Shared Room") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${baseUrl}/api/seats/${id}`);
+          const { data } = await response.json();
+          setSeat(data.seat);
+
+          if (data?.seat) {
+            try {
+              const responseForRoom = await fetch(
+                `${baseUrl}/api/property/${data?.seat?.roomId}`
+              );
+              const { property } = await responseForRoom.json();
+              setData(property);
+            } catch (error) {
+              console.error("Error fetching data:", error);
+            }
+          }
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [id, category]);
+  console.log({ data, seat });
 
   return (
     <div className="">
       <div
         className="modal fade "
-        id={`propertyDetails${data?._id}`}
+        // id={`propertyDetails${data?._id}`}
+        id={
+          category === "Private Room"
+            ? `propertyDetails${data?._id}`
+            : `propertyDetails${seat?._id}`
+        }
         data-bs-backdrop="static"
         data-bs-keyboard="false"
         tabIndex="-1"
@@ -39,7 +70,7 @@ const PropertyDetails = ({ show, setShow, id }) => {
           <div className="modal-content">
             <div className="modal-header">
               <h3 className="modal-title fs-4" id="staticBackdropLabel">
-                Propery Details
+                Property Details
               </h3>
               <button
                 type="button"
@@ -72,11 +103,11 @@ const PropertyDetails = ({ show, setShow, id }) => {
                 <div className="col-lg-3 mt-2">
                   {" "}
                   <label htmlFor="">Property Type</label>
-                  <p>{data?.categoryDetails?.name}</p>
+                  <p>{data?.category?.name}</p>
                 </div>
                 <div className="col-lg-3">
                   <label htmlFor="">Branch</label>
-                  <p>{data?.branchDetails?.name}</p>
+                  <p>{data?.branch?.name}</p>
                 </div>
                 <div className="col-lg-3">
                   {" "}
@@ -201,110 +232,6 @@ const PropertyDetails = ({ show, setShow, id }) => {
                 </div>
               ))}
 
-              {/* Facilities Section */}
-              {/* {data3?.map((category) => {
-                  const filteredFacilities = data?.facility?.filter(
-                    (facilityId) =>
-                      facilityId.name ===
-                      category?.facility.map((res) => res.name)
-                  );
-                  // console.log({
-                  //   category,
-                  //   filteredFacilities,
-                  //   all: data?.facility,
-                  // });
-
-                  return (
-                    filteredFacilities?.length > 0 && (
-                      <div key={category._id} style={{ width: "100%" }}>
-                        <h4 className="mt-4 px-3 rounded bg-primary text-white">
-                          {category.name}
-                        </h4>
-                        <div className="d-flex gap-3 flex-wrap">
-                          {filteredFacilities.map((facility) => (
-                            <div className="text-center" key={facility._id}>
-                              <img
-                                src={facility.photos[0]}
-                                alt={facility.name}
-                                style={{ width: "50px", height: "50px" }}
-                              />
-                              <p className="mt-2">{facility.name}</p>
-                            </div>
-                          ))}
-                        </div>
-                      </div>
-                    )
-                  );
-                })} */}
-              {/* {data3?.map((pd) => (
-                  <div style={{ width: "100%" }} key={pd._id}>
-                    <h4
-                      className="mt-4 px-3 rounded"
-                      style={{ backgroundColor: "#00bbb4", color: "White" }}
-                      id={pd?.name}
-                    >
-                      {pd.name}
-                    </h4>
-
-                    <div>
-                      {data?.facility
-                        ?.filter((res) => res === pd._id)
-                        ?.map((item) => (
-                          <div key={item._id}>
-                            <div>
-                              <div>
-                                <div>
-                                  <img
-                                    src={item.photos[0]}
-                                    alt=""
-                                    style={{ maxWidth: "none" }}
-                                  />
-                                </div>
-
-                                <h2 className="mt-3 text-gray-900">
-                                  {item.name ? item.name : ""}
-                                </h2>
-                              </div>
-                            </div>
-                          </div>
-                        ))}
-                    </div>
-                  </div>
-                ))} */}
-
-              {/* {data3?.slice(0, 3).map((pd) => (
-                <div style={{ width: "100%" }} key={pd._id}>
-                  <div className="facility_h1 p-2">
-                    <h4
-                      id={pd?.name}
-                      style={{ backgroundColor: "#00bbb4", color: "White" }}
-                      className="ps-3 rounded"
-                    >
-                      {pd.name}
-                    </h4>
-                  </div>
-                  <div className="row p-5">
-                    {data?.facility
-                      ? data?.facility
-                          .filter((item) => item.facilityCategory === pd._id)
-                          .map((item) => (
-                            <React.Fragment key={item._id}>
-                              <div className="d-flex flex-column col-lg-2">
-                                <img
-                                  src={item.photos[0]}
-                                  alt=""
-                                  style={{ maxWidth: "none", width: "40px" }}
-                                />
-                                <p className="mt-3 ">
-                                  {item.name ? item.name : ""}
-                                </p>
-                              </div>
-                            </React.Fragment>
-                          ))
-                      : ""}
-                  </div>
-                </div>
-              ))} */}
               {data?.seats?.length !== 0 ? (
                 <h4
                   className="mt-4 mb-4 ps-3 rounded"
