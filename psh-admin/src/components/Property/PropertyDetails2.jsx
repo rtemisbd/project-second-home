@@ -60,21 +60,8 @@ const PropertyDetails2 = ({
       className="detail-model-container"
       show={handleShowDetails}
       onHide={() => setShowDetailModal(false)}
-      //   style={{
-      //     width: "700px",
-      //   }}
     >
-      <Modal.Header
-        closeButton
-        style={
-          {
-            //   backgroundColor: "#35B0A7",
-            //   height: "36px",
-            //   width: "100%",
-            //   borderRadius: "3px 3px 0px 0px",
-          }
-        }
-      >
+      <Modal.Header closeButton>
         <Modal.Title></Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -85,9 +72,7 @@ const PropertyDetails2 = ({
             backgroundColor: "white",
           }}
         >
-          <div>
-            <h3>Property Details</h3>
-          </div>
+          <h3>Property Details</h3>
 
           <div>
             <div className="row gap-3">

@@ -27,6 +27,7 @@ const AdminPropertyList2 = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showStatusUpdate, setShowStatusUpdate] = useState(false);
 
   const [roomNumber, setRoomNumber] = useState("");
   const [seatNumber, setSeatNumber] = useState("");
@@ -78,6 +79,9 @@ const AdminPropertyList2 = () => {
 
   const handleShowDetails = () => {
     setShowDetailModal(true);
+  };
+  const handleShowStatusUpdate = () => {
+    setShowStatusUpdate(true);
   };
 
   return (
@@ -311,23 +315,22 @@ const AdminPropertyList2 = () => {
                                   </p>
                                 )}
                               </div>
-                              {/* <button
+                              <button
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#status${room._id}`}
                                 className="d-flex  bg-white p-0"
+                                onClick={() => {
+                                  setId(room?._id);
+                                  setSelectedCategory(
+                                    room?.categoryDetails?.name
+                                  );
+                                  setShowStatusUpdate(!showStatusUpdate);
+                                }}
                               >
                                 <BiSolidEdit
                                   style={{ width: "24px", height: "24px" }}
                                 />
-                              </button> */}
+                              </button>
                             </div>
-                            {/* <div>
-                              <PropertyStatusUpdate
-                                data={room}
-                                refetch={refetch}
-                              />
-                            </div> */}
                           </td>
                           <td>
                             <div className="d-flex justify-content-center">
@@ -399,6 +402,15 @@ const AdminPropertyList2 = () => {
             category={selectedCategory}
             setShowDetailModal={setShowDetailModal}
             handleShowDetails={handleShowDetails}
+            refetch={refetch}
+          />
+        )}
+        {showStatusUpdate && (
+          <PropertyStatusUpdate
+            id={id}
+            category={selectedCategory}
+            setShowStatusUpdate={setShowStatusUpdate}
+            handleShowStatusUpdate={handleShowStatusUpdate}
           />
         )}
       </div>
