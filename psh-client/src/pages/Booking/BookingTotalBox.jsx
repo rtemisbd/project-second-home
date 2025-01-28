@@ -124,11 +124,16 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     ) {
       setSubtotal(
         () =>
-          amountForMonth * customerRent?.months +
-          amountForDay * customerRent?.days
+          // amountForMonth * customerRent?.months +
+          // amountForDay * customerRent?.days
+          amountForDay * customerRent?.remainingDays
       );
     } else {
-      setSubtotal(() => amountForYear * customerRent?.years);
+      setSubtotal(
+        () =>
+          amountForDay * 365 * customerRent?.years +
+          amountForDay * customerRent?.remainingDays
+      );
     }
     if (subTotal) {
       const getvatTax = (subTotal * extraCharge[0]?.vatTax) / 100;
@@ -439,6 +444,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+  console.log(customerRent);
 
   return (
     <>
@@ -599,7 +605,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                   (customerRent?.years &&
                     customerRent?.months >= 0 &&
                     customerRent?.days >= 0)
-                ? `${customerRent?.years} year`
+                ? `${customerRent?.years} year , ${customerRent?.remainingDays} days`
                 : ""}
             </p>
           </div>
@@ -707,7 +713,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                         {customerRent?.months >= 1 &&
                         customerRent?.years === undefined ? (
                           <span>
-                            {customerRent.months + " month"} = {""}
+                            {/* {customerRent.months + " month"} = {""}
                             {amountForMonth * customerRent.months + " Tk"}
                             {customerRent?.days > 0 ? (
                               <span>
@@ -716,7 +722,10 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                               </span>
                             ) : (
                               ""
-                            )}
+                            )} */}
+                            {customerRent?.remainingDays + " day"} X{" "}
+                            {amountForDay} = {""}
+                            {amountForDay * customerRent?.remainingDays + " Tk"}
                           </span>
                         ) : (
                           ""
@@ -724,8 +733,9 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
 
                         {customerRent?.years === 1 ? (
                           <span>
-                            {customerRent?.years + " Year"} = {""}
-                            {amountForYear * customerRent?.years + " Tk"}
+                            {`${customerRent?.years} Year + ${customerRent?.remainingDays} Days  `}{" "}
+                            = {""}
+                            {amountForDay * 365 * customerRent?.years + " Tk"}
                           </span>
                         ) : (
                           ""
