@@ -113,7 +113,7 @@ const SingleCard = ({ item }) => {
                   </>
                 )}
               </div>
-              <div className="flex gap-x-2">
+              {/* <div className="flex gap-x-2">
                 {item?.perMonth === item?.dAmountForMonth ? (
                   <p className="">
                     <span className=" card-price-sub">
@@ -137,7 +137,7 @@ const SingleCard = ({ item }) => {
                     </p>
                   </>
                 )}
-              </div>
+              </div> */}
             </div>
           </Link>
         </CardFooter>
