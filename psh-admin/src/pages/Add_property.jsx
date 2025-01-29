@@ -330,6 +330,8 @@ const Add_property = () => {
       setIsLoading(false);
     } catch (err) {
       setIsLoading(false);
+      console.log(err);
+
       MySwal.fire("Something Error Found.", "warning");
     }
   };

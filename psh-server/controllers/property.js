@@ -36,21 +36,21 @@ export const CreatePropertys = async (req, res, next) => {
       seats.forEach(async (seat) => {
         const seatPayload = {
           ...seat,
-          branch: branch._id,
-          category: category._id,
-          roomId: createdProperty._id,
-          roomNumber: createdProperty.roomNumber,
+          branch: branch?._id,
+          category: category?._id,
+          roomId: createdProperty?._id,
+          roomNumber: createdProperty?.roomNumber,
         };
         await seatServices.createSeatIntoDB(seatPayload);
       });
     }
 
     // Add the product to the category's products array
-    category.property.push(newRoom._id);
+    category?.property?.push(newRoom._id);
     await category.save();
 
     // Add the product to the branch's products array
-    branch.property.push(newRoom._id);
+    branch?.property?.push(newRoom._id);
     await branch.save();
 
     res.status(201).json(newRoom);

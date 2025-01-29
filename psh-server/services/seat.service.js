@@ -98,8 +98,82 @@ const getSeatByIdFromDB = async (id) => {
   return { seat, rentRooms };
 };
 
+export const updateSeatById = async (seatId, payload) => {
+  let result;
+
+  if (payload?.isPublished) {
+    result = await Seat.findByIdAndUpdate(
+      seatId,
+      { $set: { isSeatPublished: payload.isPublished } },
+      { new: true }
+    );
+  }
+  // Find the property by ID
+  const seat = await Seat.findById(seatId);
+
+  // const updateData = {
+  //   name: payload.name,
+  //   city: payload.city,
+  //   floor: payload.floor,
+  //   roomNumber: payload.roomNumber,
+  //   builtYear: payload.builtYear,
+  //   area: payload.area,
+  //   totalRoom: payload.totalRoom,
+  //   desc: payload.desc,
+  //   fulldesc: payload.fulldesc,
+  //   perDay: payload.perDay,
+  //   perMonth: payload.perMonth,
+  //   perYear: payload.perYear,
+  //   dAmountForDay: payload.dAmountForDay,
+  //   dAmountForMonth: payload.dAmountForMonth,
+  //   dAmountForYear: payload.dAmountForYear,
+  //   percentOfDiscountDay: payload.percentOfDiscountDay,
+  //   percentOfDiscountMonth: payload.percentOfDiscountMonth,
+  //   percentOfDiscountYear: payload.percentOfDiscountYear,
+  //   bedroom: payload.bedroom,
+  //   bathroom: payload.bathroom,
+  //   car: payload.car,
+  //   bike: payload.bike,
+  //   pet: payload.pet,
+  //   categoryId: payload.categoryId,
+  //   recommended: payload.recommended,
+  //   furnitured: payload.furnitured,
+  //   branchId: payload.branchId,
+  //   facility: payload.facility,
+  //   commonfacility: payload.commonfacility,
+  //   photos: payload.photos,
+  //   meal: payload.meal,
+  //   bedType: payload.bedType,
+  //   CCTV: payload.CCTV,
+  //   WiFi: payload.WiFi,
+  //   balcony: payload.balcony,
+  //   totalPerson: payload.totalPerson,
+  //   rentDate: seat?.rentDate,
+  //   type: payload.type,
+  //   rules: payload.rules,
+  //   roomCategory: payload.roomCategory,
+  //   additionalFacility: payload.additionalFacility,
+  //   apartmentRent: payload.apartmentRent,
+  //   serviceCharge: payload.serviceCharge,
+  //   security: payload.security,
+  //   faltPolicy: payload.faltPolicy,
+  //   seats: payload.seats,
+  //   isPublished: payload.isPublished,
+  //   isPartner: payload.isPartner,
+  // };
+
+  // const result = await Seat.updateOne(
+  //   { _id: seatId },
+  //   { $set: updateData },
+  //   { runValidators: true }
+  // );
+
+  return result;
+};
+
 export const seatServices = {
   createSeatIntoDB,
   getAllSeatsFromDB,
   getSeatByIdFromDB,
+  updateSeatById,
 };

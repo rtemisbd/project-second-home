@@ -402,7 +402,6 @@ const AdminPropertyList2 = () => {
             category={selectedCategory}
             setShowDetailModal={setShowDetailModal}
             handleShowDetails={handleShowDetails}
-            refetch={refetch}
           />
         )}
         {showStatusUpdate && (
@@ -411,6 +410,7 @@ const AdminPropertyList2 = () => {
             category={selectedCategory}
             setShowStatusUpdate={setShowStatusUpdate}
             handleShowStatusUpdate={handleShowStatusUpdate}
+            refetch={refetch}
           />
         )}
       </div>

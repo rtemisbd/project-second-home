@@ -25,3 +25,14 @@ export const getSeatById = catchAsync(async (req, res, next) => {
     data: { seat, rentRooms },
   });
 });
+
+export const updateSingleSeat = catchAsync(async (req, res, next) => {
+  const result = await seatServices.updateSeatById(req.params.id, req.body);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Seat updated successfully",
+    data: result,
+  });
+});

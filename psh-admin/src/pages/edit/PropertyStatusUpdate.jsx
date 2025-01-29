@@ -93,6 +93,13 @@ const PropertyStatusUpdate = ({
         MySwal.fire("Updated", "success");
         refetch();
       }
+      if (category === "Shared Room") {
+        await axios.patch(`${baseUrl}/api/seats/${id}`, {
+          isPublished,
+        });
+        MySwal.fire("Updated", "success");
+        refetch();
+      }
     } catch (err) {
       MySwal.fire("Something Error Found.", "warning");
     }
