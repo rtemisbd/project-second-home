@@ -9,7 +9,7 @@ import useCategory from "../../hooks/useCategory";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { baseUrl } from "../../utils/getBaseURL";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Spinner, Table } from "react-bootstrap";
 import { BiSolidEdit } from "react-icons/bi";
 import PropertyStatusUpdate from "../../pages/edit/PropertyStatusUpdate";
@@ -40,6 +40,7 @@ const AdminPropertyList2 = () => {
   // Get All Branch
   const { allBranch: branches } = useBranch();
   const { categories } = useCategory();
+  const navigate = useNavigate();
 
   const { refetch } = useQuery(["propertyList", category, branch], async () => {
     try {
@@ -82,6 +83,12 @@ const AdminPropertyList2 = () => {
   };
   const handleShowStatusUpdate = () => {
     setShowStatusUpdate(true);
+  };
+
+  const handleEdit = (room) => {
+    // setId(room?._id);
+    // setSelectedCategory(room?.categoryDetails?._id);
+    navigate(`/dashboard/edit/${room?.categoryDetails?.name}/${room?._id}`);
   };
 
   return (
@@ -334,12 +341,24 @@ const AdminPropertyList2 = () => {
                           </td>
                           <td>
                             <div className="d-flex justify-content-center">
+                              <button
+                                type="button"
+                                className="bg-white"
+                                onClick={() => handleEdit(room)}
+                              >
+                                <span
+                                // to={`/dashboard/edit/${selectedCategory}/${id}`}
+                                >
+                                  <BiSolidEdit
+                                    style={{ width: "24px", height: "24px" }}
+                                  />
+                                </span>
+                              </button>
                               {/* <div>
                                 <button
                                   type="button"
                                   className="bg-white"
-                                  data-bs-toggle="modal"
-                                  data-bs-target={`#propertyUpdate${room._id}`}
+                              
                                 >
                                   <span>
                                     <BiSolidEdit
@@ -347,8 +366,6 @@ const AdminPropertyList2 = () => {
                                     />
                                   </span>
                                 </button>
-                              </div>
-
                               <div>
                                 <PropertyUpdate2
                                   data={room}

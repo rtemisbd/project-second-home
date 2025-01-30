@@ -72,6 +72,7 @@ import RoomOverview from "./pages/roomOverview/RoomOverview";
 import CreateUser from "./pages/CreateUser/CreateUser";
 import NewAdminPropertyList from "./components/Property/NewAdminPropertyList";
 import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
+import EditProperty from "./pages/edit/EditProperty";
 
 function App() {
   return (
@@ -122,6 +123,8 @@ function App() {
         <Route path="property_list" element={<AdminPropertyList />} />
         {/* test purpose */}
         <Route path="property_list2" element={<AdminPropertyList2 />} />
+        <Route path="edit/:category/:id" element={<EditProperty />} />
+
         <Route path="new-property-list" element={<NewAdminPropertyList />} />
         {/* <Route path="property-report" element={<PropertyReports />} /> */}
         <Route path="property-report" element={<BookingReport />} />
