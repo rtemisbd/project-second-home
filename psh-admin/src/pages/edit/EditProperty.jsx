@@ -1027,7 +1027,7 @@ const EditProperty = () => {
                         defaultValue={`Example :  
                                     1. Electricity with full time Generator Service.
                                     2. Available 24/7 Gas. 
-                                    3. Car Parking with 1 Driver’s Accommodation.
+                                    3. Car Parking with 1 Driver's Accommodation.
                                     4. Roof TOp Beautified Garden and Grassy Ground.
                                     5. Full Building Covered by CCTV.`}
                       ></textarea>

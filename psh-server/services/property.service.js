@@ -240,22 +240,22 @@ const getPropertiesFromDBForAdmin = async (queries) => {
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom && !roomNumber) {
-    const extractedSeats = await seatServices.getAllSeatsFromDB({
-      destination,
-      size,
-      page,
-      seatNumber,
-    });
+  // if (withSharedRoom && !roomNumber) {
+  //   const extractedSeats = await seatServices.getAllSeatsFromDB({
+  //     destination,
+  //     size,
+  //     page,
+  //     seatNumber,
+  //   });
 
-    allProperties = [
-      ...allProperties.filter(
-        (result) => result?.categoryDetails?.name === "Private Room"
-      ),
-      ...extractedSeats,
-    ];
-    totalCount += extractedSeats.length;
-  }
+  //   allProperties = [
+  //     ...allProperties.filter(
+  //       (result) => result?.categoryDetails?.name === "Private Room"
+  //     ),
+  //     ...extractedSeats,
+  //   ];
+  //   totalCount += extractedSeats.length;
+  // }
 
   return {
     properties: allProperties,
