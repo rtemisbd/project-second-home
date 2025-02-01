@@ -1,16 +1,13 @@
 import React, { useContext, useEffect, useState } from "react";
 import { ToastContainer } from "react-bootstrap";
-import useCategory from "../../hooks/useCategory";
 import { AuthContext } from "../../contexts/UserProvider";
-import useBranch from "../../hooks/useBranch";
 import { useParams } from "react-router-dom";
 import UseFetch from "../../hooks/useFetch";
 import { baseUrl } from "../../utils/getBaseURL";
 
 const EditProperty = () => {
   const { user } = useContext(AuthContext);
-  const { categories } = useCategory();
-  const { allBranch: branch } = useBranch();
+
   const { category, id } = useParams();
 
   const [categoryName, setCategoryName] = useState("");
@@ -19,7 +16,55 @@ const EditProperty = () => {
   const { data3: commonFacilities } = UseFetch("commonfacility");
   const [data, setData] = useState(null);
   const [seat, setSeat] = useState(null);
+  const [roomPhotos, setRoomPhotos] = useState([[]]);
+  const [seatPhotos, setSeatPhotos] = useState([[]]);
 
+  const [discountForDay, setDiscountForDay] = useState(null);
+  const [discountForMonth, setDiscountForMonth] = useState(null);
+  const [discountForYear, setDiscountForYear] = useState(null);
+
+  // // Handle Discount For Room
+  // useEffect(() => {
+  //   // For Day
+  //   if (perDay > 0) {
+  //     const discountedAmountForDay = Number(perDay - dAmountForDay);
+  //     const percentageDiscount =
+  //       (discountedAmountForDay / Number(perDay)) * 100;
+
+  //     setDiscountForDay(
+  //       percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+  //     );
+  //   }
+  //   // For Month
+  //   if (perMonth > 0) {
+  //     const discountedAmountForDay = Number(perMonth - dAmountForMonth);
+  //     const percentageDiscount =
+  //       (discountedAmountForDay / Number(perMonth)) * 100;
+
+  //     setDiscountForMonth(
+  //       percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+  //     );
+  //   }
+  //   // For Year
+  //   if (perYear > 0) {
+  //     const discountedAmountForDay = Number(perYear - dAmountForYear);
+  //     const percentageDiscount =
+  //       (discountedAmountForDay / Number(perYear)) * 100;
+
+  //     setDiscountForYear(
+  //       percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+  //     );
+  //   }
+  // }, [
+  //   perDay,
+  //   dAmountForDay,
+  //   dAmountForMonth,
+  //   perMonth,
+  //   perYear,
+  //   dAmountForYear,
+  // ]);
+
+  // read and set data
   useEffect(() => {
     if (category === "Private Room") {
       const fetchData = async () => {
@@ -28,6 +73,7 @@ const EditProperty = () => {
 
           const { property } = await response.json();
           setData(property);
+          setRoomPhotos(property?.photos);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -41,6 +87,7 @@ const EditProperty = () => {
           const response = await fetch(`${baseUrl}/api/seats/${id}`);
           const { data } = await response.json();
           setSeat(data.seat);
+          setSeatPhotos(data?.seat?.photos);
 
           if (data?.seat) {
             try {
@@ -49,6 +96,7 @@ const EditProperty = () => {
               );
               const { property } = await responseForRoom.json();
               setData(property);
+              setRoomPhotos(property?.photos);
             } catch (error) {
               console.error("Error fetching data:", error);
             }
@@ -62,14 +110,6 @@ const EditProperty = () => {
   }, [id, category]);
   console.log({ data, seat });
 
-  const handleCategoryChange = (event) => {
-    const selectedCategoryId = event.target.value;
-    const selectedCategory = categories.find(
-      (category) => category._id === selectedCategoryId
-    );
-    setCategoryName(selectedCategory?.name || "");
-  };
-
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
@@ -81,23 +121,13 @@ const EditProperty = () => {
                 <label htmlFor="inputState" className="profile_label3">
                   Property Type
                 </label>
-                <select
-                  name="categoryName"
-                  id="inputState"
+                <input
+                  type="text"
                   className="main_form w-100"
-                  onChange={handleCategoryChange}
-                >
-                  {/* <option>Select Type</option> */}
-                  {categories?.map((pd, index) => (
-                    <option
-                      key={index}
-                      value={pd._id}
-                      selected={data?.category?.name === pd?.name}
-                    >
-                      {pd.name}
-                    </option>
-                  ))}
-                </select>
+                  name="categoryName"
+                  defaultValue={category}
+                  disabled
+                />
               </div>
               {/* branch */}
               {(user && user.role === "SuperAdmin") || user.role === "admin" ? (
@@ -105,23 +135,13 @@ const EditProperty = () => {
                   <label htmlFor="inputState" className="profile_label3">
                     Branch
                   </label>
-                  <select
-                    name="branch"
-                    id="inputState"
+                  <input
+                    type="text"
                     className="main_form w-100"
-                    required
-                  >
-                    <option value="">Select Type</option>
-                    {branch.map((item, index) => (
-                      <option
-                        key={index}
-                        value={item._id}
-                        selected={data?.branch?._id === item?._id}
-                      >
-                        {item.name}
-                      </option>
-                    ))}
-                  </select>
+                    name="branch"
+                    defaultValue={data?.branch?.name}
+                    disabled
+                  />
                 </div>
               ) : (
                 <div className="col-md-6 form_sub_stream ">
@@ -558,6 +578,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           name="perDay"
                           placeholder="Per Day"
+                          defaultValue={data?.perDay}
                           // onChange={(e) => setPerDay(e.target.value)}
                           required
                           onWheel={(e) => e.target.blur()}
@@ -578,6 +599,7 @@ const EditProperty = () => {
                           name="discountAmountForDay"
                           className="main_form w-100"
                           placeholder="After Discount Amount (Day)"
+                          defaultValue={data?.dAmountForDay}
                           // onChange={(e) => setDAmountForDay(e.target.value)}
                           onWheel={(e) => e.target.blur()}
                         />
@@ -599,7 +621,9 @@ const EditProperty = () => {
                           // }
                           name="percentOfDiscountDay"
                           placeholder=" Discount For Day"
-                          disabled
+                          // disabled
+                          // defaultValue={data?.percentOfDiscountDay}
+                          defaultValue={data?.percentOfDiscountDay}
                         />
                       </div>
 
@@ -618,6 +642,7 @@ const EditProperty = () => {
                           placeholder="Per Month"
                           // onChange={(e) => setPerMonth(e.target.value)}
                           required
+                          defaultValue={data?.perMonth}
                           onWheel={(e) => e.target.blur()}
                         />
                       </div>
@@ -638,7 +663,8 @@ const EditProperty = () => {
                           className="main_form w-100"
                           // onChange={(e) => setDAmountForMonth(e.target.value)}
                           placeholder="After Discount Amount"
-                          onWheel={(e) => e.target.blur()}
+                          // onWheel={(e) => e.target.blur()}
+                          defaultValue={data?.dAmountForMonth}
                         />
                       </div>
 
@@ -658,6 +684,7 @@ const EditProperty = () => {
                           // value={
                           //   discountForMonth > 0 ? `${discountForMonth} %` : ""
                           // }
+                          defaultValue={data?.percentOfDiscountMonth}
                           disabled
                         />
                       </div>
@@ -676,6 +703,7 @@ const EditProperty = () => {
                           name="perYear"
                           placeholder="Per Year"
                           required
+                          defaultValue={data?.perYear}
                           // onChange={(e) => setPerYear(e.target.value)}
                           // onWheel={(e) => e.target.blur()}
                         />
@@ -698,6 +726,7 @@ const EditProperty = () => {
                           placeholder="After Discount Amount"
                           // onChange={(e) => setDAmountForYear(e.target.value)}
                           // onWheel={(e) => e.target.blur()}
+                          defaultValue={data?.dAmountForYear}
                         />
                       </div>
 
@@ -718,6 +747,7 @@ const EditProperty = () => {
                           //   discountForYear > 0 ? `${discountForYear} %` : ""
                           // }
                           disabled
+                          defaultValue={data?.percentOfDiscountYear}
                         />
                       </div>
                     </div>
@@ -869,7 +899,7 @@ const EditProperty = () => {
                           defaultValue={seat?.dAmountForYear}
                         />
                       </div>
-                      {/* room photos */}
+                      {/* seat photos */}
                       <div className="col-md-12 form_sub_stream">
                         <label
                           // htmlFor={`seatPhotos-${index}`}
@@ -886,6 +916,43 @@ const EditProperty = () => {
                           multiple
                           required
                         />
+                      </div>
+                      <div className="col-md-12 form_sub_stream d-flex">
+                        {seatPhotos?.map((photo, ind) => (
+                          <div
+                            className="col-md-2 form_sub_stream "
+                            style={{ position: "relative", marginTop: "10px" }}
+                          >
+                            <img
+                              src={photo}
+                              atr=""
+                              height="124px"
+                              width="124px"
+                            />
+                            <button
+                              style={{
+                                height: "24px",
+                                width: "24px",
+                                borderRadius: "12px",
+                                background: "white",
+                                color: "black",
+                                // border: "1px solid black",
+                                boxShadow: "1px 1px 1px 1px gray",
+                                position: "absolute",
+                                right: "4px",
+                                top: "-12px",
+                              }}
+                              onClick={() => {
+                                const updatedPhotos = roomPhotos.filter(
+                                  (_, index) => index !== ind
+                                );
+                                setSeatPhotos(updatedPhotos);
+                              }}
+                            >
+                              x
+                            </button>
+                          </div>
+                        ))}
                       </div>
                     </React.Fragment>
 
@@ -1049,10 +1116,6 @@ const EditProperty = () => {
                   className="form-control"
                   name="rules"
                   rows="6"
-                  // defaultValue={`Example :
-                  //     1. Keep your living space, common areas, and bathrooms clean and organized..
-                  //     2. Engage in hostel activities, meetings, and events. Active participation can enhance your social experience and create a sense of community.
-                  //   `}
                   defaultValue={data?.rules}
                 ></textarea>
               </div>
@@ -1073,6 +1136,39 @@ const EditProperty = () => {
                   multiple
                   required
                 />
+              </div>
+              <div className="col-md-12 form_sub_stream d-flex flex-wrap ">
+                {roomPhotos?.map((photo, ind) => (
+                  <div
+                    key={ind}
+                    className="col-md-2 form_sub_stream "
+                    style={{ position: "relative", marginTop: "10px" }}
+                  >
+                    <img src={photo} atr="" height="124px" width="124px" />
+                    <button
+                      style={{
+                        height: "24px",
+                        width: "24px",
+                        borderRadius: "12px",
+                        background: "white",
+                        color: "black",
+                        // border: "1px solid black",
+                        boxShadow: "1px 1px 1px 1px gray",
+                        position: "absolute",
+                        right: "2px",
+                        top: "-12px",
+                      }}
+                      onClick={() => {
+                        const updatedPhotos = roomPhotos.filter(
+                          (_, index) => index !== ind
+                        );
+                        setRoomPhotos(updatedPhotos);
+                      }}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
 
