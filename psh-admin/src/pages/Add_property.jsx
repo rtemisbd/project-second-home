@@ -454,7 +454,7 @@ const Add_property = () => {
                   type="text"
                   className="main_form w-100"
                   name="name"
-                  placeholder=" Room Title"
+                  placeholder="Room Title"
                   required
                 />
               </div>

@@ -19,50 +19,58 @@ const EditProperty = () => {
   const [roomPhotos, setRoomPhotos] = useState([[]]);
   const [seatPhotos, setSeatPhotos] = useState([[]]);
 
+  const [perDay, setPerDay] = useState(null);
+  const [perMonth, setPerMonth] = useState(null);
+  const [perYear, setPerYear] = useState(null);
+
+  const [dAmountForDay, setDAmountForDay] = useState(null);
+  const [dAmountForMonth, setDAmountForMonth] = useState(null);
+  const [dAmountForYear, setDAmountForYear] = useState(null);
+
   const [discountForDay, setDiscountForDay] = useState(null);
   const [discountForMonth, setDiscountForMonth] = useState(null);
   const [discountForYear, setDiscountForYear] = useState(null);
 
   // // Handle Discount For Room
-  // useEffect(() => {
-  //   // For Day
-  //   if (perDay > 0) {
-  //     const discountedAmountForDay = Number(perDay - dAmountForDay);
-  //     const percentageDiscount =
-  //       (discountedAmountForDay / Number(perDay)) * 100;
+  useEffect(() => {
+    // For Day
+    if (perDay > 0) {
+      const discountedAmountForDay = Number(perDay - dAmountForDay);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perDay)) * 100;
 
-  //     setDiscountForDay(
-  //       percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
-  //     );
-  //   }
-  //   // For Month
-  //   if (perMonth > 0) {
-  //     const discountedAmountForDay = Number(perMonth - dAmountForMonth);
-  //     const percentageDiscount =
-  //       (discountedAmountForDay / Number(perMonth)) * 100;
+      setDiscountForDay(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+    // For Month
+    if (perMonth > 0) {
+      const discountedAmountForDay = Number(perMonth - dAmountForMonth);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perMonth)) * 100;
 
-  //     setDiscountForMonth(
-  //       percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
-  //     );
-  //   }
-  //   // For Year
-  //   if (perYear > 0) {
-  //     const discountedAmountForDay = Number(perYear - dAmountForYear);
-  //     const percentageDiscount =
-  //       (discountedAmountForDay / Number(perYear)) * 100;
+      setDiscountForMonth(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+    // For Year
+    if (perYear > 0) {
+      const discountedAmountForDay = Number(perYear - dAmountForYear);
+      const percentageDiscount =
+        (discountedAmountForDay / Number(perYear)) * 100;
 
-  //     setDiscountForYear(
-  //       percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
-  //     );
-  //   }
-  // }, [
-  //   perDay,
-  //   dAmountForDay,
-  //   dAmountForMonth,
-  //   perMonth,
-  //   perYear,
-  //   dAmountForYear,
-  // ]);
+      setDiscountForYear(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+  }, [
+    perDay,
+    dAmountForDay,
+    dAmountForMonth,
+    perMonth,
+    perYear,
+    dAmountForYear,
+  ]);
 
   // read and set data
   useEffect(() => {
@@ -74,6 +82,12 @@ const EditProperty = () => {
           const { property } = await response.json();
           setData(property);
           setRoomPhotos(property?.photos);
+          setPerDay(property?.perDay);
+          setPerMonth(property?.perMonth);
+          setPerYear(property?.perYear);
+          setDAmountForDay(property?.dAmountForDay);
+          setDAmountForMonth(property?.dAmountForMonth);
+          setDAmountForYear(property?.dAmountForYear);
         } catch (error) {
           console.error("Error fetching data:", error);
         }
@@ -88,6 +102,12 @@ const EditProperty = () => {
           const { data } = await response.json();
           setSeat(data.seat);
           setSeatPhotos(data?.seat?.photos);
+          setPerDay(data?.seat?.perDay);
+          setPerMonth(data?.seat?.perMonth);
+          setPerYear(data?.seat?.perYear);
+          setDAmountForDay(data?.seat?.dAmountForDay);
+          setDAmountForMonth(data?.seat?.dAmountForMonth);
+          setDAmountForYear(data?.seat?.dAmountForYear);
 
           if (data?.seat) {
             try {
@@ -109,6 +129,9 @@ const EditProperty = () => {
     }
   }, [id, category]);
   console.log({ data, seat });
+
+  // submit handler
+  const handleSubmit = () => {};
 
   return (
     <div className="wrapper">
@@ -578,8 +601,8 @@ const EditProperty = () => {
                           className="main_form w-100"
                           name="perDay"
                           placeholder="Per Day"
-                          defaultValue={data?.perDay}
-                          // onChange={(e) => setPerDay(e.target.value)}
+                          defaultValue={perDay}
+                          onChange={(e) => setPerDay(e.target.value)}
                           required
                           onWheel={(e) => e.target.blur()}
                         />
@@ -599,8 +622,8 @@ const EditProperty = () => {
                           name="discountAmountForDay"
                           className="main_form w-100"
                           placeholder="After Discount Amount (Day)"
-                          defaultValue={data?.dAmountForDay}
-                          // onChange={(e) => setDAmountForDay(e.target.value)}
+                          defaultValue={dAmountForDay}
+                          onChange={(e) => setDAmountForDay(e.target.value)}
                           onWheel={(e) => e.target.blur()}
                         />
                       </div>
@@ -622,8 +645,8 @@ const EditProperty = () => {
                           name="percentOfDiscountDay"
                           placeholder=" Discount For Day"
                           // disabled
-                          // defaultValue={data?.percentOfDiscountDay}
-                          defaultValue={data?.percentOfDiscountDay}
+
+                          defaultValue={discountForDay}
                         />
                       </div>
 
@@ -640,9 +663,9 @@ const EditProperty = () => {
                           className="main_form w-100"
                           name="perMonth"
                           placeholder="Per Month"
-                          // onChange={(e) => setPerMonth(e.target.value)}
+                          onChange={(e) => setPerMonth(e.target.value)}
                           required
-                          defaultValue={data?.perMonth}
+                          defaultValue={perMonth}
                           onWheel={(e) => e.target.blur()}
                         />
                       </div>
@@ -661,10 +684,10 @@ const EditProperty = () => {
                           type="number"
                           name="discountAmountForMonth"
                           className="main_form w-100"
-                          // onChange={(e) => setDAmountForMonth(e.target.value)}
+                          onChange={(e) => setDAmountForMonth(e.target.value)}
                           placeholder="After Discount Amount"
-                          // onWheel={(e) => e.target.blur()}
-                          defaultValue={data?.dAmountForMonth}
+                          onWheel={(e) => e.target.blur()}
+                          defaultValue={dAmountForMonth}
                         />
                       </div>
 
@@ -684,7 +707,7 @@ const EditProperty = () => {
                           // value={
                           //   discountForMonth > 0 ? `${discountForMonth} %` : ""
                           // }
-                          defaultValue={data?.percentOfDiscountMonth}
+                          defaultValue={discountForMonth}
                           disabled
                         />
                       </div>
@@ -703,9 +726,9 @@ const EditProperty = () => {
                           name="perYear"
                           placeholder="Per Year"
                           required
-                          defaultValue={data?.perYear}
-                          // onChange={(e) => setPerYear(e.target.value)}
-                          // onWheel={(e) => e.target.blur()}
+                          defaultValue={perYear}
+                          onChange={(e) => setPerYear(e.target.value)}
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
 
@@ -724,9 +747,9 @@ const EditProperty = () => {
                           name="discountAmountForYear"
                           className="main_form w-100"
                           placeholder="After Discount Amount"
-                          // onChange={(e) => setDAmountForYear(e.target.value)}
-                          // onWheel={(e) => e.target.blur()}
-                          defaultValue={data?.dAmountForYear}
+                          onChange={(e) => setDAmountForYear(e.target.value)}
+                          onWheel={(e) => e.target.blur()}
+                          defaultValue={dAmountForYear}
                         />
                       </div>
 
@@ -747,7 +770,7 @@ const EditProperty = () => {
                           //   discountForYear > 0 ? `${discountForYear} %` : ""
                           // }
                           disabled
-                          defaultValue={data?.percentOfDiscountYear}
+                          defaultValue={discountForYear}
                         />
                       </div>
                     </div>
@@ -835,7 +858,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           placeholder="Per Day Price"
                           required
-                          defaultValue={seat?.perDay}
+                          defaultValue={perDay}
                         />
                       </div>
 
@@ -848,7 +871,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           placeholder=" After Discount Amount(Day)"
                           required
-                          defaultValue={seat?.dAmountForDay}
+                          defaultValue={dAmountForDay}
                         />
                       </div>
 
@@ -859,7 +882,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           placeholder="Per Month Price"
                           required
-                          defaultValue={seat?.perMonth}
+                          defaultValue={perMonth}
                         />
                       </div>
 
@@ -872,7 +895,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           placeholder="After Discount Amount(Month)"
                           required
-                          defaultValue={seat?.dAmountForMonth}
+                          defaultValue={dAmountForMonth}
                         />
                       </div>
 
@@ -883,7 +906,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           placeholder="Per Year Price"
                           required
-                          defaultValue={seat?.perYear}
+                          defaultValue={perYear}
                         />
                       </div>
 
@@ -896,7 +919,7 @@ const EditProperty = () => {
                           className="main_form w-100"
                           placeholder="After Discount Amount(Year)"
                           required
-                          defaultValue={seat?.dAmountForYear}
+                          defaultValue={dAmountForYear}
                         />
                       </div>
                       {/* seat photos */}
@@ -1177,7 +1200,7 @@ const EditProperty = () => {
                 type="submit"
                 className="profile_btn"
                 style={{ width: 175 }}
-                // onSubmit={handleSubmit}
+                onSubmit={handleSubmit}
               >
                 Update Property
               </button>

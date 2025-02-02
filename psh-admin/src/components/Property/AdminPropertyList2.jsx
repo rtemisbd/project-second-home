@@ -13,9 +13,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Spinner, Table } from "react-bootstrap";
 import { BiSolidEdit } from "react-icons/bi";
 import PropertyStatusUpdate from "../../pages/edit/PropertyStatusUpdate";
-import PropertyDetails from "./PropertyDetails";
 import { AiOutlineEye } from "react-icons/ai";
-import PropertyUpdate2 from "../../pages/edit/PropertyUpdate2";
 import PropertyDetails2 from "./PropertyDetails2";
 
 const AdminPropertyList2 = () => {
@@ -86,9 +84,11 @@ const AdminPropertyList2 = () => {
   };
 
   const handleEdit = (room) => {
-    // setId(room?._id);
-    // setSelectedCategory(room?.categoryDetails?._id);
-    navigate(`/dashboard/edit/${room?.categoryDetails?.name}/${room?._id}`);
+    if (room?.categoryDetails?.name === "Private Room") {
+      navigate(`/dashboard/edit/private-room/${room?._id}`);
+    } else {
+      navigate(`/dashboard/edit/share-room/${room?._id}`);
+    }
   };
 
   return (

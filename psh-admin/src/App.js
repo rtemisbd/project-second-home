@@ -72,6 +72,8 @@ import RoomOverview from "./pages/roomOverview/RoomOverview";
 import CreateUser from "./pages/CreateUser/CreateUser";
 import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
 import EditProperty from "./pages/edit/EditProperty";
+import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
+import EditSeat from "./pages/edit/EditSeat";
 
 function App() {
   return (
@@ -123,6 +125,8 @@ function App() {
         {/* test purpose */}
         <Route path="property_list2" element={<AdminPropertyList2 />} />
         <Route path="edit/:category/:id" element={<EditProperty />} />
+        <Route path="edit/private-room/:id" element={<EditPrivateProperty />} />
+        <Route path="edit/share-room/:id" element={<EditSeat />} />
 
         {/* <Route path="property-report" element={<PropertyReports />} /> */}
         <Route path="property-report" element={<BookingReport />} />
