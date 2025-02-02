@@ -17,11 +17,10 @@ const EditPrivateProperty = () => {
   const { data3: commonFacilities } = UseFetch("commonfacility");
 
   const [isLoading, setIsLoading] = useState(false);
-  const [categoryName, setCategoryName] = useState("");
+
   const [data, setData] = useState(null);
   const [roomPhotos, setRoomPhotos] = useState([]);
   const [files, setFiles] = useState("");
-  const [newPhotos, setNewPhotos] = useState([]);
 
   const [perDay, setPerDay] = useState(null);
   const [perMonth, setPerMonth] = useState(null);
@@ -57,8 +56,6 @@ const EditPrivateProperty = () => {
       }
     });
   };
-
-  console.log({ selectedCommonFacilities, selectedAllFacilities });
 
   // // Handle Discount For Room
   useEffect(() => {
@@ -125,7 +122,6 @@ const EditPrivateProperty = () => {
     };
     fetchData();
   }, [id]);
-  console.log({ data });
 
   // submit handler
   const handleSubmit = async (event) => {
@@ -578,7 +574,7 @@ const EditPrivateProperty = () => {
               </h2>
               <div className="col-md-12 form_sub_stream">
                 <div className="row p-4">
-                  <div className="col-md-4 form_sub_stream">
+                  <div className="col-md-3 form_sub_stream">
                     <label
                       htmlFor="inputState"
                       className="form-label profile_label3 "
@@ -599,7 +595,7 @@ const EditPrivateProperty = () => {
                   </div>
                   {/* Discount For Day */}
 
-                  <div className="col-md-4 form_sub_stream">
+                  <div className="col-md-5 form_sub_stream">
                     <label
                       htmlFor="inputState"
                       className="form-label profile_label3 "
@@ -640,7 +636,7 @@ const EditPrivateProperty = () => {
                     />
                   </div>
 
-                  <div className="col-md-4 form_sub_stream">
+                  <div className="col-md-3 form_sub_stream">
                     <label
                       htmlFor="inputState"
                       className="form-label profile_label3 "
@@ -662,7 +658,7 @@ const EditPrivateProperty = () => {
 
                   {/* Discount For Months */}
 
-                  <div className="col-md-4 form_sub_stream">
+                  <div className="col-md-5 form_sub_stream">
                     <label
                       htmlFor="inputState"
                       className="form-label profile_label3 "
@@ -702,7 +698,7 @@ const EditPrivateProperty = () => {
                     />
                   </div>
 
-                  <div className="col-md-4 form_sub_stream">
+                  <div className="col-md-3 form_sub_stream">
                     <label
                       htmlFor="inputState"
                       className="form-label profile_label3 "
@@ -724,7 +720,7 @@ const EditPrivateProperty = () => {
 
                   {/* Discount For Year */}
 
-                  <div className="col-md-4 form_sub_stream">
+                  <div className="col-md-5 form_sub_stream">
                     <label
                       htmlFor="inputState"
                       className="form-label profile_label3 "
@@ -830,7 +826,6 @@ const EditPrivateProperty = () => {
                         borderRadius: "12px",
                         background: "white",
                         color: "black",
-                        // border: "1px solid black",
                         boxShadow: "1px 1px 1px 1px gray",
                         position: "absolute",
                         right: "2px",

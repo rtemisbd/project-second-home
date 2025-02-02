@@ -159,6 +159,7 @@ const Add_property = () => {
 
     fetchData();
   }, []);
+
   const handleAddSeatOption = () => {
     setSeatOptions([
       ...seatOptions,
@@ -1076,7 +1077,7 @@ const Add_property = () => {
                             onWheel={(e) => e.target.blur()}
                           />
                         </div>
-                        <div className="col-md-3 form_sub_stream">
+                        <div className="col-md-6 form_sub_stream">
                           <label className="profile_label3">
                             After Discount Amount(Year)
                           </label>
@@ -1095,7 +1096,7 @@ const Add_property = () => {
                             onWheel={(e) => e.target.blur()}
                           />
                         </div>
-                        <div className="col-md-3 form_sub_stream" key={index}>
+                        <div className="col-md-12 form_sub_stream" key={index}>
                           <label
                             htmlFor={`seatPhotos-${index}`}
                             className="form-label profile_label3"
