@@ -4,6 +4,7 @@ import Branch from "../models/Branch.js";
 import catchAsync from "../shared/cathAsync.js";
 import { propertyServices } from "../services/property.service.js";
 import { seatServices } from "../services/seat.service.js";
+import sendResponse from "../shared/sendResponse.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -397,96 +398,98 @@ export const deletePropertys = async (req, res, next) => {
   }
 };
 
-export const updatePropertys = async (req, res, next) => {
-  try {
-    const propertyId = req.params.id;
+export const updatePropertys = catchAsync(async (req, res, next) => {
+  const result = await propertyServices.updatePropertyById(
+    req.params.id,
+    req.body
+  );
 
-    // Status Update
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Properties updated successfully",
+    data: result,
+  });
+});
 
-    if (req.body?.isPublished) {
-      await Property.findByIdAndUpdate(
-        req.params.id,
-        { $set: { isPublished: req.body.isPublished } },
-        { new: true }
-      );
-    }
-    // Find the property by ID
-    const property = await Property.findById(propertyId);
-    if (!property) {
-      return res.status(404).json({ error: "Property not found" });
-    }
-
-    // Update the property fields
-
-    // const updateData = {
-    //   name: req.body.name,
-    //   city: req.body.city,
-    //   floor: req.body.floor,
-    //   roomNumber: req.body.roomNumber,
-    //   builtYear: req.body.builtYear,
-    //   area: req.body.area,
-    //   totalRoom: req.body.totalRoom,
-    //   desc: req.body.desc,
-    //   fulldesc: req.body.fulldesc,
-    //   perDay: req.body.perDay,
-    //   perMonth: req.body.perMonth,
-    //   perYear: req.body.perYear,
-    //   dAmountForDay: req.body.dAmountForDay,
-    //   dAmountForMonth: req.body.dAmountForMonth,
-    //   dAmountForYear: req.body.dAmountForYear,
-    //   percentOfDiscountDay: req.body.percentOfDiscountDay,
-    //   percentOfDiscountMonth: req.body.percentOfDiscountMonth,
-    //   percentOfDiscountYear: req.body.percentOfDiscountYear,
-    //   bedroom: req.body.bedroom,
-    //   bathroom: req.body.bathroom,
-    //   car: req.body.car,
-    //   bike: req.body.bike,
-    //   pet: req.body.pet,
-    //   categoryId: req.body.categoryId,
-    //   recommended: req.body.recommended,
-    //   furnitured: req.body.furnitured,
-    //   branchId: req.body.branchId,
-    //   facility: req.body.facility,
-    //   commonfacility: req.body.commonfacility,
-    //   photos: req.body.photos,
-    //   meal: req.body.meal,
-    //   bedType: req.body.bedType,
-    //   CCTV: req.body.CCTV,
-    //   WiFi: req.body.WiFi,
-    //   balcony: req.body.balcony,
-    //   totalPerson: req.body.totalPerson,
-    //   rentDate: property?.rentDate,
-    //   type: req.body.type,
-    //   rules: req.body.rules,
-    //   roomCategory: req.body.roomCategory,
-    //   additionalFacility: req.body.additionalFacility,
-    //   apartmentRent: req.body.apartmentRent,
-    //   serviceCharge: req.body.serviceCharge,
-    //   security: req.body.security,
-    //   faltPolicy: req.body.faltPolicy,
-    //   seats: req.body.seats,
-    //   isPublished: req.body.isPublished,
-    //   isPartner: req.body.isPartner,
-    // };
-
-    const result = await Property.updateOne(
-      { _id: propertyId },
-      { $set: req?.body },
-      { runValidators: true }
-    );
-    res.status(200).json(result);
-  } catch (err) {
-    next(err);
-  }
-};
-
-// export const getRecommendedPropertys = async (req, res, next) => {
+// export const updatePropertys = async (req, res, next) => {
 //   try {
-//     const properties = await Property.find({ recommended: "yes" })
-//       .populate("category review branch")
-//       .limit(req.query.limit);
+//     const propertyId = req.params.id;
 
-//     res.status(200).json(properties);
+//     // Status Update
+
+//     if (req.body?.isPublished) {
+//       await Property.findByIdAndUpdate(
+//         req.params.id,
+//         { $set: { isPublished: req.body.isPublished } },
+//         { new: true }
+//       );
+//     }
+//     // Find the property by ID
+//     const property = await Property.findById(propertyId);
+//     if (!property) {
+//       return res.status(404).json({ error: "Property not found" });
+//     }
+
+//     // Update the property fields
+
+//     // const updateData = {
+//     //   name: req.body.name,
+//     //   city: req.body.city,
+//     //   floor: req.body.floor,
+//     //   roomNumber: req.body.roomNumber,
+//     //   builtYear: req.body.builtYear,
+//     //   area: req.body.area,
+//     //   totalRoom: req.body.totalRoom,
+//     //   desc: req.body.desc,
+//     //   fulldesc: req.body.fulldesc,
+//     //   perDay: req.body.perDay,
+//     //   perMonth: req.body.perMonth,
+//     //   perYear: req.body.perYear,
+//     //   dAmountForDay: req.body.dAmountForDay,
+//     //   dAmountForMonth: req.body.dAmountForMonth,
+//     //   dAmountForYear: req.body.dAmountForYear,
+//     //   percentOfDiscountDay: req.body.percentOfDiscountDay,
+//     //   percentOfDiscountMonth: req.body.percentOfDiscountMonth,
+//     //   percentOfDiscountYear: req.body.percentOfDiscountYear,
+//     //   bedroom: req.body.bedroom,
+//     //   bathroom: req.body.bathroom,
+//     //   car: req.body.car,
+//     //   bike: req.body.bike,
+//     //   pet: req.body.pet,
+//     //   categoryId: req.body.categoryId,
+//     //   recommended: req.body.recommended,
+//     //   furnitured: req.body.furnitured,
+//     //   branchId: req.body.branchId,
+//     //   facility: req.body.facility,
+//     //   commonfacility: req.body.commonfacility,
+//     //   photos: req.body.photos,
+//     //   meal: req.body.meal,
+//     //   bedType: req.body.bedType,
+//     //   CCTV: req.body.CCTV,
+//     //   WiFi: req.body.WiFi,
+//     //   balcony: req.body.balcony,
+//     //   totalPerson: req.body.totalPerson,
+//     //   rentDate: property?.rentDate,
+//     //   type: req.body.type,
+//     //   rules: req.body.rules,
+//     //   roomCategory: req.body.roomCategory,
+//     //   additionalFacility: req.body.additionalFacility,
+//     //   apartmentRent: req.body.apartmentRent,
+//     //   serviceCharge: req.body.serviceCharge,
+//     //   security: req.body.security,
+//     //   faltPolicy: req.body.faltPolicy,
+//     //   seats: req.body.seats,
+//     //   isPublished: req.body.isPublished,
+//     //   isPartner: req.body.isPartner,
+//     // };
+
+//     const result = await Property.updateOne(
+//       { _id: propertyId },
+//       { $set: req?.body },
+//       { runValidators: true }
+//     );
+//     res.status(200).json(result);
 //   } catch (err) {
 //     next(err);
 //   }

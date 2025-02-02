@@ -330,9 +330,32 @@ const getSinglePropertyFromDB = async (propertyId) => {
   return { property, rentRooms };
 };
 
+const updatePropertyById = async (propertyId, payload) => {
+  if (payload.isPublished) {
+    await Property.findByIdAndUpdate(
+      propertyId,
+      { $set: { isPublished: req.body.isPublished } },
+      { new: true }
+    );
+  }
+  // Find the property by ID
+  const property = await Property.findById(propertyId);
+  if (!property) {
+    return res.status(404).json({ error: "Property not found" });
+  }
+
+  const result = await Property.updateOne(
+    { _id: propertyId },
+    { $set: payload },
+    { runValidators: true }
+  );
+  return result;
+};
+
 export const propertyServices = {
   getPropertiesFromDB,
   getPropertiesFromDBForAdmin,
   getRecommendedPropertiesFromDB,
   getSinglePropertyFromDB,
+  updatePropertyById,
 };

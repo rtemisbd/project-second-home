@@ -195,8 +195,11 @@ const EditPrivateProperty = () => {
         `${baseUrl}/api/property/${id}`,
         property
       );
-      if (data?.modifiedCount > 0) setIsLoading(false);
-      if (!isLoading) toast("Your property has been updated!", "success");
+
+      if (data?.data?.modifiedCount > 0) {
+        setIsLoading(false);
+        toast("Your property has been updated!", "success");
+      }
 
       event.target.reset();
     } catch (err) {
