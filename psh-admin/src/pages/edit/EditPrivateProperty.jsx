@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from "react";
-import { ToastContainer } from "react-bootstrap";
+
 import { AuthContext } from "../../contexts/UserProvider";
 import { useParams } from "react-router-dom";
 import UseFetch from "../../hooks/useFetch";
 import { baseUrl } from "../../utils/getBaseURL";
-import { toast } from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import { multipleImageUpload } from "../../utils/multipleImageUpload";
 import axios from "axios";
 
@@ -37,7 +37,6 @@ const EditPrivateProperty = () => {
 
   const [selectedCommonFacilities, setSelectedCommonFacilities] = useState([]);
   const [selectedAllFacilities, setSelectedAllFacilities] = useState([]);
-  const [updatedProperty, setUpdatedProperty] = useState(null);
 
   const handleCheckboxChange = (facilityId) => {
     setSelectedCommonFacilities((prevSelected) => {
@@ -191,17 +190,19 @@ const EditPrivateProperty = () => {
         photos: [...roomPhotos, ...list],
       };
 
-      setUpdatedProperty({ ...property });
-      console.log({ updatedProperty });
-      //   if (property?.photos?.length < 5) {
-      //     return toast("Sorry ! Minimum 5 Photo Required.", "warning");
-      //   }
+      if (property?.photos?.length < 5) {
+        return toast("Sorry ! Minimum 5 Photo Required.", "warning");
+      }
 
-      //   //   await axios.patch(`${baseUrl}/api/property`, property);
-      //   await toast.fire("Your Property!", "successfully added", "success");
+      toast("Uploading...", "success");
+      const { data } = await axios.patch(
+        `${baseUrl}/api/property/${id}`,
+        property
+      );
+      if (data?.modifiedCount > 0) setIsLoading(false);
+      if (!isLoading) toast("Your property has been updated!", "success");
 
-      //   event.target.reset();
-      //   setIsLoading(false);
+      event.target.reset();
     } catch (err) {
       setIsLoading(false);
       console.log(err);
@@ -822,6 +823,7 @@ const EditPrivateProperty = () => {
                   >
                     <img src={photo} atr="" height="124px" width="124px" />
                     <button
+                      type="button"
                       style={{
                         height: "24px",
                         width: "24px",
