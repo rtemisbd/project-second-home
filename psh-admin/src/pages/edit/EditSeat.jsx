@@ -22,29 +22,12 @@ const EditSeat = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [files, setFiles] = useState("");
   const [seatFiles, setSeatFiles] = useState("");
+  const [newSeatFiles, setNewSeatFiles] = useState("");
 
   const [selectedCommonFacilities, setSelectedCommonFacilities] = useState([]);
   const [selectedAllFacilities, setSelectedAllFacilities] = useState([]);
 
-  const [seatOptions, setSeatOptions] = useState([]);
-
-  const handleAddSeatOption = () => {
-    setSeatOptions([
-      ...seatOptions,
-      {
-        name: "",
-        seatNumber: "",
-        seatType: "",
-        perDay: "",
-        perMonth: "",
-        perYear: "",
-        dAmountForDay: "",
-        dAmountForMonth: "",
-        dAmountForYear: "",
-        photos: [],
-      },
-    ]);
-  };
+  const [addNewSeat, setAddNewSeat] = useState(0);
 
   const handleCheckboxChange = (facilityId) => {
     setSelectedCommonFacilities((prevSelected) => {
@@ -98,6 +81,66 @@ const EditSeat = () => {
     fetchData();
   }, [id]);
   console.log({ data, seat });
+
+  console.log(addNewSeat);
+
+  const handleUploadSeat = async (e) => {
+    e.preventDefault();
+
+    const formData = new FormData(e.target);
+
+    //  Checking Rent Details
+    const perDay = formData.get("newSeatPerDay");
+    const dAmountForDay = formData.get("newSeatDAmountForDay");
+    const perMonth = formData.get("newSeatPerMonth");
+    const dAmountForMonth = formData.get("newSeatDAmountForMonth");
+    const perYear = formData.get("newSeatPerYear");
+    const dAmountForYear = formData.get("newSeatDAmountForYear");
+
+    if (
+      Number(perDay) < Number(dAmountForDay) ||
+      Number(perMonth) < Number(dAmountForMonth) ||
+      Number(perYear) < Number(dAmountForYear)
+    ) {
+      toast.warn("Please Check Rent Details");
+      return;
+    }
+
+    const seatData = {
+      name: formData.get("newSeatName"),
+      seatNumber: formData.get("newSeatNumber"),
+      seatType: formData.get("newSeatBedType"),
+      perDay,
+      perMonth,
+      perYear,
+      dAmountForDay,
+      dAmountForMonth,
+      dAmountForYear,
+      roomId: data?._id,
+    };
+    try {
+      setIsLoading(true);
+      const list = await multipleImageUpload(newSeatFiles);
+
+      const newSeat = {
+        ...seatData,
+        photos: [...list],
+      };
+
+      toast("Uploading...", "success");
+
+      const response = await axios.post(`${baseUrl}/api/seats/`, newSeat);
+      console.log({ response });
+
+      setNewSeatFiles("");
+      // e.target.reset();
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+
+      toast("Something Error Found.", "warning");
+    }
+  };
 
   // submit handler
   const handleSubmit = async (event) => {
@@ -761,12 +804,156 @@ const EditSeat = () => {
                   </div>
                 </React.Fragment>
 
-                {/* <div
-                  className="col-md-6 form_sub_stream d-flex gap-2"
+                {Array.from({ length: addNewSeat }).map((_, i) => (
+                  <>
+                    <h2 className="profile_label3 profile_bg">New Seat </h2>
+
+                    <div className="row">
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Seat Title</label>
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          placeholder="Seat Title"
+                          required
+                          name="newSeatName"
+                        />
+                      </div>
+
+                      <div className="col-md-3 form_sub_stream">
+                        <label className="profile_label3">Seat Number</label>
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          placeholder="Seat Number"
+                          required
+                          name="newSeatNumber"
+                        />
+                      </div>
+
+                      <div className="col-md-3 form_sub_stream">
+                        <label className="profile_label3">Seat Type</label>
+                        <select
+                          className="main_form w-100"
+                          required
+                          name="newSeatBedType"
+                        >
+                          <option value="Upper Bed">Upper Bed</option>
+                          <option value="Lower Bed">Lower Bed</option>
+                          <option value="Single Bed">Single Bed</option>
+                        </select>
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Per Day</label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="Per Day Price"
+                          required
+                          name="newSeatPerDay"
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">
+                          After Discount Amount (Day)
+                        </label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount (Day)"
+                          required
+                          name="newSeatDAmountForDay"
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Per Month</label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="Per Month Price"
+                          required
+                          name="newSeatPerMonth"
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">
+                          After Discount Amount (Month)
+                        </label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount (Month)"
+                          required
+                          name="newSeatDAmountForMonth"
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Per Year</label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="Per Year Price"
+                          required
+                          name="newSeatPerYear"
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">
+                          After Discount Amount (Year)
+                        </label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount (Year)"
+                          required
+                          name="newSeatDAmountForYear"
+                        />
+                      </div>
+
+                      {/* Seat Photos */}
+                      <div className="col-md-12 form_sub_stream">
+                        <label className="form-label profile_label3">
+                          Seat Photos
+                        </label>
+                        <input
+                          type="file"
+                          className="main_form w-100 p-0"
+                          onChange={(e) =>
+                            setNewSeatFiles((prev) => ({
+                              ...prev,
+                              [i]: e.target.files,
+                            }))
+                          }
+                          multiple
+                          name={`seatPhotos-${i}`}
+                        />
+                      </div>
+                      <div className="d-flex justify-content-start my-3">
+                        <button
+                          type="submit"
+                          className="profile_btn"
+                          style={{ width: 175 }}
+                          onSubmit={handleUploadSeat}
+                        >
+                          Upload Seat
+                        </button>
+                      </div>
+                    </div>
+                  </>
+                ))}
+
+                <div
+                  className="col-md-12 form_sub_stream d-flex gap-2 justify-content-end"
                   style={{ marginTop: 10 }}
                 >
                   <p
-                    onClick={handleAddSeatOption}
+                    // onClick={handleAddSeatOption}
                     style={{
                       backgroundColor: "#006666",
                       color: "white",
@@ -775,24 +962,28 @@ const EditSeat = () => {
                       fontSize: "1rem",
                       cursor: "pointer",
                     }}
+                    onClick={() => setAddNewSeat((prev) => prev + 1)}
                   >
                     Add New Seat
                   </p>
 
-                  <p
-                    // onClick={() => handleRemoveSeatOption()}
-                    style={{
-                      backgroundColor: "red",
-                      color: "white",
-                      padding: "10px 20px",
-                      borderRadius: "5px",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                    }}
-                  >
-                    Remove Seat
-                  </p>
-                </div> */}
+                  {addNewSeat > 0 && (
+                    <p
+                      // onClick={() => handleRemoveSeatOption()}
+                      style={{
+                        backgroundColor: "red",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        fontSize: "1rem",
+                        cursor: "pointer",
+                      }}
+                      onClick={() => setAddNewSeat((prev) => prev - 1)}
+                    >
+                      Remove Seat
+                    </p>
+                  )}
+                </div>
               </div>
 
               <h2 className="profile_label3 profile_bg mt-5 mb-4">

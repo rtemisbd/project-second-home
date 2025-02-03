@@ -42,7 +42,6 @@ const PropertyDetails2 = ({
               const { data: responseForAllSeats } = await axios.get(
                 `${baseUrl}/api/seats?roomId=${data?.seat?.roomId}`
               );
-              console.log(responseForAllSeats);
 
               setAllSeats(responseForAllSeats?.data);
 
@@ -62,7 +61,6 @@ const PropertyDetails2 = ({
       fetchData();
     }
   }, [id, category]);
-  console.log({ data, seat });
 
   return (
     <Modal

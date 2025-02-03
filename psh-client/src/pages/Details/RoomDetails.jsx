@@ -508,9 +508,7 @@ const RoomDetails = () => {
                     <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                       <p className="font-bold">People</p>
                       <p>
-                        {data?.seats?.length
-                          ? data?.seats?.length
-                          : data?.bedroom}{" "}
+                        {data?.totalSeats ? data?.totalSeats : data?.bedroom}{" "}
                         People{" "}
                       </p>
                     </div>

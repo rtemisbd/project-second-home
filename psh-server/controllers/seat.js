@@ -2,6 +2,15 @@ import { seatServices } from "../services/seat.service.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 
+export const createSeat = catchAsync(async (req, res, next) => {
+  const result = await seatServices.createSeatIntoDB(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Seats uploaded successfully",
+  });
+});
+
 export const getAllSeats = catchAsync(async (req, res, next) => {
   const result = await seatServices.getAllSeatsFromDB(req.query);
 
