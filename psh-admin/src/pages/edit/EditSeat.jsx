@@ -4,7 +4,9 @@ import { AuthContext } from "../../contexts/UserProvider";
 import { useParams } from "react-router-dom";
 import UseFetch from "../../hooks/useFetch";
 import { baseUrl } from "../../utils/getBaseURL";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
+import { multipleImageUpload } from "../../utils/multipleImageUpload";
+import axios from "axios";
 const EditSeat = () => {
   const { user } = useContext(AuthContext);
 
@@ -98,13 +100,122 @@ const EditSeat = () => {
   console.log({ data, seat });
 
   // submit handler
-  const handleSubmit = () => {};
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    const formData = new FormData(event.target);
+
+    //  Checking Rent Details
+    const perDay = formData.get("perDay");
+    const dAmountForDay = formData.get("dAmountForDay");
+    const perMonth = formData.get("perMonth");
+    const dAmountForMonth = formData.get("dAmountForMonth");
+    const perYear = formData.get("perYear");
+    const dAmountForYear = formData.get("dAmountForYear");
+
+    if (
+      Number(perDay) < Number(dAmountForDay) ||
+      Number(perMonth) < Number(dAmountForMonth) ||
+      Number(perYear) < Number(dAmountForYear)
+    ) {
+      toast.warn("Please Check Rent Details");
+      return;
+    }
+
+    const updatedSeat = {
+      name: formData.get("seatName"),
+      seatNumber: formData.get("seatNumber"),
+      seatType: formData.get("seatBedType"),
+      perDay,
+      perMonth,
+      perYear,
+      dAmountForDay,
+      dAmountForMonth,
+      dAmountForYear,
+      // photos,
+    };
+
+    const data2 = {
+      // info
+      category: data?.category?._id,
+      branch: data?.branch?._id,
+      floor: formData.get("floor"),
+      type: formData.get("type"),
+      // sort details
+      name: formData.get("name"),
+      area: formData.get("area"),
+      bedroom: formData.get("bedroom"),
+      bathroom: formData.get("bathroom"),
+      // key details
+      balcony: formData.get("balcony"),
+      bedType: formData.get("bedType"),
+      recommended: formData.get("recommended"),
+      furnitured: formData.get("furnitured"),
+      CCTV: formData.get("CCTV"),
+      WiFi: formData.get("WiFi"),
+      //   facility
+      facility: selectedAllFacilities,
+      commonfacility: selectedCommonFacilities,
+
+      roomNumber: formData.get("roomNumber"),
+
+      rules: formData.get("rules"),
+    };
+
+    try {
+      setIsLoading(true);
+      const list = await multipleImageUpload(files);
+      const seatList = await multipleImageUpload(seatFiles);
+
+      const property = {
+        ...data2,
+        photos: [...roomPhotos, ...list],
+      };
+      const newSeat = {
+        ...updatedSeat,
+        photos: [...seatPhotos, ...seatList],
+      };
+
+      if (property?.photos?.length < 5) {
+        return toast("Sorry ! Minimum 5 Photo Required.", "warning");
+      }
+
+      toast("Uploading...", "success");
+      // update seat
+      const { data: updateResponse } = await axios.patch(
+        `${baseUrl}/api/seats/${id}`,
+        newSeat
+      );
+      // if (updateResponse?.data?.modifiedCount > 0) {
+      //   const response = await fetch(`${baseUrl}/api/seats/${id}`);
+      //   const { data } = await response.json();
+      //   setSeat(data.seat);
+      // }
+
+      const { data } = await axios.patch(
+        `${baseUrl}/api/property/${seat?.roomId}`,
+        property
+      );
+
+      if (data?.data?.modifiedCount > 0) {
+        setIsLoading(false);
+        toast("Your property has been updated!", "success");
+      }
+
+      event.target.reset();
+    } catch (err) {
+      setIsLoading(false);
+      console.log(err);
+
+      toast("Something Error Found.", "warning");
+    }
+  };
 
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
         <div className="customize registration_div card">
-          <form>
+          <form onSubmit={handleSubmit}>
             <div className="row">
               {/* property type */}
               <div className="col-md-6 form_sub_stream ">
@@ -484,6 +595,7 @@ const EditSeat = () => {
                       placeholder="Seat Title"
                       defaultValue={seat?.name}
                       required
+                      name="seatName"
                     />
                   </div>
 
@@ -495,16 +607,16 @@ const EditSeat = () => {
                       placeholder="Seat Number"
                       defaultValue={seat?.seatNumber}
                       required
+                      name="seatNumber"
                     />
                   </div>
                   <div className="col-md-3 form_sub_stream">
                     <label className="profile_label3">Seat Type</label>
 
                     <select
-                      name="WiFi"
-                      id="furnitured"
                       className="main_form w-100"
                       required
+                      name="seatType"
                     >
                       <option
                         value="Upper Bed"
@@ -535,6 +647,7 @@ const EditSeat = () => {
                       placeholder="Per Day Price"
                       required
                       defaultValue={seat?.perDay}
+                      name="perDay"
                     />
                   </div>
 
@@ -548,6 +661,7 @@ const EditSeat = () => {
                       placeholder=" After Discount Amount(Day)"
                       required
                       defaultValue={seat?.dAmountForDay}
+                      name="dAmountForDay"
                     />
                   </div>
 
@@ -559,6 +673,7 @@ const EditSeat = () => {
                       placeholder="Per Month Price"
                       required
                       defaultValue={seat?.perMonth}
+                      name="perMonth"
                     />
                   </div>
 
@@ -572,6 +687,7 @@ const EditSeat = () => {
                       placeholder="After Discount Amount(Month)"
                       required
                       defaultValue={seat?.dAmountForMonth}
+                      name="dAmountForMonth"
                     />
                   </div>
 
@@ -583,19 +699,21 @@ const EditSeat = () => {
                       placeholder="Per Year Price"
                       required
                       defaultValue={seat?.perYear}
+                      name="perYear"
                     />
                   </div>
 
                   <div className="col-md-6 form_sub_stream">
                     <label className="profile_label3">
-                      After Discount Amount(Year)
+                      After Discount Amount (Year)
                     </label>
                     <input
                       type="number"
                       className="main_form w-100"
                       placeholder="After Discount Amount(Year)"
                       required
-                      defaultValue={seat?.dAmountForYear}
+                      defaultValue={seat?.perYear}
+                      name="perYear"
                     />
                   </div>
                   {/* seat photos */}
@@ -630,7 +748,7 @@ const EditSeat = () => {
                             top: "-12px",
                           }}
                           onClick={() => {
-                            const updatedPhotos = roomPhotos.filter(
+                            const updatedPhotos = seatPhotos.filter(
                               (_, index) => index !== ind
                             );
                             setSeatPhotos(updatedPhotos);
@@ -643,7 +761,7 @@ const EditSeat = () => {
                   </div>
                 </React.Fragment>
 
-                <div
+                {/* <div
                   className="col-md-6 form_sub_stream d-flex gap-2"
                   style={{ marginTop: 10 }}
                 >
@@ -674,7 +792,7 @@ const EditSeat = () => {
                   >
                     Remove Seat
                   </p>
-                </div>
+                </div> */}
               </div>
 
               <h2 className="profile_label3 profile_bg mt-5 mb-4">

@@ -341,7 +341,7 @@ const updatePropertyById = async (propertyId, payload) => {
   // Find the property by ID
   const property = await Property.findById(propertyId);
   if (!property) {
-    return res.status(404).json({ error: "Property not found" });
+    return { error: "Property not found" };
   }
 
   const result = await Property.updateOne(
