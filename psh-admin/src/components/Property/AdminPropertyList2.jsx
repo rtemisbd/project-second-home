@@ -90,6 +90,7 @@ const AdminPropertyList2 = () => {
       navigate(`/dashboard/edit/share-room/${room?._id}`);
     }
   };
+  console.log();
 
   return (
     <div className="wrapper">
@@ -253,7 +254,7 @@ const AdminPropertyList2 = () => {
                                     <p className="fw-bold">
                                       Seat : {room?.seatNumber}
                                     </p>
-                                    <p>Room : {room?.roomNumber}</p>
+                                    <p>Room : {room?.property?.roomNumber}</p>
                                   </>
                                 ) : (
                                   <p className="fw-bold">

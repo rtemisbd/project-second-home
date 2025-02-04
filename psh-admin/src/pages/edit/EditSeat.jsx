@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-
 import { AuthContext } from "../../contexts/UserProvider";
 import { useParams } from "react-router-dom";
 import UseFetch from "../../hooks/useFetch";
@@ -28,6 +27,20 @@ const EditSeat = () => {
   const [selectedAllFacilities, setSelectedAllFacilities] = useState([]);
 
   const [addNewSeat, setAddNewSeat] = useState(0);
+  const [seatOptions, setSeatOptions] = useState([
+    {
+      name: "",
+      seatNumber: "",
+      seatType: "",
+      perDay: 0,
+      dAmountForDay: 0,
+      perMonth: 0,
+      dAmountForMonth: 0,
+      perYear: 0,
+      dAmountForYear: 0,
+      photos: [],
+    },
+  ]);
 
   const handleCheckboxChange = (facilityId) => {
     setSelectedCommonFacilities((prevSelected) => {
@@ -82,79 +95,58 @@ const EditSeat = () => {
   }, [id]);
   console.log({ data, seat });
 
-  console.log(addNewSeat);
+  const handleAddSeatOption = () => {
+    setSeatOptions([
+      ...seatOptions,
+      {
+        name: "",
+        seatNumber: "",
+        seatType: "",
+        perDay: "",
+        perMonth: "",
+        perYear: "",
+        dAmountForDay: "",
+        dAmountForMonth: "",
+        dAmountForYear: "",
+        photos: [],
+      },
+    ]);
+  };
+  const handleSeatPhotosChange = async (e, index) => {
+    const files = e.target.files;
+    const updatedSeatOptions = [...seatOptions];
+    const photos = await multipleImageUpload(files);
 
-  const handleUploadSeat = async (e) => {
-    e.preventDefault();
+    // const photos = Array.from(files).map(
+    //   async (file) => await multipleImageUpload(file)
+    // );
+    updatedSeatOptions[index].photos = [
+      ...updatedSeatOptions[index].photos,
+      ...photos,
+    ];
 
-    const formData = new FormData(e.target);
+    setSeatOptions(updatedSeatOptions);
+  };
 
-    //  Checking Rent Details
-    const perDay = formData.get("newSeatPerDay");
-    const dAmountForDay = formData.get("newSeatDAmountForDay");
-    const perMonth = formData.get("newSeatPerMonth");
-    const dAmountForMonth = formData.get("newSeatDAmountForMonth");
-    const perYear = formData.get("newSeatPerYear");
-    const dAmountForYear = formData.get("newSeatDAmountForYear");
-
-    if (
-      Number(perDay) < Number(dAmountForDay) ||
-      Number(perMonth) < Number(dAmountForMonth) ||
-      Number(perYear) < Number(dAmountForYear)
-    ) {
-      toast.warn("Please Check Rent Details");
+  const handleRemoveSeatOption = (index) => {
+    if (seatOptions.length === 0) {
+      toast("You must need to select one seat.", "warning");
       return;
     }
-
-    const seatData = {
-      name: formData.get("newSeatName"),
-      seatNumber: formData.get("newSeatNumber"),
-      seatType: formData.get("newSeatBedType"),
-      perDay,
-      perMonth,
-      perYear,
-      dAmountForDay,
-      dAmountForMonth,
-      dAmountForYear,
-      roomId: data?._id,
-    };
-    try {
-      setIsLoading(true);
-      const list = await multipleImageUpload(newSeatFiles);
-
-      const newSeat = {
-        ...seatData,
-        photos: [...list],
-      };
-
-      toast("Uploading...", "success");
-
-      const response = await axios.post(`${baseUrl}/api/seats/`, newSeat);
-      console.log({ response });
-
-      setNewSeatFiles("");
-      // e.target.reset();
-    } catch (err) {
-      setIsLoading(false);
-      console.log(err);
-
-      toast("Something Error Found.", "warning");
-    }
+    const updatedOptions = seatOptions.slice(0, -1);
+    setSeatOptions(updatedOptions);
   };
 
   // submit handler
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    const formData = new FormData(event.target);
-
-    //  Checking Rent Details
-    const perDay = formData.get("perDay");
-    const dAmountForDay = formData.get("dAmountForDay");
-    const perMonth = formData.get("perMonth");
-    const dAmountForMonth = formData.get("dAmountForMonth");
-    const perYear = formData.get("perYear");
-    const dAmountForYear = formData.get("dAmountForYear");
+    const perDay = event.target?.perDay?.value;
+    const perMonth = event.target?.perMonth?.value;
+    const perYear = event.target?.perYear?.value;
+    const dAmountForDay = event.target?.dAmountForDay?.value;
+    const dAmountForMonth = event.target?.dAmountForMonth?.value;
+    const dAmountForYear = event.target?.dAmountForYear?.value;
 
     if (
       Number(perDay) < Number(dAmountForDay) ||
@@ -164,6 +156,22 @@ const EditSeat = () => {
       toast.warn("Please Check Rent Details");
       return;
     }
+    //  Checking Ren Details
+
+    const checkSeatPrice = seatOptions.some(
+      (option) =>
+        Number(option.dAmountForDay) > Number(option.perDay) ||
+        Number(option.dAmountForMonth) > Number(option.perMonth) ||
+        Number(option.dAmountForYear) > Number(option.perYear)
+    );
+
+    if (checkSeatPrice) {
+      toast.warn("Please Check Rent Details");
+      return;
+    }
+
+    const formData = new FormData(event.target);
+    console.log({ seatOptions });
 
     const updatedSeat = {
       name: formData.get("seatName"),
@@ -224,16 +232,24 @@ const EditSeat = () => {
       }
 
       toast("Uploading...", "success");
+
+      // uploade new seats
+      if (seatOptions?.length > 0) {
+        seatOptions.forEach(async (newSeat) => {
+          newSeat.roomId = seat?.roomId;
+          newSeat.category = data2?.category;
+          newSeat.branch = data2?.branch;
+
+          const response = await axios.post(`${baseUrl}/api/seats/`, newSeat);
+          console.log({ response });
+        });
+      }
+
       // update seat
       const { data: updateResponse } = await axios.patch(
         `${baseUrl}/api/seats/${id}`,
         newSeat
       );
-      // if (updateResponse?.data?.modifiedCount > 0) {
-      //   const response = await fetch(`${baseUrl}/api/seats/${id}`);
-      //   const { data } = await response.json();
-      //   setSeat(data.seat);
-      // }
 
       const { data } = await axios.patch(
         `${baseUrl}/api/property/${seat?.roomId}`,
@@ -755,8 +771,8 @@ const EditSeat = () => {
                       className="main_form w-100"
                       placeholder="After Discount Amount(Year)"
                       required
-                      defaultValue={seat?.perYear}
-                      name="perYear"
+                      defaultValue={seat?.dAmountForYear}
+                      name="dAmountForYear"
                     />
                   </div>
                   {/* seat photos */}
@@ -804,19 +820,24 @@ const EditSeat = () => {
                   </div>
                 </React.Fragment>
 
-                {Array.from({ length: addNewSeat }).map((_, i) => (
-                  <>
-                    <h2 className="profile_label3 profile_bg">New Seat </h2>
-
-                    <div className="row">
+                <div className="row card_div p-4">
+                  {seatOptions.map((option, index) => (
+                    <React.Fragment key={index}>
+                      <h2 className="profile_label3 profile_bg">
+                        Seat No: {index + 1}
+                      </h2>
                       <div className="col-md-6 form_sub_stream">
                         <label className="profile_label3">Seat Title</label>
                         <input
                           type="text"
                           className="main_form w-100"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].name = e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
                           placeholder="Seat Title"
                           required
-                          name="newSeatName"
                         />
                       </div>
 
@@ -825,18 +846,28 @@ const EditSeat = () => {
                         <input
                           type="text"
                           className="main_form w-100"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].seatNumber = e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
                           placeholder="Seat Number"
                           required
-                          name="newSeatNumber"
                         />
                       </div>
-
                       <div className="col-md-3 form_sub_stream">
                         <label className="profile_label3">Seat Type</label>
+
                         <select
+                          name="WiFi"
+                          id="furnitured"
                           className="main_form w-100"
                           required
-                          name="newSeatBedType"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].seatType = e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
                         >
                           <option value="Upper Bed">Upper Bed</option>
                           <option value="Lower Bed">Lower Bed</option>
@@ -849,22 +880,33 @@ const EditSeat = () => {
                         <input
                           type="number"
                           className="main_form w-100"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].perDay = e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
                           placeholder="Per Day Price"
                           required
-                          name="newSeatPerDay"
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
 
                       <div className="col-md-6 form_sub_stream">
                         <label className="profile_label3">
-                          After Discount Amount (Day)
+                          After Discount Amount(Day)
                         </label>
                         <input
                           type="number"
                           className="main_form w-100"
-                          placeholder="After Discount Amount (Day)"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].dAmountForDay =
+                              e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
+                          placeholder=" After Discount Amount(Day)"
                           required
-                          name="newSeatDAmountForDay"
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
 
@@ -873,103 +915,107 @@ const EditSeat = () => {
                         <input
                           type="number"
                           className="main_form w-100"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].perMonth = e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
                           placeholder="Per Month Price"
                           required
-                          name="newSeatPerMonth"
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
 
                       <div className="col-md-6 form_sub_stream">
                         <label className="profile_label3">
-                          After Discount Amount (Month)
+                          After Discount Amount(Month)
                         </label>
                         <input
                           type="number"
                           className="main_form w-100"
-                          placeholder="After Discount Amount (Month)"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].dAmountForMonth =
+                              e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
+                          onWheel={(e) => e.target.blur()}
+                          placeholder="After Discount Amount(Month)"
                           required
-                          name="newSeatDAmountForMonth"
                         />
                       </div>
-
                       <div className="col-md-6 form_sub_stream">
                         <label className="profile_label3">Per Year</label>
                         <input
                           type="number"
                           className="main_form w-100"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].perYear = e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
                           placeholder="Per Year Price"
                           required
-                          name="newSeatPerYear"
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
-
                       <div className="col-md-6 form_sub_stream">
                         <label className="profile_label3">
-                          After Discount Amount (Year)
+                          After Discount Amount(Year)
                         </label>
                         <input
                           type="number"
                           className="main_form w-100"
-                          placeholder="After Discount Amount (Year)"
+                          onChange={(e) => {
+                            const updatedOptions = [...seatOptions];
+                            updatedOptions[index].dAmountForYear =
+                              e.target.value;
+                            setSeatOptions(updatedOptions);
+                          }}
+                          placeholder="After Discount Amount(Year)"
                           required
-                          name="newSeatDAmountForYear"
+                          onWheel={(e) => e.target.blur()}
                         />
                       </div>
-
-                      {/* Seat Photos */}
-                      <div className="col-md-12 form_sub_stream">
-                        <label className="form-label profile_label3">
+                      <div className="col-md-12 form_sub_stream" key={index}>
+                        <label
+                          htmlFor={`seatPhotos-${index}`}
+                          className="form-label profile_label3"
+                        >
                           Seat Photos
                         </label>
                         <input
                           type="file"
+                          id={`seatPhotos-${index}`}
                           className="main_form w-100 p-0"
-                          onChange={(e) =>
-                            setNewSeatFiles((prev) => ({
-                              ...prev,
-                              [i]: e.target.files,
-                            }))
-                          }
-                          multiple
-                          name={`seatPhotos-${i}`}
+                          name={`seatPhotos-${index}`}
+                          onChange={(e) => handleSeatPhotosChange(e, index)}
+                          // multiple
+                          required
                         />
                       </div>
-                      <div className="d-flex justify-content-start my-3">
-                        <button
-                          type="submit"
-                          className="profile_btn"
-                          style={{ width: 175 }}
-                          onSubmit={handleUploadSeat}
-                        >
-                          Upload Seat
-                        </button>
-                      </div>
-                    </div>
-                  </>
-                ))}
-
-                <div
-                  className="col-md-12 form_sub_stream d-flex gap-2 justify-content-end"
-                  style={{ marginTop: 10 }}
-                >
-                  <p
-                    // onClick={handleAddSeatOption}
-                    style={{
-                      backgroundColor: "#006666",
-                      color: "white",
-                      padding: "10px 20px",
-                      borderRadius: "5px",
-                      fontSize: "1rem",
-                      cursor: "pointer",
-                    }}
-                    onClick={() => setAddNewSeat((prev) => prev + 1)}
+                    </React.Fragment>
+                  ))}
+                  <div
+                    className="col-md-12 form_sub_stream d-flex gap-2 justify-content-end"
+                    style={{ marginTop: 10 }}
                   >
-                    Add New Seat
-                  </p>
-
-                  {addNewSeat > 0 && (
                     <p
-                      // onClick={() => handleRemoveSeatOption()}
+                      onClick={handleAddSeatOption}
+                      style={{
+                        backgroundColor: "#006666",
+                        color: "white",
+                        padding: "10px 20px",
+                        borderRadius: "5px",
+                        fontSize: "1rem",
+                        cursor: "pointer",
+                      }}
+                    >
+                      Add New Seat
+                    </p>
+
+                    <p
+                      onClick={() => handleRemoveSeatOption()}
                       style={{
                         backgroundColor: "red",
                         color: "white",
@@ -978,11 +1024,10 @@ const EditSeat = () => {
                         fontSize: "1rem",
                         cursor: "pointer",
                       }}
-                      onClick={() => setAddNewSeat((prev) => prev - 1)}
                     >
                       Remove Seat
                     </p>
-                  )}
+                  </div>
                 </div>
               </div>
 

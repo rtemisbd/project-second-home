@@ -89,7 +89,7 @@ const EditProperty = () => {
           setDAmountForMonth(property?.dAmountForMonth);
           setDAmountForYear(property?.dAmountForYear);
         } catch (error) {
-          console.error("Error fetching data:", error);
+          // console.error("Error fetching data:", error);
         }
       };
 
@@ -118,17 +118,16 @@ const EditProperty = () => {
               setData(property);
               setRoomPhotos(property?.photos);
             } catch (error) {
-              console.error("Error fetching data:", error);
+              // console.error("Error fetching data:", error);
             }
           }
         } catch (error) {
-          console.error("Error fetching data:", error);
+          // console.error("Error fetching data:", error);
         }
       };
       fetchData();
     }
   }, [id, category]);
-  console.log({ data, seat });
 
   // submit handler
   const handleSubmit = () => {};
