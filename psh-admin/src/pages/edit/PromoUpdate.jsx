@@ -3,10 +3,10 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import "./Main_steam.css";
 import axios from "axios";
+import { uploadSingleImage } from "../../utils/uploadSingleImage";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Promo = ({ data, refetch }) => {
-  const [files, setFiles] = useState("");
-  const [homePageFile, setHomepageFile] = useState("");
   const [discount, setDiscount] = useState(data?.promoDiscount);
   const MySwal = withReactContent(Swal);
 
@@ -27,51 +27,23 @@ const Promo = ({ data, refetch }) => {
     };
 
     try {
-      const homePageCover = await Promise.all(
-        Object.values(homePageFile).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
-
-      const detailsCover = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
+      const detailsCover = await uploadSingleImage(formData.get("img"));
+      const homePageCover = await uploadSingleImage(
+        formData.get("homePageCover")
       );
 
       const updatePromo = {
         ...data2,
-        photos: detailsCover?.length ? detailsCover : data?.photos,
-        homePageCover: homePageCover?.length
-          ? homePageCover
-          : data?.homePageCover,
+        photos: detailsCover,
+        homePageCover: homePageCover,
       };
 
-      await axios.patch(
-        `https://api.psh.com.bd/api/promo/${data._id}`,
-        updatePromo
-      );
+      await axios.patch(`${baseUrl}/api/promo/${data._id}`, updatePromo);
       MySwal.fire("Good job!", "successfully Updated", "success");
       refetch();
     } catch (err) {
+      console.log(err);
+
       MySwal.fire("Something Error Found.", "warning");
     }
     event.target.reset();
@@ -291,8 +263,6 @@ const Promo = ({ data, refetch }) => {
                         type="file"
                         className="main_form w-100 p-0"
                         name="homePageCover"
-                        onChange={(e) => setHomepageFile(e.target.files)}
-                        multiple
                       />
                     </div>
 
@@ -315,8 +285,6 @@ const Promo = ({ data, refetch }) => {
                         type="file"
                         className="main_form  p-0"
                         name="img"
-                        onChange={(e) => setFiles(e.target.files)}
-                        multiple
                       />
                     </div>
                   </div>

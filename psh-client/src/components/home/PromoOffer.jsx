@@ -41,6 +41,8 @@ const PromoOffer = () => {
   const isFirstSlide = activeIndex === 0;
   const isLastSlide = activeIndex === totalSlides - 1;
 
+  console.log(promoFiltering);
+
   return (
     <div>
       <div className="mt-5">

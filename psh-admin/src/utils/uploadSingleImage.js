@@ -1,6 +1,7 @@
 import { toast } from "react-toastify";
-import { imgBbApi } from "@/utilis/imgBbApi";
-import { isValidPhoto } from "@/utilis/isValidPhoto";
+
+import { imgBbApi } from "./imgBbApi";
+import { isValidPhoto } from "./isValidPhoto";
 
 export const uploadSingleImage = async (file) => {
   // Check file size (5MB limit)
