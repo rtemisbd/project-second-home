@@ -93,7 +93,6 @@ const EditSeat = () => {
     };
     fetchData();
   }, [id]);
-  console.log({ data, seat });
 
   const handleAddSeatOption = () => {
     setSeatOptions([

@@ -48,7 +48,7 @@ const PropertyDetails = ({ id, category }) => {
       fetchData();
     }
   }, [id, category]);
-  console.log({ data, seat });
+  // console.log({ data, seat });
 
   return (
     <div className="">
