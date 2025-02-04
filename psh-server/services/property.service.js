@@ -240,22 +240,22 @@ const getPropertiesFromDBForAdmin = async (queries) => {
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom && !roomNumber) {
-    const extractedSeats = await seatServices.getAllSeatsFromDB({
-      destination,
-      size,
-      page,
-      seatNumber,
-    });
+  // if (withSharedRoom && !roomNumber) {
+  //   const extractedSeats = await seatServices.getAllSeatsFromDB({
+  //     destination,
+  //     size,
+  //     page,
+  //     seatNumber,
+  //   });
 
-    allProperties = [
-      ...allProperties.filter(
-        (result) => result?.categoryDetails?.name === "Private Room"
-      ),
-      ...extractedSeats,
-    ];
-    totalCount += extractedSeats.length;
-  }
+  //   allProperties = [
+  //     ...allProperties.filter(
+  //       (result) => result?.categoryDetails?.name === "Private Room"
+  //     ),
+  //     ...extractedSeats,
+  //   ];
+  //   totalCount += extractedSeats.length;
+  // }
 
   return {
     properties: allProperties,
@@ -330,9 +330,32 @@ const getSinglePropertyFromDB = async (propertyId) => {
   return { property, rentRooms };
 };
 
+const updatePropertyById = async (propertyId, payload) => {
+  if (payload.isPublished) {
+    await Property.findByIdAndUpdate(
+      propertyId,
+      { $set: { isPublished: req.body.isPublished } },
+      { new: true }
+    );
+  }
+  // Find the property by ID
+  const property = await Property.findById(propertyId);
+  if (!property) {
+    return { error: "Property not found" };
+  }
+
+  const result = await Property.updateOne(
+    { _id: propertyId },
+    { $set: payload },
+    { runValidators: true }
+  );
+  return result;
+};
+
 export const propertyServices = {
   getPropertiesFromDB,
   getPropertiesFromDBForAdmin,
   getRecommendedPropertiesFromDB,
   getSinglePropertyFromDB,
+  updatePropertyById,
 };

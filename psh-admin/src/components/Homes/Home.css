@@ -118,11 +118,11 @@
 }
 
 .detail-model-container .modal-content {
-  width: 760px;
+  width: 860px;
 }
 
-.modal-body {
-  width: 760px;
+.detail-model-container .modal-body {
+  width: 860px;
 }
 
 .card_1 {

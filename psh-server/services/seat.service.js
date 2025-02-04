@@ -1,19 +1,29 @@
+import mongoose from "mongoose";
 import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
+import { propertyServices } from "./property.service.js";
 
 const createSeatIntoDB = async (payload) => {
   const result = await Seat.create(payload);
+  await propertyServices.updatePropertyById(payload.roomId, {
+    $inc: { totalSeats: 1 },
+  });
   return result;
 };
 
 const getAllSeatsFromDB = async (queries) => {
-  const { destination, seatNumber, size, page, isPublished } = queries;
+  const { destination, seatNumber, size, page, isPublished, roomId } = queries;
+
   let query = {};
   if (seatNumber && seatNumber !== "") {
     query.seatNumber = { $regex: `^${seatNumber}`, $options: "i" };
   }
   if (isPublished && isPublished !== "") {
     query.isSeatPublished = isPublished;
+  }
+
+  if (roomId && roomId !== "") {
+    query.roomId = mongoose.Types.ObjectId(roomId);
   }
 
   const pipeline = [
@@ -98,8 +108,34 @@ const getSeatByIdFromDB = async (id) => {
   return { seat, rentRooms };
 };
 
+export const updateSeatById = async (seatId, payload) => {
+  let result;
+
+  if (payload?.isPublished) {
+    result = await Seat.findByIdAndUpdate(
+      seatId,
+      { $set: { isSeatPublished: payload.isPublished } },
+      { new: true }
+    );
+  }
+  // Find the property by ID
+  const seat = await Seat.findById(seatId);
+  if (!seat) {
+    return { error: "Seat not found" };
+  }
+
+  result = await Seat.updateOne(
+    { _id: seatId },
+    { $set: payload },
+    { runValidators: true }
+  );
+
+  return result;
+};
+
 export const seatServices = {
   createSeatIntoDB,
   getAllSeatsFromDB,
   getSeatByIdFromDB,
+  updateSeatById,
 };

@@ -256,8 +256,12 @@ const PropertySchema = new mongoose.Schema(
     },
     rentDate: [rentDateSchema],
 
-    seats: [SeatSchema],
     // Add the "options" field for seats
+    seats: [SeatSchema],
+    totalSeats: {
+      type: Number,
+      default: 0,
+    },
   },
   {
     timestamps: true,

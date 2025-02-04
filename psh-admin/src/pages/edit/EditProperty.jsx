@@ -1,41 +1,37 @@
-/* eslint-disable no-unused-vars */
-import axios from "axios";
-import React, { useEffect, useState, useRef } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-import { AuthContext } from "../contexts/UserProvider";
-import { useContext } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { ToastContainer } from "react-bootstrap";
+import { AuthContext } from "../../contexts/UserProvider";
+import { useParams } from "react-router-dom";
+import UseFetch from "../../hooks/useFetch";
+import { baseUrl } from "../../utils/getBaseURL";
 
-import { ToastContainer, toast } from "react-toastify";
-import { multipleImageUpload } from "../utils/multipleImageUpload";
-import { baseUrl } from "../utils/getBaseURL";
-
-const Add_property = () => {
+const EditProperty = () => {
   const { user } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [files, setFiles] = useState("");
-  const MySwal = withReactContent(Swal);
-  const [categories, setCategories] = useState([]);
-  const [branch, setBranch] = useState([]);
 
-  const [facilities, setFacilities] = useState([]);
-  const [commonFacilities, setCommonaFacilities] = useState([]);
+  const { category, id } = useParams();
+
   const [categoryName, setCategoryName] = useState("");
-  const [seatOptions, setSeatOptions] = useState([]);
 
-  const [perDay, setPerDay] = useState(0);
+  const { data3: facilityCategory } = UseFetch("facilityCategory");
+  const { data3: commonFacilities } = UseFetch("commonfacility");
+  const [data, setData] = useState(null);
+  const [seat, setSeat] = useState(null);
+  const [roomPhotos, setRoomPhotos] = useState([[]]);
+  const [seatPhotos, setSeatPhotos] = useState([[]]);
+
+  const [perDay, setPerDay] = useState(null);
+  const [perMonth, setPerMonth] = useState(null);
+  const [perYear, setPerYear] = useState(null);
+
+  const [dAmountForDay, setDAmountForDay] = useState(null);
+  const [dAmountForMonth, setDAmountForMonth] = useState(null);
+  const [dAmountForYear, setDAmountForYear] = useState(null);
+
   const [discountForDay, setDiscountForDay] = useState(null);
-  const [dAmountForDay, setDAmountForDay] = useState(0);
+  const [discountForMonth, setDiscountForMonth] = useState(null);
+  const [discountForYear, setDiscountForYear] = useState(null);
 
-  const [perMonth, setPerMonth] = useState(0);
-  const [discountForMonth, setDiscountForMonth] = useState(0);
-  const [dAmountForMonth, setDAmountForMonth] = useState(0);
-
-  const [perYear, setPerYear] = useState(0);
-  const [discountForYear, setDiscountForYear] = useState(0);
-  const [dAmountForYear, setDAmountForYear] = useState(0);
-
-  // Handle Discount For Room
+  // // Handle Discount For Room
   useEffect(() => {
     // For Day
     if (perDay > 0) {
@@ -76,308 +72,98 @@ const Add_property = () => {
     dAmountForYear,
   ]);
 
-  // Update seatOptions whenever categoryName changes
+  // read and set data
   useEffect(() => {
-    if (categoryName === "Shared Room") {
-      setSeatOptions([
-        {
-          name: "",
-          description: "",
-          seatNumber: "",
-          seatType: "",
-          perDay: "",
+    if (category === "Private Room") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${baseUrl}/api/property/${id}`);
 
-          perMonth: "",
-          perYear: "",
-          dAmountForDay: "",
-          dAmountForMonth: "",
-          dAmountForYear: "",
-
-          photos: [],
-        },
-      ]);
-    } else {
-      setSeatOptions([]);
-    }
-  }, [categoryName]);
-
-  const formRef = useRef(null);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/api/category`);
-        setCategories(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleCategoryChange = (event) => {
-    const selectedCategoryId = event.target.value;
-    const selectedCategory = categories.find(
-      (category) => category._id === selectedCategoryId
-    );
-    setCategoryName(selectedCategory?.name || "");
-  };
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/api/branch`);
-        setBranch(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/api/facilityCategory`);
-        setFacilities(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/api/commonfacility`);
-        setCommonaFacilities(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleAddSeatOption = () => {
-    setSeatOptions([
-      ...seatOptions,
-      {
-        name: "",
-        description: "",
-        seatNumber: "",
-        seatType: "",
-        perDay: "",
-        perMonth: "",
-        perYear: "",
-        dAmountForDay: "",
-        dAmountForMonth: "",
-        dAmountForYear: "",
-        photos: [],
-      },
-    ]);
-  };
-  const handleSeatPhotosChange = (e, index) => {
-    const updatedOptions = [...seatOptions];
-    updatedOptions[index].photos = e.target.files;
-    setSeatOptions(updatedOptions);
-  };
-
-  const handleRemoveSeatOption = (index) => {
-    if (seatOptions.length === 1) {
-      MySwal.fire("You must need to select one seat.", "warning");
-      return;
-    }
-    const updatedOptions = seatOptions.slice(0, -1);
-    setSeatOptions(updatedOptions);
-  };
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-
-    const perDay = event.target?.perDay?.value;
-    const perMonth = event.target?.perMonth?.value;
-    const perYear = event.target?.perYear?.value;
-    //  Checking Ren Details
-    if (categoryName === "Shared Room") {
-      const checkSeatPrice = seatOptions.some(
-        (option) =>
-          Number(option.dAmountForDay) > Number(option.perDay) ||
-          Number(option.dAmountForMonth) > Number(option.perMonth) ||
-          Number(option.dAmountForYear) > Number(option.perYear)
-      );
-
-      if (checkSeatPrice) {
-        toast.warn("Please Check Rent Details");
-        return;
-      }
-    } else {
-      if (
-        Number(perDay) < Number(dAmountForDay) ||
-        Number(perMonth) < Number(dAmountForMonth) ||
-        Number(perYear) < Number(dAmountForYear)
-      ) {
-        toast.warn("Please Check Rent Details");
-        return;
-      }
-    }
-
-    const formData = new FormData(event.target);
-
-    const selectedFacilities = formData.getAll("facility[]");
-    const selectedCommonFacilities = formData.getAll("commonfacility[]");
-    const selectedSeatOptions = seatOptions?.filter(
-      (option) =>
-        option.name &&
-        option.description &&
-        option.seatNumber &&
-        option.seatType &&
-        option.perDay &&
-        option.perMonth &&
-        option.perYear &&
-        option.photos &&
-        option.dAmountForDay &&
-        option.dAmountForMonth &&
-        option.dAmountForYear
-    );
-
-    const data2 = {
-      name: formData.get("name"),
-      type: formData.get("type"),
-      city: formData.get("city"),
-      floor: formData.get("floor"),
-      roomNumber: formData.get("roomNumber"),
-      builtYear: formData.get("builtYear"),
-      area: formData.get("area"),
-      totalRoom: formData.get("totalRoom"),
-      totalPerson: formData.get("totalPerson"),
-      available: formData.get("available"), // Corrected typo
-      rating: formData.get("rating"),
-      desc: formData.get("desc"),
-      fulldesc: formData.get("fulldesc"),
-      bedroom: formData.get("bedroom"),
-      bathroom: formData.get("bathroom"),
-      car: formData.get("car"),
-      bike: formData.get("bike"),
-      pet: formData.get("pet"),
-      perDay: formData.get("perDay"),
-      perMonth: formData.get("perMonth"),
-      perYear: formData.get("perYear"),
-      dAmountForDay: dAmountForDay,
-      dAmountForMonth: dAmountForMonth,
-      dAmountForYear: dAmountForYear,
-      percentOfDiscountDay: discountForDay,
-      percentOfDiscountMonth: discountForMonth,
-      percentOfDiscountYear: discountForYear,
-
-      categoryId: formData.get("category"),
-      branchId: formData.get("branch"),
-      recommended: formData.get("recommended"),
-      bedType: formData.get("bedType"),
-      furnitured: formData.get("furnitured"),
-      CCTV: formData.get("CCTV"),
-      WiFi: formData.get("WiFi"),
-      balcony: formData.get("balcony"),
-      meal: formData.get("meal"),
-      rules: formData.get("rules"),
-      //apartment
-      roomCategory: formData.get("roomCategory"),
-      additionalFacility: formData.get("additionalFacility"),
-      apartmentRent: formData.get("apartmentRent"),
-      serviceCharge: formData.get("service"),
-      security: formData.get("security"),
-      faltPolicy: formData.get("faltPolicy"),
-      occupanct: formData.get("occupanct"),
-      facility: selectedFacilities,
-      commonfacility: selectedCommonFacilities,
-      seats: selectedSeatOptions,
-    };
-
-    try {
-      setIsLoading(true);
-      const list = await multipleImageUpload(files);
-
-      const seatPhotoList = await Promise.all(
-        seatOptions.map(async (option) => {
-          const photos = option.photos;
-          const photoUrls = await multipleImageUpload(photos);
-          return photoUrls;
-        })
-      );
-
-      const property = {
-        ...data2,
-        photos: list,
-        seats: seatOptions?.map((option, index) => ({
-          ...option,
-          photos: seatPhotoList[index],
-        })),
+          const { property } = await response.json();
+          setData(property);
+          setRoomPhotos(property?.photos);
+          setPerDay(property?.perDay);
+          setPerMonth(property?.perMonth);
+          setPerYear(property?.perYear);
+          setDAmountForDay(property?.dAmountForDay);
+          setDAmountForMonth(property?.dAmountForMonth);
+          setDAmountForYear(property?.dAmountForYear);
+        } catch (error) {
+          // console.error("Error fetching data:", error);
+        }
       };
 
-      if (property?.photos?.length < 5) {
-        return MySwal.fire("Sorry ! Minimum 5 Photo Required.", "warning");
-      }
-
-      await axios.post(`${baseUrl}/api/property`, property);
-      await MySwal.fire("Your Property!", "successfully added", "success");
-      setDiscountForDay(0);
-      setDiscountForMonth(0);
-      setDiscountForYear(0);
-      setDAmountForDay(0);
-      setDAmountForMonth(0);
-      setDAmountForYear(0);
-      event.target.reset();
-      setIsLoading(false);
-    } catch (err) {
-      setIsLoading(false);
-      console.log(err);
-
-      MySwal.fire("Something Error Found.", "warning");
+      fetchData();
     }
-  };
+    if (category === "Shared Room") {
+      const fetchData = async () => {
+        try {
+          const response = await fetch(`${baseUrl}/api/seats/${id}`);
+          const { data } = await response.json();
+          setSeat(data.seat);
+          setSeatPhotos(data?.seat?.photos);
+          setPerDay(data?.seat?.perDay);
+          setPerMonth(data?.seat?.perMonth);
+          setPerYear(data?.seat?.perYear);
+          setDAmountForDay(data?.seat?.dAmountForDay);
+          setDAmountForMonth(data?.seat?.dAmountForMonth);
+          setDAmountForYear(data?.seat?.dAmountForYear);
+
+          if (data?.seat) {
+            try {
+              const responseForRoom = await fetch(
+                `${baseUrl}/api/property/${data?.seat?.roomId}`
+              );
+              const { property } = await responseForRoom.json();
+              setData(property);
+              setRoomPhotos(property?.photos);
+            } catch (error) {
+              // console.error("Error fetching data:", error);
+            }
+          }
+        } catch (error) {
+          // console.error("Error fetching data:", error);
+        }
+      };
+      fetchData();
+    }
+  }, [id, category]);
+
+  // submit handler
+  const handleSubmit = () => {};
+
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
         <div className="customize registration_div card">
-          <form ref={formRef} onSubmit={handleSubmit}>
+          <form>
             <div className="row">
+              {/* property type */}
               <div className="col-md-6 form_sub_stream ">
                 <label htmlFor="inputState" className="profile_label3">
                   Property Type
                 </label>
-                <select
-                  name="category"
-                  id="inputState"
+                <input
+                  type="text"
                   className="main_form w-100"
-                  onChange={handleCategoryChange}
-                >
-                  <option>Select Type</option>
-                  {categories.map((pd, index) => (
-                    <option key={index} value={pd._id}>
-                      {pd.name}
-                    </option>
-                  ))}
-                </select>
+                  name="categoryName"
+                  defaultValue={category}
+                  disabled
+                />
               </div>
+              {/* branch */}
               {(user && user.role === "SuperAdmin") || user.role === "admin" ? (
                 <div className="col-md-6 form_sub_stream ">
                   <label htmlFor="inputState" className="profile_label3">
                     Branch
                   </label>
-                  <select
-                    name="branch"
-                    id="inputState"
+                  <input
+                    type="text"
                     className="main_form w-100"
-                    required
-                  >
-                    <option value="">Select Type</option>
-                    {branch.map((category, index) => (
-                      <option key={index} value={category._id}>
-                        {category.name}
-                      </option>
-                    ))}
-                  </select>
+                    name="branch"
+                    defaultValue={data?.branch?.name}
+                    disabled
+                  />
                 </div>
               ) : (
                 <div className="col-md-6 form_sub_stream ">
@@ -396,6 +182,7 @@ const Add_property = () => {
                   </select>
                 </div>
               )}
+              {/* floor, room, gender */}
               <div className="col-md-3 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -409,6 +196,7 @@ const Add_property = () => {
                   name="floor"
                   placeholder="Name"
                   required
+                  defaultValue={data?.floor}
                 />
               </div>
               {categoryName !== "Private Room" &&
@@ -425,6 +213,7 @@ const Add_property = () => {
                       className="main_form w-100"
                       name="totalRoom"
                       placeholder="  Total Room"
+                      defaultValue={data?.totalRoom}
                       // required
                     />
                   </div>
@@ -443,6 +232,7 @@ const Add_property = () => {
                   <option value="female">Female</option>
                 </select>
               </div>
+              {/* sort details */}
               <h2 className="profile_label3 profile_bg">Sort Details</h2>
               <div className="col-md-6 form_sub_stream ">
                 <label
@@ -455,8 +245,9 @@ const Add_property = () => {
                   type="text"
                   className="main_form w-100"
                   name="name"
-                  placeholder="Room Title"
+                  placeholder=" Room Title"
                   required
+                  defaultValue={data?.name}
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
@@ -472,6 +263,7 @@ const Add_property = () => {
                   name="area"
                   placeholder="Please Type in Sqft"
                   required
+                  defaultValue={data?.area}
                 />
               </div>
               {categoryName === "Shared Room" ? (
@@ -487,6 +279,7 @@ const Add_property = () => {
                     name="bedroom"
                     placeholder="Total Bed Room"
                     required
+                    defaultValue={data?.bathroom}
                   />
                 </div>
               )}
@@ -505,8 +298,11 @@ const Add_property = () => {
                   name="bathroom"
                   placeholder="bathroom"
                   required
+                  defaultValue={data?.bathroom}
                 />
               </div>
+
+              {/* key details */}
               <h2 className="profile_label3 profile_bg mt-5">Key Details</h2>
               <div className="col-md-12 form_sub_stream">
                 <div className="row p-4">
@@ -520,8 +316,12 @@ const Add_property = () => {
                       className="main_form w-100"
                       required
                     >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option value="yes" selected={data?.balcony === "yes"}>
+                        Yes
+                      </option>
+                      <option value="no" selected={data?.balcony === "no"}>
+                        No
+                      </option>
                     </select>
                   </div>
                   <div className="col-md-4 form_sub_stream mt-3">
@@ -538,12 +338,40 @@ const Add_property = () => {
                       className="main_form w-100"
                       required
                     >
-                      <option value="Bunk Bed">Bunk Bed</option>
-                      <option value="Single Bed">Single Bed</option>
-                      <option value="Queen Bed">Queen Size Bed</option>
-                      <option value="King Size Bed">King Size Bed</option>
-                      <option value="Semi-Double Bed">Semi-Double Bed</option>
-                      <option value="Bunk Bed & Single Bed">
+                      <option
+                        value="Bunk Bed"
+                        selected={data?.bedType === "Bunk Bed"}
+                      >
+                        Bunk Bed
+                      </option>
+                      <option
+                        value="Single Bed"
+                        selected={data?.bedType === "Single Bed"}
+                      >
+                        Single Bed
+                      </option>
+                      <option
+                        value="Queen Bed"
+                        selected={data?.bedType === "Queen Bed"}
+                      >
+                        Queen Size Bed
+                      </option>
+                      <option
+                        value="King Size Bed"
+                        selected={data?.bedType === "King Size Bed"}
+                      >
+                        King Size Bed
+                      </option>
+                      <option
+                        value="Semi-Double Bed"
+                        selected={data?.bedType === "Bunk Bed"}
+                      >
+                        Semi-Double Bed
+                      </option>
+                      <option
+                        value="Bunk Bed & Single Bed"
+                        selected={data?.bedType === "Bunk Bed & Single Bed"}
+                      >
                         Bunk Bed & Single Bed
                       </option>
                     </select>
@@ -558,8 +386,15 @@ const Add_property = () => {
                       className="main_form w-100"
                       required
                     >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option
+                        value="yes"
+                        selected={data?.recommended === "yes"}
+                      >
+                        Yes
+                      </option>
+                      <option value="no" selected={data?.recommended === "no"}>
+                        No
+                      </option>
                     </select>
                   </div>
                   <div className="col-md-4 form_sub_stream">
@@ -572,8 +407,12 @@ const Add_property = () => {
                       className="main_form w-100"
                       required
                     >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option value="yes" selected={data?.furnitured === "yes"}>
+                        Yes
+                      </option>
+                      <option value="no" selected={data?.furnitured === "no"}>
+                        No
+                      </option>
                     </select>
                   </div>
                   <div className="col-md-4 form_sub_stream">
@@ -586,8 +425,12 @@ const Add_property = () => {
                       className="main_form w-100"
                       required
                     >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option value="yes" selected={data?.CCTV === "yes"}>
+                        Yes
+                      </option>
+                      <option value="no" selected={data?.CCTV === "yes"}>
+                        No
+                      </option>
                     </select>
                   </div>
                   <div className="col-md-4 form_sub_stream">
@@ -600,12 +443,18 @@ const Add_property = () => {
                       className="main_form w-100"
                       required
                     >
-                      <option value="yes">Yes</option>
-                      <option value="no">No</option>
+                      <option value="yes" selected={data?.WiFi === "yes"}>
+                        Yes
+                      </option>
+                      <option value="no" selected={data?.WiFi === "yes"}>
+                        No
+                      </option>
                     </select>
                   </div>
                 </div>
               </div>
+
+              {/* Facility */}
               <div className="row">
                 <h2 className="profile_label3 profile_bg mt-4">Facility</h2>
                 <div className="p-4">
@@ -621,6 +470,9 @@ const Add_property = () => {
                             value={facility._id}
                             multiple
                             className="me-1"
+                            checked={data?.commonfacility?.find(
+                              (item) => item === facility._id
+                            )}
                           />
                           <label className="ms-2 mt-1" htmlFor={facility._id}>
                             {facility.name ? facility.name : ""}
@@ -636,11 +488,10 @@ const Add_property = () => {
                     </div>
                   </div>
 
-                  {categoryName === "Private Room" ||
-                  categoryName === "Shared Room" ? (
+                  {category === "Private Room" || category === "Shared Room" ? (
                     <>
                       <div className="row">
-                        {facilities.map((facility, index) => (
+                        {facilityCategory.map((facility, index) => (
                           <React.Fragment key={index}>
                             {facility.name === "Common" ? ( // Add this condition to check the facility name
                               <>
@@ -659,6 +510,9 @@ const Add_property = () => {
                                         multiple
                                         key={pd._id}
                                         className="me-1"
+                                        checked={data?.facility?.find(
+                                          (item) => item._id === pd._id
+                                        )}
                                       />
 
                                       <label
@@ -686,7 +540,7 @@ const Add_property = () => {
                     ""
                   )}
                   <div className="row mt-2">
-                    {facilities.map((facility, index) => (
+                    {facilityCategory.map((facility, index) => (
                       <React.Fragment key={index}>
                         {facility.name !== "Common" ? ( // Add this condition to check the facility name
                           <>
@@ -702,6 +556,9 @@ const Add_property = () => {
                                     value={pd._id}
                                     multiple
                                     className="me-1"
+                                    checked={data?.facility?.find(
+                                      (item) => item._id === pd._id
+                                    )}
                                   />
 
                                   <label className="ms-2 mt-1" htmlFor={pd._id}>
@@ -723,8 +580,7 @@ const Add_property = () => {
                   </div>
                 </div>
               </div>
-
-              {categoryName !== "Shared Room" && (
+              {category !== "Shared Room" && (
                 <>
                   <h2 className="profile_label3 profile_bg mt-5 mb-4">
                     Rent Details
@@ -744,6 +600,7 @@ const Add_property = () => {
                           className="main_form w-100"
                           name="perDay"
                           placeholder="Per Day"
+                          defaultValue={perDay}
                           onChange={(e) => setPerDay(e.target.value)}
                           required
                           onWheel={(e) => e.target.blur()}
@@ -764,6 +621,7 @@ const Add_property = () => {
                           name="discountAmountForDay"
                           className="main_form w-100"
                           placeholder="After Discount Amount (Day)"
+                          defaultValue={dAmountForDay}
                           onChange={(e) => setDAmountForDay(e.target.value)}
                           onWheel={(e) => e.target.blur()}
                         />
@@ -780,12 +638,14 @@ const Add_property = () => {
                         <input
                           type="text"
                           className="main_form w-100"
-                          value={
-                            discountForDay > 0 ? `${discountForDay} %` : ""
-                          }
+                          // value={
+                          //   discountForDay > 0 ? `${discountForDay} %` : ""
+                          // }
                           name="percentOfDiscountDay"
                           placeholder=" Discount For Day"
-                          disabled
+                          // disabled
+
+                          defaultValue={discountForDay}
                         />
                       </div>
 
@@ -804,6 +664,7 @@ const Add_property = () => {
                           placeholder="Per Month"
                           onChange={(e) => setPerMonth(e.target.value)}
                           required
+                          defaultValue={perMonth}
                           onWheel={(e) => e.target.blur()}
                         />
                       </div>
@@ -825,6 +686,7 @@ const Add_property = () => {
                           onChange={(e) => setDAmountForMonth(e.target.value)}
                           placeholder="After Discount Amount"
                           onWheel={(e) => e.target.blur()}
+                          defaultValue={dAmountForMonth}
                         />
                       </div>
 
@@ -841,9 +703,10 @@ const Add_property = () => {
                           className="main_form w-100"
                           name="percentOfDiscountMonth"
                           placeholder=" Discount For Day"
-                          value={
-                            discountForMonth > 0 ? `${discountForMonth} %` : ""
-                          }
+                          // value={
+                          //   discountForMonth > 0 ? `${discountForMonth} %` : ""
+                          // }
+                          defaultValue={discountForMonth}
                           disabled
                         />
                       </div>
@@ -862,6 +725,7 @@ const Add_property = () => {
                           name="perYear"
                           placeholder="Per Year"
                           required
+                          defaultValue={perYear}
                           onChange={(e) => setPerYear(e.target.value)}
                           onWheel={(e) => e.target.blur()}
                         />
@@ -884,6 +748,7 @@ const Add_property = () => {
                           placeholder="After Discount Amount"
                           onChange={(e) => setDAmountForYear(e.target.value)}
                           onWheel={(e) => e.target.blur()}
+                          defaultValue={dAmountForYear}
                         />
                       </div>
 
@@ -900,18 +765,19 @@ const Add_property = () => {
                           className="main_form w-100"
                           name="percentOfDiscountYear"
                           placeholder=" Discount For Year"
-                          value={
-                            discountForYear > 0 ? `${discountForYear} %` : ""
-                          }
+                          // value={
+                          //   discountForYear > 0 ? `${discountForYear} %` : ""
+                          // }
                           disabled
+                          defaultValue={discountForYear}
                         />
                       </div>
                     </div>
                   </div>
                 </>
               )}
-              {(categoryName === "Private Room" ||
-                categoryName === "Shared Room") && (
+
+              {(category === "Private Room" || category === "Shared Room") && (
                 <>
                   <div className="col-md-12 form_sub_stream mb-5">
                     <label htmlFor="inputState" className="profile_label3">
@@ -922,205 +788,201 @@ const Add_property = () => {
                       className="main_form w-100"
                       name="roomNumber"
                       placeholder="Room Number"
+                      defaultValue={data?.roomNumber}
                     />
                   </div>
                 </>
               )}
 
-              {categoryName === "Shared Room" && (
+              {category === "Shared Room" && (
                 <>
                   <h2 className="profile_label3 profile_bg">Seat Details</h2>
                   <div className="row card_div p-4">
-                    {seatOptions.map((option, index) => (
-                      <React.Fragment key={index}>
-                        <h2 className="profile_label3 profile_bg">
-                          Seat No: {index + 1}
-                        </h2>
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">Seat Title</label>
-                          <input
-                            type="text"
-                            className="main_form w-100"
-                            value={option.name}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].name = e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder="Seat Title"
-                            required
-                          />
-                        </div>
+                    <React.Fragment>
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Seat Title</label>
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          placeholder="Seat Title"
+                          defaultValue={seat?.name}
+                          required
+                        />
+                      </div>
 
-                        <div className="col-md-3 form_sub_stream">
-                          <label className="profile_label3">Seat Number</label>
-                          <input
-                            type="text"
-                            className="main_form w-100"
-                            value={option.seatNumber}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].seatNumber = e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder="Seat Number"
-                            required
-                          />
-                        </div>
-                        <div className="col-md-3 form_sub_stream">
-                          <label className="profile_label3">Seat Type</label>
+                      <div className="col-md-3 form_sub_stream">
+                        <label className="profile_label3">Seat Number</label>
+                        <input
+                          type="text"
+                          className="main_form w-100"
+                          placeholder="Seat Number"
+                          defaultValue={seat?.seatNumber}
+                          required
+                        />
+                      </div>
+                      <div className="col-md-3 form_sub_stream">
+                        <label className="profile_label3">Seat Type</label>
 
-                          <select
-                            name="WiFi"
-                            id="furnitured"
-                            className="main_form w-100"
-                            required
-                            value={option.seatType}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].seatType = e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
+                        <select
+                          name="WiFi"
+                          id="furnitured"
+                          className="main_form w-100"
+                          required
+                        >
+                          <option
+                            value="Upper Bed"
+                            selected={seat?.seatType === "Upper Bed"}
                           >
-                            <option value="Upper Bed">Upper Bed</option>
-                            <option value="Lower Bed">Lower Bed</option>
-                            <option value="Single Bed">Single Bed</option>
-                          </select>
-                        </div>
-
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">Per Day</label>
-                          <input
-                            type="number"
-                            className="main_form w-100"
-                            value={option.perDay}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].perDay = e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder="Per Day Price"
-                            required
-                            onWheel={(e) => e.target.blur()}
-                          />
-                        </div>
-
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">
-                            After Discount Amount(Day)
-                          </label>
-                          <input
-                            type="number"
-                            className="main_form w-100"
-                            value={option.dAmountForDay}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].dAmountForDay =
-                                e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder=" After Discount Amount(Day)"
-                            required
-                            onWheel={(e) => e.target.blur()}
-                          />
-                        </div>
-
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">Per Month</label>
-                          <input
-                            type="number"
-                            className="main_form w-100"
-                            value={option.perMonth}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].perMonth = e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder="Per Month Price"
-                            required
-                            onWheel={(e) => e.target.blur()}
-                          />
-                        </div>
-
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">
-                            After Discount Amount(Month)
-                          </label>
-                          <input
-                            type="number"
-                            className="main_form w-100"
-                            value={option.dAmountForMonth}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].dAmountForMonth =
-                                e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            onWheel={(e) => e.target.blur()}
-                            placeholder="After Discount Amount(Month)"
-                            required
-                          />
-                        </div>
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">Per Year</label>
-                          <input
-                            type="number"
-                            className="main_form w-100"
-                            value={option.perYear}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].perYear = e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder="Per Year Price"
-                            required
-                            onWheel={(e) => e.target.blur()}
-                          />
-                        </div>
-                        <div className="col-md-6 form_sub_stream">
-                          <label className="profile_label3">
-                            After Discount Amount(Year)
-                          </label>
-                          <input
-                            type="number"
-                            className="main_form w-100"
-                            value={option.dAmountForYear}
-                            onChange={(e) => {
-                              const updatedOptions = [...seatOptions];
-                              updatedOptions[index].dAmountForYear =
-                                e.target.value;
-                              setSeatOptions(updatedOptions);
-                            }}
-                            placeholder="After Discount Amount(Year)"
-                            required
-                            onWheel={(e) => e.target.blur()}
-                          />
-                        </div>
-                        <div className="col-md-12 form_sub_stream" key={index}>
-                          <label
-                            htmlFor={`seatPhotos-${index}`}
-                            className="form-label profile_label3"
+                            Upper Bed
+                          </option>
+                          <option
+                            value="Lower Bed"
+                            selected={seat?.seatType === "Lower Bed"}
                           >
-                            Seat Photos
-                          </label>
-                          <input
-                            type="file"
-                            id={`seatPhotos-${index}`}
-                            className="main_form w-100 p-0"
-                            name={`seatPhotos-${index}`}
-                            onChange={(e) => handleSeatPhotosChange(e, index)}
-                            multiple
-                            required
-                          />
-                        </div>
-                      </React.Fragment>
-                    ))}
+                            Lower Bed
+                          </option>
+                          <option
+                            value="Single Bed"
+                            selected={seat?.seatType === "Single Bed"}
+                          >
+                            Single Bed
+                          </option>
+                        </select>
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Per Day</label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="Per Day Price"
+                          required
+                          defaultValue={perDay}
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">
+                          After Discount Amount(Day)
+                        </label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder=" After Discount Amount(Day)"
+                          required
+                          defaultValue={dAmountForDay}
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Per Month</label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="Per Month Price"
+                          required
+                          defaultValue={perMonth}
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">
+                          After Discount Amount(Month)
+                        </label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount(Month)"
+                          required
+                          defaultValue={dAmountForMonth}
+                        />
+                      </div>
+
+                      <div className="col-md-6 form_sub_stream">
+                        <label className="profile_label3">Per Year</label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="Per Year Price"
+                          required
+                          defaultValue={perYear}
+                        />
+                      </div>
+
+                      <div className="col-md-3 form_sub_stream">
+                        <label className="profile_label3">
+                          After Discount Amount(Year)
+                        </label>
+                        <input
+                          type="number"
+                          className="main_form w-100"
+                          placeholder="After Discount Amount(Year)"
+                          required
+                          defaultValue={dAmountForYear}
+                        />
+                      </div>
+                      {/* seat photos */}
+                      <div className="col-md-12 form_sub_stream">
+                        <label
+                          // htmlFor={`seatPhotos-${index}`}
+                          className="form-label profile_label3"
+                        >
+                          Seat Photos
+                        </label>
+                        <input
+                          type="file"
+                          // id={`seatPhotos-${index}`}
+                          className="main_form w-100 p-0"
+                          // name={`seatPhotos-${index}`}
+                          // onChange={(e) => handleSeatPhotosChange(e, index)}
+                          multiple
+                          required
+                        />
+                      </div>
+                      <div className="col-md-12 form_sub_stream d-flex">
+                        {seatPhotos?.map((photo, ind) => (
+                          <div
+                            className="col-md-2 form_sub_stream "
+                            style={{ position: "relative", marginTop: "10px" }}
+                          >
+                            <img
+                              src={photo}
+                              atr=""
+                              height="124px"
+                              width="124px"
+                            />
+                            <button
+                              style={{
+                                height: "24px",
+                                width: "24px",
+                                borderRadius: "12px",
+                                background: "white",
+                                color: "black",
+                                // border: "1px solid black",
+                                boxShadow: "1px 1px 1px 1px gray",
+                                position: "absolute",
+                                right: "4px",
+                                top: "-12px",
+                              }}
+                              onClick={() => {
+                                const updatedPhotos = roomPhotos.filter(
+                                  (_, index) => index !== ind
+                                );
+                                setSeatPhotos(updatedPhotos);
+                              }}
+                            >
+                              x
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    </React.Fragment>
+
                     <div
                       className="col-md-6 form_sub_stream d-flex gap-2"
                       style={{ marginTop: 10 }}
                     >
                       <p
-                        onClick={handleAddSeatOption}
                         style={{
                           backgroundColor: "#006666",
                           color: "white",
@@ -1130,28 +992,14 @@ const Add_property = () => {
                           cursor: "pointer",
                         }}
                       >
-                        Add New Seat
-                      </p>
-
-                      <p
-                        onClick={() => handleRemoveSeatOption()}
-                        style={{
-                          backgroundColor: "red",
-                          color: "white",
-                          padding: "10px 20px",
-                          borderRadius: "5px",
-                          fontSize: "1rem",
-                          cursor: "pointer",
-                        }}
-                      >
-                        Remove Seat
+                        Update Seat
                       </p>
                     </div>
                   </div>
                 </>
               )}
 
-              {categoryName === "Apartment" && (
+              {category === "Apartment" && (
                 <>
                   <h2 className="profile_label3 profile_bg mt-5 mb-4">
                     Rent Policy
@@ -1201,7 +1049,7 @@ const Add_property = () => {
                           type="text"
                           className="main_form w-100"
                           name="security"
-                          defaultValue="2 month’s rent"
+                          defaultValue="2 month's rent"
                         />
                       </div>
                       <div className="col-md-4 form_sub_stream">
@@ -1266,17 +1114,16 @@ const Add_property = () => {
                         name="additionalFacility"
                         rows="6"
                         defaultValue={`Example :  
-                      1. Electricity with full time Generator Service.
-                      2. Available 24/7 Gas. 
-                      3. Car Parking with 1 Driver’s Accommodation.
-                      4. Roof TOp Beautified Garden and Grassy Ground.
-                      5. Full Building Covered by CCTV.`}
+                                    1. Electricity with full time Generator Service.
+                                    2. Available 24/7 Gas. 
+                                    3. Car Parking with 1 Driver's Accommodation.
+                                    4. Roof TOp Beautified Garden and Grassy Ground.
+                                    5. Full Building Covered by CCTV.`}
                       ></textarea>
                     </div>
                   </div>
                 </>
               )}
-
               <h2 className="profile_label3 profile_bg mt-5 mb-4">
                 Room Rules
               </h2>
@@ -1291,13 +1138,10 @@ const Add_property = () => {
                   className="form-control"
                   name="rules"
                   rows="6"
-                  defaultValue={`Example :  
-                      1. Keep your living space, common areas, and bathrooms clean and organized..
-                      2. Engage in hostel activities, meetings, and events. Active participation can enhance your social experience and create a sense of community. 
-                    `}
+                  defaultValue={data?.rules}
                 ></textarea>
               </div>
-
+              {/* room photos */}
               <div className="col-md-12 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -1310,21 +1154,54 @@ const Add_property = () => {
                   id="file"
                   className="main_form w-100 p-0"
                   name="photos"
-                  onChange={(e) => setFiles(e.target.files)}
+                  // onChange={(e) => setFiles(e.target.files)}
                   multiple
                   required
                 />
               </div>
+              <div className="col-md-12 form_sub_stream d-flex flex-wrap ">
+                {roomPhotos?.map((photo, ind) => (
+                  <div
+                    key={ind}
+                    className="col-md-2 form_sub_stream "
+                    style={{ position: "relative", marginTop: "10px" }}
+                  >
+                    <img src={photo} atr="" height="124px" width="124px" />
+                    <button
+                      style={{
+                        height: "24px",
+                        width: "24px",
+                        borderRadius: "12px",
+                        background: "white",
+                        color: "black",
+                        // border: "1px solid black",
+                        boxShadow: "1px 1px 1px 1px gray",
+                        position: "absolute",
+                        right: "2px",
+                        top: "-12px",
+                      }}
+                      onClick={() => {
+                        const updatedPhotos = roomPhotos.filter(
+                          (_, index) => index !== ind
+                        );
+                        setRoomPhotos(updatedPhotos);
+                      }}
+                    >
+                      x
+                    </button>
+                  </div>
+                ))}
+              </div>
             </div>
 
-            <div className="d-flex justify-content-center my-5">
+            <div className="d-flex justify-content-start my-5">
               <button
                 type="submit"
                 className="profile_btn"
                 style={{ width: 175 }}
                 onSubmit={handleSubmit}
               >
-                Add Property
+                Update Property
               </button>
             </div>
           </form>
@@ -1335,4 +1212,4 @@ const Add_property = () => {
   );
 };
 
-export default Add_property;
+export default EditProperty;

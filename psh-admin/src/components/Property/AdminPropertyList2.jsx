@@ -9,13 +9,11 @@ import useCategory from "../../hooks/useCategory";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { baseUrl } from "../../utils/getBaseURL";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Spinner, Table } from "react-bootstrap";
 import { BiSolidEdit } from "react-icons/bi";
 import PropertyStatusUpdate from "../../pages/edit/PropertyStatusUpdate";
-import PropertyDetails from "./PropertyDetails";
 import { AiOutlineEye } from "react-icons/ai";
-import PropertyUpdate2 from "../../pages/edit/PropertyUpdate2";
 import PropertyDetails2 from "./PropertyDetails2";
 
 const AdminPropertyList2 = () => {
@@ -27,6 +25,7 @@ const AdminPropertyList2 = () => {
 
   const [isLoading, setIsLoading] = useState(false);
   const [showDetailModal, setShowDetailModal] = useState(false);
+  const [showStatusUpdate, setShowStatusUpdate] = useState(false);
 
   const [roomNumber, setRoomNumber] = useState("");
   const [seatNumber, setSeatNumber] = useState("");
@@ -39,6 +38,7 @@ const AdminPropertyList2 = () => {
   // Get All Branch
   const { allBranch: branches } = useBranch();
   const { categories } = useCategory();
+  const navigate = useNavigate();
 
   const { refetch } = useQuery(["propertyList", category, branch], async () => {
     try {
@@ -79,6 +79,18 @@ const AdminPropertyList2 = () => {
   const handleShowDetails = () => {
     setShowDetailModal(true);
   };
+  const handleShowStatusUpdate = () => {
+    setShowStatusUpdate(true);
+  };
+
+  const handleEdit = (room) => {
+    if (room?.categoryDetails?.name === "Private Room") {
+      navigate(`/dashboard/edit/private-room/${room?._id}`);
+    } else {
+      navigate(`/dashboard/edit/share-room/${room?._id}`);
+    }
+  };
+  console.log();
 
   return (
     <div className="wrapper">
@@ -242,7 +254,7 @@ const AdminPropertyList2 = () => {
                                     <p className="fw-bold">
                                       Seat : {room?.seatNumber}
                                     </p>
-                                    <p>Room : {room?.roomNumber}</p>
+                                    <p>Room : {room?.property?.roomNumber}</p>
                                   </>
                                 ) : (
                                   <p className="fw-bold">
@@ -311,32 +323,43 @@ const AdminPropertyList2 = () => {
                                   </p>
                                 )}
                               </div>
-                              {/* <button
+                              <button
                                 type="button"
-                                data-bs-toggle="modal"
-                                data-bs-target={`#status${room._id}`}
                                 className="d-flex  bg-white p-0"
+                                onClick={() => {
+                                  setId(room?._id);
+                                  setSelectedCategory(
+                                    room?.categoryDetails?.name
+                                  );
+                                  setShowStatusUpdate(!showStatusUpdate);
+                                }}
                               >
                                 <BiSolidEdit
                                   style={{ width: "24px", height: "24px" }}
                                 />
-                              </button> */}
+                              </button>
                             </div>
-                            {/* <div>
-                              <PropertyStatusUpdate
-                                data={room}
-                                refetch={refetch}
-                              />
-                            </div> */}
                           </td>
                           <td>
                             <div className="d-flex justify-content-center">
+                              <button
+                                type="button"
+                                className="bg-white"
+                                onClick={() => handleEdit(room)}
+                              >
+                                <span
+                                // to={`/dashboard/edit/${selectedCategory}/${id}`}
+                                >
+                                  <BiSolidEdit
+                                    style={{ width: "24px", height: "24px" }}
+                                  />
+                                </span>
+                              </button>
                               {/* <div>
                                 <button
                                   type="button"
                                   className="bg-white"
-                                  data-bs-toggle="modal"
-                                  data-bs-target={`#propertyUpdate${room._id}`}
+                              
                                 >
                                   <span>
                                     <BiSolidEdit
@@ -344,8 +367,6 @@ const AdminPropertyList2 = () => {
                                     />
                                   </span>
                                 </button>
-                              </div>
-
                               <div>
                                 <PropertyUpdate2
                                   data={room}
@@ -399,6 +420,15 @@ const AdminPropertyList2 = () => {
             category={selectedCategory}
             setShowDetailModal={setShowDetailModal}
             handleShowDetails={handleShowDetails}
+          />
+        )}
+        {showStatusUpdate && (
+          <PropertyStatusUpdate
+            id={id}
+            category={selectedCategory}
+            setShowStatusUpdate={setShowStatusUpdate}
+            handleShowStatusUpdate={handleShowStatusUpdate}
+            refetch={refetch}
           />
         )}
       </div>

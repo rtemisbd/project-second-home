@@ -4,6 +4,7 @@ import Branch from "../models/Branch.js";
 import catchAsync from "../shared/cathAsync.js";
 import { propertyServices } from "../services/property.service.js";
 import { seatServices } from "../services/seat.service.js";
+import sendResponse from "../shared/sendResponse.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -36,21 +37,21 @@ export const CreatePropertys = async (req, res, next) => {
       seats.forEach(async (seat) => {
         const seatPayload = {
           ...seat,
-          branch: branch._id,
-          category: category._id,
-          roomId: createdProperty._id,
-          roomNumber: createdProperty.roomNumber,
+          branch: branch?._id,
+          category: category?._id,
+          roomId: createdProperty?._id,
+          roomNumber: createdProperty?.roomNumber,
         };
         await seatServices.createSeatIntoDB(seatPayload);
       });
     }
 
     // Add the product to the category's products array
-    category.property.push(newRoom._id);
+    category?.property?.push(newRoom._id);
     await category.save();
 
     // Add the product to the branch's products array
-    branch.property.push(newRoom._id);
+    branch?.property?.push(newRoom._id);
     await branch.save();
 
     res.status(201).json(newRoom);
@@ -58,155 +59,6 @@ export const CreatePropertys = async (req, res, next) => {
     next(err);
   }
 };
-
-// export const getPropertys = async (req, res, next) => {
-//   const {
-//     min,
-//     max,
-//     bedroom,
-//     recommended,
-//     furnitured,
-//     type,
-//     commonfacility,
-//     facility,
-//     branch,
-//     category,
-//     sCategory,
-//     sBranch,
-//     sort,
-//     roomNumber,
-//     bedType,
-//     ...others
-//   } = req.query;
-
-//   try {
-//     let query = Property.find({ ...others });
-
-//     if (branch) {
-//       // Assuming "branch" is the branch name you want to filter by
-//       const branchId = await Branch.findOne({ name: branch }).select("_id");
-//       query = query.where("branch").equals(branchId);
-//     }
-//     if (bedroom) {
-//       query = query.where("bedroom").in(bedroom.split(","));
-//     }
-
-//     if (min && max) {
-//       query = query.where({
-//         $or: [
-//           { perMonth: { $gte: min, $lte: max } },
-//           { "seats.0.perMonth": { $gte: min, $lte: max } },
-//         ],
-//       });
-//     } else if (min) {
-//       query = query.where("perMonth").gte(min);
-//     } else if (max) {
-//       query = query.where("perMonth").lte(max);
-//     }
-//     // Handle sorting based on perDay price
-//     if (sort === "asc") {
-//       query = query.sort({ perMonth: 1 }); // Ascending order
-//     } else if (sort === "desc") {
-//       query = query.sort({ perMonth: -1 }); // Descending order
-//     }
-//     if (furnitured === "yes" || furnitured === "no") {
-//       query = query.where("furnitured").equals(furnitured);
-//     }
-//     if (type === "male" || type === "female" || type === "both") {
-//       query = query.where("type").equals(type);
-//     }
-//     if (category) {
-//       // Assuming "category" is a string representing the category name
-//       query = query.populate({
-//         path: "category",
-//         match: { name: category },
-//       });
-//     }
-//     if (sCategory) {
-//       const categoryId = await Category.findOne({ name: sCategory }).select(
-//         "_id"
-//       );
-//       query = query.where("category").equals(categoryId);
-//     }
-//     if (sBranch) {
-//       const branchId = await Branch.findOne({ name: sBranch }).select("_id");
-//       query = query.where("branch").equals(branchId);
-//     }
-//     if (roomNumber) {
-//       query = query.where("roomNumber").equals(roomNumber);
-//     }
-//     if (bedType) {
-//       query = query.where("bedType").equals(bedType);
-//     }
-
-//     if (facility) {
-//       // Assuming "facilities" is an array of facility names
-//       query = query.populate({
-//         path: "facility",
-//         match: { name: { $in: facility } },
-//       });
-//     }
-//     if (commonfacility) {
-//       // Assuming "facilities" is an array of facility names
-//       query = query.populate({
-//         path: "commonfacility",
-//         match: { name: { $in: commonfacility } },
-//       });
-//     }
-
-//     if (
-//       !bedroom &&
-//       !min &&
-//       !max &&
-//       !others.city &&
-//       !furnitured &&
-//       !type &&
-//       !category &&
-//       !sCategory &&
-//       !sBranch &&
-//       !facility &&
-//       !roomNumber &&
-//       !bedType
-//     ) {
-//       // If no search parameters are specified, return all properties
-//       query = Property.find();
-//     }
-
-//     const properties = await query
-//       .populate("category review branch facility commonfacility")
-//       .limit(req.query.limit);
-
-//     // If Current Date === Booking End date? then auto delete booking
-//     // const currentDate = new Date().toISOString().split("T")[0];
-//     // const condition = { bookEndDate: currentDate };
-
-//     // await Property.updateMany(
-//     //   {
-//     //     rentDate: { $elemMatch: condition },
-//     //   },
-//     //   {
-//     //     $pull: {
-//     //       rentDate: condition,
-//     //     },
-//     //   },
-
-//     //   { new: true }
-//     // );
-//     // If Current Date === Booking Seat End date? then auto delete booking Seat
-//     // await Property.updateMany(
-//     //   { "seats.rentDate.bookEndDate": currentDate },
-//     //   {
-//     //     $pull: {
-//     //       "seats.$[].rentDate": { bookEndDate: currentDate },
-//     //     },
-//     //   }
-//     // );
-
-//     res.status(200).json(properties);
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 export const getPropertys = catchAsync(async (req, res, next) => {
   const result = await propertyServices.getPropertiesFromDB(req.query);
@@ -397,96 +249,98 @@ export const deletePropertys = async (req, res, next) => {
   }
 };
 
-export const updatePropertys = async (req, res, next) => {
-  try {
-    const propertyId = req.params.id;
+export const updatePropertys = catchAsync(async (req, res, next) => {
+  const result = await propertyServices.updatePropertyById(
+    req.params.id,
+    req.body
+  );
 
-    // Status Update
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Properties updated successfully",
+    data: result,
+  });
+});
 
-    if (req.body?.isPublished) {
-      await Property.findByIdAndUpdate(
-        req.params.id,
-        { $set: { isPublished: req.body.isPublished } },
-        { new: true }
-      );
-    }
-    // Find the property by ID
-    const property = await Property.findById(propertyId);
-    // if (!property) {
-    //   return res.status(404).json({ error: "Property not found" });
-    // }
-
-    // Update the property fields
-
-    const updateData = {
-      name: req.body.name,
-      city: req.body.city,
-      floor: req.body.floor,
-      roomNumber: req.body.roomNumber,
-      builtYear: req.body.builtYear,
-      area: req.body.area,
-      totalRoom: req.body.totalRoom,
-      desc: req.body.desc,
-      fulldesc: req.body.fulldesc,
-      perDay: req.body.perDay,
-      perMonth: req.body.perMonth,
-      perYear: req.body.perYear,
-      dAmountForDay: req.body.dAmountForDay,
-      dAmountForMonth: req.body.dAmountForMonth,
-      dAmountForYear: req.body.dAmountForYear,
-      percentOfDiscountDay: req.body.percentOfDiscountDay,
-      percentOfDiscountMonth: req.body.percentOfDiscountMonth,
-      percentOfDiscountYear: req.body.percentOfDiscountYear,
-      bedroom: req.body.bedroom,
-      bathroom: req.body.bathroom,
-      car: req.body.car,
-      bike: req.body.bike,
-      pet: req.body.pet,
-      categoryId: req.body.categoryId,
-      recommended: req.body.recommended,
-      furnitured: req.body.furnitured,
-      branchId: req.body.branchId,
-      facility: req.body.facility,
-      commonfacility: req.body.commonfacility,
-      photos: req.body.photos,
-      meal: req.body.meal,
-      bedType: req.body.bedType,
-      CCTV: req.body.CCTV,
-      WiFi: req.body.WiFi,
-      balcony: req.body.balcony,
-      totalPerson: req.body.totalPerson,
-      rentDate: property?.rentDate,
-      type: req.body.type,
-      rules: req.body.rules,
-      roomCategory: req.body.roomCategory,
-      additionalFacility: req.body.additionalFacility,
-      apartmentRent: req.body.apartmentRent,
-      serviceCharge: req.body.serviceCharge,
-      security: req.body.security,
-      faltPolicy: req.body.faltPolicy,
-      seats: req.body.seats,
-      isPublished: req.body.isPublished,
-      isPartner: req.body.isPartner,
-    };
-
-    const result = await Property.updateOne(
-      { _id: propertyId },
-      { $set: updateData },
-      { runValidators: true }
-    );
-    res.status(200).json(result);
-  } catch (err) {
-    next(err);
-  }
-};
-
-// export const getRecommendedPropertys = async (req, res, next) => {
+// export const updatePropertys = async (req, res, next) => {
 //   try {
-//     const properties = await Property.find({ recommended: "yes" })
-//       .populate("category review branch")
-//       .limit(req.query.limit);
+//     const propertyId = req.params.id;
 
-//     res.status(200).json(properties);
+//     // Status Update
+
+//     if (req.body?.isPublished) {
+//       await Property.findByIdAndUpdate(
+//         req.params.id,
+//         { $set: { isPublished: req.body.isPublished } },
+//         { new: true }
+//       );
+//     }
+//     // Find the property by ID
+//     const property = await Property.findById(propertyId);
+//     if (!property) {
+//       return res.status(404).json({ error: "Property not found" });
+//     }
+
+//     // Update the property fields
+
+//     // const updateData = {
+//     //   name: req.body.name,
+//     //   city: req.body.city,
+//     //   floor: req.body.floor,
+//     //   roomNumber: req.body.roomNumber,
+//     //   builtYear: req.body.builtYear,
+//     //   area: req.body.area,
+//     //   totalRoom: req.body.totalRoom,
+//     //   desc: req.body.desc,
+//     //   fulldesc: req.body.fulldesc,
+//     //   perDay: req.body.perDay,
+//     //   perMonth: req.body.perMonth,
+//     //   perYear: req.body.perYear,
+//     //   dAmountForDay: req.body.dAmountForDay,
+//     //   dAmountForMonth: req.body.dAmountForMonth,
+//     //   dAmountForYear: req.body.dAmountForYear,
+//     //   percentOfDiscountDay: req.body.percentOfDiscountDay,
+//     //   percentOfDiscountMonth: req.body.percentOfDiscountMonth,
+//     //   percentOfDiscountYear: req.body.percentOfDiscountYear,
+//     //   bedroom: req.body.bedroom,
+//     //   bathroom: req.body.bathroom,
+//     //   car: req.body.car,
+//     //   bike: req.body.bike,
+//     //   pet: req.body.pet,
+//     //   categoryId: req.body.categoryId,
+//     //   recommended: req.body.recommended,
+//     //   furnitured: req.body.furnitured,
+//     //   branchId: req.body.branchId,
+//     //   facility: req.body.facility,
+//     //   commonfacility: req.body.commonfacility,
+//     //   photos: req.body.photos,
+//     //   meal: req.body.meal,
+//     //   bedType: req.body.bedType,
+//     //   CCTV: req.body.CCTV,
+//     //   WiFi: req.body.WiFi,
+//     //   balcony: req.body.balcony,
+//     //   totalPerson: req.body.totalPerson,
+//     //   rentDate: property?.rentDate,
+//     //   type: req.body.type,
+//     //   rules: req.body.rules,
+//     //   roomCategory: req.body.roomCategory,
+//     //   additionalFacility: req.body.additionalFacility,
+//     //   apartmentRent: req.body.apartmentRent,
+//     //   serviceCharge: req.body.serviceCharge,
+//     //   security: req.body.security,
+//     //   faltPolicy: req.body.faltPolicy,
+//     //   seats: req.body.seats,
+//     //   isPublished: req.body.isPublished,
+//     //   isPartner: req.body.isPartner,
+//     // };
+
+//     const result = await Property.updateOne(
+//       { _id: propertyId },
+//       { $set: req?.body },
+//       { runValidators: true }
+//     );
+//     res.status(200).json(result);
 //   } catch (err) {
 //     next(err);
 //   }

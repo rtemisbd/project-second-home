@@ -70,8 +70,10 @@ import NotFound from "./pages/NotFound/NotFound";
 import StudySpace from "./components/StudySpace/StudySpace";
 import RoomOverview from "./pages/roomOverview/RoomOverview";
 import CreateUser from "./pages/CreateUser/CreateUser";
-import NewAdminPropertyList from "./components/Property/NewAdminPropertyList";
 import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
+import EditProperty from "./pages/edit/EditProperty";
+import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
+import EditSeat from "./pages/edit/EditSeat";
 
 function App() {
   return (
@@ -119,10 +121,14 @@ function App() {
         <Route path="add_property" element={<Add_property />} />
         <Route path="property_list_m" element={<Property />} />
         <Route path="property_list_p" element={<Partner_property_list />} />
-        <Route path="property_list" element={<AdminPropertyList />} />
+        {/* <Route path="property_list" element={<AdminPropertyList />} /> */}
         {/* test purpose */}
-        <Route path="property_list2" element={<AdminPropertyList2 />} />
-        <Route path="new-property-list" element={<NewAdminPropertyList />} />
+        <Route path="property_list" element={<AdminPropertyList2 />} />
+        {/* <Route path="property_list2" element={<AdminPropertyList2 />} /> */}
+        <Route path="edit/:category/:id" element={<EditProperty />} />
+        <Route path="edit/private-room/:id" element={<EditPrivateProperty />} />
+        <Route path="edit/share-room/:id" element={<EditSeat />} />
+
         {/* <Route path="property-report" element={<PropertyReports />} /> */}
         <Route path="property-report" element={<BookingReport />} />
         <Route path="add-promo" element={<Add_Promo />} />

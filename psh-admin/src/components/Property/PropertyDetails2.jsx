@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import UseFetch from "../../hooks/useFetch";
 import { baseUrl } from "../../utils/getBaseURL";
 import { Modal } from "react-bootstrap";
+import axios from "axios";
 
 const PropertyDetails2 = ({
   id,
@@ -12,6 +13,7 @@ const PropertyDetails2 = ({
   const { data3 } = UseFetch("facilityCategory");
   const [data, setData] = useState(null);
   const [seat, setSeat] = useState(null);
+  const [allSeats, setAllSeats] = useState([]);
 
   useEffect(() => {
     if (category === "Private Room") {
@@ -37,6 +39,12 @@ const PropertyDetails2 = ({
 
           if (data?.seat) {
             try {
+              const { data: responseForAllSeats } = await axios.get(
+                `${baseUrl}/api/seats?roomId=${data?.seat?.roomId}`
+              );
+
+              setAllSeats(responseForAllSeats?.data);
+
               const responseForRoom = await fetch(
                 `${baseUrl}/api/property/${data?.seat?.roomId}`
               );
@@ -53,28 +61,14 @@ const PropertyDetails2 = ({
       fetchData();
     }
   }, [id, category]);
-  console.log({ data, seat });
 
   return (
     <Modal
       className="detail-model-container"
       show={handleShowDetails}
       onHide={() => setShowDetailModal(false)}
-      //   style={{
-      //     width: "700px",
-      //   }}
     >
-      <Modal.Header
-        closeButton
-        style={
-          {
-            //   backgroundColor: "#35B0A7",
-            //   height: "36px",
-            //   width: "100%",
-            //   borderRadius: "3px 3px 0px 0px",
-          }
-        }
-      >
+      <Modal.Header closeButton>
         <Modal.Title></Modal.Title>
       </Modal.Header>
       <Modal.Body>
@@ -85,9 +79,7 @@ const PropertyDetails2 = ({
             backgroundColor: "white",
           }}
         >
-          <div>
-            <h3>Property Details</h3>
-          </div>
+          <h3>Property Details</h3>
 
           <div>
             <div className="row gap-3">
@@ -241,7 +233,7 @@ const PropertyDetails2 = ({
               </div>
             ))}
 
-            {data?.seats?.length !== 0 ? (
+            {allSeats?.length !== 0 ? (
               <h4
                 className="mt-4 mb-4 ps-3 rounded"
                 style={{ backgroundColor: "#00bbb4", color: "White" }}
@@ -253,8 +245,8 @@ const PropertyDetails2 = ({
             )}
 
             <div className="mb-5 gap-5">
-              {data?.seats &&
-                data?.seats.map((item) => {
+              {allSeats &&
+                allSeats?.map((item) => {
                   return (
                     <div className=" mt-2">
                       <div className=" ">

@@ -2,8 +2,18 @@ import { seatServices } from "../services/seat.service.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 
+export const createSeat = catchAsync(async (req, res, next) => {
+  const result = await seatServices.createSeatIntoDB(req.body);
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Seats uploaded successfully",
+  });
+});
+
 export const getAllSeats = catchAsync(async (req, res, next) => {
-  const result = await seatServices.getAllSeatsFromDB(req.body);
+  const result = await seatServices.getAllSeatsFromDB(req.query);
+
   //   res.status(200).json(result);
   sendResponse(res, {
     statusCode: 200,
@@ -23,5 +33,16 @@ export const getSeatById = catchAsync(async (req, res, next) => {
     success: true,
     message: "Seats retrieved successfully",
     data: { seat, rentRooms },
+  });
+});
+
+export const updateSingleSeat = catchAsync(async (req, res, next) => {
+  const result = await seatServices.updateSeatById(req.params.id, req.body);
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Seat updated successfully",
+    data: result,
   });
 });
