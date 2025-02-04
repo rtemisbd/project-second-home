@@ -14,6 +14,7 @@ import "jspdf-autotable";
 import { AuthContext } from "../../contexts/UserProvider";
 import { useContext } from "react";
 import Managers from "../../pages/edit/Managers";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Manager_list = () => {
   const MySwal = withReactContent(Swal);
@@ -128,8 +129,8 @@ const Manager_list = () => {
     const fetchData = async () => {
       try {
         const [usersResponse, branchesResponse] = await Promise.all([
-          axios.get("https://api.psh.com.bd/api/users"),
-          axios.get("https://api.psh.com.bd/api/branch"),
+          axios.get(`${baseUrl}/api/users`),
+          axios.get(`${baseUrl}/api/branch`),
         ]);
 
         setData(usersResponse.data);
@@ -149,7 +150,7 @@ const Manager_list = () => {
   const handleCategory = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/users/${id}`;
+      const url = `${baseUrl}/api/users/${id}`;
       fetch(url, {
         method: "DELETE",
       })
