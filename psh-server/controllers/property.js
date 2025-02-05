@@ -63,13 +63,13 @@ export const CreatePropertys = async (req, res, next) => {
 export const getPropertys = catchAsync(async (req, res, next) => {
   const result = await propertyServices.getPropertiesFromDB(req.query);
 
-  res.status(200).json(result);
+  return res.status(200).json(result);
 });
-export const getPropertysForAdmin = catchAsync(async (req, res, next) => {
-  const result = await propertyServices.getPropertiesFromDBForAdmin(req.query);
+// export const getPropertysForAdmin = catchAsync(async (req, res, next) => {
+//   const result = await propertyServices.getPropertiesFromDBForAdmin(req.query);
 
-  res.status(200).json(result);
-});
+//   res.status(200).json(result);
+// });
 
 // Get Booking Report
 

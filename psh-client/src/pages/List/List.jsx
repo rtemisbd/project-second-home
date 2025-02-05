@@ -83,15 +83,18 @@ function List({ type }) {
       const response = await axios.get(
         `${serverBaseUrl}/property?${queryParams.toString()}`
       );
+      console.log({ response });
 
       setData(response?.data?.properties);
       setTotalDataCount(response?.data?.totalCount);
       setLoading(false);
     } catch (error) {
       console.error(error);
+      console.log({ error });
       throw error;
     }
   });
+  console.log(data);
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
