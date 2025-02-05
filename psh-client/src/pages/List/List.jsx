@@ -36,7 +36,7 @@ function List({ type }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [itemsPerPage, setItemsPerPage] = useState(Number.MAX_VALUE);
   const [totalPages, setTotalPages] = useState(1);
   const handleItemsPerPageChange = (event) => {
@@ -60,7 +60,7 @@ function List({ type }) {
   // Get Properties
   const { refetch } = useQuery(["propertyList"], async () => {
     try {
-      setLoading(true);
+      // setLoading(true);
       const queryParams = new URLSearchParams({
         withSharedRoom,
         furnitured,
@@ -83,18 +83,18 @@ function List({ type }) {
       const response = await axios.get(
         `${serverBaseUrl}/property?${queryParams.toString()}`
       );
-      console.log({ response });
+      // console.log({ response });
 
       setData(response?.data?.properties);
       setTotalDataCount(response?.data?.totalCount);
       setLoading(false);
     } catch (error) {
       console.error(error);
-      console.log({ error });
+      // console.log({ error });
       throw error;
     }
   });
-  console.log(data);
+  // console.log(data);
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
