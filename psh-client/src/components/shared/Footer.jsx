@@ -250,7 +250,11 @@ const Footer = () => {
                         href="https://www.facebook.com/pshbd?mibextid=eHce3h"
                         target="_blank"
                       >
-                        <img src="/assets/img/facebook.svg.png" alt="" />
+                        <img
+                          loading="lazy"
+                          src="/assets/img/facebook.svg.png"
+                          alt=""
+                        />
                       </a>
 
                       <a
@@ -308,14 +312,22 @@ const Footer = () => {
                     href="https://www.facebook.com/pshbd?mibextid=eHce3h"
                     target="_blank"
                   >
-                    <img src="/assets/img/facebook.svg.png" alt="" />
+                    <img
+                      loading="lazy"
+                      src="/assets/img/facebook.svg.png"
+                      alt=""
+                    />
                   </a>
 
                   <a
                     href="https://www.instagram.com/projectsecondhome.bd/?utm_source=qr&igshid=MzNlNGNkZWQ4Mg%3D%3D"
                     target="_blank"
                   >
-                    <img src="/assets/img/Link → instagram.svg.png" alt="" />
+                    <img
+                      loading="lazy"
+                      src="/assets/img/Link → instagram.svg.png"
+                      alt=""
+                    />
                   </a>
 
                   <a
@@ -402,7 +414,7 @@ const Footer = () => {
               </Link>
             </div>
             {/* <div className="sm:hidden md:flex md:ms-4 footer_social ms-2 mr-2">
-              <img src="assets/img/facebook.svg.png" alt="" />
+              <img loading="lazy" src="assets/img/facebook.svg.png" alt="" />
 
               <img
                 src="assets/img/Link → instagram.svg.png"
@@ -410,7 +422,7 @@ const Footer = () => {
                 className="mx-2"
               />
 
-              <img src="assets/img/Link → twitter.svg.png" alt="" />
+              <img loading="lazy" src="assets/img/Link → twitter.svg.png" alt="" />
             </div> */}
           </div>
         </div>

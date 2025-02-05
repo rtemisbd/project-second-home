@@ -18,11 +18,11 @@ const SearchOnMaps = () => {
     if (lastSlideIndex === 0) {
       return null;
     } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
+      return <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />;
     }
   };
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => {
-    return <img src={RightArrow} alt="nextArrow" {...props} />;
+    return <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />;
   };
   const settings = {
     dots: false,
@@ -92,7 +92,11 @@ const SearchOnMaps = () => {
       <Slider {...settings}>
         <div className=" text-center space-y-3 sm:col-span-12 lg:col-span-4">
           <div className="flex">
-            <img src="/images/Frame 3727.png" alt="project second home form" />
+            <img
+              loading="lazy"
+              src="/images/Frame 3727.png"
+              alt="project second home form"
+            />
             <div style={{ marginLeft: 80, marginTop: 120 }}>
               <img
                 src={mapsOnArrow}
@@ -160,7 +164,7 @@ const SearchOnMaps = () => {
         </div>
         <div className=" text-center space-y-3 sm:col-span-12 lg:col-span-4">
           <div className="flex">
-            <img src="/images/Group.png" alt="" />
+            <img loading="lazy" src="/images/Group.png" alt="" />
             <div style={{ marginLeft: 80, marginTop: 120 }}>
               <img
                 src={mapsOnArrow}
@@ -199,7 +203,7 @@ const SearchOnMaps = () => {
         </div>
         <div className=" text-center col-span-12 space-y-3 sm:col-span-12 lg:col-span-4">
           <div className="flex">
-            <img src="/images/Frame 3726.png" alt="" />
+            <img loading="lazy" src="/images/Frame 3726.png" alt="" />
           </div>
           {pathname === "/" ? (
             <>

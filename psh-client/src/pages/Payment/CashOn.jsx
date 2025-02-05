@@ -31,7 +31,7 @@ const CashOn = () => {
           <label htmlFor="cash-on-delivery">
             <div className="ms-3 flex items-center">
               <div>
-                <img src={cod} alt="" />
+                <img loading="lazy" src={cod} alt="" />
               </div>
               <div>
                 <h5 className="ms-3 text-black text-sm">CASH</h5>

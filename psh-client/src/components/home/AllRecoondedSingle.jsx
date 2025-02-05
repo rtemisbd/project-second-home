@@ -101,10 +101,20 @@ const AllRecoondedSingle = ({ item, isSeatIntoDate, isAlreadySeatBook }) => {
           />
           <div className="absolute top-2 right-2">
             {checkWishListIds?.some((wish) => wish === data?._id) ? (
-              <img src={heart2} alt="wishlist" onClick={handleRemoveSubmit} />
+              <img
+                loading="lazy"
+                src={heart2}
+                alt="wishlist"
+                onClick={handleRemoveSubmit}
+              />
             ) : (
               <span>
-                <img src={whislistIcon} alt="wishlist" onClick={handleSubmit} />
+                <img
+                  loading="lazy"
+                  src={whislistIcon}
+                  alt="wishlist"
+                  onClick={handleSubmit}
+                />
               </span>
             )}
           </div>

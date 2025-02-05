@@ -56,7 +56,7 @@ const BookingBox = ({ data, bookedDates, seat }) => {
         <div className="flex justify-between">
           <div className="flex ">
             <div>
-              <img src={brachLocationIcon} alt="" />
+              <img loading="lazy" src={brachLocationIcon} alt="" />
             </div>
             <p className="text-black text-sm">{data?.branch?.name}</p>
           </div>
@@ -203,7 +203,7 @@ const BookingBox = ({ data, bookedDates, seat }) => {
               required
             />
             <div className="absolute top-1 left-3">
-              <img src={promoIcon} alt="" />
+              <img loading="lazy" src={promoIcon} alt="" />
             </div>
           </div>
           <div className=" ">

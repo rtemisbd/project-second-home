@@ -352,7 +352,7 @@ const SearchBoxWithNav = () => {
                 <div className="flex items-center mt-2 w-full gap-x-5">
                   <div className="flex items-center rounded gap-x-1 border border-[#00bbb4] py-0.5 w-[50%] pl-1">
                     <div>
-                      <img src={durationImg} alt="" />
+                      <img loading="lazy" src={durationImg} alt="" />
                     </div>
                     <div className="text-[12px]">
                       <span className="">

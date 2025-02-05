@@ -12,11 +12,11 @@ const Community = () => {
   const { data } = UseFetch(`event`);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <img src={LeftArrow} alt="prevArrow" {...props} />
+    <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <img src={RightArrow} alt="nextArrow" {...props} />
+    <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />
   );
   const settings = {
     dots: false,
@@ -133,7 +133,7 @@ const Community = () => {
               <div className="md:h-32 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-24">
                 <div className="flex">
                   <div>
-                    <img src="/assets/img2/SVG (4).png" />
+                    <img loading="lazy" src="/assets/img2/SVG (4).png" />
                   </div>
                   <div className="ms-3">
                     <h2 className="text-black font-bold text-[16px]">
@@ -146,7 +146,7 @@ const Community = () => {
               <div className="md:h-32 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-24">
                 <div className="flex">
                   <div>
-                    <img src="/assets/img2/SVG (5).png" />
+                    <img loading="lazy" src="/assets/img2/SVG (5).png" />
                   </div>
                   <div className="ms-3">
                     <h2 className="text-black font-bold text-[16px]">Sport</h2>
@@ -157,7 +157,7 @@ const Community = () => {
               <div className="md:h-32 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-24">
                 <div className="flex">
                   <div>
-                    <img src="/assets/img2/SVG (5).png" />
+                    <img loading="lazy" src="/assets/img2/SVG (5).png" />
                   </div>
                   <div className="ms-3">
                     <h2 className="text-black font-bold text-[16px]">
@@ -173,7 +173,7 @@ const Community = () => {
               <div className="md:h-32 w-full overflow-hidden rounded-lg sm:aspect-h-1 sm:aspect-w-2 lg:aspect-h-1 lg:aspect-w-1 group-hover:opacity-75 sm:h-24">
                 <div className="flex">
                   <div>
-                    <img src="/assets/img2/SVG (5).png" />
+                    <img loading="lazy" src="/assets/img2/SVG (5).png" />
                   </div>
                   <div className="ms-3">
                     <h2 className="text-black font-bold text-[16px]">

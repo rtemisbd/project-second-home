@@ -8,11 +8,11 @@ import shareHolderImg from "../../assets/img/forShareHolder.jpeg";
 const PartnerService = () => {
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <img src={LeftArrow} alt="prevArrow" {...props} />
+    <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <img src={RightArrow} alt="nextArrow" {...props} />
+    <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />
   );
   const settings = {
     dots: false,

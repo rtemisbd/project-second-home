@@ -34,7 +34,7 @@ const BookingTotalBox = () => {
         </h2>
         <div className="flex ">
           <div>
-            <img src={brachLocationIcon} alt="" />
+            <img loading="lazy" src={brachLocationIcon} alt="" />
           </div>
           <p className="text-black">Dhanmondi 03</p>
         </div>
@@ -110,7 +110,7 @@ const BookingTotalBox = () => {
             placeholder="Pormo Code"
           />
           <div className="absolute top-2 left-3">
-            <img src={promoIcon} alt="" />
+            <img loading="lazy" src={promoIcon} alt="" />
           </div>
         </div>
         <div>

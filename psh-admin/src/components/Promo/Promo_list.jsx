@@ -9,7 +9,6 @@ import BootstrapTable from "react-bootstrap-table-next";
 import { Link } from "react-router-dom";
 import PromoUpdate from "../../pages/edit/PromoUpdate";
 
-
 import { useQuery } from "react-query";
 import { BiSolidEdit } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
@@ -19,6 +18,7 @@ const Promo_list = () => {
 
   //sub stream
   const [data, setData] = useState([]);
+  console.log(data);
 
   const columns = [
     {
@@ -60,11 +60,11 @@ const Promo_list = () => {
       formatter: (cellContent, row) => {
         return (
           <div>
-            <img
-              src={row.photos[0] && row.photos[0]}
+            {/* <img
+              src={row?.photos[0] && row?.photos[0]}
               alt=""
               style={{ width: 120 }}
-            />
+            /> */}
           </div>
         );
       },

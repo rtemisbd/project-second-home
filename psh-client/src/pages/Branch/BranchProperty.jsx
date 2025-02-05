@@ -124,12 +124,22 @@ const BranchProperty = ({ item, branchData }) => {
             />
             <div className="absolute top-2 right-2">
               {checkWishListIds?.some((item) => item === data?._id) ? (
-                <img src={heart2} alt="wishlist" onClick={handleRemoveSubmit} />
+                <img
+                  loading="lazy"
+                  src={heart2}
+                  alt="wishlist"
+                  onClick={handleRemoveSubmit}
+                />
               ) : (
                 // <span>
                 //   <FaHeart style={{ color: "red" }} />
                 // </span>
-                <img src={whislistIcon} alt="wishlist" onClick={handleSubmit} />
+                <img
+                  loading="lazy"
+                  src={whislistIcon}
+                  alt="wishlist"
+                  onClick={handleSubmit}
+                />
               )}
             </div>
             {/* {isIntoDate ? (

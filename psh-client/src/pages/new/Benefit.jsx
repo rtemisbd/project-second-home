@@ -7,11 +7,11 @@ import RightArrow from "../../assets/img/right-arrow.svg";
 const Benefit = () => {
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <img src={LeftArrow} alt="prevArrow" {...props} />
+    <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <img src={RightArrow} alt="nextArrow" {...props} />
+    <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />
   );
   const settings = {
     dots: false,
@@ -88,7 +88,7 @@ const Benefit = () => {
                 <div className="group relative">
                   <div className="overflow-hidden">
                     <div className="flex ">
-                      <img src="assets/img/SVG.png" alt="" />
+                      <img loading="lazy" src="assets/img/SVG.png" alt="" />
                     </div>
                     <div>
                       <p className="header2 py-3">Hassle Free</p>
@@ -103,7 +103,7 @@ const Benefit = () => {
                 <div className="group relative">
                   <div className="overflow-hidden ">
                     <div className="flex ">
-                      <img src="assets/img/SVG (1).png" alt="" />
+                      <img loading="lazy" src="assets/img/SVG (1).png" alt="" />
                     </div>
                     <div>
                       <p className="header2 py-3">Flexible Location</p>
@@ -118,7 +118,7 @@ const Benefit = () => {
                 <div className="group relative">
                   <div className="overflow-hidden">
                     <div className="flex ">
-                      <img src="assets/img/SVG (2).png" alt="" />
+                      <img loading="lazy" src="assets/img/SVG (2).png" alt="" />
                     </div>
                     <div>
                       <p className="header2 py-3">Complete Facilities</p>
@@ -132,7 +132,7 @@ const Benefit = () => {
                 <div className="group relative">
                   <div className="overflow-hidden">
                     <div className="flex ">
-                      <img src="assets/img/SVG (3).png" alt="" />
+                      <img loading="lazy" src="assets/img/SVG (3).png" alt="" />
                     </div>
                     <div>
                       <p className="header2 py-3">Bill</p>

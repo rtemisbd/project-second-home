@@ -161,7 +161,7 @@ const Partner = () => {
       <div className="mx-5">
         <div className="grid lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 custom-container md:mt-16 sm:mt-5 mb-20 md:gap-x-10 sm:gap-x-0">
           <div>
-            <img src={partnerImg2} alt="" />
+            <img loading="lazy" src={partnerImg2} alt="" />
           </div>
           <div className="mt-2">
             <h3 className="font-bold text-xl">What do we offer? </h3>

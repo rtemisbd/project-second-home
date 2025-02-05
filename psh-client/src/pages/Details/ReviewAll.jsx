@@ -29,7 +29,7 @@ export function ReviewAll({ handleDetailsShow, detailsShow, activeReviews }) {
             <div key={item.id}>
               <div className="flex items-center gap-x-3 mt-4">
                 <p>
-                  <img src={profileIcon} alt="" />
+                  <img loading="lazy" src={profileIcon} alt="" />
                 </p>
                 <p>{item?.userName}</p>
                 <p className="bg-[#FFB800] text-white px-2 rounded">5.0</p>
