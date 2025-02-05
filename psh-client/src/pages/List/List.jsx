@@ -7,7 +7,7 @@ import { useQuery } from "react-query";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import axios from "axios";
 
-function List({ type }) {
+function List() {
   const location = useLocation();
   const { name } = useParams();
 
@@ -36,7 +36,7 @@ function List({ type }) {
   const [min, setMin] = useState("");
   const [max, setMax] = useState("");
   const [page, setPage] = useState(1);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [itemsPerPage, setItemsPerPage] = useState(Number.MAX_VALUE);
   const [totalPages, setTotalPages] = useState(1);
   const handleItemsPerPageChange = (event) => {
@@ -57,45 +57,98 @@ function List({ type }) {
   const facilities = [facilityFilters]; // Replace with your list of facility names
   const commonfacilities = [commonFacilityFilters]; // Replace with your list of facility names
 
-  // Get Properties
-  const { refetch } = useQuery(["propertyList"], async () => {
-    try {
-      // setLoading(true);
-      const queryParams = new URLSearchParams({
-        withSharedRoom,
-        furnitured,
-        category,
-        isPublished: "Published",
-        max,
-        gender,
-        destination,
-        bedType: bedrooms,
-        // startDate,
-        // endDate,
-        min,
-        facilities,
-        commonfacilities,
-        itemsPerPage,
-        fromClient: true,
-        page,
-        sort,
-      });
-      const response = await axios.get(
-        `${serverBaseUrl}/property?${queryParams.toString()}`
-      );
-      // console.log({ response });
+  useEffect(
+    () => {
+      const fetchData = async () => {
+        try {
+          setLoading(true);
+          const queryParams = new URLSearchParams({
+            withSharedRoom,
+            furnitured,
+            category,
+            isPublished: "Published",
+            max,
+            gender,
+            destination,
+            bedType: bedrooms,
+            // startDate,
+            // endDate,
+            min,
+            facilities,
+            commonfacilities,
+            itemsPerPage,
+            fromClient: true,
+            page,
+            sort,
+          });
+          const response = await axios.get(
+            `${serverBaseUrl}/property?${queryParams.toString()}`
+          );
 
-      setData(response?.data?.properties);
-      setTotalDataCount(response?.data?.totalCount);
-      setLoading(false);
-    } catch (error) {
-      console.error(error);
-      setLoading(false);
-      // console.log({ error });
-      throw error;
-    }
-  });
-  // console.log(data);
+          setData(await response?.data?.properties);
+          setTotalDataCount(response?.data?.totalCount);
+          setLoading(false);
+        } catch (error) {
+          setLoading(false);
+          console.error(error);
+          throw error;
+        }
+      };
+      fetchData();
+    },
+    [
+      // withSharedRoom,
+      // furnitured,
+      // category,
+      // max,
+      // gender,
+      // destination,
+      // bedrooms,
+      // min,
+      // facilities,
+      // commonfacilities,
+      // itemsPerPage,
+      // page,
+      // sort,
+    ]
+  );
+
+  // Get Properties
+  // const { refetch } = useQuery(["propertyList"], async () => {
+  //   try {
+  //     setLoading(true);
+  //     const queryParams = new URLSearchParams({
+  //       withSharedRoom,
+  //       furnitured,
+  //       category,
+  //       isPublished: "Published",
+  //       max,
+  //       gender,
+  //       destination,
+  //       bedType: bedrooms,
+  //       // startDate,
+  //       // endDate,
+  //       min,
+  //       facilities,
+  //       commonfacilities,
+  //       itemsPerPage,
+  //       fromClient: true,
+  //       page,
+  //       sort,
+  //     });
+  //     const response = await axios.get(
+  //       `${serverBaseUrl}/property?${queryParams.toString()}`
+  //     );
+
+  //     setData(await response?.data?.properties);
+  //     setTotalDataCount(response?.data?.totalCount);
+  //     setLoading(false);
+  //   } catch (error) {
+  //     setLoading(false);
+  //     console.error(error);
+  //     throw error;
+  //   }
+  // });
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
@@ -127,19 +180,19 @@ function List({ type }) {
     });
   };
 
-  useEffect(() => {
-    // Call reFetch whenever facilityFilters or itemsPerPage state changes
-    refetch(true);
-  }, [
-    page,
-    itemsPerPage,
-    facilityFilters,
-    commonFacilityFilters,
-    sort,
-    min,
-    max,
-    // selectedBedrooms,
-  ]);
+  // useEffect(() => {
+  //   // Call reFetch whenever facilityFilters or itemsPerPage state changes
+  //   refetch(true);
+  // }, [
+  //   page,
+  //   itemsPerPage,
+  //   facilityFilters,
+  //   commonFacilityFilters,
+  //   sort,
+  //   min,
+  //   max,
+  //   // selectedBedrooms,
+  // ]);
 
   useEffect(() => {
     if (data && data.length > 0) {
