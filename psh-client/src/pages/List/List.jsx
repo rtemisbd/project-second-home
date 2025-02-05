@@ -90,6 +90,7 @@ function List({ type }) {
       setLoading(false);
     } catch (error) {
       console.error(error);
+      setLoading(false);
       // console.log({ error });
       throw error;
     }
