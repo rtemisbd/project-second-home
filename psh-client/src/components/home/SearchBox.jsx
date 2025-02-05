@@ -142,7 +142,7 @@ const SearchBox = () => {
 
   const { dispatch } = useContext(SearchContext);
   const navigate = useNavigate();
-  const handleSearch = (e) => {
+  const handleSearch = async (e) => {
     e.preventDefault();
     const payload = {
       destination,
