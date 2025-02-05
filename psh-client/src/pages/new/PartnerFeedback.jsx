@@ -10,11 +10,11 @@ import FeedBack3 from "../../assets/img/feadback3..jpeg";
 const PartnerFeedback = () => {
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <img src={LeftArrow} alt="prevArrow" {...props} />
+    <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <img src={RightArrow} alt="nextArrow" {...props} />
+    <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />
   );
   const settings = {
     dots: false,

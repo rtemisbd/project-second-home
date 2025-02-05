@@ -79,7 +79,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 প্রজেক্ট সেকেন্ড হোমে একদিনের জন্য অতিথি হয়েছিলাম। খুব সুন্দর,
@@ -112,7 +112,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 মেয়েদের জন্য ঢাকার মধ্যে বেস্ট একটা হোস্টেল, যেমন পরিবেশ
@@ -144,7 +144,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 ঢাকার বাহির থেকে অনেক মেয়েরা ঢাকায় আসে পড়াশুনা কিংবা চাকরি বাকরি
@@ -175,7 +175,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 মেয়েদের জন্য অনেক সেইভ এবং আধুনিক সব সুবিধা সম্মত অতি মনোরম একটা
@@ -206,7 +206,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 ঢাকায় সাধ্যের মধ্যে থাকার জন্য সবথেকে নিরাপদ জায়গা।
@@ -235,7 +235,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 অনেক ট্রাস্টটেড এবং মেয়েদের জিন্য নিরাপদ একটি হোস্টেল খাবার ও
@@ -265,7 +265,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 মেয়েদের জন্য পারফেক্ট একটা হোস্টেল,, পরিবেশ খুবই সুন্দর। খরচ ও
@@ -295,7 +295,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 safest place for girls... environment of the hostel is very neat
@@ -327,7 +327,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 মেয়েদের জন্য একটা সৈভ প্লেস, সবধরনের সুজোক সুবিধা আছে, পরিবেশ
@@ -357,7 +357,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 সেকেন্ড হোমটা বলা হয় এমন একটা পরিবেশকে যেখানে থাকলে মনে হয় নিজের
@@ -387,7 +387,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 মেয়েদের জন্য সেইফ place, হোস্টেল এর পরিবেশ এবং সার্ভিস খুবই
@@ -417,7 +417,7 @@ const Review = () => {
             </div>
             <div className="flex gap-x-3 mt-8">
               <div>
-                <img src={commaIcon} alt="" />
+                <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
                 মেয়েদের জন্য অনেক সেভ একটা প্লেস, তাদের সার্ভিস অনেক ভালো,

@@ -127,7 +127,7 @@ function NavListMenu() {
   const renderItems = navListMenuItems.map(({ title, icon, href }) => (
     <a href="#" key={title}>
       <MenuItem>
-        <img src={icon} alt="" />
+        <img loading="lazy" src={icon} alt="" />
         <Link to={href} className=" text-black">
           <Typography variant="h6" color="blue-gray" className="mb-1">
             {title}

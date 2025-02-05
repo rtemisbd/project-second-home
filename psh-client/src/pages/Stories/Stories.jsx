@@ -9,11 +9,11 @@ import "./Stories.css";
 const Stories = () => {
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <img src={LeftArrow} alt="prevArrow" {...props} />
+    <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <img src={RightArrow} alt="nextArrow" {...props} />
+    <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />
   );
   const settings = {
     dots: false,
@@ -478,7 +478,11 @@ const Stories = () => {
       <div className="mt-12">
         <div className="grid grid-cols-12 sm:px-5 gap-y-16 ">
           <div className="flex flex-col items-start col-span-12 space-y-3 sm:col-span-12 md:col-span-6 ">
-            <img src="/assets/img2/footer-desktop@3x.png.png" alt="" />
+            <img
+              loading="lazy"
+              src="/assets/img2/footer-desktop@3x.png.png"
+              alt=""
+            />
           </div>
           <div className="flex flex-col items-start col-span-12 space-y-3 sm:col-span-12 md:col-span-6 community_header">
             <div className="2xl:ms-12 ">

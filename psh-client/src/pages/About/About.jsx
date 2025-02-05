@@ -50,7 +50,12 @@ const About = () => {
             </div>
           </div>
           <div className="flex flex-col space-y-3 sm:col-span-12 md:col-span-6 ">
-            <img src={aboutHero} alt="about psh" style={{ height: "100vh" }} />
+            <img
+              loading="lazy"
+              src={aboutHero}
+              alt="about psh"
+              style={{ height: "100vh" }}
+            />
           </div>
         </div>
       </div>

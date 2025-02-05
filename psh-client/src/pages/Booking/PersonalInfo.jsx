@@ -438,7 +438,7 @@ const PersonalInfo = () => {
             </div>
             {/* <div className="flex items-start mt-20">
               <div>
-                <img src={cashImg} alt="" />
+                <img loading="lazy" src={cashImg} alt="" />
               </div>
               <p className="text-lg ">
                 NOTE : You could pay directly in our structure with any kind of
@@ -475,7 +475,7 @@ const PersonalInfo = () => {
                   <div className="flex justify-between">
                     <div className="flex ">
                       <div>
-                        <img src={brachLocationIcon} alt="" />
+                        <img loading="lazy" src={brachLocationIcon} alt="" />
                       </div>
                       <p className="text-black text-sm">
                         {bookingItem?.branch?.name}

@@ -7,11 +7,11 @@ import RightArrow from "../../assets/img/right-arrow.svg";
 const OurClientFeadBack = () => {
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
-    <img src={LeftArrow} alt="prevArrow" {...props} />
+    <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
 
   const SlickArrowRight = ({ currentSlide, slideCount, ...props }) => (
-    <img src={RightArrow} alt="nextArrow" {...props} />
+    <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />
   );
   const settings = {
     dots: false,
@@ -128,7 +128,11 @@ const OurClientFeadBack = () => {
                       </div>
 
                       <div className="flex  text-neutral-50 text-base leading-6 self-stretch whitespace-nowrap max-md:max-w-full feedback_pic">
-                        <img src="assets/img2/Foto.png.png" alt="" />{" "}
+                        <img
+                          loading="lazy"
+                          src="assets/img2/Foto.png.png"
+                          alt=""
+                        />{" "}
                         <p className="mt-4 ms-2"> Rata-rata okupansi</p>
                       </div>
                     </div>
@@ -187,7 +191,11 @@ const OurClientFeadBack = () => {
                       </div>
 
                       <div className="flex  text-neutral-50 text-base leading-6 self-stretch whitespace-nowrap max-md:max-w-full feedback_pic">
-                        <img src="assets/img2/Foto.png.png" alt="" />{" "}
+                        <img
+                          loading="lazy"
+                          src="assets/img2/Foto.png.png"
+                          alt=""
+                        />{" "}
                         <p className="mt-4 ms-2"> Rata-rata okupansi</p>
                       </div>
                     </div>

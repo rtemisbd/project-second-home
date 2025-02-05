@@ -44,62 +44,137 @@ export default function FaqQuestions() {
     {
       label: "Search and Order",
       value: "search",
-      icon: <img src={Svg} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
 
     {
       label: "Regarding Check-in",
       value: "Regarding Check-in",
-      icon: <img src={Svg1} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg1}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
 
     {
       label: "Check-out and Deposit Refund",
       value: "Check-out and Deposit Refund",
-      icon: <img src={Svg2} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg2}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
 
     {
       label: "Order Cancellations and Changes",
       value: "Order Cancellations and Changes",
-      icon: <img src={Svg3} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg3}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
     {
       label: "Prices and Promotions",
       value: "Prices and Promotions",
-      icon: <img src={Svg4} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg4}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
 
     {
       label: "Live in PSH",
       value: "Live in PSH",
-      icon: <img src={Svg5} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg5}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
     {
       label: "Loyalty Program",
       value: "Loyalty Program",
-      icon: <img src={Svg9} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg9}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
     {
       label: "Accounts and Security",
       value: "Accounts and Security",
-      icon: <img src={Svg6} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg6}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
     {
       label: "Property Owner",
       value: "Property Owner",
-      icon: <img src={Svg7} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg7}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
     {
       label: "PSH Business",
       value: "PSH Business",
-      icon: <img src={Svg8} alt="" style={{ width: "24px", height: "24px" }} />,
+      icon: (
+        <img
+          loading="lazy"
+          src={Svg8}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
+      ),
     },
     {
       label: "About PSH",
       value: "About PSH",
       icon: (
-        <img src={pshLogo} alt="" style={{ width: "24px", height: "24px" }} />
+        <img
+          loading="lazy"
+          src={pshLogo}
+          alt=""
+          style={{ width: "24px", height: "24px" }}
+        />
       ),
     },
   ];
@@ -257,7 +332,7 @@ export default function FaqQuestions() {
       </div>
       <div className="grid md:grid-cols-2 sm:grid-cols-1 md:mt-0 sm:mt-16">
         <div className="md:block sm:hidden">
-          <img src={footerImg} alt="" />
+          <img loading="lazy" src={footerImg} alt="" />
         </div>
         <div className="bg-[#e0dada] px-20 pt-28 rounded-tr-[100px]">
           <h2 className="md:text-[36px] sm:text-[1rem] md:w-3/4 sm:w-full">

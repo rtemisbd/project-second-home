@@ -90,7 +90,11 @@ const Seats = ({ data, handleSubmit }) => {
                       </p>
                       <div className="flex mt-2">
                         <div>
-                          <img src="/images/category-pax.svg.png" alt="" />
+                          <img
+                            loading="lazy"
+                            src="/images/category-pax.svg.png"
+                            alt=""
+                          />
                         </div>
                         <div>
                           <p className="text-start ms-2">Max person: 1</p>
@@ -98,7 +102,11 @@ const Seats = ({ data, handleSubmit }) => {
                       </div>
                       <div className="flex mt-2">
                         <div>
-                          <img src="/images/Group 2166.png" alt="" />
+                          <img
+                            loading="lazy"
+                            src="/images/Group 2166.png"
+                            alt=""
+                          />
                         </div>
                         <div>
                           <p className="text-start ms-2">{item?.seatType}</p>
@@ -107,7 +115,7 @@ const Seats = ({ data, handleSubmit }) => {
 
                       {/* <div className="flex mt-2">
                         <div>
-                          <img src="/images/category-window.svg.png" alt="" />
+                          <img loading="lazy" src="/images/category-window.svg.png" alt="" />
                         </div>
                         <div>
                           <p className="text-start ms-2">Window outside view</p>

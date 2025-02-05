@@ -248,11 +248,11 @@ const Promo = ({ data, refetch }) => {
                     </div>
 
                     <div>
-                      <img
+                      {/* <img
                         src={data?.homePageCover[0] && data?.homePageCover[0]}
                         style={{ width: "300px", height: "200px" }}
                         alt=""
-                      />
+                      /> */}
                     </div>
                     <div className="col-md-4 form_sub_stream">
                       <label htmlFor="inputState" className="form-label  ">
@@ -267,11 +267,11 @@ const Promo = ({ data, refetch }) => {
                     </div>
 
                     <div>
-                      <img
+                      {/* <img
                         src={data?.photos[0] && data?.photos[0]}
                         style={{ width: "300px", height: "200px" }}
                         alt=""
-                      />
+                      /> */}
                     </div>
                     <div className="d-flex flex-column form_sub_stream">
                       <label

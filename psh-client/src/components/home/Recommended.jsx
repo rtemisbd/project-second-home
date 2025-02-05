@@ -22,7 +22,7 @@ const Recommended = () => {
     if (lastSlideIndex === 0) {
       return null;
     } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
+      return <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />;
     }
   };
 
@@ -30,7 +30,7 @@ const Recommended = () => {
     if (lastSlideIndex === data?.length - 5) {
       return null;
     } else {
-      return <img src={RightArrow} alt="nextArrow" {...props} />;
+      return <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />;
     }
   };
   const settings = {

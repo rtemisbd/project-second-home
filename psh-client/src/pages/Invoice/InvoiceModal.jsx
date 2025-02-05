@@ -94,7 +94,7 @@ const InvoiceModal = ({ handleOpen, size }) => {
                 {/* <div className="flex items-center  ">
                   <div className="flex bg-[#A5F8F2] p-[10px] ">
                     <div>
-                      <img src={right} alt="" />
+                      <img loading="lazy" src={right} alt="" />
                     </div>
                     <h2 className="text-xl tracking-[0.1px] ml-2">
                       Thank you. Your reservation has been received! Please
@@ -109,7 +109,7 @@ const InvoiceModal = ({ handleOpen, size }) => {
                     <div className=" p-10 mt-5 payment-info border  ">
                       <div className="flex justify-between  gap-x-0  ">
                         <div>
-                          <img src={logo} alt="" />
+                          <img loading="lazy" src={logo} alt="" />
                         </div>
                         <div className="text-right">
                           <h2 className="text-[28px] font-[500] text-[#35B0A7]">

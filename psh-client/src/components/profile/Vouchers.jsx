@@ -116,7 +116,7 @@ const Vouchers = () => {
     //     <h1 className="title"> Your Voucher</h1>
     //     <div className="mt-5 flex justify-between box" style={{ width: "70%" }}>
     //       <div className="flex gap-x-5">
-    //         <img src="./public/images/Frame 4069.png" alt="" />
+    //         <img loading="lazy" src="./public/images/Frame 4069.png" alt="" />
     //         <div>
     //           <Typography className="voucher">Voucher Title or Name</Typography>
     //           <Typography className="code">Voucher Code: PSH5off</Typography>
@@ -136,7 +136,7 @@ const Vouchers = () => {
     //         </div>
     //       </div>
     //       <div className="mt-7">
-    //         <img src="./public/images/copy-02.png" alt="" />
+    //         <img loading="lazy" src="./public/images/copy-02.png" alt="" />
     //       </div>
     //       <div className="mt-5">
     //         <button className="btn">Available</button>
@@ -149,7 +149,7 @@ const Vouchers = () => {
     //     </div>
     //     <div className="mt-5 flex justify-between box" style={{ width: "70%" }}>
     //       <div className="flex gap-x-5">
-    //         <img src="./public/images/Frame 4069.png" alt="" />
+    //         <img loading="lazy" src="./public/images/Frame 4069.png" alt="" />
     //         <div>
     //           <Typography className="voucher">Voucher Title or Name</Typography>
     //           <Typography className="code">Voucher Code: PSH5off</Typography>
@@ -169,7 +169,7 @@ const Vouchers = () => {
     //         </div>
     //       </div>
     //       <div className="mt-7">
-    //         <img src="./public/images/copy-02.png" alt="" />
+    //         <img loading="lazy" src="./public/images/copy-02.png" alt="" />
     //       </div>
     //       <div className="mt-5">
     //         <button className="btn" style={{ background: "#00A1FF" }}>
@@ -184,7 +184,7 @@ const Vouchers = () => {
     //     </div>
     //     <div className="mt-5 flex justify-between box" style={{ width: "70%" }}>
     //       <div className="flex gap-x-5">
-    //         <img src="./public/images/Frame 4069.png" alt="" />
+    //         <img loading="lazy" src="./public/images/Frame 4069.png" alt="" />
     //         <div>
     //           <Typography className="voucher">Voucher Title or Name</Typography>
     //           <Typography className="code">Voucher Code: PSH5off</Typography>
@@ -204,7 +204,7 @@ const Vouchers = () => {
     //         </div>
     //       </div>
     //       <div className="mt-7">
-    //         <img src="./public/images/copy-02.png" alt="" />
+    //         <img loading="lazy" src="./public/images/copy-02.png" alt="" />
     //       </div>
     //       <div className="mt-5">
     //         <button className="btn" style={{ background: "#E04848" }}>

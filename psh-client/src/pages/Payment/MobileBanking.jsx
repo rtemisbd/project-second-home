@@ -49,7 +49,7 @@ const MobileBanking = ({ bookingItem }) => {
           </div>
           <label htmlFor="bkash" className="ms-3">
             <div>
-              <img src={bkash} alt="" />
+              <img loading="lazy" src={bkash} alt="" />
             </div>
           </label>
         </div>
@@ -143,7 +143,7 @@ const MobileBanking = ({ bookingItem }) => {
           </div>
           <label htmlFor="nagad" className="ms-3">
             <div>
-              <img src={nagad} alt="" />
+              <img loading="lazy" src={nagad} alt="" />
             </div>
           </label>
         </div> */}
@@ -236,7 +236,7 @@ const MobileBanking = ({ bookingItem }) => {
           </div>
           <label htmlFor="dutch" className="ms-3">
             <div>
-              <img src={dutch} alt="" />
+              <img loading="lazy" src={dutch} alt="" />
             </div>
           </label>
         </div> */}

@@ -203,7 +203,7 @@ const RoomDetails = () => {
     if (lastSlideIndex === 0) {
       return null;
     } else {
-      return <img src={LeftArrow} alt="prevArrow" {...props} />;
+      return <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />;
     }
   };
 
@@ -211,7 +211,7 @@ const RoomDetails = () => {
     if (lastSlideIndex === publishedRecomended?.length - 5) {
       return null;
     } else {
-      return <img src={RightArrow} alt="nextArrow" {...props} />;
+      return <img loading="lazy" src={RightArrow} alt="nextArrow" {...props} />;
     }
   };
 
@@ -386,7 +386,11 @@ const RoomDetails = () => {
                       </h1>
                       <div className="flex text-[#9A9A9A] items-center custom_room_name2">
                         <div>
-                          <img src="/images/icon/marker-02.png" alt="" />
+                          <img
+                            loading="lazy"
+                            src="/images/icon/marker-02.png"
+                            alt=""
+                          />
                         </div>
                         <p className="ms-1"> {data?.branch?.name} -</p>
                       </div>
@@ -769,7 +773,7 @@ const RoomDetails = () => {
                     <div className="grid grid-cols-2 sm:text-sm ">
                       {data?.branch?.nearLocation1 ? (
                         <div className="flex mt-3">
-                          <img src={arroundIcon} alt="" />
+                          <img loading="lazy" src={arroundIcon} alt="" />
                           <p className="ms-4">{data?.branch?.nearLocation1}</p>
                         </div>
                       ) : (
@@ -778,7 +782,7 @@ const RoomDetails = () => {
 
                       {data?.branch?.nearLocation2 ? (
                         <div className="flex mt-3">
-                          <img src={arroundIcon} alt="" />
+                          <img loading="lazy" src={arroundIcon} alt="" />
                           <p className="ms-4">{data?.branch?.nearLocation2}</p>
                         </div>
                       ) : (
@@ -786,7 +790,7 @@ const RoomDetails = () => {
                       )}
                       {data?.branch?.nearLocation3 ? (
                         <div className="flex mt-3">
-                          <img src={arroundIcon} alt="" />
+                          <img loading="lazy" src={arroundIcon} alt="" />
                           <p className="ms-4">{data?.branch?.nearLocation3}</p>
                         </div>
                       ) : (
@@ -795,7 +799,7 @@ const RoomDetails = () => {
 
                       {data?.branch?.nearLocation4 ? (
                         <div className="flex mt-3">
-                          <img src={arroundIcon} alt="" />
+                          <img loading="lazy" src={arroundIcon} alt="" />
                           <p className="ms-4">{data?.branch?.nearLocation4}</p>
                         </div>
                       ) : (
@@ -803,7 +807,7 @@ const RoomDetails = () => {
                       )}
                       {data?.branch?.nearLocation5 ? (
                         <div className="flex mt-3">
-                          <img src={arroundIcon} alt="" />
+                          <img loading="lazy" src={arroundIcon} alt="" />
                           <p className="ms-4">{data?.branch?.nearLocation5}</p>
                         </div>
                       ) : (
@@ -811,7 +815,7 @@ const RoomDetails = () => {
                       )}
                       {data?.branch?.nearLocation6 ? (
                         <div className="flex mt-3">
-                          <img src={arroundIcon} alt="" />
+                          <img loading="lazy" src={arroundIcon} alt="" />
                           <p className="ms-4">{data?.branch?.nearLocation6}</p>
                         </div>
                       ) : (
