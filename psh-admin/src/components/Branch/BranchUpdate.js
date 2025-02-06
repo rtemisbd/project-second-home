@@ -1,15 +1,14 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import axios from "axios";
 import { baseUrl } from "../../utils/getBaseURL";
+import { uploadSingleImage } from "../../utils/uploadSingleImage";
 
 const Branch = ({ data }) => {
   const { _id, name } = data;
 
-  const [files, setFiles] = useState("");
-  const [banner, setBanner] = useState("");
   const MySwal = withReactContent(Swal);
   const formRef = useRef(null);
   const handleSubmit = async (event) => {
@@ -33,24 +32,12 @@ const Branch = ({ data }) => {
       branchDutchNumber: formData.get("branchDutchNumber"),
     };
     try {
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
+      const photo = await uploadSingleImage(formData.get("img"));
+      const banner = await uploadSingleImage(formData.get("banner"));
 
       const branch = {
         ...data2,
-        photos: list?.length > 0 ? list : data?.photos,
+        photos: [photo, banner],
       };
 
       await axios.put(`${baseUrl}/api/branch/${_id}`, branch);
@@ -280,7 +267,6 @@ const Branch = ({ data }) => {
               type="file"
               className="main_form w-100 p-0"
               name="img"
-              onChange={(e) => setFiles(e.target.files)}
               multiple
               // required
             />
@@ -290,12 +276,7 @@ const Branch = ({ data }) => {
               Banner upload
             </label>
 
-            <input
-              type="file"
-              className="main_form w-100 p-0"
-              name="banner"
-              onChange={(e) => setBanner(e.target.files)}
-            />
+            <input type="file" className="main_form w-100 p-0" name="banner" />
           </div>
         </div>
 

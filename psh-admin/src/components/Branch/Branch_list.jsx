@@ -20,6 +20,7 @@ const Branch_list = () => {
 
   //sub stream
   const [data, setData] = useState([]);
+  console.log(data);
 
   const columns = [
     {
