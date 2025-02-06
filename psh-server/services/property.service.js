@@ -146,125 +146,6 @@ const getPropertiesFromDB = async (queries) => {
   };
 };
 
-const getPropertiesFromDBForAdmin = async (queries) => {
-  const { category, destination, withSharedRoom, roomNumber, seatNumber } =
-    queries;
-
-  const page = parseInt(queries.page);
-  const size = parseInt(queries.size);
-  let query = {};
-  if (roomNumber && roomNumber !== "") {
-    query.roomNumber = { $regex: `^${roomNumber}`, $options: "i" };
-  }
-
-  // Declare pipeline as an array, adding conditional stages
-  const pipeline = [
-    { $match: query },
-    {
-      $lookup: {
-        from: "branches",
-        localField: "branch",
-        foreignField: "_id",
-        as: "branchDetails",
-        pipeline: [
-          {
-            $project: {
-              _id: 1,
-              name: 1,
-              foodAmount: 1,
-            },
-          },
-        ],
-      },
-    },
-    { $unwind: "$branchDetails" },
-    {
-      $match: {
-        ...(destination ? { "branchDetails.name": destination } : {}),
-      },
-    },
-    {
-      $lookup: {
-        from: "categories",
-        localField: "category",
-        foreignField: "_id",
-        as: "categoryDetails",
-        pipeline: [
-          {
-            $project: {
-              _id: 1,
-              name: 1,
-            },
-          },
-        ],
-      },
-    },
-    { $unwind: "$categoryDetails" },
-    {
-      $match: {
-        ...(category !== "" ? { "categoryDetails.name": category } : {}),
-      },
-    },
-
-    // Faceted Pagination and Total Counts
-    {
-      $facet: {
-        paginatedResults: [
-          { $sort: { createdAt: -1 } },
-          ...(page >= 1 && size >= 1
-            ? [{ $skip: (page - 1) * size }, { $limit: size }]
-            : []),
-        ],
-        totalCounts: [
-          {
-            $group: {
-              _id: null,
-              totalCount: { $sum: 1 },
-            },
-          },
-        ],
-      },
-    },
-    {
-      $project: {
-        paginatedResults: 1,
-        totalCount: {
-          $ifNull: [{ $arrayElemAt: ["$totalCounts.totalCount", 0] }, 0],
-        },
-      },
-    },
-  ];
-
-  let properties = await Property.aggregate(pipeline);
-  if (seatNumber) properties = [];
-
-  let allProperties = properties[0]?.paginatedResults || [];
-  let totalCount = properties[0]?.totalCount || 0;
-  // if (withSharedRoom && !roomNumber) {
-  //   const extractedSeats = await seatServices.getAllSeatsFromDB({
-  //     destination,
-  //     size,
-  //     page,
-  //     seatNumber,
-  //   });
-
-  //   allProperties = [
-  //     ...allProperties.filter(
-  //       (result) => result?.categoryDetails?.name === "Private Room"
-  //     ),
-  //     ...extractedSeats,
-  //   ];
-  //   totalCount += extractedSeats.length;
-  // }
-
-  return {
-    properties: allProperties,
-    totalCount: totalCount,
-    currentPage: page,
-    pageSize: size,
-  };
-};
-
 const getRecommendedPropertiesFromDB = async () => {
   const result = await Property.aggregate([
     { $match: { recommended: "yes", isPublished: "Published" } },
@@ -354,7 +235,6 @@ const updatePropertyById = async (propertyId, payload) => {
 
 export const propertyServices = {
   getPropertiesFromDB,
-  getPropertiesFromDBForAdmin,
   getRecommendedPropertiesFromDB,
   getSinglePropertyFromDB,
   updatePropertyById,

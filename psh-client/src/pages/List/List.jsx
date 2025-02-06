@@ -84,7 +84,6 @@ function List() {
           const response = await axios.get(
             `${serverBaseUrl}/property?${queryParams.toString()}`
           );
-
           setData(await response?.data?.properties);
           setTotalDataCount(response?.data?.totalCount);
           setLoading(false);
@@ -112,43 +111,6 @@ function List() {
       // sort,
     ]
   );
-
-  // Get Properties
-  // const { refetch } = useQuery(["propertyList"], async () => {
-  //   try {
-  //     setLoading(true);
-  //     const queryParams = new URLSearchParams({
-  //       withSharedRoom,
-  //       furnitured,
-  //       category,
-  //       isPublished: "Published",
-  //       max,
-  //       gender,
-  //       destination,
-  //       bedType: bedrooms,
-  //       // startDate,
-  //       // endDate,
-  //       min,
-  //       facilities,
-  //       commonfacilities,
-  //       itemsPerPage,
-  //       fromClient: true,
-  //       page,
-  //       sort,
-  //     });
-  //     const response = await axios.get(
-  //       `${serverBaseUrl}/property?${queryParams.toString()}`
-  //     );
-
-  //     setData(await response?.data?.properties);
-  //     setTotalDataCount(response?.data?.totalCount);
-  //     setLoading(false);
-  //   } catch (error) {
-  //     setLoading(false);
-  //     console.error(error);
-  //     throw error;
-  //   }
-  // });
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);

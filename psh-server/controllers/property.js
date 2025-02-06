@@ -65,12 +65,6 @@ export const getPropertys = async (req, res, next) => {
   return res.status(200).json(result);
 };
 
-export const getPropertysForAdmin = catchAsync(async (req, res, next) => {
-  const result = await propertyServices.getPropertiesFromDBForAdmin(req.query);
-
-  res.status(200).json(result);
-});
-
 // Get Booking Report
 
 export const getBookingReport = async (req, res, next) => {
