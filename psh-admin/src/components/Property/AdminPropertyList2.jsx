@@ -347,33 +347,13 @@ const AdminPropertyList2 = () => {
                                 className="bg-white"
                                 onClick={() => handleEdit(room)}
                               >
-                                <span
-                                // to={`/dashboard/edit/${selectedCategory}/${id}`}
-                                >
+                                <span>
                                   <BiSolidEdit
                                     style={{ width: "24px", height: "24px" }}
                                   />
                                 </span>
                               </button>
-                              {/* <div>
-                                <button
-                                  type="button"
-                                  className="bg-white"
-                              
-                                >
-                                  <span>
-                                    <BiSolidEdit
-                                      style={{ width: "24px", height: "24px" }}
-                                    />
-                                  </span>
-                                </button>
-                              <div>
-                                <PropertyUpdate2
-                                  data={room}
-                                  refetch={refetch}
-                                  handleClose={handleClose}
-                                />
-                              </div> */}
+
                               <div>
                                 <button
                                   type="button"
@@ -393,11 +373,6 @@ const AdminPropertyList2 = () => {
                                   </span>
                                 </button>
                               </div>
-
-                              {/* <AiOutlineDelete
-                                    onClick={() => handleDelete(row._id)}
-                                    style={{ width: "30px", height: "30px", marginTop: "10px" }}
-                                /> */}
                             </div>
                           </td>
                         </tr>

@@ -3,6 +3,8 @@ import React, { useState, useRef } from "react";
 import { useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { baseUrl } from "../utils/getBaseURL";
+import { uploadSingleImage } from "../utils/uploadSingleImage";
 
 const Add_Branch = () => {
   const [files, setFiles] = useState("");
@@ -30,27 +32,15 @@ const Add_Branch = () => {
       branchDutchNumber: formData.get("branchDutchNumber"),
     };
     try {
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
+      const photo = await uploadSingleImage(formData.get("img"));
+      const banner = await uploadSingleImage(formData.get("banner"));
 
       const branch = {
         ...data2,
-        photos: list,
+        photos: [photo, banner],
       };
 
-      await axios.post("https://api.psh.com.bd/api/branch", branch);
+      await axios.post(`${baseUrl}/api/branch`, branch);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {
