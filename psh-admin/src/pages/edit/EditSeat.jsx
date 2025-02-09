@@ -175,7 +175,7 @@ const EditSeat = () => {
     const updatedSeat = {
       name: formData.get("seatName"),
       seatNumber: formData.get("seatNumber"),
-      seatType: formData.get("seatBedType"),
+      seatType: formData.get("seatType"),
       perDay,
       perMonth,
       perYear,
