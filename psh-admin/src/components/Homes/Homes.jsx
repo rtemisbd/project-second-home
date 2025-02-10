@@ -11,17 +11,20 @@ const Homes = () => {
   const { user } = useContext(AuthContext);
 
   return (
-    <>
-      {user?.role === "manager" || user?.role === "partner" ? (
-        <div className="mt-0">
-          <ManagerOrdersList />
-        </div>
-      ) : (
-        <div className="mt-0">
-          <NewOrders />
-        </div>
-      )}
-    </>
+    // <>
+    //   {user?.role === "manager" || user?.role === "partner" ? (
+    //     <div className="mt-0">
+    //       <ManagerOrdersList />
+    //     </div>
+    //   ) : (
+    //     <div className="mt-0">
+    //       <NewOrders />
+    //     </div>
+    //   )}
+    // </>
+    <div className="mt-0">
+      <NewOrders />
+    </div>
   );
 };
 

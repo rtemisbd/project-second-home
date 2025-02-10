@@ -17,6 +17,7 @@ import PropertyUpdate2 from "../../pages/edit/PropertyUpdate2";
 import { AiOutlineEye } from "react-icons/ai";
 import PropertyDetails from "./PropertyDetails";
 import { useQuery } from "react-query";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Property_list = (props) => {
   const MySwal = withReactContent(Swal);
@@ -32,12 +33,9 @@ const Property_list = (props) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get(
-          "https://api.psh.com.bd/api/category",
-          {
-            mode: "cors",
-          }
-        );
+        const { data } = await axios.get(`${baseUrl}/api/category`, {
+          mode: "cors",
+        });
         const categoryMap = {};
         data.forEach((category) => {
           categoryMap[category._id] = category.name;
@@ -54,7 +52,7 @@ const Property_list = (props) => {
   useEffect(() => {
     const fetchCategories = async () => {
       try {
-        const { data } = await axios.get("https://api.psh.com.bd/api/branch", {
+        const { data } = await axios.get(`${baseUrl}/api/branch`, {
           mode: "cors",
         });
         const categoryMap = {};
@@ -73,7 +71,7 @@ const Property_list = (props) => {
   // Get Propertys
 
   const { isLoading, refetch } = useQuery([data, branch], () =>
-    fetch(`https://api.psh.com.bd/api/property`, {
+    fetch(`${baseUrl}/api/property`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -81,7 +79,7 @@ const Property_list = (props) => {
         setData(data);
       })
   );
-  const main = data.filter((pd) => pd?.branch?._id === userBranch);
+  const main = data?.filter((pd) => pd?.branch?._id === userBranch);
 
   const columns = [
     {
@@ -240,7 +238,7 @@ const Property_list = (props) => {
   //   const getData = async () => {
   //     try {
   //       const { data } = await axios.get(
-  //         `https://api.psh.com.bd/api/property`,
+  //         `${baseUrl}/api/property`,
   //         {
   //           mode: "cors",
   //         }
@@ -260,7 +258,7 @@ const Property_list = (props) => {
   const handleCategory = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/property/${id}`;
+      const url = `${baseUrl}/api/property/${id}`;
       fetch(url, {
         method: "DELETE",
       })

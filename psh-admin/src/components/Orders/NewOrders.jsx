@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useQuery } from "react-query";
 
 import useExtraCharge from "../../hooks/useExtraCharge";
@@ -13,17 +13,21 @@ import { MdRefresh } from "react-icons/md";
 import Pagination from "../Pagination/Pagination";
 import { useSelector } from "react-redux";
 import useBranch from "../../hooks/useBranch";
+import { AuthContext } from "../../contexts/UserProvider";
 
 const NewOrders = () => {
   const { page, size } = useSelector((state) => state.pagination);
 
+  const { user } = useContext(AuthContext);
   const [extraCharge] = useExtraCharge();
 
   const [isLoading, setIsLoading] = useState(false);
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [branch, setBranch] = useState("All");
+  const [branch, setBranch] = useState(
+    user?.role === "manager" ? user?.branch : "All"
+  );
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
   const [runningStatus, setRunningStatus] = useState("All");
@@ -302,21 +306,23 @@ const NewOrders = () => {
                   />
                 </div>
               </div>
-              <div>
-                <label htmlFor="">Branch </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px" }}
-                  onChange={(e) => setBranch(e.target.value)}
-                  id="branchId"
-                  value={branch}
-                >
-                  <option value="All">All</option>
-                  {allBranch?.map((branch) => (
-                    <option value={branch?._id}>{branch?.name}</option>
-                  ))}
-                </select>
-              </div>
+              {user?.role !== "manager" && (
+                <div>
+                  <label htmlFor="">Branch </label> <br />
+                  <select
+                    className="rounded"
+                    style={{ height: "30px" }}
+                    onChange={(e) => setBranch(e.target.value)}
+                    id="branchId"
+                    value={branch}
+                  >
+                    <option value="All">All</option>
+                    {allBranch?.map((branch) => (
+                      <option value={branch?._id}>{branch?.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div>
                 <label htmlFor="">Payment Status </label> <br />
                 <select

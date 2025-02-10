@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import LoadingState from "../../pages/LoadingState/LoadingState";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
@@ -15,8 +15,10 @@ import { BiSolidEdit } from "react-icons/bi";
 import PropertyStatusUpdate from "../../pages/edit/PropertyStatusUpdate";
 import { AiOutlineEye } from "react-icons/ai";
 import PropertyDetails2 from "./PropertyDetails2";
+import { AuthContext } from "../../contexts/UserProvider";
 
 const AdminPropertyList2 = () => {
+  const { user } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
   const dispatch = useDispatch();
   const handleClose = () => dispatch(placeLoadingShow(false));
@@ -39,6 +41,15 @@ const AdminPropertyList2 = () => {
   const { allBranch: branches } = useBranch();
   const { categories } = useCategory();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user?.role === "manager") {
+      const managerBranch = branches?.find(
+        (branch) => branch?._id === user?.branch
+      );
+      setBranch(managerBranch?.name);
+    }
+  }, []);
 
   const { refetch } = useQuery(["propertyList", category, branch], async () => {
     try {
@@ -134,26 +145,27 @@ const AdminPropertyList2 = () => {
                     ))}
                   </select>
                 </div>
+                {user?.role !== "manager" && (
+                  <div style={{ marginLeft: 10 }}>
+                    <div>
+                      <label htmlFor="branch">Branch</label>
+                    </div>
 
-                <div style={{ marginLeft: 10 }}>
-                  <div>
-                    <label htmlFor="branch">Branch</label>
+                    <select
+                      onChange={(e) => setBranch(e.target.value)}
+                      style={{
+                        height: "30px",
+                      }}
+                    >
+                      <option value="All">All</option>
+                      {branches?.map((branch) => (
+                        <option key={branch._id} value={branch?.name}>
+                          {branch?.name}
+                        </option>
+                      ))}
+                    </select>
                   </div>
-
-                  <select
-                    onChange={(e) => setBranch(e.target.value)}
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <option value="All">All</option>
-                    {branches?.map((branch) => (
-                      <option key={branch._id} value={branch?.name}>
-                        {branch?.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                )}
 
                 <div>
                   <label htmlFor="roomId">Room Number </label> <br />
