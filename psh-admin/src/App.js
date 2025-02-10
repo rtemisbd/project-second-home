@@ -5,8 +5,6 @@ import "./App.css";
 import SignIn from "./pages/SignIn";
 import Add_Category from "./pages/Add_Category";
 import Category from "./pages/Category";
-import Property from "./pages/Property";
-import Orders from "./pages/Orders";
 import Add_property from "./pages/Add_property";
 import Promo from "./pages/Promo";
 import Add_Promo from "./pages/Add_Promo";
@@ -118,7 +116,6 @@ function App() {
         <Route path="commonfacility_list" element={<CommonFacility />} />
 
         <Route path="add_property" element={<Add_property />} />
-        <Route path="property_list_m" element={<Property />} />
         <Route path="property_list_p" element={<Partner_property_list />} />
 
         {/* test purpose */}
@@ -138,7 +135,6 @@ function App() {
         <Route path="banner_list" element={<Banner />} />
         <Route path="add_recommended" element={<Add_Recommended />} />
         <Route path="recommended_list" element={<Recommended />} />
-        <Route path="orders_m" element={<Orders />} />
         <Route path="orders" element={<AdminOrders />} />
         <Route path="transaction" element={<TransactionAdmin />} />
         <Route path="transaction-m" element={<TransactionManager />} />

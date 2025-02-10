@@ -49,7 +49,7 @@ const AdminPropertyList2 = () => {
       );
       setBranch(managerBranch?.name);
     }
-  }, []);
+  }, [branches, user?.branch, user?.role]);
 
   const { refetch } = useQuery(["propertyList", category, branch], async () => {
     try {
