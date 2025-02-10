@@ -1,76 +1,79 @@
 import React, { useContext, useEffect, useState } from "react";
-
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
-import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import BootstrapTable from "react-bootstrap-table-next";
-
-import OrderStatusUpdate from "../../pages/edit/OrderStatusUpdate";
-import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
-import { BiSolidEdit } from "react-icons/bi";
-import SeeOrderDetails from "./SeeOrderDetails";
 import { useQuery } from "react-query";
-import Payment from "../../pages/edit/Payment";
-import { ToastContainer, toast } from "react-toastify";
-import useTransaction from "../../hooks/useTransaction";
-import { AuthContext } from "../../contexts/UserProvider";
+
 import useExtraCharge from "../../hooks/useExtraCharge";
-import useBranch from "../../hooks/useBranch";
-import { useLocation } from "react-router-dom";
 import img from "../../img/new/style.png";
+
 import { Spinner } from "react-bootstrap";
+import BookingsTable from "./BookingsTable";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
-import BookingSeatDateExtend from "../../pages/edit/BookingSeatDateExtend";
-import BookingDatesExtend from "../../pages/edit/BookingDatesExtend";
+import { baseUrl } from "../../utils/getBaseURL";
+import { MdRefresh } from "react-icons/md";
+import Pagination from "../Pagination/Pagination";
+import { useSelector } from "react-redux";
+import useBranch from "../../hooks/useBranch";
+import { AuthContext } from "../../contexts/UserProvider";
 
 const ManagerOrdersList = () => {
-  const MySwal = withReactContent(Swal);
-  const [transactions] = useTransaction();
   const { user } = useContext(AuthContext);
-  const userBranch = user?.branch?._id;
-  const { pathname } = useLocation();
+  const { page, size } = useSelector((state) => state.pagination);
+
   const [extraCharge] = useExtraCharge();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [isFilter, setIsFilter] = useState(false);
-  const [error, setError] = useState(null);
 
-  const [filterData, setFilterData] = useState([]);
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  let orderId = "All";
 
-  let bookingUserId = "All";
-  const [bookingId, setBookingId] = useState("");
-  const [userId, setUserId] = useState("");
-  const branch = "All";
-  const [paymentStatus, setPaymentStaus] = useState("All");
+  const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
-  const [status, setStatus] = useState("Approved");
-  //sub stream
+  const [runningStatus, setRunningStatus] = useState("All");
+  const [guestType, setGuestType] = useState("All");
+  const [unknownQuery, setUnknownQuery] = useState("");
+  const [filteredName, setFilteredName] = useState("");
+  const [filteredPhone, setFilteredPhone] = useState("");
+
   const [data, setData] = useState([]);
-  const [allBookings, setAllBookings] = useState([]);
-  const [allBranch, setAllBranch] = useState([]);
-  // const [totalReceiveAmount, setTotalReceiveAmount] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
 
-  // Get All Branch
-  useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/branch`)
-      .then((res) => res.json())
-      .then((data) => setAllBranch(data));
-  }, []);
+  const [findingStatement, setFindingStatement] = useState(true);
+  const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
-  const findManagerBranch = allBranch?.find(
-    (branch) => branch?._id === userBranch
-  );
-
+  // get all branches
+  const { allBranch } = useBranch();
   // Get all Bookings
   const { refetch } = useQuery(
-    [data, extraCharge, findManagerBranch?._id, allBranch?.length],
+    [
+      "fetchBookings",
+      page,
+      extraCharge,
+
+      paymentStatus,
+      bookingStatus,
+      fromDate,
+      toDate,
+      runningStatus,
+      guestType,
+      filteredName,
+      filteredPhone,
+    ],
     async () => {
       try {
+        const queryParams = new URLSearchParams({
+          fromDate,
+          toDate,
+          branch: user?.branch,
+          paymentStatus,
+          page,
+          size,
+          runningStatus,
+          guestType,
+          status: bookingStatus,
+          filteredName,
+          filteredPhone,
+        });
+
         // Get the access token
         const accessToken = getFromLocalStorage(authKey);
         // Set the headers
@@ -80,7 +83,7 @@ const ManagerOrdersList = () => {
         };
 
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?branch=${findManagerBranch?._id}`,
+          `${baseUrl}/api/order?${queryParams.toString()}`,
           {
             method: "GET",
             headers: headers,
@@ -92,400 +95,69 @@ const ManagerOrdersList = () => {
         }
 
         const data = await response.json();
-        setData(data?.orders);
-        setAllBookings(data?.orders);
+        setData(data.data);
+
+        setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
+    },
+    {
+      refetchOnWindowFocus: false,
     }
   );
 
-  const handlePaymentStatus = (e) => {
-    setPaymentStaus(e.target.value);
-  };
-  const handleBookingStatus = (e) => {
-    setBookingStatus(e.target.value);
-  };
+  // Re-fetch data whenever size changes
+  useEffect(() => {
+    refetch();
+  }, [size, refetch]);
 
-  const handleSearch = async () => {
-    setStatus(bookingStatus);
-    const withIdBooking = data?.find(
-      (booking) => booking?._id?.slice(-5) === bookingId
-    );
-    const withUserIdBooking = data?.filter(
-      (booking) => booking?.userId?.slice(-5) === userId
-    );
+  const handleUnknownQuery = (e) => {
+    const value = e.target.value;
+    setUnknownQuery(value);
 
-    if (bookingId && !withIdBooking) {
-      return toast.error("Sorry! Wrong Id ");
-    }
-    // if (userId && !withUserIdBooking) {
-    //   return toast.error("Sorry! Wrong Id ");
-    // }
-
-    setIsLoading(true);
-    setIsFilter(true);
-    orderId = withIdBooking?._id ? withIdBooking?._id : "All";
-    bookingUserId = withUserIdBooking[0]?.userId
-      ? withUserIdBooking[0]?.userId
-      : "All";
-
-    try {
-      const response = await fetch(
-        `https://api.psh.com.bd/api/order?orderId=${orderId}&userId=${bookingUserId}&fromDate=${fromDate}&toDate=${toDate}&branch=${findManagerBranch?._id}&paymentStatus=${paymentStatus}&status=${bookingStatus}`,
-        {
-          method: "GET",
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      setFilterData(data?.orders);
-    } catch (error) {
-      setError(error);
-    } finally {
-      setIsLoading(false);
+    if (!isNaN(Number(value) && value.length === 11)) {
+      setFilteredPhone(value);
     }
   };
 
-  // Find Total Booking Amount Branch Or All Booking By Filtering
-  let totalBookingAmount = 0;
-
-  for (const item of isFilter ? filterData : allBookings) {
-    totalBookingAmount += item.payableAmount;
-  }
-  // Find Total Booking Amount Branch Or All Booking By Filtering
-  let totalReceiveAmountFilter = 0;
-
-  for (const item of isFilter ? filterData : allBookings) {
-    totalReceiveAmountFilter += item.totalReceiveTk;
-  }
-
-  let totalDueAmount = 0;
-
-  for (const item of isFilter ? filterData : allBookings) {
-    totalDueAmount += item.dueAmount;
-  }
-
-  const columns = [
-    {
-      text: "Date",
-      formatter: (cellContent, row, index) => {
-        const formattedDate = new Date(row?.createdAt).toLocaleString();
-        return (
-          <>
-            {" "}
-            <p>{formattedDate?.split(",")[0]}</p>
-          </>
-        );
-      },
-    },
-
-    {
-      text: <span>Booking Id</span>,
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>#{row?._id?.slice(-5)}</p>
-          </>
-        );
-      },
-    },
-    {
-      text: <span>User Id</span>,
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>#{row?.userId?.slice(-5)}</p>
-          </>
-        );
-      },
-    },
-    {
-      text: <span>Room / Seat No</span>,
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {row?.bookingInfo?.roomType === "Shared Room"
-              ? row?.bookingInfo?.seatBooking?.seatNumber
-              : row?.bookingInfo?.data?.roomNumber}
-          </>
-        );
-      },
-    },
-
-    {
-      text: "Total Tk",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p className="fw-bold">Tk {row?.totalAmount?.toLocaleString()}</p>
-          </>
-        );
-      },
-    },
-    {
-      text: "Discount",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p className="fw-bold">Tk {row?.discount?.toLocaleString()}</p>
-          </>
-        );
-      },
-    },
-    {
-      text: "Payable Tk",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p className="fw-bold">Tk {row?.payableAmount?.toLocaleString()}</p>
-          </>
-        );
-      },
-    },
-
-    {
-      text: "Payment Status",
-      formatter: (cellContent, row, index) => {
-        return (
-          <span
-            className=" fw-bold "
-            style={{ color: row?.paymentStatus === "Paid" ? "green" : "red" }}
-          >
-            {" "}
-            {row?.paymentStatus}
-          </span>
-        );
-      },
-    },
-    {
-      text: "Due Amount",
-      formatter: (cellContent, row, index) => {
-        return (
-          <span
-            className=" fw-bold"
-            style={{ color: row?.paymentStatus === "Paid" ? "green" : "red" }}
-          >
-            {" "}
-            Tk {row?.dueAmount?.toLocaleString()}
-          </span>
-        );
-      },
-    },
-    {
-      text: "Total Receive",
-      formatter: (cellContent, row, index) => {
-        return (
-          <p className="fw-bold">Tk {row?.totalReceiveTk?.toLocaleString()}</p>
-        );
-      },
-    },
-    {
-      text: "Status",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            <div className=" d-flex ">
-              <div>
-                <p
-                  className="fw-bold"
-                  style={{
-                    color: row?.status === "Approved" ? "#27b3b1" : "red",
-                  }}
-                >
-                  {row?.status}
-                </p>
-              </div>
-              <button
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target={`#status${row._id}`}
-                className="d-flex  bg-white p-0"
-              >
-                <BiSolidEdit style={{ width: "24px", height: "24px" }} />
-              </button>
-              {/* Modal Order Status Update */}
-            </div>
-            <div>
-              <OrderStatusUpdate data={row} refetch={refetch} />
-            </div>
-          </>
-        );
-      },
-    },
-    {
-      text: "Contact",
-      formatter: (cellContent, row, index) => {
-        return <span className=" fw-bold">Contact</span>;
-      },
-    },
-    {
-      text: "Details",
-      formatter: (cellContent, row, index) => {
-        return (
-          <div>
-            <button
-              type="button"
-              className="bg-white"
-              data-bs-toggle="modal"
-              data-bs-target={`#details${row._id}`}
-            >
-              <span>
-                <AiOutlineEye style={{ width: "24px", height: "24px" }} />
-              </span>
-            </button>
-
-            {/* Modal Order Details */}
-            <SeeOrderDetails data={row} transactions={transactions} />
-          </div>
-        );
-      },
-    },
-    {
-      text: "Update Duration",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            <div className="d-flex justify-content-center">
-              <button
-                title={`${
-                  row?.status === "Approved"
-                    ? "Sorry ! Your Booking Already Approved"
-                    : ""
-                }`}
-                type="button"
-                className={`rounded ${
-                  row?.status === "Approved" ? "bg-white" : ""
-                }`}
-                style={{
-                  backgroundColor:
-                    row?.status === "Approved" ? "white" : "#35b0a7",
-                }}
-                data-bs-toggle="modal"
-                data-bs-target={`#dateUpdate${row._id}`}
-                disabled={row?.status === "Approved" ? true : false}
-              >
-                <AiOutlineFieldTime style={{ width: "24px", height: "24px" }} />
-              </button>
-            </div>
-            {/* Modal order Date Update */}
-            {row?.bookingInfo?.roomType === "Shared Room" ? (
-              <div>
-                <BookingSeatDateExtend
-                  data={row}
-                  refetch={refetch}
-                  extraCharge={extraCharge}
-                />
-              </div>
-            ) : (
-              <div>
-                <BookingDatesExtend
-                  data={row}
-                  refetch={refetch}
-                  extraCharge={extraCharge}
-                />
-              </div>
-            )}
-          </>
-        );
-      },
-    },
-
-    {
-      text: "Action",
-      formatter: (cellContent, row) => {
-        return (
-          <>
-            <div className="d-flex gap-2 fw-bold">
-              <button
-                type="button"
-                data-bs-toggle="modal"
-                data-bs-target={`#payment${row._id}`}
-                style={{ backgroundColor: "#00BBB4" }}
-              >
-                Payment
-              </button>
-              {/* 
-              <button className="bg-danger">End</button> */}
-            </div>
-            <Payment data={row} refetch={refetch} isLoading={isLoading} />
-          </>
-        );
-      },
-    },
-
-    {
-      text: "RQ",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p className=" fw-bold" style={{ color: "red" }}>
-              {row?.isCancel === "Yes" ? (
-                "Cancel Request"
-              ) : (
-                <span className="text-black">No Request</span>
-              )}
-            </p>
-          </>
-        );
-      },
-    },
-  ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-  });
-
-  //delete
-  const [bookings, setBookings] = useState(data);
-  const handleDelete = async (id) => {
-    const confirmation = window.confirm("Are you Sure?");
-    if (confirmation) {
-      const url = `https://api.psh.com.bd/api/order/${id}`;
-      fetch(url, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          MySwal.fire("Good job!", "successfully deleted", "success");
-          if (data.deletedCount === 1) {
-            const remainItem = bookings.filter((item) => item._id !== id);
-            setBookings(remainItem);
-          }
-        });
-    }
+  const handleRefreshQuery = () => {
+    setUnknownQuery("");
+    setFilteredPhone("");
+    document.getElementById("unknownQueryId").value = "";
+    setFromDate("");
+    document.getElementById("fromDateId").value = "";
+    setToDate("");
+    document.getElementById("toDateId").value = "";
+    setPaymentStatus("All");
+    document.getElementById("paymentStatusId").value = "All";
+    setBookingStatus("All");
+    document.getElementById("bookingStatusId").value = "All";
+    setRunningStatus("All");
+    document.getElementById("runningStatusId").value = "All";
+    setGuestType("All");
+    document.getElementById("guestTypeId").value = "All";
   };
+
+  useEffect(() => {
+    if (data?.orders?.length === 0 && !hasTimeoutRun) {
+      const timeoutId = setTimeout(() => {
+        setFindingStatement(!findingStatement);
+        setHasTimeoutRun(true);
+      }, 5000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [data?.orders?.length, findingStatement, hasTimeoutRun, refetch]);
+
   return (
     <div className="wrapper">
       <div>
         <div className="wrapper">
           {/* Content Wrapper. Contains page content */}
+
           <div className="content-wrapper h-0" style={{ background: "unset" }}>
+            {/* booking details */}
+            <h4 className="customize mx-lg-5 mb-3">Booking Details</h4>
             <div className="row customize mx-lg-5">
               <div className="col-md-3 home_card_m">
                 <div className="card_1">
@@ -495,10 +167,22 @@ const ManagerOrdersList = () => {
                     </div>
                     <div className="ms-3 ">
                       <p className="fw-bold">
-                        <span className="text-white">{status}</span> (Bookings)
+                        <span className="text-white">
+                          {bookingStatus === "All" ? "Approved" : bookingStatus}
+                        </span>{" "}
+                        (Bookings)
                       </p>
                       <p className="fw-bold text-white">
-                        {isFilter ? filterData?.length : allBookings?.length}{" "}
+                        {bookingStatus === "Pending"
+                          ? data?.pendingCount
+                          : bookingStatus === "Canceled"
+                          ? data?.canceledCount
+                          : bookingStatus === "Processing"
+                          ? data?.processingCount
+                          : bookingStatus === "Approved" ||
+                            bookingStatus === "All"
+                          ? data?.approvedCount
+                          : ""}{" "}
                         Booking
                       </p>
                     </div>
@@ -512,15 +196,15 @@ const ManagerOrdersList = () => {
                       <img src={img} alt="" className="img2" />
                     </div>
                     <div className="ms-3 text-white">
-                      <p className="">Total Booking Amount</p>
+                      <p className="">Total Payable Amount</p>
                       <p className="fw-bold">
-                        Tk {totalBookingAmount?.toLocaleString()}
+                        Tk {data?.totalBookingAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col-md-3">
+              <div className="col-md-3 home_card_m">
                 <div className="card_3">
                   <div className="d-flex p-3">
                     <div className="d-flex justify-content-center align-items-center">
@@ -529,13 +213,13 @@ const ManagerOrdersList = () => {
                     <div className="ms-3 text-white">
                       <p>Total Cash Amount</p>
                       <p className="fw-bold">
-                        Tk {totalReceiveAmountFilter?.toLocaleString()}
+                        Tk {data?.totalReceiveAmountFilter?.toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
-              <div className="col-md-3">
+              <div className="col-md-3 home_card_m">
                 <div className="card_4">
                   <div className="d-flex p-3">
                     <div className="d-flex justify-content-center align-items-center">
@@ -544,20 +228,53 @@ const ManagerOrdersList = () => {
                     <div className="ms-3 text-white">
                       <p>Total Due Amount</p>
                       <p className="fw-bold">
-                        Tk {totalDueAmount?.toLocaleString()}
+                        Tk {data?.totalDueAmount?.toLocaleString()}
                       </p>
                     </div>
                   </div>
                 </div>
               </div>
             </div>
+            {/* booking summery */}
+            <div className="mx-lg-5 customize">
+              <div className="d-flex mt-4 fw-bold ">
+                <p> Total Bookings : {data?.bookingsTotalCount}</p>
+                <p className="ms-2 text-green ">
+                  {" "}
+                  Approved Bookings : {data?.approvedCount}
+                </p>
+                <p className="ms-2 text-danger ">
+                  {" "}
+                  Pending Bookings : {data?.pendingCount}
+                </p>
+                <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
+
       <div className="content-wrapper" style={{ background: "unset" }}>
         <section className="content customize_list">
           <div className="container-fluid">
-            <div className=" d-lg-flex gap-4 ">
+            {/* search bar */}
+            <div className="d-lg-flex justify-content-end gap-2 ">
+              <div className="">
+                <label htmlFor=""> Phone </label>
+                <br />
+                <div>
+                  <input
+                    type="number"
+                    name="unknownQuery"
+                    id="unknownQueryId"
+                    onChange={handleUnknownQuery}
+                    placeholder="Enter phone number"
+                    value={unknownQuery}
+                    disabled={unknownQuery.length >= 11}
+                    className="rounded"
+                  />
+                </div>
+              </div>
               <div className="">
                 <label htmlFor="">From Date </label>
                 <br />
@@ -566,7 +283,9 @@ const ManagerOrdersList = () => {
                     type="date"
                     onChange={(e) => setFromDate(e.target.value)}
                     name=""
-                    id=""
+                    id="fromDateId"
+                    value={fromDate}
+                    className="rounded"
                   />
                 </div>
               </div>
@@ -576,32 +295,22 @@ const ManagerOrdersList = () => {
                   <input
                     type="date"
                     name=""
-                    id=""
+                    id="toDateId"
                     onChange={(e) => setToDate(e.target.value)}
+                    value={toDate}
+                    className="rounded"
                   />
                 </div>
               </div>
 
-              <div className=" d-flex gap-5 ">
-                <div>
-                  <label htmlFor="">Branch </label> <br />
-                  <select
-                    className="rounded"
-                    style={{ height: "30px" }}
-                    disabled
-                  >
-                    <option value={findManagerBranch?._id}>
-                      {findManagerBranch?.name}
-                    </option>
-                  </select>
-                </div>
-              </div>
               <div>
                 <label htmlFor="">Payment Status </label> <br />
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  onChange={handlePaymentStatus}
+                  onChange={(e) => setPaymentStatus(e.target.value)}
+                  id="paymentStatusId"
+                  value={paymentStatus}
                 >
                   <option>All</option>
 
@@ -614,72 +323,61 @@ const ManagerOrdersList = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  onChange={handleBookingStatus}
+                  onChange={(e) => setBookingStatus(e.target.value)}
+                  id="bookingStatusId"
+                  // value={bookingStatus}
                 >
-                  <option>All</option>
+                  <option value="All">All</option>
 
-                  <option>Pending</option>
-                  <option>Approved</option>
-                  <option>Canceled</option>
-                  <option>Processing</option>
+                  <option value="Pending">Pending</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Canceled">Canceled</option>
+                  <option value="Processing">Processing</option>
                 </select>
               </div>
               <div>
-                <label htmlFor="">User Id </label> <br />
-                <input
-                  type="text"
-                  list="userId"
-                  placeholder="Type User Id"
-                  onChange={(e) => setUserId(e.target.value)}
-                  style={{
-                    width: "160px",
-                  }}
-                />
-                <datalist id="userId">
-                  {data?.map((booking) => {
-                    return (
-                      <option key={booking._id}>
-                        {booking?.userId?.slice(-5)}
-                      </option>
-                    );
-                  })}
-                </datalist>
-              </div>
-              <div className=" ">
-                <label htmlFor="">Booking Id </label> <br />
-                <input
-                  type="text"
-                  list="bookingId"
-                  placeholder="Type Booking Id"
-                  onChange={(e) => setBookingId(e.target.value)}
-                  style={{
-                    width: "160px",
-                  }}
-                />
-                <datalist id="bookingId">
-                  {data?.map((booking) => {
-                    return (
-                      <option key={booking._id} style={{ display: "none" }}>
-                        {booking?._id?.slice(-5)}
-                      </option>
-                    );
-                  })}
-                </datalist>
-                <button
-                  onClick={handleSearch}
-                  className="btn text-white"
-                  style={{
-                    backgroundColor: "#35b0a7",
-                    height: "32px",
-                    padding: "0 10px",
-                  }}
+                <label htmlFor="">Running / Closed </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px", width: "120px" }}
+                  onChange={(e) => setRunningStatus(e.target.value)}
+                  id="runningStatusId"
+                  value={runningStatus}
                 >
-                  Search
-                </button>
+                  <option>All</option>
+                  <option>Running</option>
+                  <option>Closed</option>
+                </select>
               </div>
+              <div>
+                <label htmlFor="">Guest Type </label> <br />
+                <select
+                  className="rounded"
+                  style={{ height: "30px", width: "120px" }}
+                  onChange={(e) => setGuestType(e.target.value)}
+                  id="guestTypeId"
+                  value={guestType}
+                >
+                  <option>All</option>
+                  <option>Walk-in Guest</option>
+                  <option>Monthly</option>
+                </select>
+              </div>
+
+              {/* refresh */}
+              <button
+                type="button"
+                onClick={handleRefreshQuery}
+                style={{ marginTop: "18px" }}
+                aria-label="Refresh"
+                className="btn btn-sm"
+              >
+                <MdRefresh size={32} color="#00BBB4" />
+              </button>
             </div>
 
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
+            {/* booking table */}
             {isLoading ? (
               <p
                 style={{ margin: "150px 0" }}
@@ -687,48 +385,30 @@ const ManagerOrdersList = () => {
               >
                 Please Wait... <Spinner size="sm" animation="grow" />
               </p>
-            ) : data?.length > 0 || filterData?.length > 0 ? (
+            ) : data?.orders?.length > 0 ? (
               <div className="card">
                 <div className="card-body card_body_sm">
-                  <>
-                    <ToolkitProvider
-                      bootstrap4
-                      keyField="_id"
-                      columns={columns}
-                      data={isFilter ? filterData : data}
-                      pagination={pagination}
-                    >
-                      {(props) => (
-                        <React.Fragment>
-                          <BootstrapTable
-                            bootstrap4
-                            keyField="_id"
-                            columns={columns}
-                            data={isFilter ? filterData : data}
-                            pagination={pagination}
-                            {...props.baseProps}
-                          />
-                          <ToastContainer
-                            className="toast-position"
-                            position="top-center"
-                          />
-                        </React.Fragment>
-                      )}
-                    </ToolkitProvider>
-                  </>
+                  <BookingsTable
+                    data={data?.orders}
+                    page={page}
+                    isLoading={isLoading}
+                    refetch={refetch}
+                    extraCharge={extraCharge}
+                    size={size}
+                  />
                 </div>
               </div>
-            ) : (
+            ) : findingStatement ? (
               <p className="text-center text-danger fw-bold">
                 Find Bookings... <Spinner size="sm" animation="grow" />
               </p>
+            ) : (
+              <p className="text-center text-danger fw-bold">No Data Found</p>
             )}
           </div>
         </section>
+        <Pagination totalDataCount={totalDataCount} />
       </div>
-      {/* /.content-wrapper */}
-
-      {/* Control Sidebar */}
     </div>
   );
 };
