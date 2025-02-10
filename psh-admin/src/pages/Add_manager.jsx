@@ -7,6 +7,7 @@ import withReactContent from "sweetalert2-react-content";
 import { useForm } from "react-hook-form";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
+import { baseUrl } from "../utils/getBaseURL";
 const Add_Manager = () => {
   const {
     register,
@@ -25,8 +26,9 @@ const Add_Manager = () => {
     // Fetch branches from your backend API and update the branches state
     const fetchBranches = async () => {
       try {
-        const response = await fetch("https://api.psh.com.bd/api/branch");
+        const response = await fetch(`${baseUrl}/api/branch`);
         const data = await response.json();
+
         setBranches(data);
       } catch (error) {
         console.error("Error fetching branches:", error);
@@ -47,7 +49,7 @@ const Add_Manager = () => {
     } = data;
 
     try {
-      const response = await axios.post("https://api.psh.com.bd/api/users", {
+      const response = await axios.post(`${baseUrl}/api/users`, {
         firstName,
         address,
         email,
