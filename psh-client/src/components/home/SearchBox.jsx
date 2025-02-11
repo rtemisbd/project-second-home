@@ -150,8 +150,8 @@ const SearchBox = () => {
       furnitured: FurnishedQuery,
       gender: genderQuery,
       category: categoryQuery,
-      // startDate: startDate.toISOString().split("T")[0],
-      // endDate: endDate.toISOString().split("T")[0],
+      startDate: new Date(startDate).toISOString().split("T")[0],
+      endDate: new Date(endDate).toISOString().split("T")[0],
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
@@ -219,26 +219,6 @@ const SearchBox = () => {
                 </span>
               </li>
             ))}
-            {/* <li>
-              <span
-                className={`tab ${categoryValue === 0 ? "selected" : ""}`}
-                onClick={() => handleCategorySelection(0)}
-              >
-                All
-              </span>
-            </li>
-            {data.map((rent, index) => (
-              <li key={index}>
-                <span
-                  className={`tab  ${
-                    categoryValue === index + 1 ? "selected" : ""
-                  }`}
-                  onClick={() => handleCategorySelection(index + 1)}
-                >
-                  {rent?.property?.length > 0 ? rent?.name : ""}
-                </span>
-              </li>
-            ))} */}
           </ul>
           <div className="input-filed-area" ref={inputRef}>
             <input
