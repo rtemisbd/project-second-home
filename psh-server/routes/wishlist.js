@@ -14,6 +14,7 @@ router.post("/", createWishlist);
 router.get("/user/:userPhone", getMyWishlist);
 router.get("/:userPhone/:propertyId", getUserPropertyWishlistAdded);
 router.delete("/:id", deleteWishlist);
+
 router.get("/", getWishlist);
 router.get("/wishlist/check", checkMyWishlist);
 

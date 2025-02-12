@@ -1,8 +1,6 @@
 import { Typography, Card } from "@material-tailwind/react";
 import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
-
-import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
@@ -45,22 +43,17 @@ export default function WishList() {
                 </th>
                 <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
                   <Typography className="font-normal leading-none opacity-70">
-                    Gender Type
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
-                  <Typography className="font-normal leading-none opacity-70">
-                    Bed-Room
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
-                  <Typography className="font-normal leading-none opacity-70">
-                    Bath-Room
-                  </Typography>
-                </th>
-                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
-                  <Typography className="font-normal leading-none opacity-70">
                     Name
+                  </Typography>
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
+                  <Typography className="font-normal leading-none opacity-70">
+                    Branch
+                  </Typography>
+                </th>
+                <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
+                  <Typography className="font-normal leading-none opacity-70">
+                    Category
                   </Typography>
                 </th>
 
@@ -87,23 +80,19 @@ export default function WishList() {
                       />
                     </td>
                     <td className="p-2 border">
-                      <Typography className="font-normal">
-                        {item?.property?.type}
-                      </Typography>
-                    </td>
-                    <td className="p-2 border">
-                      <Typography className="font-normal">
-                        {item?.property?.bedroom}
-                      </Typography>
-                    </td>
-                    <td className="p-2 border">
-                      <Typography className="font-normal">
-                        {item?.property?.bathroom}
-                      </Typography>
-                    </td>
-                    <td className="p-2 border">
                       <Typography className="font-normal ">
                         {item?.property?.name}
+                      </Typography>
+                    </td>
+                    <td className="p-2 border">
+                      <Typography className="font-normal">
+                        {item?.property?.branch?.name}
+                      </Typography>
+                    </td>
+
+                    <td className="p-2 border">
+                      <Typography className="font-normal">
+                        {item?.roomType}
                       </Typography>
                     </td>
 

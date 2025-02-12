@@ -49,7 +49,11 @@ const checkPropertyUserWish = async (userPhone, propertyId) => {
 };
 
 const getMyWishes = async (userPhone) => {
-  const result = await WishlistModel.find({ userPhone }).populate("property");
+  const result = await WishlistModel.find({ userPhone }).populate({
+    path: "property",
+    populate: { path: "branch" },
+  });
+
   return result;
 };
 
