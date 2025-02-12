@@ -139,7 +139,6 @@ function List() {
   useEffect(() => {
     setData([...availableRooms]);
   }, [availableRooms]);
-  console.log({ data, availableRooms, availableSeats });
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
@@ -170,20 +169,6 @@ function List() {
       }
     });
   };
-
-  // useEffect(() => {
-  //   // Call reFetch whenever facilityFilters or itemsPerPage state changes
-  //   refetch(true);
-  // }, [
-  //   page,
-  //   itemsPerPage,
-  //   facilityFilters,
-  //   commonFacilityFilters,
-  //   sort,
-  //   min,
-  //   max,
-  //   // selectedBedrooms,
-  // ]);
 
   useEffect(() => {
     if (data && data.length > 0) {
