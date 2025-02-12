@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import UseFetch from "../../hooks/useFetch";
-import AllRecoondedSingle from "./AllRecoondedSingle";
+
 import "./styles/SingleCard.css";
 import useRecommended from "../../hooks/useRecommended";
 import SingleCard from "./SingleCard";
@@ -93,10 +93,6 @@ const AllRecomonded = () => {
                 className="single-card "
                 key={item?._id}
               >
-                {/* <AllRecoondedSingle
-                  item={item}
-                  isSeatIntoDate={isSeatIntoDate}
-                /> */}
                 <SingleCard item={item} />
               </Link>
             );

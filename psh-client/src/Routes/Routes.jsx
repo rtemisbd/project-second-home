@@ -9,7 +9,6 @@ import SignIn from "../pages/SignUp/SignIn";
 
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
-import BranchDetails from "../pages/Branch/BranchDetails";
 import PersonalInfo from "../pages/Booking/PersonalInfo";
 import BookNow from "../pages/Booking/BookNow";
 import Invoice from "../pages/Invoice/Invoice";
@@ -32,7 +31,6 @@ import Community from "../pages/Community/Community";
 import Stories from "../pages/Stories/Stories";
 import NotFound from "../pages/NotFound/NotFound";
 import EventDetails from "../pages/Details/EventDetails";
-
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
 import StudySpace from "../pages/StudySpace/StudySpace";
@@ -89,10 +87,6 @@ export const router = createBrowserRouter([
       {
         path: "/promo/:id",
         element: <PromoDetails></PromoDetails>,
-      },
-      {
-        path: "/branch/:id",
-        element: <BranchDetails></BranchDetails>,
       },
 
       {

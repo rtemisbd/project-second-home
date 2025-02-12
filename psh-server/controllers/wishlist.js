@@ -37,34 +37,11 @@ export const getUserPropertyWishlistAdded = async (req, res, next) => {
   });
 };
 
-export const getWishlist = async (req, res, next) => {
-  try {
-    const wishlist = await WishlistModel.find({}).populate("property");
-    res.status(200).json(wishlist);
-  } catch (err) {
-    next(err);
-  }
-};
-
 export const getMyWishlist = catchAsync(async (req, res, next) => {
   const result = await wishlistServices.getMyWishes(req.params.userPhone);
 
   return res.status(200).json(result);
 });
-
-export const checkMyWishlist = async (req, res, next) => {
-  try {
-    const { propertyId, userName } = req.query;
-    const isInWishlist = await WishlistModel.exists({
-      property: propertyId,
-      userName,
-    });
-
-    res.json({ isInWishlist });
-  } catch (err) {
-    res.status(500).json({ error: "Internal server error" });
-  }
-};
 
 export const deleteWishlist = catchAsync(async (req, res, next) => {
   const id = req.params.id;
