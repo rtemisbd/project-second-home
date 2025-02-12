@@ -1,6 +1,7 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
+import { baseUrl } from "../utils/getBaseURL";
 
 // Create the context
 export const AuthContext = createContext();
@@ -23,10 +24,10 @@ export const UserProvider = ({ children }) => {
   const loginUser = async (email, password) => {
     try {
       // Make your API call here to login the user using Axios
-      const response = await axios.post(
-        "https://api.psh.com.bd/api/users/login-admin",
-        { email, password }
-      );
+      const response = await axios.post(`${baseUrl}/api/users/login-admin`, {
+        email,
+        password,
+      });
 
       if (response.status === 200) {
         const { data } = response;
@@ -61,7 +62,7 @@ export const UserProvider = ({ children }) => {
     branch
   ) => {
     try {
-      const response = await axios.post("https://api.psh.com.bd/api/users", {
+      const response = await axios.post(`${baseUrl}/api/users`, {
         firstName,
         lastName,
         address,

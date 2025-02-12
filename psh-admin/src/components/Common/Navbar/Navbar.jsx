@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 
 import { useContext } from "react";
@@ -26,9 +26,12 @@ import { TbFileHorizontal } from "react-icons/tb";
 import { MdLogout } from "react-icons/md";
 import { PiFlagBanner } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
+import axios from "axios";
+import { baseUrl } from "../../../utils/getBaseURL";
 
 const Navbar = () => {
   const { logoutUser, user } = useContext(AuthContext);
+
   const location = useLocation();
   const navigate = useNavigate();
   const [isActive1, setIsActive1] = useState(false);
@@ -41,6 +44,15 @@ const Navbar = () => {
   const [isActive8, setIsActive8] = useState(false);
   const [isActive9, setIsActive9] = useState(false);
   const [isActive10, setIsActive10] = useState(false);
+  const [branch, setBranch] = useState(null);
+
+  useEffect(() => {
+    const fetchBranch = async () => {
+      const { data } = await axios.get(`${baseUrl}/api/branch/${user?.branch}`);
+      setBranch(data);
+    };
+    fetchBranch();
+  }, [user?.branch]);
 
   const handleLogOut = () => {
     logoutUser();
@@ -61,8 +73,8 @@ const Navbar = () => {
   return (
     <div>
       <div className="wrapper admin_nav">
+        {/* Left navbar links */}
         <nav className="main-header navbar navbar-expand">
-          {/* Left navbar links */}
           <div className="nav_design">
             <div className="mt-2" style={{ marginLeft: "100px" }}>
               <span className="" data-widget="pushmenu" role="button">
@@ -95,8 +107,8 @@ const Navbar = () => {
               </div>
             </ul>
           </div>
-          {/* Right navbar links */}
         </nav>
+        {/* Right navbar links */}
 
         <aside
           className="main-sidebar elevation-4 side_menubar "
@@ -145,7 +157,7 @@ const Navbar = () => {
                   }}
                   className="user-role"
                 >
-                  {user?.branch?.name ? `Branch : ${user?.branch?.name}` : ""}
+                  {branch?.name ? `Branch : ${branch?.name}` : ""}
                 </p>
               </div>
             </div>
@@ -420,95 +432,55 @@ const Navbar = () => {
                       isActive3 ? "custom-drop-show" : ""
                     }`}
                   >
-                    {(user && user?.role === "SuperAdmin") ||
-                    user?.role === "admin" ||
-                    user?.role === "subAdmin1" ||
-                    user?.role === "manager" ||
-                    user?.role === "partner" ? (
-                      <Link to={"/dashboard/property-report"}>
-                        <li className="main_nav-link">
-                          <span className="nav-link">
-                            <div className="menu_flex">
-                              <span className="span_text">Room Overview</span>
-                              <span
-                                className="span_text_mobile"
-                                data-widget="pushmenu"
-                              >
-                                Room Overview
-                              </span>
-                            </div>
-                          </span>
-                        </li>
-                      </Link>
-                    ) : (
-                      ""
-                    )}
-
-                    {(user && user?.role === "SuperAdmin") ||
-                    user?.role === "manager" ||
-                    user?.role === "partner" ||
-                    user?.role === "subAdmin1" ? (
-                      <>
-                        <Link to={"/dashboard/add_property"}>
-                          <li className="main_nav-link">
-                            <span className="nav-link">
-                              <div className="menu_flex">
-                                <span className="span_text">Add New Room</span>
-                                <span
-                                  className="span_text_mobile"
-                                  data-widget="pushmenu"
-                                >
-                                  Add New Room
-                                </span>
-                              </div>
+                    <Link to={"/dashboard/property-report"}>
+                      <li className="main_nav-link">
+                        <span className="nav-link">
+                          <div className="menu_flex">
+                            <span className="span_text">Room Overview</span>
+                            <span
+                              className="span_text_mobile"
+                              data-widget="pushmenu"
+                            >
+                              Room Overview
                             </span>
-                          </li>
-                        </Link>
-                      </>
-                    ) : (
-                      ""
-                    )}
-                    {(user && user?.role === "SuperAdmin") ||
-                    user?.role === "admin" ||
-                    user?.role === "subAdmin1" ? (
-                      <Link to={"/dashboard/property_list"}>
-                        <li className="main_nav-link">
-                          <span className="nav-link">
-                            <div className="menu_flex">
-                              <span className="span_text">List of Rooms</span>
-                              <span
-                                className="span_text_mobile"
-                                data-widget="pushmenu"
-                              >
-                                List of Rooms
-                              </span>
-                            </div>
-                          </span>
-                        </li>
-                      </Link>
-                    ) : (
-                      ""
-                    )}
+                          </div>
+                        </span>
+                      </li>
+                    </Link>
 
-                    {user && user?.role === "manager" ? (
-                      <Link to={"/dashboard/property_list_m"}>
+                    <>
+                      <Link to={"/dashboard/add_property"}>
                         <li className="main_nav-link">
                           <span className="nav-link">
                             <div className="menu_flex">
-                              <span className="span_text">List of Rooms</span>
+                              <span className="span_text">Add New Room</span>
                               <span
                                 className="span_text_mobile"
                                 data-widget="pushmenu"
                               >
-                                List of Rooms
+                                Add New Room
                               </span>
                             </div>
                           </span>
                         </li>
                       </Link>
-                    ) : (
-                      ""
-                    )}
+                    </>
+
+                    <Link to={"/dashboard/property_list"}>
+                      <li className="main_nav-link">
+                        <span className="nav-link">
+                          <div className="menu_flex">
+                            <span className="span_text">List of Rooms</span>
+                            <span
+                              className="span_text_mobile"
+                              data-widget="pushmenu"
+                            >
+                              List of Rooms
+                            </span>
+                          </div>
+                        </span>
+                      </li>
+                    </Link>
                     {user && user?.role === "partner" ? (
                       <Link to={"/dashboard/property_list_p"}>
                         <li className="main_nav-link">

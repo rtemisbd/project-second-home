@@ -21,7 +21,7 @@ import "./BookingTotalBox.css";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { isAlreadyBookings } from "./bookingChecking";
+import { isAlreadyBookings } from "../../utilities/bookingChecking";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 

@@ -5,12 +5,22 @@ const WishlistSchema = new mongoose.Schema(
     userName: {
       type: String,
     },
-    email: {
+    userPhone: {
       type: String,
+    },
+    roomType: {
+      type: String,
+      enum: ["Private Room", "Shared Room"],
+      required: true,
     },
     property: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "Property",
+      refPath: "propertyModel",
+    },
+    propertyModel: {
+      type: String,
+      required: true,
+      enum: ["Property", "Seat"],
     },
   },
   { timestamps: true }

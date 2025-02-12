@@ -6,18 +6,15 @@ import { AiOutlineShareAlt } from "react-icons/ai";
 import { useState } from "react";
 import Slider from "react-slick";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
-
 import axios from "axios";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { IoCallOutline } from "react-icons/io5";
-
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
 import arroundIcon from "../../assets/img/arround.svg";
 import "../../components/shared/Custom.css";
 import Map from "./Map";
 import BookingTotalBox from "../Booking/BookingTotalBox";
-import BookingSeatTotal from "../Booking/BookingSeatTotal";
 import SingleCard from "../../components/home/SingleCard";
 import LeftArrow from "../../assets/img/arrow2.png";
 import RightArrow from "../../assets/img/arrow1.png";
@@ -29,36 +26,28 @@ import toast from "react-hot-toast";
 import useRecommended from "../../hooks/useRecommended";
 import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
-import BookingBox from "../Booking/BookingBox";
 import Facilities from "../../components/RoomDetails/Facilities";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
-
   const { user } = useContext(AuthContext);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
   // For See More Button
   const [keyDetails, setKeyDetails] = useState(false);
-
   const [allFacilities, setAllFacilities] = useState([]);
-
   const [roomType, setRoomType] = useState("");
-
   const [data, setData] = useState([]);
   const [seat, setSeat] = useState(null);
   const [photos, setPhotos] = useState([]);
   const [bookedDates, setBookDates] = useState([]);
   const [keyValue, setKeyValue] = useState("");
   const [addedWishList, setAddedWishlist] = useState(false);
-
+  const [wishId, setWishId] = useState(null);
   const [size2, setSize2] = useState(null);
 
   const anchorClick = (e) => {
     anchorClickHandler(e);
   };
-
-  const userName = user?.firstName;
-  const email = user?.email;
 
   useEffect(() => {
     const fetchCategory = async () => {
@@ -141,55 +130,19 @@ const RoomDetails = () => {
 
   const handleOpen2 = (value) => setSize2(value);
 
-  const propertyId = data?._id;
-
-  const { data: wishlist, reFetch: wishlistRefetch } = UseFetch(`wishlist`);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const product = {
-        userName,
-        propertyId,
-        email,
-      };
-      await axios.post(`${serverBaseUrl}/wishlist`, product);
-      // MySwal.fire("Thanks ! wishlisted");
-      setAddedWishlist(true);
-      wishlistRefetch();
-    } catch (err) {
-      toast.error("Already Added!");
-    }
-  };
-
-  const exactWishList = wishlist?.filter(
-    (wishList) => wishList?.property?._id == id
-  );
-  const userWishList = exactWishList?.find(
-    (wishList) => wishList?.email === email
-  );
-
-  const checkWishLists = wishlist?.filter((pd) => pd?.email === email);
-  const checkWishListIds = checkWishLists?.map((item) => item?.property?._id);
-  const handleRemoveSubmit = async (event) => {
-    event.preventDefault();
-    try {
-      const product = {
-        userName,
-        propertyId,
-        email,
-      };
-      await axios.delete(
-        `${serverBaseUrl}/wishlist/${userWishList._id}`,
-        product
+  useEffect(() => {
+    const fetchWishList = async () => {
+      const { data } = await axios.get(
+        `${serverBaseUrl}/wishlist/${user?.phone}/${id}`
       );
-      setAddedWishlist(false);
-      // MySwal.fire("Successfullt Remove ! wishlisted");
-      wishlistRefetch();
-    } catch (err) {
-      toast.error("Wrong!");
-    }
-  };
+
+      if (data?.data) {
+        setAddedWishlist(true);
+        setWishId(data?.data?._id);
+      }
+    };
+    fetchWishList();
+  }, [addedWishList]);
 
   // Page location top to path dependency
 
@@ -277,6 +230,42 @@ const RoomDetails = () => {
         },
       },
     ],
+  };
+
+  const handleWishlist = async () => {
+    if (!user?.phone) {
+      toast.error("Please login first.");
+      return;
+    }
+    if (!addedWishList) {
+      try {
+        const newWishlist = {
+          userName: user?.firstName,
+          userPhone: user?.phone,
+          propertyId: id,
+          roomType,
+        };
+        const response = await axios.post(
+          `${serverBaseUrl}/wishlist`,
+          newWishlist
+        );
+        toast.success("Added to your wishlist!");
+
+        setAddedWishlist(true);
+      } catch (error) {
+        toast.error("Something went wrong!");
+      }
+    } else {
+      try {
+        const response = await axios.delete(
+          `${serverBaseUrl}/wishlist/${wishId}`
+        );
+        toast.success("This room has been removed from your wishlist!");
+        setAddedWishlist(false);
+      } catch (error) {
+        toast.error("Something went wrong!");
+      }
+    }
   };
 
   return (
@@ -440,7 +429,13 @@ const RoomDetails = () => {
                   </div>
                   <div className="col-span-2 flex md:ml-[50px] md:justify-between sm:mt-3 md:mt-0">
                     <div>
-                      {checkWishListIds?.some((item) => item === id) ? (
+                      <AiFillHeart
+                        className={`w-[24px] h-[30px] cursor-pointer ${
+                          addedWishList && "text-red-600"
+                        }`}
+                        onClick={handleWishlist}
+                      />
+                      {/* {checkWishListIds?.some((item) => item === id) ? (
                         <AiFillHeart
                           className={`w-[24px] h-[30px] cursor-pointer text-red-600`}
                           onClick={handleRemoveSubmit}
@@ -450,7 +445,7 @@ const RoomDetails = () => {
                           className={`w-[24px] h-[30px] cursor-pointer `}
                           onClick={handleSubmit}
                         />
-                      )}
+                      )} */}
                     </div>
                     <div>
                       <AiOutlineShareAlt className="w-[24px] h-[30px] cursor-pointer ml-5 hover:text-[#35B0A7]" />
@@ -845,7 +840,6 @@ const RoomDetails = () => {
                   bookedDates={bookedDates}
                   seat={seat}
                 />
-                {/* <BookingBox data={data} bookedDates={bookedDates} seat={seat} /> */}
               </div>
             </div>
           </div>

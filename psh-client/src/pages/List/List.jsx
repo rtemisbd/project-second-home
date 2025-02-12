@@ -16,6 +16,11 @@ function List() {
   // const [destination, setDestination] = useState(
   //   location?.state?.destination ? location?.state?.destination : name
   // );
+  const [bookedRooms, setBookedRooms] = useState([]);
+  const [bookedSeats, setBookedSeats] = useState([]);
+  const [availableRooms, setAvailableRooms] = useState([]);
+  const [availableSeats, setAvailableSeats] = useState([]);
+
   const [destination, setDestination] = useState(name);
   const [furnitured, setRecommended] = useState(
     location?.state?.furnitured || ""
@@ -57,60 +62,83 @@ function List() {
   const facilities = [facilityFilters]; // Replace with your list of facility names
   const commonfacilities = [commonFacilityFilters]; // Replace with your list of facility names
 
-  useEffect(
-    () => {
-      const fetchData = async () => {
-        try {
-          setLoading(true);
-          const queryParams = new URLSearchParams({
-            withSharedRoom,
-            furnitured,
-            category,
-            isPublished: "Published",
-            max,
-            gender,
-            destination,
-            bedType: bedrooms,
-            // startDate,
-            // endDate,
-            min,
-            facilities,
-            commonfacilities,
-            itemsPerPage,
-            fromClient: true,
-            page,
-            sort,
-          });
-          const response = await axios.get(
-            `${serverBaseUrl}/property?${queryParams.toString()}`
-          );
-          setData(await response?.data?.properties);
-          setTotalDataCount(response?.data?.totalCount);
-          setLoading(false);
-        } catch (error) {
-          setLoading(false);
-          console.error(error);
-          throw error;
-        }
-      };
-      fetchData();
-    },
-    [
-      // withSharedRoom,
-      // furnitured,
-      // category,
-      // max,
-      // gender,
-      // destination,
-      // bedrooms,
-      // min,
-      // facilities,
-      // commonfacilities,
-      // itemsPerPage,
-      // page,
-      // sort,
-    ]
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        const queryParams = new URLSearchParams({
+          withSharedRoom,
+          furnitured,
+          category,
+          isPublished: "Published",
+          max,
+          gender,
+          destination,
+          bedType: bedrooms,
+          min,
+          facilities,
+          commonfacilities,
+          itemsPerPage,
+          fromClient: true,
+          page,
+          sort,
+        });
+        const response = await axios.get(
+          `${serverBaseUrl}/property?${queryParams.toString()}`
+        );
+        setData(await response?.data?.properties);
+        setTotalDataCount(response?.data?.totalCount);
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+        throw error;
+      }
+    };
+    const fetchRooms = async () => {
+      try {
+        setLoading(true);
+        const queryParams = new URLSearchParams({
+          startDate,
+          endDate,
+        });
+        const { data } = await axios.get(
+          `${serverBaseUrl}/rent-rooms?${queryParams.toString()}`
+        );
+
+        setBookedRooms(data?.bookedRooms);
+        setBookedSeats(data?.bookedSeats);
+
+        setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+        throw error;
+      }
+    };
+
+    fetchData();
+    fetchRooms();
+  }, []);
+
+  useEffect(() => {
+    if (!data.length) return;
+
+    const alreadyBookedRoomNumbers = bookedRooms?.map((br) => br.roomId) || [];
+    const alreadyBookedSeatNumbers =
+      bookedSeats?.map((bs) => bs.seatNumber) || [];
+
+    setAvailableRooms(
+      data.filter((room) => !alreadyBookedRoomNumbers.includes(room._id))
+    );
+    setAvailableSeats(
+      data.filter((room) => !alreadyBookedSeatNumbers.includes(room.seatNumber))
+    );
+  }, [bookedRooms, bookedSeats]);
+
+  useEffect(() => {
+    setData([...availableRooms]);
+  }, [availableRooms]);
 
   const handlePriceFilterChange = (minPrice, maxPrice) => {
     setMin(minPrice);
@@ -141,20 +169,6 @@ function List() {
       }
     });
   };
-
-  // useEffect(() => {
-  //   // Call reFetch whenever facilityFilters or itemsPerPage state changes
-  //   refetch(true);
-  // }, [
-  //   page,
-  //   itemsPerPage,
-  //   facilityFilters,
-  //   commonFacilityFilters,
-  //   sort,
-  //   min,
-  //   max,
-  //   // selectedBedrooms,
-  // ]);
 
   useEffect(() => {
     if (data && data.length > 0) {
@@ -224,7 +238,7 @@ function List() {
   return (
     <div className="custom-container">
       <div className=" mt-3 ml-2 flex justify-between items-center">
-        <p>{totalDataCount} Results Found</p>
+        <p>{data?.length} Results Found</p>
         <p className="">
           <span className="hidden md:inline"> Search Number </span>
           <select

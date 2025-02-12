@@ -5,11 +5,20 @@ export const getRentRooms = async (req, res, next) => {
   try {
     // const { checkingDate } = req.query;
     // const today = new Date(checkingDate).toISOString()?.split("T")[0];
+    const { startDate, endDate } = req.query;
+    let rentRooms = [];
     const today = new Date().toISOString()?.split("T")[0];
-    const rentRooms = await RentRoom.find({
-      bookStartDate: { $lte: today },
-      bookEndDate: { $gte: today },
-    });
+    if (startDate || endDate) {
+      rentRooms = await RentRoom.find({
+        bookStartDate: { $lte: startDate },
+        bookEndDate: { $gte: endDate },
+      });
+    } else {
+      rentRooms = await RentRoom.find({
+        bookStartDate: { $lte: today },
+        bookEndDate: { $gte: today },
+      });
+    }
     // Today Check in
     const todayCheckIn = await RentRoom.find({
       bookStartDate: today,

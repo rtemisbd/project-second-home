@@ -1,17 +1,16 @@
 import express from "express";
 import {
-  checkMyWishlist,
   createWishlist,
   deleteWishlist,
   getMyWishlist,
-  getWishlist,
+  getUserPropertyWishlistAdded,
 } from "../controllers/wishlist.js";
 
 const router = express.Router();
 
 router.post("/", createWishlist);
-router.get("/", getWishlist);
-router.get("/wishlist/check", checkMyWishlist);
+router.get("/user/:userPhone", getMyWishlist);
+router.get("/:userPhone/:propertyId", getUserPropertyWishlistAdded);
 router.delete("/:id", deleteWishlist);
-router.route("/:user").get(getMyWishlist);
+
 export default router;
