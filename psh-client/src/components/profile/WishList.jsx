@@ -1,23 +1,39 @@
 import { Typography, Card } from "@material-tailwind/react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
+import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 export default function WishList() {
-  const { data } = UseFetch(`wishlist`);
   const { user } = useContext(AuthContext);
-  const email = user?.email;
-  const main = data?.filter((pd) => pd?.email === email);
+  const [data, setData] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userPhone = user?.phone;
+        const { data } = await axios.get(
+          `${serverBaseUrl}/wishlist/user/${userPhone}`
+        );
+
+        setData(data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+    fetchData();
+  }, []);
 
   return (
     <div className="md:p-0 sm:p-2">
       {/* <div className="md:hidden sm:block">
         <MenuList />
       </div> */}
-      <h2 className="mb-5 text-[32px] py-2 font-bold">Whishlist</h2>
-      {main?.length > 0 ? (
+      <h2 className="mb-5 text-[32px] py-2 font-bold">Wish-list</h2>
+      {data?.length > 0 ? (
         <Card className="h-full w-full lg:overflow-hidden md:overflow-x-scroll sm:overflow-x-scroll mt-4">
           <table className="w-full min-w-max table-auto text-left border">
             <thead>
@@ -56,7 +72,7 @@ export default function WishList() {
               </tr>
             </thead>
             <tbody>
-              {main?.map((item, i) => {
+              {data?.map((item, i) => {
                 const formattedDate = new Date(
                   item?.createdAt
                 ).toLocaleString();
@@ -92,7 +108,11 @@ export default function WishList() {
                     </td>
 
                     <td className="p-2 border">
-                      <Link to={`/room/${item?.property?._id}`}>Details</Link>
+                      <Link
+                        to={`/${item?.property?.category}/${item?.property?.name}/${item?.property?._id}`}
+                      >
+                        Details
+                      </Link>
                     </td>
                   </tr>
                 );

@@ -1,42 +1,40 @@
 import Property from "../models/Property.js";
 import WishlistModel from "../models/Wishlist.js";
+import { wishlistServices } from "../services/wishlist.service.js";
+import catchAsync from "../shared/cathAsync.js";
+import sendResponse from "../shared/sendResponse.js";
 
-export const createWishlist = async (req, res, next) => {
-  try {
-    const { userName, propertyId, email } = req.body;
+export const createWishlist = catchAsync(async (req, res, next) => {
+  const { userName, propertyId, userPhone, roomType } = req.body;
+  const payload = {
+    userName,
+    userPhone,
+    roomType,
+    property: propertyId,
+  };
 
-    // Check if there's an existing wishlist item for this user and property
-    const existingWishlistItem = await WishlistModel.findOne({
-      userName,
-      property: propertyId,
-    });
+  const result = await wishlistServices.addNewWishlist(payload);
 
-    if (existingWishlistItem) {
-      return res.status(400).json({
-        error: "Wishlist item already exists for this property and user.",
-      });
-    }
+  // sendResponse(res, {
+  //   statusCode: result?.statusCode,
+  //   success: result?.success,
+  //   data: result?.data,
+  //   message: result?.message,
+  // });
+  return res.status(200).json(result);
+});
 
-    // Check if the property exists
-    const property = await Property.findById(propertyId);
-    if (!property) {
-      return res.status(404).json({ error: "Property not found" });
-    }
-
-    // Create a new wishlist item
-    const wishlistItem = new WishlistModel({
-      userName,
-      property: property._id,
-      email,
-    });
-
-    // Save the new wishlist item
-    await wishlistItem.save();
-
-    res.status(201).json(wishlistItem);
-  } catch (err) {
-    next(err);
-  }
+export const getUserPropertyWishlistAdded = async (req, res, next) => {
+  const { userPhone, propertyId } = req.params;
+  const result = await wishlistServices.checkPropertyUserWish(
+    userPhone,
+    propertyId
+  );
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    data: result,
+  });
 };
 
 export const getWishlist = async (req, res, next) => {
@@ -47,17 +45,13 @@ export const getWishlist = async (req, res, next) => {
     next(err);
   }
 };
-export const getMyWishlist = async (req, res, next) => {
-  try {
-    const user = req.params.user;
-    const order = await WishlistModel.find({ email: user }).populate(
-      "property"
-    );
-    res.status(200).json(order);
-  } catch (err) {
-    next(err);
-  }
-};
+
+export const getMyWishlist = catchAsync(async (req, res, next) => {
+  const result = await wishlistServices.getMyWishes(req.params.userPhone);
+
+  return res.status(200).json(result);
+});
+
 export const checkMyWishlist = async (req, res, next) => {
   try {
     const { propertyId, userName } = req.query;
@@ -72,17 +66,10 @@ export const checkMyWishlist = async (req, res, next) => {
   }
 };
 
-export const deleteWishlist = async (req, res, next) => {
-  try {
-    const reviewId = req.params.id;
-    const wishlist = await WishlistModel.findById(reviewId);
-    if (!wishlist) {
-      return res.status(404).json({ error: "Wishlist not found" });
-    }
-    await WishlistModel.findByIdAndDelete(reviewId);
+export const deleteWishlist = catchAsync(async (req, res, next) => {
+  const id = req.params.id;
 
-    res.status(200).json({ message: "Wishlist deleted successfully" });
-  } catch (err) {
-    next(err);
-  }
-};
+  const result = await wishlistServices.deleteWishById(id);
+
+  return res.status(200).json(result);
+});
