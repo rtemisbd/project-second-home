@@ -21,9 +21,7 @@ import { AiOutlineClose } from "react-icons/ai";
 import { IoIosPeople } from "react-icons/io";
 import { AiOutlineLogout } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-
 import Booking from "../../components/profile/Booking";
-
 import { AuthContext } from "../../contexts/UserProvider";
 import Personal from "../../components/profile/Personal";
 import Payment from "../../components/profile/Payment";
@@ -39,6 +37,7 @@ import userEndOrder from "../../hooks/userEndOrder";
 import { placeProfileMenu } from "../../redux/reducers/smProfileMenuSlice";
 // import MenuList from "../../components/profile/MenuList";
 import "./Profile.css";
+import BookingHistory from "../../components/profile/BookingHistory";
 
 export default function Profile() {
   const { user, logoutUser } = useContext(AuthContext);
@@ -293,6 +292,7 @@ export default function Profile() {
                     {/* Booking history Description */}
                     <TabPanel value="booking" className="py-0">
                       <Booking />
+                      <BookingHistory />
                     </TabPanel>
 
                     {/* Payment Setting Description */}

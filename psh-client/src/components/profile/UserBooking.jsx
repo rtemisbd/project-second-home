@@ -79,11 +79,8 @@ export function UserBooking({
           divider
           className="  lg:h-[33rem] xl:h-[50rem] md:h-[30rem] sm:h-[30rem] xs:h-[30rem] overflow-scroll "
         >
-          <div className="grid grid-cols-12 sm:px-5 gap-x-8 gap-y-16 mt-3 ">
-            <div className="present-box  xl:w-[800px] lg:w-[700px]"></div>
-          </div>
           {/* booking summary */}
-          <div className="ps-4 w-full mt-2">
+          <div className="ps-4 w-full mt-5">
             <div className="flex justify-between items-center">
               <h2 className="text-start text-xl text-[#00BBB4]">
                 Booking Summary
