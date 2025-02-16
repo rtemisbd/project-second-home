@@ -7,10 +7,13 @@ const BookingHistory = () => {
   const [userOrder] = userEndOrder();
   const [detailsShow, setDetailsShow] = useState(false);
   const [cancelShow, setCancelShow] = useState(false);
+  const [order, setOrder] = useState(null);
 
-  const handleDetailsShow = () => setDetailsShow(!detailsShow);
+  const handleDetailsShow = (order) => {
+    setOrder(order);
+    setDetailsShow(!detailsShow);
+  };
   const handleCancelShow = () => setCancelShow(!cancelShow);
-  console.log(userOrder);
 
   return (
     <div className="md:p-0 sm:p-2">
@@ -18,7 +21,10 @@ const BookingHistory = () => {
       {userOrder?.length > 0 ? (
         <div className="h-full w-full lg:overflow-hidden md:overflow-x-scroll sm:overflow-x-scroll grid grid-cols-1 md:grid-cols-2 gap-12 pb-12">
           {userOrder.map((order) => (
-            <div key={order?._id} className="border-gray-600 shadow-xl">
+            <div
+              key={order?._id}
+              className="border-gray-600 shadow-xl rounded-lg"
+            >
               <div className="p-3 ">
                 <div className="m-0 rounded-none">
                   <h2 className="font-bold">Booking Id : {order?.bookingId}</h2>
@@ -81,7 +87,7 @@ const BookingHistory = () => {
                 <div className="p-0">
                   <div className="p-2 flex justify-end gap-2 ">
                     <button
-                      onClick={handleDetailsShow}
+                      onClick={() => handleDetailsShow(order)}
                       className="bg-[#35b0a7] text-white px-2 rounded"
                     >
                       Details
@@ -106,12 +112,12 @@ const BookingHistory = () => {
       ) : (
         <div className="text-center mt-10 text-red-500">No Booking Found</div>
       )}
-      {/* <UserBooking
+      <UserBooking
         handleDetailsShow={handleDetailsShow}
         detailsShow={detailsShow}
-        // endOrder={seeBooking}
+        order={order}
       />
-      <CancelBooking
+      {/* <CancelBooking
         handleCancelShow={handleCancelShow}
         cancelShow={cancelShow}
         // endOrder={seeBooking}

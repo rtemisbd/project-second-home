@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
@@ -13,19 +13,20 @@ import toast, { Toaster } from "react-hot-toast";
 import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
-export function UserBooking({
-  handleDetailsShow,
-  detailsShow,
-  endOrder,
-  branch,
-}) {
-  const findOrderBranch = branch.find(
-    (branch) => branch?._id === endOrder?.bookingInfo?.branch
-  );
+export function UserBooking({ handleDetailsShow, detailsShow, order }) {
   const { user } = useContext(AuthContext);
   const userName = user?.firstName;
+  const navigate = useNavigate();
+  const propertyId =
+    order?.bookingInfo?.roomType === "Shared Room"
+      ? order?.bookingInfo?.seatBooking?._id
+      : order?.bookingInfo?.roomId;
+  const formRef = useRef(null);
+
+  const [roomCategory, setRoomCategory] = useState(null);
   const [rating, setRating] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
+
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
@@ -34,11 +35,6 @@ export function UserBooking({
     setSelectedCategory(category);
   };
 
-  const propertyId =
-    endOrder?.bookingInfo?.roomType === "Shared Room"
-      ? endOrder?.bookingInfo?.roomId
-      : endOrder?.bookingInfo?.data?._id;
-  const formRef = useRef(null);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -62,12 +58,23 @@ export function UserBooking({
       toast.error("Something Error Found.", "warning");
     }
   };
-  const navigate = useNavigate();
 
   const getInvoice = () => {
-    navigate("/invoice", { state: endOrder });
+    navigate("/invoice", { state: order });
     window.open(route, "_blank");
   };
+
+  useEffect(() => {
+    const fetchCategory = async () => {
+      const { data } = await axios.get(`${serverBaseUrl}/category`);
+
+      const selected = data?.find(
+        (item) => item?.name === order?.bookingInfo?.roomType
+      );
+      setRoomCategory(selected?._id);
+    };
+    fetchCategory();
+  }, [order?.bookingInfo?.roomType]);
 
   return (
     <>
@@ -94,7 +101,10 @@ export function UserBooking({
                   {" "}
                   Get Invoice
                 </p>
-                <Link to={`/room/${propertyId}`} target="_blank">
+                <Link
+                  to={`/${roomCategory}/${order?.bookingInfo?.roomName}/${propertyId}`}
+                  target="_blank"
+                >
                   <p className="text-sm pt-1  px-3 rounded hover:text-[#00BBB4]">
                     {" "}
                     Visit Room
@@ -119,22 +129,22 @@ export function UserBooking({
                 <div className="">
                   <span className="block text-start font-bold">
                     {" "}
-                    {endOrder?._id.slice(19)}
+                    {order?.bookingId}
                   </span>
                   <span className="block text-start font-bold">
-                    {endOrder?.branch?.name}
-                  </span>
-                  <span className="block text-start font-bold">
-                    {" "}
-                    {endOrder?.bookingInfo?.roomType}
+                    {order?.branch?.name}
                   </span>
                   <span className="block text-start font-bold">
                     {" "}
-                    {endOrder?.bookingInfo?.data?.roomNumber
-                      ? endOrder?.bookingInfo?.data?.roomNumber
+                    {order?.bookingInfo?.roomType}
+                  </span>
+                  <span className="block text-start font-bold">
+                    {" "}
+                    {order?.bookingInfo?.data?.roomNumber
+                      ? order?.bookingInfo?.data?.roomNumber
                       : ""}
-                    {endOrder?.bookingInfo?.roomNumber
-                      ? endOrder?.bookingInfo?.roomNumber
+                    {order?.bookingInfo?.roomNumber
+                      ? order?.bookingInfo?.roomNumber
                       : ""}
                   </span>
                 </div>
@@ -154,35 +164,35 @@ export function UserBooking({
                 </div>
                 <div className="">
                   <span className="block font-bold text-start">
-                    {endOrder?.bookingInfo?.rentDate?.bookStartDate}
+                    {order?.bookingInfo?.rentDate?.bookStartDate}
                   </span>
                   <span className="block font-bold text-start">
-                    {endOrder?.bookingInfo?.rentDate?.bookEndDate}
+                    {order?.bookingInfo?.rentDate?.bookEndDate}
                   </span>
                   <span className="block font-bold text-start">
                     {`${
-                      endOrder?.bookingInfo?.customerRent?.daysDifference >= 0
-                        ? `${endOrder?.bookingInfo?.customerRent?.daysDifference} Days`
+                      order?.bookingInfo?.customerRent?.daysDifference >= 0
+                        ? `${order?.bookingInfo?.customerRent?.daysDifference} Days`
                         : "" ||
-                          (endOrder?.bookingInfo?.customerRent?.months &&
-                            endOrder?.bookingInfo?.customerRent?.days >= 0 &&
-                            !endOrder?.bookingInfo?.customerRent?.years)
-                        ? `${endOrder?.bookingInfo?.customerRent?.months} months, ${endOrder?.bookingInfo?.customerRent?.days} Days`
+                          (order?.bookingInfo?.customerRent?.months &&
+                            order?.bookingInfo?.customerRent?.days >= 0 &&
+                            !order?.bookingInfo?.customerRent?.years)
+                        ? `${order?.bookingInfo?.customerRent?.months} months, ${order?.bookingInfo?.customerRent?.days} Days`
                         : "" ||
-                          (endOrder?.bookingInfo?.customerRent?.years &&
-                            endOrder?.bookingInfo?.customerRent?.months >= 0 &&
-                            endOrder?.bookingInfo?.customerRent?.days >= 0)
-                        ? `${endOrder?.bookingInfo?.customerRent?.years} years, ${endOrder?.bookingInfo?.customerRent?.months} months, ${endOrder?.bookingInfo?.customerRent?.days} Days`
+                          (order?.bookingInfo?.customerRent?.years &&
+                            order?.bookingInfo?.customerRent?.months >= 0 &&
+                            order?.bookingInfo?.customerRent?.days >= 0)
+                        ? `${order?.bookingInfo?.customerRent?.years} years, ${order?.bookingInfo?.customerRent?.months} months, ${order?.bookingInfo?.customerRent?.days} Days`
                         : ""
                     }`}
                   </span>
                   <span
                     className="block font-bold text-start"
                     style={{
-                      color: endOrder?.status === "Approved" ? "green" : "red",
+                      color: order?.status === "Approved" ? "green" : "red",
                     }}
                   >
-                    {endOrder?.status}
+                    {order?.status}
                   </span>
                 </div>
               </div>
@@ -206,15 +216,15 @@ export function UserBooking({
                 <div className="">
                   <span
                     className={`block text-start font-bold ${
-                      endOrder?.paymentStatus === "Unpaid"
+                      order?.paymentStatus === "Unpaid"
                         ? "text-red-500"
                         : "bg-green-500"
                     }`}
                   >
-                    {endOrder?.paymentStatus}
+                    {order?.paymentStatus}
                   </span>
                   <span className="block text-start font-bold">
-                    Tk {endOrder?.payableAmount?.toLocaleString()}
+                    Tk {order?.payableAmount?.toLocaleString()}
                   </span>
                 </div>
               </div>
@@ -231,53 +241,25 @@ export function UserBooking({
                 <div className="">
                   <span className="block font-bold text-start">
                     {" "}
-                    {endOrder?.paymentType}
+                    {order?.paymentType}
                   </span>
                   <span className="block font-bold text-start text-green-500">
                     {" "}
-                    Tk {endOrder?.totalReceiveTk?.toLocaleString()}
+                    Tk {order?.totalReceiveTk?.toLocaleString()}
                   </span>
                   <span
                     className="block font-bold text-start"
                     style={{
-                      color: endOrder?.dueAmount !== 0 ? "red" : "black",
+                      color: order?.dueAmount !== 0 ? "red" : "black",
                     }}
                   >
                     {" "}
-                    Tk {endOrder?.dueAmount?.toLocaleString()}
+                    Tk {order?.dueAmount?.toLocaleString()}
                   </span>
                 </div>
               </div>
             </div>
           </div>
-          {/* Confirmation and contact */}
-          {/* <div className="ps-4 w-full mt-5">
-            <h2 className="text-start text-2xl text-[#00BBB4] mt-3">
-              Confirmation And Contact
-            </h2>
-            <div className="w-2/3 flex justify-between gap-10 mt-3">
-              <span className="block text-start">Confirmation Number :</span>
-              <span className="block text-end font-bold">
-                [{endOrder?.bookingInfo?.data?._id.slice(19)}]
-              </span>
-            </div>
-            <p className="text-start text-xl mt-2">
-              For any inquiries or changes to your booking, please contact our
-              customer support at
-            </p>
-            <p className="text-start text-xl">[Phone Number/Email Address]</p>
-          </div> */}
-          {/* Cancellation Policy */}
-          {/* <div className="ps-4 w-full mt-5">
-            <h2 className="text-start text-2xl text-[#00BBB4] mt-3">
-              Cancellation Policy
-            </h2>
-            <p className="text-start text-xl mt-2">
-              [Provide information about your cancellation policy, if
-              applicable]
-            </p>
-          </div> */}
-          {/* rate your experience */}
 
           <div className="ps-4 w-full mt-5">
             <h2 className="text-start text-xl text-[#00BBB4] mt-3">
