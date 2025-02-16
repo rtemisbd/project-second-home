@@ -22,11 +22,11 @@ const BookingHistory = () => {
     <div className="md:p-0 sm:p-2">
       <h2 className="mb-5 text-[32px] py-2 font-bold">Booking History</h2>
       {userOrder?.length > 0 ? (
-        <div className="h-full w-full lg:overflow-hidden md:overflow-x-scroll sm:overflow-x-scroll grid grid-cols-1 md:grid-cols-2 gap-12 pb-12">
+        <div className="h-full w-full lg:overflow-hidden md:overflow-x-scroll sm:overflow-x-scroll grid grid-cols-1 lg:grid-cols-2 gap-6 lg:gap-8 pb-12">
           {userOrder.map((order) => (
             <div
               key={order?._id}
-              className="border-gray-600 shadow-xl rounded-lg"
+              className=" border-2 border-opacity-5 border-gray-600 shadow-md rounded-lg"
             >
               <div className="p-3 ">
                 <div className="m-0 rounded-none">

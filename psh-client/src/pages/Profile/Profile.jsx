@@ -209,7 +209,7 @@ export default function Profile() {
                       }}
                     >
                       {endOrder?.paymentStatus ? (
-                        <div className="md:ms-16 sm:ms-2">
+                        <div className="lg:ms-16 sm:ms-2">
                           <span className="mt-3 mb-3 text-sm py-2 font-medium ">
                             Payment Status:
                             <span
