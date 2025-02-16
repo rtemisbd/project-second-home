@@ -13,7 +13,10 @@ const BookingHistory = () => {
     setOrder(order);
     setDetailsShow(!detailsShow);
   };
-  const handleCancelShow = () => setCancelShow(!cancelShow);
+  const handleCancelShow = (order) => {
+    setOrder(order);
+    setCancelShow(!cancelShow);
+  };
 
   return (
     <div className="md:p-0 sm:p-2">
@@ -93,7 +96,7 @@ const BookingHistory = () => {
                       Details
                     </button>
                     <button
-                      onClick={handleCancelShow}
+                      onClick={() => handleCancelShow(order)}
                       className={` text-white px-2 rounded ${
                         order?.status === "Canceled"
                           ? "bg-red-200"
@@ -117,11 +120,11 @@ const BookingHistory = () => {
         detailsShow={detailsShow}
         order={order}
       />
-      {/* <CancelBooking
+      <CancelBooking
         handleCancelShow={handleCancelShow}
         cancelShow={cancelShow}
-        // endOrder={seeBooking}
-      /> */}
+        endOrder={order}
+      />
     </div>
   );
 };

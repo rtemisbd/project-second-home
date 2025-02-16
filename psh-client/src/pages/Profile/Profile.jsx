@@ -21,7 +21,6 @@ import { AiOutlineClose } from "react-icons/ai";
 import { IoIosPeople } from "react-icons/io";
 import { AiOutlineLogout } from "react-icons/ai";
 import { useDispatch, useSelector } from "react-redux";
-import Booking from "../../components/profile/Booking";
 import { AuthContext } from "../../contexts/UserProvider";
 import Personal from "../../components/profile/Personal";
 import Payment from "../../components/profile/Payment";
@@ -291,7 +290,6 @@ export default function Profile() {
 
                     {/* Booking history Description */}
                     <TabPanel value="booking" className="py-0">
-                      <Booking />
                       <BookingHistory />
                     </TabPanel>
 

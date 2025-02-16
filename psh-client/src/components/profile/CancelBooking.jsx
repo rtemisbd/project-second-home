@@ -1,37 +1,20 @@
-import React, { useContext } from "react";
-import {
-  Button,
-  Dialog,
-  DialogHeader,
-  DialogBody,
-  DialogFooter,
-  Typography,
-} from "@material-tailwind/react";
+import React from "react";
+import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { useState } from "react";
 import { AiOutlineClose } from "react-icons/ai";
 import { subDays } from "date-fns";
 
 import axios from "axios";
 import DatePicker from "react-datepicker";
-
 import toast, { Toaster } from "react-hot-toast";
-import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
-export function CancelBooking({
-  handleCancelShow,
-  cancelShow,
-  endOrder,
-  branch,
-}) {
-  //   console.log(endOrder);
+export function CancelBooking({ handleCancelShow, cancelShow, endOrder }) {
   const [isPreArrival, setIsPreArrival] = useState(false);
   const [IsDuringStay, setIsDuringStay] = useState(false);
   const [cancelType, setCancelType] = useState("");
 
   const [cancelDate, setCancelDate] = useState(new Date());
-  const { user } = useContext(AuthContext);
-  const userName = user?.firstName;
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -56,12 +39,7 @@ export function CancelBooking({
   return (
     <>
       <Dialog open={cancelShow} size="md" className="px-5">
-        <DialogHeader>
-          {" "}
-          {/* <h2 className="text-[32px] font-bold" style={{ fontFamily: "inter" }}>
-            Request For Cancel
-          </h2> */}
-        </DialogHeader>
+        <DialogHeader> </DialogHeader>
         <DialogBody
           divider
           className=" lg:h-[33rem] xl:h-[50rem] md:h-[30rem] sm:h-[30rem] xs:h-[30rem] overflow-y-scroll overflow-x-hidden"
@@ -81,7 +59,7 @@ export function CancelBooking({
                     Booking ID{" "}
                   </span>
                   <span className="block text-start font-bold">Full Name </span>
-                  <span className="block text-start font-bold">Email </span>
+
                   <span className="block text-start font-bold">
                     Contact Number{" "}
                   </span>
@@ -90,17 +68,16 @@ export function CancelBooking({
                   <span className="block text-start">: </span>
                   <span className="block text-start">:</span>
                   <span className="block text-start">:</span>
-                  <span className="block text-start">: </span>
                 </div>
                 <div className="">
                   <span className="block text-start">
                     {" "}
-                    PSH - {endOrder?._id?.slice(19)}
+                    PSH - {endOrder?.bookingId}
                   </span>
                   <span className="block text-start ">
                     {endOrder?.fullName}
                   </span>
-                  <span className="block text-start ">{endOrder?.email}</span>
+
                   <span className="block text-start "> {endOrder?.phone}</span>
                 </div>
               </div>
