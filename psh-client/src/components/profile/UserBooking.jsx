@@ -237,15 +237,22 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                 <div className="">
                   <span className="block text-start">: </span>
                   <span className="block text-start">:</span>
+                  <span className="block text-start">:</span>
                 </div>
                 <div className="">
                   <span className="block font-bold text-start">
                     {" "}
-                    {order?.paymentType}
+                    {order?.transactions[0]?.allProperties[
+                      order?.transactions[0]?.allProperties.length - 1
+                    ]?.paymentType
+                      ? order?.transactions[0]?.allProperties[
+                          order?.transactions[0]?.allProperties.length - 1
+                        ]?.paymentType
+                      : " null"}
                   </span>
                   <span className="block font-bold text-start text-green-500">
                     {" "}
-                    Tk {order?.totalReceiveTk?.toLocaleString()}
+                    Tk {order?.transactions[0]?.totalReceiveTk}
                   </span>
                   <span
                     className="block font-bold text-start"
@@ -254,7 +261,11 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                     }}
                   >
                     {" "}
-                    Tk {order?.dueAmount?.toLocaleString()}
+                    Tk{" "}
+                    {order?.transactions[0]?.totalReceiveTk
+                      ? order?.payableAmount -
+                        order?.transactions[0]?.totalReceiveTk
+                      : order?.payableAmount}
                   </span>
                 </div>
               </div>

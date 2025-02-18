@@ -50,7 +50,6 @@ const paymentCreate = async (req, res) => {
       message:
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
-
   } else if (selectMethod === "cash") {
     const result = await createOrderByCash(dataForBooking);
     sendResponse(res, {
@@ -60,7 +59,6 @@ const paymentCreate = async (req, res) => {
       message:
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
-
   } else {
     setValue("dataForBooking", dataForBooking);
 
@@ -211,6 +209,59 @@ const callBack = async (req, res) => {
   }
 };
 
+// bkash callback for user transaction
+const callbackForUser = async (req, res) => {
+  const { paymentID, status } = req.query;
+  const order = getValue("order");
+  if (status === "cancel" || status === "failure") {
+    return res.redirect(`${config.client_url}/error?message=${status}`);
+  }
+
+  if (status === "success") {
+    try {
+      // Fetch the payment execution data
+      const { data } = await axios.post(
+        config.bkash_execute_payment_url,
+        { paymentID },
+        {
+          headers: await bkashHeaders(),
+        }
+      );
+
+      if (data && data.statusCode === "0000") {
+        // Start Create user transaction
+        const newTransaction = {
+          orderId: order?.orderId,
+          branch: order?.branch,
+          paymentDate: new Date(),
+          totalAmount: order?.totalAmount,
+          payableAmount: order?.payableAmount,
+          paymentType: "bkash",
+          receivedTk: parseInt(data?.amount),
+          paymentNumber: data?.customerMsisdn,
+          transactionId: data.trxID,
+          userId: order?.userId,
+          userPhone: order?.phone,
+          userName: order?.fullName,
+          acceptableStatus: "Accepted",
+        };
+
+        await Transaction.create(newTransaction);
+
+        return res.redirect(`${config.client_url}/success`);
+      } else {
+        return res.redirect(
+          `${config.client_url}/error?message=${data.statusMessage}`
+        );
+      }
+    } catch (error) {
+      return res.redirect(
+        `${config.client_url}/error?message=${error.message}`
+      );
+    }
+  }
+};
+
 // Refund Method
 // const refund = async (req, res) => {
 //   const { trxID } = req.params;
@@ -258,4 +309,5 @@ const callBack = async (req, res) => {
 export const PaymentController2 = {
   paymentCreate,
   callBack,
+  callbackForUser,
 };

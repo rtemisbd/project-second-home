@@ -23,6 +23,7 @@ import { Spinner, Table } from "react-bootstrap";
 import TransactionPrint from "./TransactionPrint";
 import { AuthContext } from "../../contexts/UserProvider";
 import img from "../../img/new/style.png";
+import { baseUrl } from "../../utils/getBaseURL";
 const TransactionManager = () => {
   const ref = useRef();
   const { user } = useContext(AuthContext);
@@ -81,7 +82,7 @@ const TransactionManager = () => {
 
   // Get All Branch
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/branch`)
+    fetch(`${baseUrl}/api/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
   }, []);
@@ -92,7 +93,7 @@ const TransactionManager = () => {
     async () => {
       try {
         const response = await fetch(
-          `https://api.psh.com.bd/api/transaction?branch=${findManagerBranch?._id}`,
+          `${baseUrl}/api/transaction?branch=${findManagerBranch?._id}`,
           {
             method: "GET",
           }
@@ -140,7 +141,7 @@ const TransactionManager = () => {
 
     try {
       const response = await fetch(
-        `https://api.psh.com.bd/api/transaction?orderId=${orderId}&userId=${bookingUserId}&fromDate=${fromDate}&toDate=${toDate}&branch=${branch}&paymentType=${payementType}&transactionId=${transactionId}`,
+        `${baseUrl}/api/transaction?orderId=${orderId}&userId=${bookingUserId}&fromDate=${fromDate}&toDate=${toDate}&branch=${branch}&paymentType=${payementType}&transactionId=${transactionId}`,
         {
           method: "GET",
         }
@@ -373,7 +374,7 @@ const TransactionManager = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/transaction/${id}`;
+      const url = `${baseUrl}/api/transaction/${id}`;
       fetch(url, {
         method: "DELETE",
       })

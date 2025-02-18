@@ -1,7 +1,7 @@
 import axios from "axios";
 import { getValue, setValue } from "node-global-storage";
 import { v4 as uuidv4 } from "uuid";
-import Payment from "../models/payment.js";
+import Payment from "./demo-model/payment.js";
 import config from "../config/index.js";
 import { bkash_headers } from "../utils/bkash_headers.js";
 import { startSession } from "mongoose";

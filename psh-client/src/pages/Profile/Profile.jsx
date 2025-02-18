@@ -37,7 +37,6 @@ import { placeProfileMenu } from "../../redux/reducers/smProfileMenuSlice";
 // import MenuList from "../../components/profile/MenuList";
 import "./Profile.css";
 import BookingHistory from "../../components/profile/BookingHistory";
-
 export default function Profile() {
   const { user, logoutUser } = useContext(AuthContext);
   const [activeTab, setActiveTab] = useState("booking");

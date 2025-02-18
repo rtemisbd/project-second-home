@@ -1,13 +1,23 @@
-import React, { useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import userEndOrder from "../../hooks/userEndOrder";
 import { UserBooking } from "./UserBooking";
 import { CancelBooking } from "./CancelBooking";
+import MakePayment from "./MakePayment";
+import { useQuery } from "react-query";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
+import { AuthContext } from "../../contexts/UserProvider";
 
 const BookingHistory = () => {
-  const [userOrder] = userEndOrder();
+  const { user } = useContext(AuthContext);
+  // const [userOrder] = userEndOrder();
+  const [userOrder, setUserOrder] = useState(null);
   const [detailsShow, setDetailsShow] = useState(false);
   const [cancelShow, setCancelShow] = useState(false);
+  const [makePaymentShow, setMakePaymentShow] = useState(false);
   const [order, setOrder] = useState(null);
+  const [totalCount, setTotalCount] = useState();
+  const [page, setPage] = useState(1);
+  const [size, setSize] = useState(4);
 
   const handleDetailsShow = (order) => {
     setOrder(order);
@@ -17,6 +27,47 @@ const BookingHistory = () => {
     setOrder(order);
     setCancelShow(!cancelShow);
   };
+  const handleMakePaymentShow = (order) => {
+    setOrder(order);
+    setMakePaymentShow(!makePaymentShow);
+  };
+  const { refetch } = useQuery(
+    ["fetchBookings"],
+    async () => {
+      try {
+        const queryParams = new URLSearchParams({
+          page,
+          size,
+        });
+
+        const response = await fetch(
+          `${serverBaseUrl}/order/${user?.phone}?${queryParams.toString()}`,
+          {
+            method: "GET",
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network Error");
+        }
+
+        const { data } = await response.json();
+
+        setUserOrder(data?.orders);
+        setTotalCount(data?.totalCount);
+      } catch (error) {
+        // console.error("Error fetching data:", error);
+      }
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+
+  // // Re-fetch data whenever size changes
+  useEffect(() => {
+    refetch();
+  }, []);
 
   return (
     <div className="md:p-0 sm:p-2">
@@ -31,30 +82,7 @@ const BookingHistory = () => {
               <div className="p-3 ">
                 <div className="m-0 rounded-none">
                   <h2 className="font-bold">Booking Id : {order?.bookingId}</h2>
-                  <h2 className="font-bold text-sm">
-                    Room Category : {order?.bookingInfo?.roomType}
-                  </h2>
-                  <h2 className="font-bold text-sm">
-                    Branch : {order?.branch?.name}
-                  </h2>
-                  <div className="w-full flex justify-end mb-2 pr-4">
-                    <p className="text-sm">
-                      Status :{" "}
-                      <span
-                        className="font-bold "
-                        style={{
-                          color:
-                            order?.status === "Approved" ? "#00bbb4" : "red",
-                        }}
-                      >
-                        {order?.status}
-                      </span>
-                    </p>
-                  </div>
-                </div>
-                <hr />
-                <div className="p-2">
-                  <p>
+                  <p className="font-bold text-sm">
                     Booking Date :{" "}
                     {
                       new Date(order?.bookingInfo?.rentDate?.bookStartDate)
@@ -68,7 +96,29 @@ const BookingHistory = () => {
                         ?.split(",")[0]
                     }
                   </p>
-
+                  <h2 className="font-bold text-sm">
+                    Room Category : {order?.bookingInfo?.roomType}
+                  </h2>
+                  <h2 className="font-bold text-sm">
+                    Branch : {order?.branch?.name}
+                  </h2>
+                  <div className="w-full flex justify-end mb-2 pr-4">
+                    <p className="text-sm">
+                      Booking Status :{" "}
+                      <span
+                        className="font-bold "
+                        style={{
+                          color:
+                            order?.status === "Approved" ? "#00bbb4" : "red",
+                        }}
+                      >
+                        {order?.status}
+                      </span>
+                    </p>
+                  </div>
+                </div>
+                <hr />
+                <div className="p-2 text-sm">
                   <p>
                     Payable Amount :{" "}
                     <span className="font-bold ">
@@ -76,14 +126,44 @@ const BookingHistory = () => {
                     </span>
                   </p>
                   <p>
+                    Total Paid :{" "}
+                    <span className="font-bold ">
+                      BDT{" "}
+                      {order?.transactions[0]?.totalReceiveTk
+                        ? order?.transactions[0]?.totalReceiveTk
+                        : 0}
+                    </span>
+                  </p>
+                  <p>
+                    Due Amount :{" "}
+                    <span
+                      className={`font-bold `}
+                      style={{
+                        color:
+                          order?.payableAmount -
+                            order?.transactions[0]?.totalReceiveTk !==
+                          0
+                            ? "red"
+                            : "green",
+                      }}
+                    >
+                      BDT{" "}
+                      {order?.transactions[0]?.totalReceiveTk
+                        ? order?.payableAmount -
+                          order?.transactions[0]?.totalReceiveTk
+                        : order?.payableAmount}
+                    </span>
+                  </p>
+                  <p>
                     Payment Status :{" "}
                     <span
                       className="font-bold "
                       style={{
-                        color: order?.status === "Approved" ? "#00bbb4" : "red",
+                        color:
+                          order?.paymentStatus === "Paid" ? "#00bbb4" : "red",
                       }}
                     >
-                      {order?.status}
+                      {order?.paymentStatus}
                     </span>
                   </p>
                 </div>
@@ -91,13 +171,24 @@ const BookingHistory = () => {
                   <div className="p-2 flex justify-end gap-2 ">
                     <button
                       onClick={() => handleDetailsShow(order)}
-                      className="bg-[#35b0a7] text-white px-2 rounded"
+                      className="bg-[#35b0a7] text-white px-1 py-1 md:px-2 rounded"
                     >
                       Details
                     </button>
                     <button
+                      onClick={() => handleMakePaymentShow(order)}
+                      className={` text-white px-1 py-1 md:px-2 rounded ${
+                        order?.status === "Canceled"
+                          ? "bg-red-200"
+                          : "bg-[#FCA22A]"
+                      } ${order?.paymentStatus === "Paid" ? "hidden" : ""}`}
+                      disabled={order?.status === "Canceled" ? true : false}
+                    >
+                      Make Payment
+                    </button>
+                    <button
                       onClick={() => handleCancelShow(order)}
-                      className={` text-white px-2 rounded ${
+                      className={` text-white px-1 py-1 md:px-2 rounded ${
                         order?.status === "Canceled"
                           ? "bg-red-200"
                           : "bg-red-500"
@@ -124,6 +215,11 @@ const BookingHistory = () => {
         handleCancelShow={handleCancelShow}
         cancelShow={cancelShow}
         endOrder={order}
+      />
+      <MakePayment
+        handleMakePaymentShow={handleMakePaymentShow}
+        makePaymentShow={makePaymentShow}
+        order={order}
       />
     </div>
   );
