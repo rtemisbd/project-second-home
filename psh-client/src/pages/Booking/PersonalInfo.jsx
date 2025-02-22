@@ -135,7 +135,7 @@ const PersonalInfo = () => {
       if (amount && dataForBooking) {
         const { data } = await axios.post(
           `${serverBaseUrl}/bkash/payment/create`,
-          { amount, dataForBooking, selectMethod },
+          { amount: 1, dataForBooking, selectMethod },
           { withCredentials: true }
         );
         console.log(data);

@@ -6,7 +6,7 @@ import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { AiOutlineClose } from "react-icons/ai";
 
 import { AuthContext } from "../../contexts/UserProvider";
-import "./Ticket.css";
+import "./style/Ticket.css";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast from "react-hot-toast";
 

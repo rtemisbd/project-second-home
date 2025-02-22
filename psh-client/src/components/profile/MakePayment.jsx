@@ -5,10 +5,15 @@ import { AiOutlineClose } from "react-icons/ai";
 import toast, { Toaster } from "react-hot-toast";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
-const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
+const MakePayment = ({
+  handleMakePaymentShow,
+  makePaymentShow,
+  order,
+  due,
+}) => {
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
-  const [minimumAmount, setMinimumAMount] = useState();
-  const [dueAmount, setDueAmount] = useState();
+  const [minimumAmount, setMinimumAMount] = useState(0);
+
   const [amountForPay, setAmountForPay] = useState(0);
 
   const [isLessAmount, setIsLessAmount] = useState(false);
@@ -39,19 +44,15 @@ const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
       if (amount) {
         const { data } = await axios.post(
           `${serverBaseUrl}/transaction/user-transaction`,
-          { amount, dataForBackend },
+          { amount: 1, dataForBackend },
           { withCredentials: true }
         );
         console.log(data);
 
         window.location.href = data?.data?.bkashURL;
-
-        // toast.success("Payment successfully done");
       } else {
         toast.error("Something is wrong! Please try again.");
       }
-
-      // navigate("/booking-now");
     } catch (error) {
       toast.error("Something is wrong");
       console.log(error);
@@ -59,17 +60,12 @@ const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
   };
 
   useEffect(() => {
-    const received = order?.transactions[0]?.totalReceiveTk
-      ? order?.transactions[0]?.totalReceiveTk
-      : 0;
-    const due = order?.payableAmount - received;
-    setDueAmount(due);
     if (due < 500) {
       setMinimumAMount(due);
     } else {
       setMinimumAMount(500);
     }
-  }, [order]);
+  }, [due]);
 
   return (
     <>
@@ -98,10 +94,10 @@ const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
                     Minimum - {minimumAmount} ৳
                   </button>
                   <button
-                    onClick={() => handlePayByBkash(dueAmount)}
+                    onClick={() => handlePayByBkash(due)}
                     className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
                   >
-                    Due Amount - {dueAmount} ৳
+                    Due Amount - {due} ৳
                   </button>
                   <button
                     onClick={() => setShowUserInputForPayment(true)}
