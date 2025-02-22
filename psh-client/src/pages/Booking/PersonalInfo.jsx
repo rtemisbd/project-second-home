@@ -138,6 +138,7 @@ const PersonalInfo = () => {
           { amount, dataForBooking, selectMethod },
           { withCredentials: true }
         );
+        console.log(data);
 
         window.location.href =
           selectMethod === "manual" ? data?.data?.bkashURL : data?.bkashURL;

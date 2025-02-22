@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useQuery } from "react-query";
 import { getFromLocalStorage } from "../utils/local-storage";
 import { authKey } from "../utils/storageKey";
+import { baseUrl } from "../utils/getBaseURL";
 
 const useTransaction = () => {
   const [transactions, setTransaction] = useState([]);
@@ -14,7 +15,7 @@ const useTransaction = () => {
     "Content-Type": "application/json",
   };
   const { isLoading, refetch } = useQuery([transactions], () =>
-    fetch(`https://api.psh.com.bd/api/transaction`, {
+    fetch(`${baseUrl}/api/transaction`, {
       method: "GET",
       headers: headers,
     })

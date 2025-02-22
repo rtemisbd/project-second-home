@@ -38,6 +38,9 @@ const Payment = () => {
     }
   }, [userOrder, user]);
 
+  // console.log(transactions);
+  // console.log(userOrder);
+
   return (
     <div className="md:p-0 sm:p-2">
       {/* <div className="md:hidden sm:block">

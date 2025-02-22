@@ -4,6 +4,7 @@ import {
   getMyBooking,
   getOrder,
   getSingleOrder,
+  getUserOrders,
   orderCorrection,
   updateBooking,
   updateBookingOrder,
@@ -32,7 +33,8 @@ router.get(
   getOrder
 );
 // router.get("/", getOrder);
-router.route("/:user").get(getMyBooking);
+router.get("/:user", getUserOrders);
+// router.route("/:user").get(getMyBooking);
 router.get("/:id", getSingleOrder);
 
 // router.route("/:id").patch(updateBooking);

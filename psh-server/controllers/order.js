@@ -2,22 +2,14 @@ import OrderModel from "../models/Order.js";
 import Property from "../models/Property.js";
 import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
-import nodemailer from "nodemailer";
 import Adjustment from "../models/Adjustment.js";
-import { bookingConfirmMail } from "../mail/bookingConfirmMail.js";
-import { cancelBookingMail } from "../mail/cancelBookingMail.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import catchAsync from "../shared/cathAsync.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
-import config from "../config/index.js";
-import { generateBookingId } from "../utils/generateBookingId.js";
-import mongoose, { Types } from "mongoose";
 
 export const createOrder = catchAsync(async (req, res, next) => {
-  // console.log({ bkash_auth_token });
-
   // Booking Save to Database
   const result = await orderServices.createOrderIntoDB(req.body);
 
@@ -173,9 +165,30 @@ export const getSingleOrder = async (req, res, next) => {
     next(err);
   }
 };
+export const getUserOrders = catchAsync(async (req, res, next) => {
+  const { user: phone } = req.params;
+
+  const { result, totalCount } = await orderServices.getUserOrderFromDB(
+    req.query,
+    phone
+  );
+
+  const orders = result[0]?.paginatedResults || [];
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    message: "Orders retrieved successfully",
+    data: { orders, totalCount },
+  });
+});
+
 export const getMyBooking = async (req, res, next) => {
   try {
     const user = req.params.user;
+    const page = parseInt(req?.query?.page);
+    const size = parseInt(req?.query?.size);
+
     const matchStage = {};
     if (user) {
       matchStage.phone = user;
@@ -184,40 +197,54 @@ export const getMyBooking = async (req, res, next) => {
     const pipeline = [
       { $match: matchStage },
       {
-        $lookup: {
-          from: "branches",
-          localField: "branch",
-          foreignField: "_id",
-          as: "branch",
-        },
-      },
-      { $unwind: "$branch" },
-
-      //get transaction by order Id
-      {
-        $lookup: {
-          from: "transactions",
-          let: { orderId: "$_id" },
-          pipeline: [
+        $facet: {
+          paginatedResults: [
+            { $sort: { createdAt: -1 } },
+            { $skip: (page - 1) * size },
+            { $limit: size },
             {
-              $match: {
-                $expr: {
-                  $and: [
-                    { $eq: ["$orderId", "$$orderId"] },
-                    { $eq: ["$acceptableStatus", "Accepted"] },
-                  ],
-                },
+              $lookup: {
+                from: "branches",
+                localField: "branch",
+                foreignField: "_id",
+                as: "branch",
               },
             },
+            { $unwind: "$branch" },
+
             {
-              $group: {
-                _id: null,
-                totalReceiveTk: { $sum: "$receivedTk" },
-                allProperties: { $push: "$$ROOT" },
+              $lookup: {
+                from: "transactions",
+                let: { orderId: "$_id" },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $and: [
+                          { $eq: ["$orderId", "$$orderId"] },
+                          { $eq: ["$acceptableStatus", "Accepted"] },
+                        ],
+                      },
+                    },
+                  },
+                  {
+                    $group: {
+                      _id: null,
+                      totalReceiveTk: { $sum: "$receivedTk" },
+                      allProperties: { $push: "$$ROOT" },
+                    },
+                  },
+                ],
+                as: "transactions",
               },
             },
           ],
-          as: "transactions",
+        },
+      },
+      {
+        $project: {
+          paginatedResults: 1,
+          totalCounts: { $arrayElemAt: ["$totalCounts", 0] },
         },
       },
     ];

@@ -7,9 +7,11 @@ import {
   getTransactionById,
   getTransactionByOrderId,
   createTransaction,
+  createTransactionByUser,
 } from "../controllers/transaction.js";
 import auth from "../middleware/auth.js";
 import { ENUM_USER_ROLE } from "../enums/user.js";
+import bkash_auth from "../middleware/payment.js";
 
 const router = express.Router();
 
@@ -26,6 +28,7 @@ router.get(
   getTransaction
 );
 router.post("/", createTransaction);
+router.post("/user-transaction", bkash_auth, createTransactionByUser);
 router.route("/:id").get(getTransactionById);
 // router.route("/:phone").get(getUserTransactions);
 router.route("/:id").delete(deleteTransaction);

@@ -17,35 +17,35 @@ function Personal() {
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 border-b pb-3 ">
           <span>{singleUser?._id}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3">
           <span>Name</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2  border-b pb-3 ">
           <span>{singleUser?.firstName}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>User Name</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 border-b pb-3 ">
-          <span>{singleUser?.userName ? singleUser?.userName : "Empty"}</span>
+          <span>{singleUser?.firstName ? singleUser?.firstName : "Empty"}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Email Address</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 border-b pb-3 ">
           <span>{singleUser?.email}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Phone</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2  border-b pb-3 ">
           <span>{singleUser?.phone ? singleUser?.phone : "Empty"}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Date of Birth</span>
         </div>
@@ -55,7 +55,7 @@ function Personal() {
             {singleUser?.dateOfBirth ? singleUser?.dateOfBirth : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>National ID Number</span>
         </div>
@@ -64,7 +64,7 @@ function Personal() {
             {singleUser?.nationalId ? singleUser?.nationalId : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Nationality</span>
         </div>
@@ -74,25 +74,21 @@ function Personal() {
             {singleUser?.nationality ? singleUser?.nationality : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Gender</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2  border-b pb-3 ">
           <span>{singleUser?.gender ? singleUser?.gender : "Empty"}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Present Address</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2  border-b pb-3 ">
-          <span>
-            {singleUser?.presentAddress?.address
-              ? singleUser?.presentAddress?.address
-              : "Empty"}
-          </span>
+          <span>{singleUser?.userAddress}</span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3">
           <span>Permanent Address</span>
         </div>
@@ -103,7 +99,7 @@ function Personal() {
               : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Employment Status</span>
         </div>
@@ -115,7 +111,7 @@ function Personal() {
               : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Monthly Income</span>
         </div>
@@ -127,7 +123,7 @@ function Personal() {
               : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Emergency Contact Name</span>
         </div>
@@ -139,7 +135,7 @@ function Personal() {
               : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Emergency Contact Relationship</span>
         </div>
@@ -151,15 +147,15 @@ function Personal() {
               : "Empty"}
           </span>
         </div>
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hiddin xl:block lg:block md:block"></div>
+        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Emergency Contact Number</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 border-b pb-3 ">
           <span>
             {" "}
-            {singleUser?.emergencyContact?.phoneNumber
-              ? singleUser?.emergencyContact?.phoneNumber
+            {singleUser?.emergencyContact?.contactNumber
+              ? singleUser?.emergencyContact?.contactNumber
               : "Empty"}
           </span>
         </div>

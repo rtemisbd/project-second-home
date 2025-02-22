@@ -14,6 +14,18 @@ export const createTransaction = catchAsync(async (req, res, next) => {
   });
 });
 
+export const createTransactionByUser = catchAsync(async (req, res, next) => {
+  const result = await transactionServices.createTransactionByUserBkash(
+    req.body
+  );
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    data: result,
+    message: "Your transaction has been added successfully!",
+  });
+});
+
 export const getTransaction = catchAsync(async (req, res, next) => {
   const transactions = await transactionServices.getAllTransactionFromDB(
     req.query

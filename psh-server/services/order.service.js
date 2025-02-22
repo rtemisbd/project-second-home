@@ -90,6 +90,7 @@ export const createOrderByManualBkash = async (payload) => {
     const dataForBooking = payload;
     const generateId = await generateBookingId();
     dataForBooking.bookingId = generateId;
+
     dataForBooking.paymentType = "bkash";
     const result = await OrderModel.create([dataForBooking], { session });
 
@@ -416,6 +417,92 @@ const getOrderFromDB = async (queries) => {
   return { result, totalCount };
 };
 
+const getUserOrderFromDB = async (queries, phone) => {
+  const { paymentStatus, bookingStatus } = queries;
+  const page = parseInt(queries?.page);
+  const size = parseInt(queries?.size);
+
+  const matchStage = {};
+  if (phone) {
+    matchStage.phone = phone;
+  }
+  if (paymentStatus && paymentStatus !== "All")
+    matchStage.paymentStatus = paymentStatus;
+  if (bookingStatus && bookingStatus !== "All")
+    matchStage.status = bookingStatus;
+  const totalCountsPipeline = [
+    { $match: matchStage },
+    {
+      $group: {
+        _id: null,
+        totalCount: { $sum: 1 },
+      },
+    },
+  ];
+
+  const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
+  const totalCount =
+    totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
+
+  const pipeline = [
+    { $match: matchStage },
+    {
+      $facet: {
+        paginatedResults: [
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * size },
+          { $limit: size },
+          {
+            $lookup: {
+              from: "branches",
+              localField: "branch",
+              foreignField: "_id",
+              as: "branch",
+            },
+          },
+          { $unwind: "$branch" },
+
+          {
+            $lookup: {
+              from: "transactions",
+              let: { orderId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$orderId", "$$orderId"] },
+                        { $eq: ["$acceptableStatus", "Accepted"] },
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id: null,
+                    totalReceiveTk: { $sum: "$receivedTk" },
+                    allProperties: { $push: "$$ROOT" },
+                  },
+                },
+              ],
+              as: "transactions",
+            },
+          },
+        ],
+      },
+    },
+    {
+      $project: {
+        paginatedResults: 1,
+      },
+    },
+  ];
+
+  const result = await OrderModel.aggregate(pipeline);
+
+  return { result, totalCount };
+};
+
 const updateBookingStatusIntoDB = async (payload) => {
   await OrderModel.findByIdAndUpdate(payload.id, payload.body, { new: true });
 
@@ -499,4 +586,5 @@ export const orderServices = {
   getOrderFromDB,
   updateBookingStatusIntoDB,
   createOrderByCash,
+  getUserOrderFromDB,
 };

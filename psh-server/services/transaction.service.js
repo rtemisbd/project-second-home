@@ -1,9 +1,45 @@
-import mongoose from "mongoose";
+import mongoose, { startSession } from "mongoose";
 import Transaction from "../models/Transaction.js";
+import { getValue, setValue } from "node-global-storage";
+import config from "../config/index.js";
+import { bkash_headers } from "../utils/bkash_headers.js";
+import { v4 as uuidv4 } from "uuid";
 
 const createTransactionIntoDB = async (payload) => {
   const result = await Transaction.create(payload);
   return result;
+};
+
+const createTransactionByUserBkash = async (payload) => {
+  const { amount, dataForBackend: data } = payload;
+
+  let responseData = null;
+
+  try {
+    // Set user context
+    await setValue("userId", data?.userId);
+    await setValue("order", data);
+    const callbackData = encodeURIComponent(JSON.stringify(data));
+    const bkash_auth_token = getValue("id_token");
+    const token = encodeURIComponent(JSON.stringify(bkash_auth_token));
+
+    const response = await fetch(config.bkash_create_payment_url, {
+      method: "POST",
+      headers: bkash_headers(bkash_auth_token),
+      body: JSON.stringify({
+        mode: "0011",
+        payerReference: " ",
+        callbackURL: `${config.server_url}/bkash/payment/user/callback?callbackData=${callbackData}&token=${token}`,
+        amount,
+        currency: "BDT",
+        intent: "sale",
+        merchantInvoiceNumber: `Inv${uuidv4().substring(0, 4)}`,
+      }),
+    });
+    responseData = await response.json();
+
+    return { bkashURL: responseData?.bkashURL };
+  } catch (error) {}
 };
 
 const getAllTransactionFromDB = async (queries) => {
@@ -166,6 +202,7 @@ const getTransactionByOrderIdFromDB = async (orderId) => {
 // Exporting the transaction services
 export const transactionServices = {
   createTransactionIntoDB,
+  createTransactionByUserBkash,
   getAllTransactionFromDB,
   getTransactionByIdFromDB,
   getTransactionByOrderIdFromDB,

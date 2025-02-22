@@ -4,6 +4,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { toast } from "react-toastify";
 import useBooking from "../../hooks/useBooking";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const UpdateTransaction = ({
   data,
@@ -150,7 +151,7 @@ const UpdateTransaction = ({
 
     try {
       await axios.patch(
-        `https://api.psh.com.bd/api/transaction/${data?._id}`,
+        `${baseUrl}/api/transaction/${data?._id}`,
         receivedPayment,
         {
           headers: {

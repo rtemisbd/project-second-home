@@ -4,7 +4,7 @@ import axios from "axios";
 import { CardBody } from "@material-tailwind/react";
 import toast, { Toaster } from "react-hot-toast";
 import { serverBaseUrl } from "../serverApi/baseUrl";
-import OtpForm from "../components/shared/OtpForm";
+
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../redux/reducers/smProfileMenuSlice";
 
