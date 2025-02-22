@@ -241,8 +241,8 @@ const callbackForUser = async (req, res) => {
           paymentNumber: data?.customerMsisdn,
           transactionId: data.trxID,
           userId: order?.userId,
-          userPhone: order?.phone,
-          userName: order?.fullName,
+          userPhone: order?.userPhone,
+          userName: order?.userName,
           acceptableStatus: "Accepted",
         };
 

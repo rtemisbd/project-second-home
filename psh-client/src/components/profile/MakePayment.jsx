@@ -44,7 +44,7 @@ const MakePayment = ({
       if (amount) {
         const { data } = await axios.post(
           `${serverBaseUrl}/transaction/user-transaction`,
-          { amount: 1, dataForBackend },
+          { amount, dataForBackend },
           { withCredentials: true }
         );
         console.log(data);
