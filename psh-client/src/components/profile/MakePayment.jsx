@@ -46,7 +46,7 @@ const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
 
         window.location.href = data?.data?.bkashURL;
 
-        toast.success("Payment successfully done");
+        // toast.success("Payment successfully done");
       } else {
         toast.error("Something is wrong! Please try again.");
       }
@@ -59,7 +59,9 @@ const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
   };
 
   useEffect(() => {
-    const received = order?.totalReceiveTk ? order?.totalReceiveTk : 0;
+    const received = order?.transactions[0]?.totalReceiveTk
+      ? order?.transactions[0]?.totalReceiveTk
+      : 0;
     const due = order?.payableAmount - received;
     setDueAmount(due);
     if (due < 500) {

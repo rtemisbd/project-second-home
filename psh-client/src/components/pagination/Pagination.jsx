@@ -48,8 +48,8 @@ const Pagination = ({ totalCount }) => {
   };
 
   return (
-    <div className="flex justify-end items-center gap-2 text-sm ">
-      <span>Show rows</span>
+    <div className="flex justify-end items-center gap-1 md:gap-2 text-sm  mb-4">
+      <span className="text-xs md:text-sm">Show rows</span>
 
       <select
         id="size"
@@ -65,7 +65,11 @@ const Pagination = ({ totalCount }) => {
         ))}
       </select>
 
-      <button onClick={() => handlePageChange(1)} disabled={page === 1}>
+      <button
+        onClick={() => handlePageChange(1)}
+        disabled={page === 1}
+        className="text-xs md:text-sm"
+      >
         First
       </button>
       <button
@@ -98,6 +102,7 @@ const Pagination = ({ totalCount }) => {
       <button
         onClick={() => handlePageChange(pageCount)}
         disabled={page === pageCount || pageCount === 0}
+        className="text-xs md:text-sm"
       >
         Last
       </button>

@@ -418,6 +418,7 @@ const getOrderFromDB = async (queries) => {
 };
 
 const getUserOrderFromDB = async (queries, phone) => {
+  const { paymentStatus, bookingStatus } = queries;
   const page = parseInt(queries?.page);
   const size = parseInt(queries?.size);
 
@@ -425,6 +426,10 @@ const getUserOrderFromDB = async (queries, phone) => {
   if (phone) {
     matchStage.phone = phone;
   }
+  if (paymentStatus && paymentStatus !== "All")
+    matchStage.paymentStatus = paymentStatus;
+  if (bookingStatus && bookingStatus !== "All")
+    matchStage.status = bookingStatus;
   const totalCountsPipeline = [
     { $match: matchStage },
     {
