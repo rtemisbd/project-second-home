@@ -1,23 +1,24 @@
 import React, { useContext, useEffect, useState } from "react";
-import userEndOrder from "../../hooks/userEndOrder";
+
 import { UserBooking } from "./UserBooking";
 import { CancelBooking } from "./CancelBooking";
 import MakePayment from "./MakePayment";
 import { useQuery } from "react-query";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { AuthContext } from "../../contexts/UserProvider";
+import Pagination from "../pagination/Pagination";
+import { useSelector } from "react-redux";
 
 const BookingHistory = () => {
   const { user } = useContext(AuthContext);
-  // const [userOrder] = userEndOrder();
   const [userOrder, setUserOrder] = useState(null);
   const [detailsShow, setDetailsShow] = useState(false);
   const [cancelShow, setCancelShow] = useState(false);
   const [makePaymentShow, setMakePaymentShow] = useState(false);
   const [order, setOrder] = useState(null);
   const [totalCount, setTotalCount] = useState();
-  const [page, setPage] = useState(1);
-  const [size, setSize] = useState(4);
+
+  const { page, size } = useSelector((state) => state.pagination);
 
   const handleDetailsShow = (order) => {
     setOrder(order);
@@ -67,7 +68,7 @@ const BookingHistory = () => {
   // // Re-fetch data whenever size changes
   useEffect(() => {
     refetch();
-  }, []);
+  }, [page, size]);
 
   return (
     <div className="md:p-0 sm:p-2">
@@ -206,6 +207,7 @@ const BookingHistory = () => {
       ) : (
         <div className="text-center mt-10 text-red-500">No Booking Found</div>
       )}
+      {totalCount && <Pagination totalCount={totalCount} />}
       <UserBooking
         handleDetailsShow={handleDetailsShow}
         detailsShow={detailsShow}
