@@ -3,7 +3,7 @@ import { Button, Input } from "@material-tailwind/react";
 
 import toast, { Toaster } from "react-hot-toast";
 
-import "./Referral.css";
+import "./style/Referral.css";
 
 const Referral = () => {
   const [inviteLink, setInviteLink] = useState(

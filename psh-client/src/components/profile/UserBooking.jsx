@@ -26,6 +26,8 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
   const [roomCategory, setRoomCategory] = useState(null);
   const [rating, setRating] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [payableAmount, setPayableAmount] = useState(0);
+  const [discount, setDiscount] = useState(0);
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -75,6 +77,22 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
     };
     fetchCategory();
   }, [order?.bookingInfo?.roomType]);
+
+  useEffect(() => {
+    const totalDiscount = order?.adjustments?.[0]?.totatAdjustmentAmount || 0;
+    const updatedDiscount = order?.discount || 0;
+
+    const newDiscount = updatedDiscount + totalDiscount;
+    setDiscount(newDiscount);
+
+    const newPayableAmount = (order?.totalAmount || 0) - newDiscount;
+
+    if (order?.discount > 0) {
+      setPayableAmount(order?.payableAmount);
+    } else {
+      setPayableAmount(newPayableAmount);
+    }
+  }, [order]);
 
   return (
     <>
@@ -208,9 +226,13 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                 <div className="">
                   <span className="block text-start">Payment Status</span>
                   <span className="block text-start">Total Amount</span>
+                  <span className="block text-start">Total Discount</span>
+                  <span className="block text-start">Payable Amount</span>
                 </div>
                 <div className="">
                   <span className="block text-start">: </span>
+                  <span className="block text-start">:</span>
+                  <span className="block text-start">:</span>
                   <span className="block text-start">:</span>
                 </div>
                 <div className="">
@@ -225,6 +247,12 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                   </span>
                   <span className="block text-start font-bold">
                     Tk {order?.payableAmount?.toLocaleString()}
+                  </span>
+                  <span className="block text-start font-bold">
+                    Tk {discount}
+                  </span>
+                  <span className="block text-start font-bold">
+                    Tk {payableAmount}
                   </span>
                 </div>
               </div>
@@ -257,15 +285,18 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                   <span
                     className="block font-bold text-start"
                     style={{
-                      color: order?.dueAmount !== 0 ? "red" : "black",
+                      color: order?.transactions[0]?.totalReceiveTk
+                        ? payableAmount - order?.transactions[0]?.totalReceiveTk
+                        : payableAmount !== 0
+                        ? "red"
+                        : "green",
                     }}
                   >
                     {" "}
                     Tk{" "}
                     {order?.transactions[0]?.totalReceiveTk
-                      ? order?.payableAmount -
-                        order?.transactions[0]?.totalReceiveTk
-                      : order?.payableAmount}
+                      ? payableAmount - order?.transactions[0]?.totalReceiveTk
+                      : payableAmount}
                   </span>
                 </div>
               </div>

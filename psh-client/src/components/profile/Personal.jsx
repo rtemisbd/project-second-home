@@ -1,5 +1,5 @@
 import useUser from "../../hooks/userUser";
-import "./Personal.css";
+import "./style/Personal.css";
 
 function Personal() {
   const [singleUser] = useUser();

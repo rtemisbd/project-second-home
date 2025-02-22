@@ -5,13 +5,11 @@ import "jspdf-autotable";
 import { useLocation } from "react-router-dom";
 import right from "../../assets/img/Right.png";
 import logo from "../../assets/img/logo.png";
-// import useBranch from "../../hooks/useBranch";
-// import InvoiceModal from "./InvoiceModal";
+
 import "./invoice.css";
 import { BlobProvider, View } from "@react-pdf/renderer";
 import DownlaodInvoice from "./DownlaodInvoice";
 import useUserTransactions from "../../hooks/useUserTransactions";
-import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const Invoice = () => {
   const ref = useRef();
@@ -22,9 +20,30 @@ const Invoice = () => {
   const [transactions] = useUserTransactions();
   const { pathname } = useLocation();
 
+  const [discount, setDiscount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(0);
+
+  useEffect(() => {
+    const totalDiscount =
+      userEndOrder?.adjustments?.[0]?.totatAdjustmentAmount || 0;
+    const updatedDiscount = userEndOrder?.discount || 0;
+
+    const newDiscount = updatedDiscount + totalDiscount;
+    setDiscount(newDiscount);
+
+    const newPayableAmount = (userEndOrder?.totalAmount || 0) - newDiscount;
+
+    if (userEndOrder?.discount > 0) {
+      setPayableAmount(userEndOrder?.payableAmount);
+    } else {
+      setPayableAmount(newPayableAmount);
+    }
+  }, [userEndOrder]);
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
   return (
     <div className="  md:flex md:justify-center">
       <div className=" ">
@@ -65,7 +84,18 @@ const Invoice = () => {
                     </div>
                     <div className="flex justify-between">
                       <p className="ml-[-49px]">Payment Method:</p>{" "}
-                      <p className="">{userEndOrder?.paymentType}</p>
+                      <p className="">
+                        {" "}
+                        {userEndOrder?.transactions[0]?.allProperties[
+                          userEndOrder?.transactions[0]?.allProperties.length -
+                            1
+                        ]?.paymentType
+                          ? userEndOrder?.transactions[0]?.allProperties[
+                              userEndOrder?.transactions[0]?.allProperties
+                                .length - 1
+                            ]?.paymentType
+                          : " null"}
+                      </p>
                     </div>
                   </div>
                 </div>
@@ -278,7 +308,15 @@ const Invoice = () => {
                         <span className="font-bold mr-3">
                           Payment Method :{" "}
                         </span>{" "}
-                        {userEndOrder?.paymentType}
+                        {userEndOrder?.transactions[0]?.allProperties[
+                          userEndOrder?.transactions[0]?.allProperties.length -
+                            1
+                        ]?.paymentType
+                          ? userEndOrder?.transactions[0]?.allProperties[
+                              userEndOrder?.transactions[0]?.allProperties
+                                .length - 1
+                            ]?.paymentType
+                          : " null"}
                       </p>
                       <p>
                         <span className="font-bold mr-3">Account Number :</span>{" "}
@@ -353,18 +391,13 @@ const Invoice = () => {
                         <div className="flex justify-between">
                           <p className="font-bold">Discount</p>
                           <p className="ml-8">:</p>
-                          <p className="">
-                            BDT{" "}
-                            {userEndOrder?.bookingInfo?.discount?.toLocaleString()}
-                          </p>
+                          <p className="">BDT {discount}</p>
                         </div>
                         <hr className="mt-1" />
                         <div className="paid-amount flex justify-between">
                           <p className="font-bold text-[12px]">Payable</p>{" "}
                           <p className="ml-[55px]">:</p>
-                          <p className=" text-[12px]">
-                            BDT {userEndOrder?.payableAmount?.toLocaleString()}
-                          </p>
+                          <p className=" text-[12px]">BDT {payableAmount}</p>
                         </div>
                         <hr className="mt-1" />
                         <div className="paid-amount flex justify-between">
@@ -392,7 +425,7 @@ const Invoice = () => {
                           <p className="ml-[75px]">:</p>
                           <p className=" text-[12px]">
                             BDT{" "}
-                            {userEndOrder?.payableAmount -
+                            {payableAmount -
                               userEndOrder?.transactions[0]?.totalReceiveTk}
                             {/* {transactions[transactions?.length - 1]?.payableAmount -
                               transactions[transactions?.length - 1]?.receivedTk}{" "} */}

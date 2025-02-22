@@ -2,7 +2,7 @@ import React from "react";
 import { Card, Typography } from "@material-tailwind/react";
 
 import UseFetch from "../../hooks/useFetch";
-import "./Voucher.css";
+import "./style/Voucher.css";
 import { Link } from "react-router-dom";
 // import MenuList from "./MenuList";
 const Vouchers = () => {
