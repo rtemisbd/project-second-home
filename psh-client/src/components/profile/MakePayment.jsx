@@ -81,7 +81,7 @@ const MakePayment = ({ handleMakePaymentShow, makePaymentShow, order }) => {
         </DialogHeader>
         <DialogBody
           divider
-          className="  lg:h-[33rem] xl:h-[50rem] md:h-[30rem] sm:h-[30rem] xs:h-[30rem] overflow-scroll "
+          className="  lg:h-[20rem] xl:h-[30rem] md:h-[20rem] sm:h-[24rem] xs:h-[24rem] overflow-scroll "
         >
           <div>
             <div className="my-4 flex justify-center mx-4">
