@@ -13,17 +13,20 @@ import SearchBox from "../../components/home/SearchBox";
 import BusinessPlatform from "../new/BusinessPlatform";
 import HomePage from "../../components/home/HomePage";
 import useRentRoom from "../../hooks/useRentRoom";
+import NewBanner from "../../components/home/NewBanner";
 
 const Home = () => {
   useRentRoom();
   return (
     <>
       <div className="banner_custom_container ">
-        <Banner />
+        {/* <Banner /> */}
+
+        <NewBanner />
       </div>
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
         <SearchBoxSm />
-        <SearchBox />
+        {/* <SearchBox /> */}
         <HomePage />
       </div>
 

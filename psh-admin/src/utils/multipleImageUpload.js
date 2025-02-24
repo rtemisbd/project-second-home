@@ -15,7 +15,7 @@ export const multipleImageUpload = async (files) => {
 
     // Validate the photo
     if (!isValidPhoto(file)) {
-      //   toast.error(`Product picture ${file.name} is not valid`);
+      // toast.error(`Product picture ${file.name} is not valid`);
       continue;
     }
 
@@ -36,8 +36,8 @@ export const multipleImageUpload = async (files) => {
       const imgData = await response.json();
 
       // Handle response
-      if (imgData.success) {
-        const imageUrl = imgData.data.url;
+      if (imgData?.success) {
+        const imageUrl = imgData?.data?.url;
         uploadedImageUrls.push(imageUrl);
         // toast.success(`Image ${file.name} uploaded successfully!`);
       } else {

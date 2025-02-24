@@ -12,6 +12,7 @@ import Banner from "../../pages/edit/Banner";
 
 import "jspdf-autotable";
 import { toast, ToastContainer } from "react-toastify";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Banner_list = () => {
   //sub stream
@@ -35,7 +36,7 @@ const Banner_list = () => {
         return (
           <div>
             <img
-              src={row.photos[0] && row.photos[0]}
+              src={row?.photos[0] && row?.photos[0]}
               alt=""
               style={{ width: 120 }}
             />
@@ -107,7 +108,7 @@ const Banner_list = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(`https://api.psh.com.bd/api/banner`, {
+        const { data } = await axios.get(`${baseUrl}/api/banner`, {
           mode: "cors",
         });
         setData(data);
@@ -122,7 +123,7 @@ const Banner_list = () => {
   const handleCategory = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/banner/${id}`;
+      const url = `${baseUrl}/api/banner/${id}`;
       fetch(url, {
         method: "DELETE",
       })
