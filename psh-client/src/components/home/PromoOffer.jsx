@@ -43,10 +43,12 @@ const PromoOffer = () => {
 
   return (
     <div>
-      <div className="mt-5">
+      <div className="">
         <div>
-          <h2 className="text-xl font-bold text-gray-900">Promo Offers</h2>
-          <div className="flex justify-between items-end my-2">
+          <h2 className="text-base md:text-xl font-bold text-gray-900">
+            Promo Offers
+          </h2>
+          <div className="flex justify-between items-end text-sm md:text-base mb-1">
             <p>Our best Discount Offers for you</p>
             <p>
               <Link
@@ -74,7 +76,7 @@ const PromoOffer = () => {
                           <img
                             src={item?.homePageCover[0]}
                             alt=""
-                            className="promo_img h-[200px] md:h-[240px]"
+                            className="promo_img h-[200px] md:h-[80px] w-full object-fill"
                           />
                         )}
                       </div>

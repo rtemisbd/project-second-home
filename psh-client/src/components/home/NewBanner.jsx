@@ -1,11 +1,9 @@
 import React, { useEffect, useRef, useContext } from "react";
 
 import { useState } from "react";
-import { BsArrowRight } from "react-icons/bs";
 import { FaBed } from "react-icons/fa";
 import { BiBody } from "react-icons/bi";
-import { addDays, addMonths, addYears, subDays } from "date-fns";
-import { GiSofa } from "react-icons/gi";
+import { addDays, subDays } from "date-fns";
 import DatePicker from "react-datepicker";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
@@ -43,32 +41,32 @@ const NewBanner = () => {
 
   const [inputActive, setInputActive] = useState(false);
 
+  // Corrected handleItemClick
+  const handleItemClick = (item) => {
+    setQuery(item.name);
+    setDestination(item?.name);
+    setInputActive(false);
+  };
+
+  // useEffect(() => {
+  //   const handleOutsideClick = (event) => {
+  //     if (inputRef.current && !inputRef.current.contains(event.target)) {
+  //       setInputActive(false);
+  //     }
+  //   };
+
+  //   if (inputActive) {
+  //     document.addEventListener("mousedown", handleOutsideClick);
+  //   }
+
+  //   return () => {
+  //     document.removeEventListener("mousedown", handleOutsideClick);
+  //   };
+  // }, [inputActive]);
+
   const filteredData = branch.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
   );
-
-  useEffect(() => {
-    const handleOutsideClick = (event) => {
-      if (inputRef.current && !inputRef.current.contains(event.target)) {
-        setInputActive(false);
-      }
-    };
-
-    if (inputActive) {
-      document.addEventListener("mousedown", handleOutsideClick);
-    }
-
-    return () => {
-      document.removeEventListener("mousedown", handleOutsideClick);
-    };
-  }, [inputActive]);
-
-  const handleItemClick = (item) => {
-    // setSelectedItem(item);
-    setQuery(item.name);
-    setInputActive(false);
-    setDestination(item?.name);
-  };
 
   useEffect(() => {
     reduxDispatch(toTalRent());
@@ -82,8 +80,8 @@ const NewBanner = () => {
   function getLastDayOfMonth() {
     const today = new Date(startDate);
     const year = today.getFullYear();
-    const month = today.getMonth() + 1; // Months are zero-indexed, so we add 1.
-    const lastDay = new Date(year, month, 0).getDate(); // Setting day to 0 gets the last day of the previous month.
+    const month = today.getMonth() + 1;
+    const lastDay = new Date(year, month, 0).getDate();
     return lastDay;
   }
 
@@ -132,7 +130,6 @@ const NewBanner = () => {
     const payload = {
       destination,
       bedrooms,
-
       gender: genderQuery,
       category: categoryQuery,
       startDate: new Date(startDate).toISOString().split("T")[0],
@@ -142,14 +139,15 @@ const NewBanner = () => {
     dispatch({ type: "NEW_SEARCH", payload });
     navigate(`/branch/${destination}`, { state: payload });
   };
+
   return (
-    <div className="flex justify-between w-full my-6 py-5">
-      <div className="w-[492px] shadow-md rounded-md p-5">
+    <div className="flex justify-between w-full my-1 py-2 lg:py-5 ">
+      <div className="w-[40%] h-auto  shadow-md rounded-md p-5 pb-0 hidden lg:block ">
         <h2 className="text-base font-bold">Find Your Accommodation </h2>
-        <form className="searchBox" onSubmit={handleSearch}>
-          <div className="py-3 space-y-3 ">
+        <form className="" onSubmit={handleSearch}>
+          <div className="pt-2 space-y-1 ">
             {/* room category */}
-            <ul className="flex title-search" style={{ marginTop: "10px" }}>
+            <ul className="flex ">
               {category.map((categoryItem, index) => (
                 <li>
                   <span
@@ -165,45 +163,46 @@ const NewBanner = () => {
             </ul>
             {/* location */}
             <div className="">
-              <p>Location</p>
-              <div className="input-filed-area" ref={inputRef}>
+              {/* <p>Location</p> */}
+              <div
+                className="flex border  rounded-l-lg rounded-r-lg mt-1 relative"
+                ref={inputRef}
+              >
+                <div className="w-[84px] py-[7px] rounded-l-lg bg-[#eafffd] text-[#00bbb4]">
+                  <img
+                    src="https://i.ibb.co/z8kf0jf/location.png"
+                    className="mx-auto w-5 h-5 "
+                    alt="location"
+                  />
+                  {/* <GrLocation className="mx-auto w-5 h-5 " /> */}
+                </div>
                 <input
                   type="text"
                   placeholder="Looking for best place to live"
                   value={query}
-                  className="input_main"
+                  className="w-full rounded-r-lg focus: outline-none  bg-white pl-2"
                   ref={inputRef}
-                  style={{
-                    background: "none",
-                    outline: "none",
-                    width: "100%",
-                    height: "40px",
-                    paddingLeft: "40px",
-                    borderRadius: "5px",
-                  }}
                   onChange={(e) => setQuery(e.target.value)}
                   onClick={() => setInputActive(true)}
                   required
                 />
                 {inputActive && (
-                  <ul className=" absolute bg-white border border-[#00bbb4] rounded">
-                    {filteredData?.length > 0 ? (
+                  <ul className="absolute top-9 left-16 bg-white z-50 border border-l-[#00bbb4] border-b-[#00bbb4] rounded rounded-t-none">
+                    {filteredData.length > 0 ? (
                       filteredData.map((item, index) => (
                         <li
                           key={item._id}
                           onClick={() => handleItemClick(item)}
-                          className="hover:bg-gray-320  cursor-pointer px-2 rounded flex items-center gap-x-2"
-                          style={{ width: "420px" }}
+                          className="hover:bg-gray-300 cursor-pointer px-2 rounded flex items-center gap-x-2 w-[346px]"
                         >
                           <GrLocation />
-
                           {item.name}
                         </li>
                       ))
                     ) : (
                       <li
                         className="text-center py-5"
-                        style={{ height: "100px", width: "420px" }}
+                        style={{ height: "100px", width: "385px" }}
                       >
                         <SyncLoader
                           color="#6B7280"
@@ -214,27 +213,21 @@ const NewBanner = () => {
                     )}
                   </ul>
                 )}
-                <div className="location-icon ">
-                  <img
-                    src="https://i.ibb.co/z8kf0jf/location.png"
-                    style={{ color: "#00bbb4", width: "20px", height: "20px" }}
-                    alt="location"
-                  />
-                </div>
               </div>
             </div>
             {/* rent dates */}
 
-            <div className="flex justify-between " ref={inputRef}>
-              <div className="w-[30%]">
-                <p>Check In</p>
-                <div className="border pl-3 py-2 border-[#00bbb4] rounded-[5px] mt-1 flex items-center w-full">
-                  <i
-                    className="fa-solid fa-calendar-days me-2"
-                    style={{ color: "#00bbb4" }}
-                  ></i>
+            <div className="flex w-full gap-1 pt-2" ref={inputRef}>
+              <div>
+                {/* <p>Check In</p> */}
+                <div className="flex border  rounded-l-lg rounded-r-lg mt-1 relative w-full">
+                  <div className="w-[50%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                    <i className="fa-solid fa-calendar-days  text-[#00bbb4]" />
+                    {/* <p className=" text-[#00bbb4]">Check In</p> */}
+                    {/* <i className="fa-solid fa fa-sign-in  text-[#00bbb4]" /> */}
+                  </div>
                   <DatePicker
-                    className="bg-transparent outline-none"
+                    className="bg-white outline-none w-full pl-2 py-[7px]"
                     selected={new Date(startDate)}
                     dateFormat="dd/MM/yyyy"
                     onChange={(date) => reduxDispatch(leftDate(date))}
@@ -242,15 +235,16 @@ const NewBanner = () => {
                   />
                 </div>
               </div>
-              <div className="w-[30%]">
-                <p>Check Out</p>
-                <div className="border pl-3 py-2 border-[#00bbb4]  rounded-[5px] mt-1 flex items-center">
-                  <i
-                    className="fa-solid fa-calendar-days me-2"
-                    style={{ color: "#00bbb4" }}
-                  ></i>
+              <div>
+                {/* <p>Check Out</p> */}
+                <div className="flex border  rounded-l-lg rounded-r-lg mt-1 relative w-full">
+                  <div className="w-[60%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                    <i className="fa-solid fa-calendar-days text-[#00bbb4]" />
+                    {/* <p className=" text-[#00bbb4]">Check Out</p> */}
+                    {/* <i className="fa-solid fa fa-sign-out  text-[#00bbb4]" /> */}
+                  </div>
                   <DatePicker
-                    className="bg-transparent outline-none"
+                    className="bg-white outline-none w-full pl-2 py-[7px]"
                     selected={
                       customerRent?.remainingDays < 1
                         ? addDays(new Date(startDate), 1)
@@ -262,10 +256,15 @@ const NewBanner = () => {
                   />
                 </div>
               </div>
-              <div className="w-[30%]">
-                <p>Duration</p>
-                <div className="border pl-3 py-2 border-[#00bbb4]  rounded-[5px] mt-1 w-full">
-                  <div className="w-full">
+            </div>
+            <div>
+              {/* <p>Duration</p> */}
+              <div className="flex gap-1 pt-2">
+                <div className="flex border rounded-l-lg rounded-r-lg mt-1 relative w-1/2">
+                  <div className="w-20 py-[7px] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                    <i className="fa-solid fa-clock text-[#00bbb4]" />
+                  </div>
+                  <div className="bg-white w-full outline-none pl-2 py-[7px]">
                     <span>
                       {`${
                         customerRent?.daysDifference >= 0
@@ -276,7 +275,7 @@ const NewBanner = () => {
                         customerRent?.months &&
                         customerRent?.days >= 0 &&
                         !customerRent?.years
-                          ? `${customerRent?.months} months, ${customerRent?.days} days`
+                          ? `${customerRent?.months} month, ${customerRent?.days} days`
                           : ""
                       }`}
                       {`${
@@ -289,25 +288,50 @@ const NewBanner = () => {
                     </span>
                   </div>
                 </div>
+                <ul className="flex styled-search-1 mt-1 border rounded-lg">
+                  <li className="w-12 py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                    <BiBody
+                      className=""
+                      style={{
+                        color: "#339999",
+                        height: "24px",
+                        width: "24px",
+                      }}
+                    />
+                  </li>
+                  {gender.map((gender, index) => (
+                    <li key={index} className="search_md_bed">
+                      <button
+                        onClick={() => handleGenderSelection(index)}
+                        disabled={gender === "Male"}
+                        className={`${
+                          genderValue === index ? "bedActive" : "bedNonActive"
+                        } px-[18px] py-[7px]   disabled:cursor-not-allowed`}
+                      >
+                        {gender}
+                      </button>
+                    </li>
+                  ))}
+                </ul>
               </div>
             </div>
             {/* bed */}
-            <div className="flex items-center ">
+            <div className="flex items-center pt-2 ">
               <div>
                 <FaBed
                   style={{
                     color: "#339999",
                     height: "24px",
                     width: "24px",
-                    marginTop: "25px",
+                    marginTop: "20px",
                     marginRight: "12px",
                   }}
                 />
               </div>
 
-              <div style={{ marginTop: "19px" }}>
+              <div>
                 <ul
-                  className={`flex styled-search-1 mt-3 ${
+                  className={`flex gap-3 mt-3 ${
                     categoryValue === 2 ? "hide-search-options" : ""
                   }`}
                 >
@@ -328,7 +352,7 @@ const NewBanner = () => {
                       <li key={index} className="search_md_bed">
                         <span
                           onClick={() => handleBedSelection(index)}
-                          className={`${
+                          className={`px-2 py-[8px] rounded-md ${
                             bedValue === index ? "bedActive" : "bedNonActive"
                           }`}
                         >
@@ -341,38 +365,7 @@ const NewBanner = () => {
               </div>
             </div>
 
-            <div
-              className="flex justify-between items-center "
-              style={{ marginTop: "7px" }}
-            >
-              <ul className="flex styled-search-1 mt-3">
-                <li>
-                  <BiBody
-                    style={{
-                      color: "#339999",
-                      height: "24px",
-                      width: "24px",
-                      marginTop: "2px",
-                      marginRight: "12px",
-                    }}
-                  />
-                </li>
-                {gender.map((gender, index) => (
-                  <li key={index} className="search_md_bed">
-                    <button
-                      onClick={() => handleGenderSelection(index)}
-                      disabled={gender === "Male"}
-                      className={`${
-                        genderValue === index ? "bedActive" : "bedNonActive"
-                      } px-[25px] py-[6px] ml-1 rounded disabled:cursor-not-allowed`}
-                    >
-                      {gender}
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
+            <div className="py-2">
               <input
                 type="submit"
                 className="bg-[#00bbb4] hover:bg-[#2dc3c0]"
@@ -382,7 +375,7 @@ const NewBanner = () => {
                   color: "white",
                   padding: "7px 10px",
                   borderRadius: "5px",
-                  marginTop: "12px",
+                  marginTop: "5px",
                   width: "100%",
                   cursor: "pointer",
                 }}
@@ -391,7 +384,7 @@ const NewBanner = () => {
           </div>
         </form>
       </div>
-      <div className=" p-5 ">
+      <div className="w-full lg:w-[60%] px-5   ">
         <BannerSlider />
       </div>
     </div>

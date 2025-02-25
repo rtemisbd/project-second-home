@@ -1,7 +1,7 @@
 export const promoSlider = (projects) => ({
   //   perPage: 1,
   perMove: 1,
-  gap: "24px",
+  gap: "8px",
   pagination: false,
   // arrows: true,
   width: "100%",

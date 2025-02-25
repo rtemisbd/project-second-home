@@ -24,15 +24,17 @@ const Home = () => {
 
         <NewBanner />
       </div>
-      <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
+      <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3 ">
         <SearchBoxSm />
-        {/* <SearchBox /> */}
+      </div>
+      <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3 lg:space-y-7">
+        <PromoOffer />
+
         <HomePage />
       </div>
 
       <Facility />
-      <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
-        <PromoOffer />
+      <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-7">
         <Recommended />
         <AllBranch />
         <h2 className="text-xl font-bold mt-10">
