@@ -48,21 +48,26 @@ const NewBanner = () => {
     setInputActive(false);
   };
 
-  // useEffect(() => {
-  //   const handleOutsideClick = (event) => {
-  //     if (inputRef.current && !inputRef.current.contains(event.target)) {
-  //       setInputActive(false);
-  //     }
-  //   };
+  useEffect(() => {
+    const handleOutsideClick = (event) => {
+      if (
+        inputRef.current &&
+        !inputRef.current.contains(event.target) &&
+        (event.target.childElementCount > 1 ||
+          event.target.childElementCount == 0)
+      ) {
+        setInputActive(false);
+      }
+    };
 
-  //   if (inputActive) {
-  //     document.addEventListener("mousedown", handleOutsideClick);
-  //   }
+    if (inputActive) {
+      document.addEventListener("mousedown", handleOutsideClick);
+    }
 
-  //   return () => {
-  //     document.removeEventListener("mousedown", handleOutsideClick);
-  //   };
-  // }, [inputActive]);
+    return () => {
+      document.removeEventListener("mousedown", handleOutsideClick);
+    };
+  }, [inputActive]);
 
   const filteredData = branch.filter((item) =>
     item.name.toLowerCase().includes(query.toLowerCase())
@@ -165,7 +170,7 @@ const NewBanner = () => {
             <div className="">
               {/* <p>Location</p> */}
               <div
-                className="flex border  rounded-l-lg rounded-r-lg mt-1 relative"
+                className="flex border  rounded-l-lg rounded-r-lg mt-1 relative "
                 ref={inputRef}
               >
                 <div className="w-[84px] py-[7px] rounded-l-lg bg-[#eafffd] text-[#00bbb4]">
