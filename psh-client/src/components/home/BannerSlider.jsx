@@ -39,8 +39,8 @@ const BannerSlider = () => {
       {visibleImages.map((item, ind) => (
         <div
           key={item?._id}
-          className={`h-[180px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden relative transition-all duration-500 ease-in
-             ${ind === 0 || ind === 2 ? "mt-4" : "mt-0"}`}
+          className={`h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden relative transition-all duration-500 ease-in
+             ${ind === 0 || ind === 2 ? "sm:mt-2 md:mt-4" : "mt-0"}`}
         >
           <img
             src={item?.photos[0]}

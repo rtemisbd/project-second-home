@@ -76,7 +76,7 @@ const PromoOffer = () => {
                           <img
                             src={item?.homePageCover[0]}
                             alt=""
-                            className="promo_img h-[200px] md:h-[80px] w-full object-fill"
+                            className="promo_img h-[100px] md:h-[100px] w-full object-fill"
                           />
                         )}
                       </div>
