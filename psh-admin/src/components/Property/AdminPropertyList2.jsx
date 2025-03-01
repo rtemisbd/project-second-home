@@ -101,7 +101,6 @@ const AdminPropertyList2 = () => {
       navigate(`/dashboard/edit/share-room/${room?._id}`);
     }
   };
-  console.log();
 
   return (
     <div className="wrapper">

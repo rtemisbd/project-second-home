@@ -12,13 +12,13 @@ import PromoUpdate from "../../pages/edit/PromoUpdate";
 import { useQuery } from "react-query";
 import { BiSolidEdit } from "react-icons/bi";
 import { AiOutlineDelete } from "react-icons/ai";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Promo_list = () => {
   const MySwal = withReactContent(Swal);
 
   //sub stream
   const [data, setData] = useState([]);
-  console.log(data);
 
   const columns = [
     {
@@ -60,11 +60,11 @@ const Promo_list = () => {
       formatter: (cellContent, row) => {
         return (
           <div>
-            {/* <img
-              src={row?.photos[0] && row?.photos[0]}
-              alt=""
-              style={{ width: 120 }}
-            /> */}
+            {row?.photos ? (
+              <img src={row?.photos[0]} alt="promo" style={{ width: 120 }} />
+            ) : (
+              <p>promo</p>
+            )}
           </div>
         );
       },
@@ -132,7 +132,7 @@ const Promo_list = () => {
   });
   // Get All Promo
   const { isLoading, refetch } = useQuery([], () =>
-    fetch(`https://api.psh.com.bd/api/promo`, {
+    fetch(`${baseUrl}/api/promo`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -146,7 +146,7 @@ const Promo_list = () => {
   const handleCategory = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/promo/${id}`;
+      const url = `${baseUrl}/api/promo/${id}`;
       fetch(url, {
         method: "DELETE",
       })

@@ -14,6 +14,7 @@ import BusinessPlatform from "../new/BusinessPlatform";
 import HomePage from "../../components/home/HomePage";
 import useRentRoom from "../../hooks/useRentRoom";
 import NewBanner from "../../components/home/NewBanner";
+import Franchise from "../../components/home/Franchise";
 
 const Home = () => {
   useRentRoom();
@@ -28,7 +29,14 @@ const Home = () => {
         <SearchBoxSm />
       </div>
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3 lg:space-y-7">
-        <PromoOffer />
+        <div className="flex w-full">
+          <div className="w-1/3">
+            <PromoOffer />
+          </div>
+          <div className="w-2/3 ">
+            <Franchise />
+          </div>
+        </div>
 
         <HomePage />
       </div>
