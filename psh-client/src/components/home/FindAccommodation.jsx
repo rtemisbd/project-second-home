@@ -167,10 +167,10 @@ const FindAccommodation = () => {
           <div className="">
             {/* <p>Location</p> */}
             <div
-              className="flex border  rounded-l-lg rounded-r-lg mt-1 relative "
+              className="flex border  rounded-l-lg rounded-r-lg mt-1 relative w-full"
               ref={inputRef}
             >
-              <div className="w-[84px] py-[7px] rounded-l-lg bg-[#eafffd] text-[#00bbb4]">
+              <div className="w-[15%] py-[7px] rounded-l-lg bg-[#eafffd] text-[#00bbb4]">
                 <img
                   src="https://i.ibb.co/z8kf0jf/location.png"
                   className="mx-auto w-5 h-5 "
@@ -219,17 +219,17 @@ const FindAccommodation = () => {
           </div>
           {/* rent dates */}
 
-          <div className="flex w- gap-1 pt-2 w-full" ref={inputRef}>
+          <div className="flex gap-1 pt-2 w-full" ref={inputRef}>
             <div className="w-1/2 ">
               {/* <p>Check In</p> */}
               <div className="flex border rounded-l-lg rounded-r-lg mt-1  w-full">
-                <div className="w-1/3 py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                  <i className="fa-solid fa-calendar-days  text-[#00bbb4]" />
+                <div className="w-[35%] py-[7px] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                  <i className="fa-solid fa-calendar-days  text-[#00bbb4] h-5 w-5" />
                   {/* <p className=" text-[#00bbb4]">Check In</p> */}
                   {/* <i className="fa-solid fa fa-sign-in  text-[#00bbb4]" /> */}
                 </div>
                 <DatePicker
-                  className="bg-white outline-none pl-2 py-[7px] w-2/3"
+                  className="bg-white outline-none pl-2 py-[7px] w-[75%]"
                   selected={new Date(startDate)}
                   dateFormat="dd/MM/yyyy"
                   onChange={(date) => reduxDispatch(leftDate(date))}
@@ -240,13 +240,13 @@ const FindAccommodation = () => {
             <div className="w-1/2 ">
               {/* <p>Check Out</p> */}
               <div className="flex border rounded-l-lg rounded-r-lg mt-1  w-full">
-                <div className="w-1/3 py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                <div className="w-[35%] py-[7px] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
                   <i className="fa-solid fa-calendar-days  text-[#00bbb4]" />
                   {/* <p className=" text-[#00bbb4]">Check Out</p> */}
                   {/* <i className="fa-solid fa fa-sign-out  text-[#00bbb4]" /> */}
                 </div>
                 <DatePicker
-                  className="bg-white outline-none pl-2 py-[7px] w-2/3"
+                  className="bg-white outline-none pl-2 py-[7px] w-[75%]"
                   selected={
                     customerRent?.remainingDays < 1
                       ? addDays(new Date(startDate), 1)
@@ -264,8 +264,8 @@ const FindAccommodation = () => {
           <div className="flex gap-1 pt-2 w-full ">
             <div className="w-1/2">
               <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
-                <div className="w-[29%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                  <i className="fa-solid fa-clock text-[#00bbb4]" />
+                <div className="w-[24%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                  <i className="fa-solid fa-clock text-[#00bbb4] h-5 w-5" />
                 </div>
                 <div className="bg-white w-[71%] outline-none pl-2 py-[7px]">
                   <span>
@@ -293,7 +293,7 @@ const FindAccommodation = () => {
               </div>
             </div>
             <ul className="flex styled-search-1 mt-1 border rounded-lg w-1/2">
-              <li className="w-[29%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+              <li className="w-[46px] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
                 <BiBody
                   className=""
                   style={{
@@ -304,13 +304,13 @@ const FindAccommodation = () => {
                 />
               </li>
               {gender.map((gender, index) => (
-                <li key={index} className="search_md_bed">
+                <li key={index} className="search_md_bed ">
                   <button
                     onClick={() => handleGenderSelection(index)}
                     disabled={gender === "Male"}
                     className={`${
                       genderValue === index ? "bedActive" : "bedNonActive"
-                    } px-[21px] py-[7px]   disabled:cursor-not-allowed`}
+                    } px-[15px] py-[9px]    disabled:cursor-not-allowed`}
                   >
                     {gender}
                   </button>
@@ -324,8 +324,8 @@ const FindAccommodation = () => {
               <FaBed
                 style={{
                   color: "#339999",
-                  height: "26px",
-                  width: "26px",
+                  height: "24px",
+                  width: "24px",
                   marginTop: "20px",
                   marginRight: "12px",
                 }}
@@ -333,7 +333,7 @@ const FindAccommodation = () => {
             </div>
 
             <ul
-              className={`flex justify-start gap-3 w-full mt-3 ${
+              className={`flex justify-start gap-2  w-full mt-3  ${
                 categoryValue === 2 ? "hide-search-options" : ""
               }`}
             >
@@ -351,10 +351,10 @@ const FindAccommodation = () => {
                 }
 
                 return (
-                  <li key={index} className="search_md_bed">
+                  <li key={index} className="text-[13px] font-semibold">
                     <span
                       onClick={() => handleBedSelection(index)}
-                      className={`px-[18px] py-[8px] rounded-md ${
+                      className={`px-[11px]  py-[8px] rounded-md  ${
                         bedValue === index ? "bedActive" : "bedNonActive"
                       }`}
                     >
