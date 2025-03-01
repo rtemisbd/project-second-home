@@ -29,11 +29,11 @@ const Home = () => {
         <SearchBoxSm />
       </div>
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3 lg:space-y-7">
-        <div className="flex w-full">
-          <div className="w-1/3">
+        <div className="flex flex-col md:flex-row w-full gap-4 items-end">
+          <div className="w-full md:w-1/2 lg:w-1/3 ">
             <PromoOffer />
           </div>
-          <div className="w-2/3 ">
+          <div className="w-full md:w-1/2 lg:w-2/3 ">
             <Franchise />
           </div>
         </div>
