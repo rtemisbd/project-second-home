@@ -137,6 +137,22 @@ const getPropertiesFromDB = async (queries) => {
     ];
     totalCount += extractedSeats.length;
   }
+  // allProperties.sort((a, b) => {
+  //   const extractNumber = (room) => {
+  //     if (!room) return Infinity;
+  //     const match = room.match(/(\d+)/g); // Extract all numbers
+  //     return match ? match.map(Number) : [Infinity]; // Convert to numbers
+  //   };
+
+  //   const numA = extractNumber(a.roomNumber);
+  //   const numB = extractNumber(b.roomNumber);
+
+  //   for (let i = 0; i < Math.min(numA.length, numB.length); i++) {
+  //     if (numA[i] !== numB[i]) return numA[i] - numB[i]; // Compare numbers
+  //   }
+
+  //   return a.roomNumber.localeCompare(b.roomNumber); // Fallback for letters
+  // });
 
   return {
     properties: allProperties,

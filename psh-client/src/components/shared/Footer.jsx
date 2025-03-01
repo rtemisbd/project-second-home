@@ -427,12 +427,12 @@ const Footer = () => {
           </div>
         </div>
       </div>
-      <div className="whatsapp_pic ">
+      <div className=" fixed bottom-4 md:bottom-12 right-2 md:right-10 opacity-80">
         <a href="https://wa.me/+8801647647404" target="_blank">
           <img
             src={whatsappIcon}
             alt="psh whatsapp"
-            style={{ width: 60, height: 60 }}
+            style={{ width: 48, height: 48 }}
           />
         </a>
       </div>

@@ -7,6 +7,8 @@ import { uploadSingleImage } from "../../utils/uploadSingleImage";
 import { baseUrl } from "../../utils/getBaseURL";
 
 const Promo = ({ data, refetch }) => {
+  // console.log(data);
+
   const [discount, setDiscount] = useState(data?.promoDiscount);
   const MySwal = withReactContent(Swal);
 

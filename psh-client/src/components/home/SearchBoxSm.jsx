@@ -23,7 +23,7 @@ const SearchBoxSm = () => {
   const reduxDispatch = useDispatch();
 
   return (
-    <div className="searchBoxSm mt-5">
+    <div className="searchBoxSm mt-0">
       <div
         className="searchButton flex justify-between items-center "
         onClick={() => reduxDispatch(placeSearchBoxShow(true))}

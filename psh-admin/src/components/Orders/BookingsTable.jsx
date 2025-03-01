@@ -14,8 +14,6 @@ const BookingsTable = ({
   isLoading,
   size,
 }) => {
-  console.log(data);
-
   return (
     <div>
       <Table striped bordered>

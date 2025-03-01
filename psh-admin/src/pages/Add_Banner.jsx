@@ -3,6 +3,9 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { baseUrl } from "../utils/getBaseURL";
+import { multipleImageUpload } from "../utils/multipleImageUpload";
+import { uploadSingleImage } from "../utils/uploadSingleImage";
 
 const Add_Banner = () => {
   const [files, setFiles] = useState("");
@@ -15,29 +18,22 @@ const Add_Banner = () => {
       name: formData.get("name"),
     };
     try {
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
+      // const list = await multipleImageUpload(files);
+      const list = await uploadSingleImage(formData.get("img"));
 
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
+      // if (list?.length !== 3) {
+      //   return MySwal.fire("Please upload 3 images.", "warning");
+      // }
 
       const product = {
         ...data2,
         photos: list,
       };
 
-      await axios.post("https://api.psh.com.bd/api/banner", product);
+      await axios.post(`${baseUrl}/api/banner`, product);
       MySwal.fire("Good job!", "successfully added", "success");
     } catch (err) {
+      console.log(err);
       MySwal.fire("Something Error Found.", "warning");
     }
   };
@@ -75,7 +71,7 @@ const Add_Banner = () => {
                   className="main_form w-100 p-0"
                   name="img"
                   onChange={(e) => setFiles(e.target.files)}
-                  multiple
+                  // multiple
                 />
               </div>
             </div>
