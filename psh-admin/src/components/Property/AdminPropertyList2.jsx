@@ -33,7 +33,7 @@ const AdminPropertyList2 = () => {
   const [seatNumber, setSeatNumber] = useState("");
 
   const [branch, setBranch] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("All");
   const [id, setId] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
 
@@ -124,9 +124,47 @@ const AdminPropertyList2 = () => {
             <div className="row">
               <div className="col-md-7">
                 <h6 className="college_h6">Property List</h6>
-              </div>{" "}
-              <div className="d-flex justify-content-end">
+              </div>
+            </div>
+            <div className="d-flex justify-content-between align-items-center ">
+              <div className="d-flex gap-2">
+                <h6>Category: </h6>
                 <div>
+                  {/* "All" Option */}
+                  <label>
+                    <input
+                      type="radio"
+                      name="category"
+                      value="All"
+                      checked={category === "All"}
+                      onChange={(e) => setCategory(e.target.value)}
+                      style={{ marginRight: "3px", marginTop: "1px" }}
+                    />
+                    All
+                  </label>
+
+                  {/* Dynamic Categories */}
+                  {categories?.map((categoryItem) => (
+                    <label
+                      key={categoryItem._id}
+                      style={{ marginLeft: "10px" }}
+                    >
+                      <input
+                        type="radio"
+                        name="category"
+                        value={categoryItem.name}
+                        checked={category === categoryItem.name}
+                        onChange={(e) => setCategory(e.target.value)}
+                        style={{ marginRight: "3px", marginTop: "1px" }}
+                      />
+                      {categoryItem.name}
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              <div className="d-flex justify-content-end">
+                {/* <div>
                   <div>
                     <label htmlFor="Category">Category: </label>
                   </div>
@@ -143,7 +181,7 @@ const AdminPropertyList2 = () => {
                       </option>
                     ))}
                   </select>
-                </div>
+                </div> */}
                 {user?.role !== "manager" && (
                   <div style={{ marginLeft: 10 }}>
                     <div>
@@ -197,16 +235,14 @@ const AdminPropertyList2 = () => {
                   </button>
                 </div>
               </div>
-              <div className="export_btn_main">
-                <div>
-                  <div className="">
-                    <div className="corporate_addNew_btn">
-                      <Link to={"/dashboard/add_property"}>
-                        <button className="college_btn2 ms-4 p-3">
-                          Add New
-                        </button>
-                      </Link>
-                    </div>
+            </div>
+            <div className="export_btn_main">
+              <div>
+                <div className="">
+                  <div className="corporate_addNew_btn">
+                    <Link to={"/dashboard/add_property"}>
+                      <button className="college_btn2 ms-4 p-3">Add New</button>
+                    </Link>
                   </div>
                 </div>
               </div>
