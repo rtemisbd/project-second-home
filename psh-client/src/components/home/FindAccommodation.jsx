@@ -292,31 +292,33 @@ const FindAccommodation = () => {
                 </div>
               </div>
             </div>
-            <ul className="flex styled-search-1 mt-1 border rounded-lg w-1/2">
-              <li className="w-[46px] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                <BiBody
-                  className=""
-                  style={{
-                    color: "#339999",
-                    height: "24px",
-                    width: "100%",
-                  }}
-                />
-              </li>
-              {gender.map((gender, index) => (
-                <li key={index} className="search_md_bed ">
-                  <button
-                    onClick={() => handleGenderSelection(index)}
-                    disabled={gender === "Male"}
-                    className={`${
-                      genderValue === index ? "bedActive" : "bedNonActive"
-                    } px-[15px] py-[9px]    disabled:cursor-not-allowed`}
-                  >
-                    {gender}
-                  </button>
+            <div className="mt-1 border rounded-lg w-1/2">
+              <ul className="flex   rounded-lg w-full  ">
+                <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                  <BiBody
+                    className=""
+                    style={{
+                      color: "#339999",
+                      height: "24px",
+                      width: "100%",
+                    }}
+                  />
                 </li>
-              ))}
-            </ul>
+                {gender.map((gender, index) => (
+                  <li key={index} className="search_md_bed w-[35%] ">
+                    <button
+                      onClick={() => handleGenderSelection(index)}
+                      disabled={gender === "Male"}
+                      className={`${
+                        genderValue === index ? "bedActive" : "bedNonActive"
+                      } py-[7px] w-full  disabled:cursor-not-allowed`}
+                    >
+                      {gender}
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
           </div>
           {/* bed */}
           <div className="flex items-center pt-2 w-full">
@@ -354,7 +356,7 @@ const FindAccommodation = () => {
                   <li key={index} className="text-[13px] font-semibold">
                     <span
                       onClick={() => handleBedSelection(index)}
-                      className={`px-[11px]  py-[8px] rounded-md  ${
+                      className={`px-[11px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
                         bedValue === index ? "bedActive" : "bedNonActive"
                       }`}
                     >

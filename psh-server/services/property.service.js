@@ -82,7 +82,7 @@ const getPropertiesFromDB = async (queries) => {
     { $unwind: "$categoryDetails" },
     {
       $match: {
-        ...(category !== "" ? { "categoryDetails.name": category } : {}),
+        ...(category !== "All" ? { "categoryDetails.name": category } : {}),
       },
     },
     {
