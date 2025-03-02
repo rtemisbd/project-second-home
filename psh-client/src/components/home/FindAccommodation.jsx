@@ -353,10 +353,10 @@ const FindAccommodation = () => {
                 }
 
                 return (
-                  <li key={index} className="text-[13px] font-semibold">
+                  <li key={index} className="text-[14px] font-semibold">
                     <span
                       onClick={() => handleBedSelection(index)}
-                      className={`px-[11px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
+                      className={`px-[9px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
                         bedValue === index ? "bedActive" : "bedNonActive"
                       }`}
                     >
