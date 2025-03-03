@@ -6,7 +6,6 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { BsArrowRight } from "react-icons/bs";
-
 import { SearchContext } from "../../contexts/SearchContext";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import UseFetch from "../../hooks/useFetch";
@@ -15,6 +14,8 @@ import ReactModal from "react-modal";
 import { placeSearchBoxShow } from "../../redux/reducers/smProfileMenuSlice";
 import { GrLocation } from "react-icons/gr";
 import { SyncLoader } from "react-spinners";
+import { BiBody } from "react-icons/bi";
+import { FaBed } from "react-icons/fa";
 
 const SearchBoxWithNav = () => {
   const isSearchBoxShow = useSelector(
@@ -31,9 +32,6 @@ const SearchBoxWithNav = () => {
   const inputRef = useRef(null);
   const [destination, setDestination] = useState("");
   const [bedrooms, setBedrooms] = useState("");
-  const [FurnishedQuery, setFurnishedQuery] = useState("");
-  const [FurnishedValue, setFurnishedValue] = useState(0);
-  const furnitures = ["Furnished", "Unfurnished"];
   const [genderQuery, setGenderQuery] = useState("female");
   const [genderValue, setGenderValue] = useState(0);
   const gender = ["Female", "Male"];
@@ -89,18 +87,6 @@ const SearchBoxWithNav = () => {
     return lastDay;
   }
 
-  const handleFurnitureSelection = (index) => {
-    setFurnishedValue(index);
-    const selectedFurniture = furnitures[index];
-
-    // Map furnitures values to query values
-    if (selectedFurniture === "Furnished") {
-      setFurnishedQuery("yes");
-    } else if (selectedFurniture === "Unfurnished") {
-      setFurnishedQuery("no");
-    }
-  };
-
   const handleGenderSelection = (index) => {
     setGenderValue(index);
     const selectedGender = gender[index];
@@ -148,7 +134,6 @@ const SearchBoxWithNav = () => {
     const payload = {
       destination,
       bedrooms,
-      furnitured: FurnishedQuery,
       gender: genderQuery,
       category: categoryQuery,
     };
@@ -167,15 +152,11 @@ const SearchBoxWithNav = () => {
             left: "0%",
             right: "auto",
             bottom: "auto",
-
-            // transform: "translate(-50%, -45%)",
             padding: 0,
             border: 0,
-
             width: "100%",
           },
         }}
-        // className=" mt-48"
         ariaHideApp={false}
         isOpen={isSearchBoxShow}
       >
@@ -242,7 +223,7 @@ const SearchBoxWithNav = () => {
                 </ul>
 
                 <hr style={{ margin: "5px 0" }} />
-                <ul className="flex " style={{ marginTop: "23px" }}>
+                <ul className="flex mt-6">
                   {category.map((categoryItem, index) => (
                     <li key={index}>
                       <span
@@ -265,7 +246,7 @@ const SearchBoxWithNav = () => {
                         color: "#00bbb4",
                         width: "20px",
                         height: "20px",
-                        marginTop: "2px",
+                        marginTop: "-4px",
                       }}
                       alt="location"
                     />
@@ -275,15 +256,8 @@ const SearchBoxWithNav = () => {
                     placeholder="Looking for best place to live"
                     required
                     value={query}
-                    className="input_main rounded"
+                    className="input_main rounded outline-none w-full h-10 pl-10"
                     ref={inputRef}
-                    style={{
-                      background: "none",
-                      outline: "none",
-                      width: "100%",
-                      height: "40px",
-                      paddingLeft: "40px",
-                    }}
                     onChange={(e) => setQuery(e.target.value)}
                     onClick={() => setInputActive(true)}
                   />
@@ -315,8 +289,8 @@ const SearchBoxWithNav = () => {
                   )}
                 </div>
                 {/* Date Picker */}
-                <div className="flex mt-5 px-2 py-1 border border-[#00bbb4] rounded ">
-                  <div className="flex sm-date">
+                <div className="flex mt-5 px-2 py-1 border border-[#00bbb4] rounded w-full justify-around">
+                  <div className="flex sm-date ">
                     <i
                       className="fa-solid fa-calendar-days me-2 mt-1"
                       style={{ color: "#00bbb4" }}
@@ -326,12 +300,13 @@ const SearchBoxWithNav = () => {
                       dateFormat="dd/MM/yyyy"
                       onChange={(date) => reduxDispatch(leftDate(date))}
                       minDate={subDays(new Date(), 0)}
+                      className="w-32"
                     />
                   </div>
-                  <div className="arrow-icon-sm">
+                  <div className="arrow-icon-sm mt-1">
                     <BsArrowRight />
                   </div>
-                  <div className="flex sm-date ml-[-28px]">
+                  <div className="flex sm-date ml-[-28px] ">
                     <i
                       className="fa-solid fa-calendar-days me-2 mt-1"
                       style={{ color: "#00bbb4" }}
@@ -345,12 +320,75 @@ const SearchBoxWithNav = () => {
                       dateFormat="dd/MM/yyyy"
                       onChange={(date) => reduxDispatch(rightDate(date))}
                       minDate={subDays(new Date(startDate), -1)}
+                      className="w-32"
                     />
                   </div>
                 </div>
                 {/* Date Count and Gender */}
-                <div className="flex items-center mt-2 w-full gap-x-5">
-                  <div className="flex items-center rounded gap-x-1 border border-[#00bbb4] py-0.5 w-[50%] pl-1">
+                {/* <p>Duration</p> */}
+                <div className="flex gap-1 pt-2 w-full ">
+                  <div className="w-1/2">
+                    <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
+                      <div className="w-[24%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                        <i className="fa-solid fa-clock text-[#00bbb4] h-5 w-5" />
+                      </div>
+                      <div className="bg-white w-[71%] outline-none pl-2 py-[7px]">
+                        <span>
+                          {`${
+                            customerRent?.daysDifference >= 0
+                              ? `${customerRent?.daysDifference} days`
+                              : ""
+                          }`}
+                          {`${
+                            customerRent?.months &&
+                            customerRent?.days >= 0 &&
+                            !customerRent?.years
+                              ? `${customerRent?.months} m, ${customerRent?.days} days`
+                              : ""
+                          }`}
+                          {`${
+                            customerRent?.years &&
+                            customerRent?.months >= 0 &&
+                            customerRent?.days >= 0
+                              ? `${customerRent?.years} year`
+                              : ""
+                          }`}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  <div className="mt-1 border rounded-lg w-1/2">
+                    <ul className="flex   rounded-lg w-full  ">
+                      <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                        <BiBody
+                          className=""
+                          style={{
+                            color: "#339999",
+                            height: "24px",
+                            width: "100%",
+                          }}
+                        />
+                      </li>
+                      {gender.map((gender, index) => (
+                        <li key={index} className="search_md_bed w-[35%] ">
+                          <button
+                            onClick={() => handleGenderSelection(index)}
+                            disabled={gender === "Male"}
+                            className={`${
+                              genderValue === index
+                                ? "bedActive"
+                                : "bedNonActive"
+                            } py-[7px] w-full  disabled:cursor-not-allowed`}
+                          >
+                            {gender}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                {/* <div className="flex items-center mt-2 w-full gap-x-5">
+                  <div className="flex items-center rounded gap-x-1 border border-[#00bbb4] py-0.5 w-[45%] pl-1">
                     <div>
                       <img loading="lazy" src={durationImg} alt="" />
                     </div>
@@ -378,9 +416,9 @@ const SearchBoxWithNav = () => {
                       </span>
                     </div>
                   </div>
-                  <div className="w-[50%] border border-[#00bbb4] rounded">
+                  <div className="w-[45%] border border-[#00bbb4] rounded">
                     <select
-                      className="pl-5 py-1 gender-sm text-[14px] "
+                      className="pl-5 py-1 gender-sm text-[14px]"
                       value={genderValue}
                       onChange={(e) => handleGenderSelection(e.target.value)}
                     >
@@ -396,9 +434,9 @@ const SearchBoxWithNav = () => {
                       ))}
                     </select>
                   </div>
-                </div>
+                </div> */}
                 {/* Bed type and furnished or Unfurnished */}
-                <div className="flex items-center mt-2 w-full gap-x-5">
+                {/* <div className="flex items-center mt-2 w-full gap-x-5">
                   <div className="flex items-center rounded gap-x-1 border border-[#00bbb4] py-0.5 w-[50%] pl-1">
                     <select
                       className=" pl-5 py-1 gender-sm text-[14px]"
@@ -438,46 +476,61 @@ const SearchBoxWithNav = () => {
                       })}
                     </select>
                   </div>
-                  <div className="w-[50%] border border-[#00bbb4] rounded">
-                    <select
-                      className="pl-5 py-1 gender-sm text-[14px]"
-                      value={FurnishedValue}
-                      onChange={(e) => handleFurnitureSelection(e.target.value)}
-                    >
-                      {furnitures.map((furniture, index) => (
-                        <option
-                          key={index}
-                          value={index}
-                          disabled={furniture === "Unfurnished"}
-                          className="disabled:cursor-not-allowed"
-                        >
-                          {furniture}
-                        </option>
-                      ))}
-                    </select>
+                </div> */}
+
+                <div className="flex items-center pt-2 w-full ">
+                  <div>
+                    <FaBed
+                      style={{
+                        color: "#339999",
+                        height: "24px",
+                        width: "24px",
+                        marginTop: "20px",
+                        marginRight: "12px",
+                      }}
+                    />
                   </div>
+
+                  <ul
+                    className={`flex justify-start gap-2  w-full mt-3  ${
+                      categoryValue === 2 ? "hide-search-options" : ""
+                    }`}
+                  >
+                    {beds.map((bed, index) => {
+                      if (
+                        (categoryValue === 1 &&
+                          bed !== "Single Bed" &&
+                          bed !== "Single Bed" &&
+                          bed !== "King Size Bed") ||
+                        (categoryValue === 2 &&
+                          bed !== "Bunk Bed" &&
+                          bed !== "Single Bed")
+                      ) {
+                        return null; // Skip rendering
+                      }
+
+                      return (
+                        <li key={index} className="text-[14px] font-semibold">
+                          <span
+                            onClick={() => handleBedSelection(index)}
+                            className={`px-[6px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
+                              bedValue === index ? "bedActive" : "bedNonActive"
+                            }`}
+                          >
+                            {bed}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
 
                 <div className="mt-7 w-full">
-                  <div
-                    className="w-full"
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                    }}
-                  >
+                  <div className="w-full flex justify-center">
                     <input
                       type="submit"
-                      value="Find Accomodation"
-                      style={{
-                        backgroundColor: "#00bbb4",
-                        border: "none",
-                        width: "100%",
-                        color: "white",
-                        padding: "15px 10px",
-                        borderRadius: "5px",
-                        // marginTop: "12px",
-                      }}
+                      value="Find Accommodation"
+                      className="bg-[#00bbb4] w-full text-white 4 py-3 rounded-md"
                     />
                   </div>
                 </div>
