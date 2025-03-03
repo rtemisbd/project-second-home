@@ -32,7 +32,7 @@ const FindAccommodation = () => {
   const [genderValue, setGenderValue] = useState(0);
   const gender = ["Female", "Male"];
 
-  const [categoryQuery, setCategoryQuery] = useState("");
+  const [categoryQuery, setCategoryQuery] = useState("All");
   const [categoryValue, setCategoryValue] = useState(0);
   const category = ["All", ...data.map((item) => item?.name)];
   const beds = ["All", "Bunk Bed", "Single Bed", "King Size Bed"];
@@ -104,7 +104,7 @@ const FindAccommodation = () => {
     setCategoryValue(index);
     const selectedCategory = category[index];
     if (selectedCategory === "All") {
-      setCategoryQuery("");
+      setCategoryQuery("All");
     } else {
       setCategoryQuery(selectedCategory);
     }
@@ -165,7 +165,6 @@ const FindAccommodation = () => {
           </ul>
           {/* location */}
           <div className="">
-            {/* <p>Location</p> */}
             <div
               className="flex border  rounded-l-lg rounded-r-lg mt-1 relative w-full"
               ref={inputRef}
@@ -176,7 +175,6 @@ const FindAccommodation = () => {
                   className="mx-auto w-5 h-5 "
                   alt="location"
                 />
-                {/* <GrLocation className="mx-auto w-5 h-5 " /> */}
               </div>
               <input
                 type="text"
@@ -225,8 +223,6 @@ const FindAccommodation = () => {
               <div className="flex border rounded-l-lg rounded-r-lg mt-1  w-full">
                 <div className="w-[35%] py-[7px] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
                   <i className="fa-solid fa-calendar-days  text-[#00bbb4] h-5 w-5" />
-                  {/* <p className=" text-[#00bbb4]">Check In</p> */}
-                  {/* <i className="fa-solid fa fa-sign-in  text-[#00bbb4]" /> */}
                 </div>
                 <DatePicker
                   className="bg-white outline-none pl-2 py-[7px] w-[75%]"
@@ -242,8 +238,6 @@ const FindAccommodation = () => {
               <div className="flex border rounded-l-lg rounded-r-lg mt-1  w-full">
                 <div className="w-[35%] py-[7px] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
                   <i className="fa-solid fa-calendar-days  text-[#00bbb4]" />
-                  {/* <p className=" text-[#00bbb4]">Check Out</p> */}
-                  {/* <i className="fa-solid fa fa-sign-out  text-[#00bbb4]" /> */}
                 </div>
                 <DatePicker
                   className="bg-white outline-none pl-2 py-[7px] w-[75%]"
