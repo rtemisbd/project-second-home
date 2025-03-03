@@ -36,7 +36,7 @@ const SearchBoxWithNav = () => {
   const [genderValue, setGenderValue] = useState(0);
   const gender = ["Female", "Male"];
 
-  const [categoryQuery, setCategoryQuery] = useState("");
+  const [categoryQuery, setCategoryQuery] = useState("All");
   const [categoryValue, setCategoryValue] = useState(0);
   const category = ["All", ...data.map((item) => item?.name)];
 
@@ -103,7 +103,7 @@ const SearchBoxWithNav = () => {
 
     // Map category values to query values
     if (selectedCategory === "All") {
-      setCategoryQuery(""); // Empty string means no specific category filter
+      setCategoryQuery("All"); // Empty string means no specific category filter
     } else {
       setCategoryQuery(selectedCategory);
     }
