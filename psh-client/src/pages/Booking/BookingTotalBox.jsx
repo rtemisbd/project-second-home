@@ -544,7 +544,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             <div className="input-filed-area w-full" style={{ marginTop: 10 }}>
               <i
                 className="fa-solid fa-calendar-days location-icon"
-                style={{ color: "#00bbb4", marginTop: -4 }}
+                style={{ color: "#00bbb4", marginTop: "-11px" }}
               ></i>
               <DatePicker
                 selected={new Date(startDate)}
@@ -557,7 +557,16 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                   };
                 })}
                 // minDate={subDays(new Date(), 0)}
-                className="ps-7 w-28"
+                className={` ps-7 w-28 `}
+                dayClassName={(date) =>
+                  bookedDates.some(
+                    (rent) =>
+                      date >= subDays(new Date(rent.bookStartDate), 1) &&
+                      date <= addDays(new Date(rent.bookEndDate), 0)
+                  )
+                    ? "text-red-500 !text-red-500 bg-red-50 rounded-full line-through  "
+                    : ""
+                }
               />
             </div>
           </div>
@@ -567,25 +576,31 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             <div className="input-filed-area w-full" style={{ marginTop: 10 }}>
               <i
                 className="fa-solid fa-calendar-days location-icon"
-                style={{ color: "#00bbb4", marginTop: -4 }}
+                style={{ color: "#00bbb4", marginTop: "-11px" }}
               ></i>
               <DatePicker
                 selected={new Date(endDate)}
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(rightDate(date))}
-                // showIcon
-                excludeDateIntervals={bookedDates?.map((rent) => {
-                  return {
-                    start: subDays(new Date(rent?.bookStartDate), 1),
-                    end: addDays(new Date(rent?.bookEndDate), 0),
-                  };
-                })}
-                // minDate={subDays(new Date(startDate), -1)}
+                excludeDateIntervals={bookedDates.map((rent) => ({
+                  start: subDays(new Date(rent.bookStartDate), 1),
+                  end: addDays(new Date(rent.bookEndDate), 0),
+                }))}
                 className="ps-7 w-28"
+                dayClassName={(date) =>
+                  bookedDates.some(
+                    (rent) =>
+                      date >= subDays(new Date(rent.bookStartDate), 1) &&
+                      date <= addDays(new Date(rent.bookEndDate), 0)
+                  )
+                    ? "text-red-500 !text-red-500 bg-red-50 rounded-full line-through  "
+                    : ""
+                }
               />
+              ;
             </div>
           </div>
-          <div className=" mt-1.5 w-full px-1 py-[0.5px] sm:hidden md:block duration_large_screen">
+          <div className=" mt-1.5 w-full px-1 py-[0.5px] sm:hidden md:block duration_large_screen ">
             <p className="text-center font-bold mb-2 mt-[-5px]">Duration</p>
             <p className=" duraion-count font-normal ps-1 text-sm ">
               {customerRent?.daysDifference >= 0

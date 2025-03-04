@@ -14,7 +14,7 @@ const RoomOverview = () => {
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
   const [branch, setBranch] = useState("");
-  const [category, setCategory] = useState("");
+  const [category, setCategory] = useState("All");
   const [roomNumber, setRoomNumber] = useState("");
   const [seatNumber, setSeatNumber] = useState("");
 
@@ -346,7 +346,7 @@ const RoomOverview = () => {
                   value={category}
                   onChange={(e) => setCategory(e.target.value)}
                 >
-                  <option value="">All</option>
+                  <option value="All">All</option>
                   {categories?.map((category) => (
                     <option key={category.name} value={category.name}>
                       {category.name}
