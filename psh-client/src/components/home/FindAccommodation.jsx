@@ -329,7 +329,7 @@ const FindAccommodation = () => {
             </div>
 
             <ul
-              className={`flex justify-start gap-2  w-full mt-3  ${
+              className={`flex  gap-2  w-full mt-3  ${
                 categoryValue === 2 ? "hide-search-options" : ""
               }`}
             >
@@ -347,10 +347,10 @@ const FindAccommodation = () => {
                 }
 
                 return (
-                  <li key={index} className="text-[14px] font-semibold">
+                  <li key={index} className="font-semibold">
                     <span
                       onClick={() => handleBedSelection(index)}
-                      className={`px-[9px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
+                      className={`px-[10px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
                         bedValue === index ? "bedActive" : "bedNonActive"
                       }`}
                     >
