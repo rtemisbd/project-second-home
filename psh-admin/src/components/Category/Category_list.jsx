@@ -13,112 +13,19 @@ import Category from "../../pages/edit/Category";
 import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
+import { baseUrl } from "../../utils/getBaseURL";
+import { Table } from "bootstrap-4-react/lib/components";
 
 const Category_list = () => {
   const MySwal = withReactContent(Swal);
-
-  //sub stream
   const [data, setData] = useState([]);
 
-  const columns = [
-    {
-      text: "No",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>{index + 1}</p>
-          </>
-        );
-      },
-    },
-    {
-      text: "Image",
-      formatter: (cellContent, row) => {
-        return (
-          <div>
-            <img
-              src={row.photos && row.photos[0]}
-              alt=""
-              style={{ width: 120 }}
-            />
-          </div>
-        );
-      },
-    },
-    {
-      dataField: "name",
-      text: "Category",
-    },
-    {
-      text: "Action",
-      formatter: (cellContent, row) => {
-        return (
-          <>
-            {" "}
-            <div className="d-flex justify-content-center">
-              <img
-                src={img3}
-                alt=""
-                data-toggle="modal"
-                data-target={`#loginModal${row._id}`}
-              />
-              <img
-                src={img}
-                alt=""
-                className="ms-3"
-                onClick={() => handleCategory(row._id)}
-              />
-            </div>
-            <div
-              className="modal fade"
-              id={`loginModal${row._id}`}
-              tabIndex="{-1}"
-              role="dialog"
-              aria-labelledby="loginModal"
-              aria-hidden="true"
-            >
-              <div className="modal-dialog modal-dialog-centered">
-                <div className="modal-content" style={{ width: 700 }}>
-                  <div className="modal-body">
-                    <Category data={row} />
-                  </div>
-                </div>
-              </div>
-            </div>
-          </>
-        );
-      },
-    },
-  ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-  });
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(
-          `https://api.psh.com.bd/api/category`,
-          {
-            mode: "cors",
-          }
-        );
+        const { data } = await axios.get(`${baseUrl}/api/category`, {
+          mode: "cors",
+        });
         setData(data);
       } catch (error) {
         console.log(error);
@@ -131,7 +38,7 @@ const Category_list = () => {
   const handleCategory = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/category/${id}`;
+      const url = `${baseUrl}/api/category/${id}`;
       fetch(url, {
         method: "DELETE",
       })
@@ -160,7 +67,7 @@ const Category_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"add_banner/add_category"}>
+                      <Link to={"/dashboard/add_category"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New Category
                         </button>
@@ -173,40 +80,75 @@ const Category_list = () => {
             <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
             <div className="card">
               <div className="card-body card_body_sm">
-                <>
-                  <ToolkitProvider
-                    bootstrap4
-                    keyField="_id"
-                    columns={columns}
-                    data={data}
-                    pagination={pagination}
-                    exportCSV
-                  >
-                    {(props) => (
-                      <React.Fragment>
-                        <BootstrapTable
-                          bootstrap4
-                          keyField="_id"
-                          columns={columns}
-                          data={data}
-                          pagination={pagination}
-                          {...props.baseProps}
-                        />
-                      </React.Fragment>
-                    )}
-                  </ToolkitProvider>
-                </>
+                <Table bordered>
+                  <thead>
+                    <tr>
+                      <th>No</th>
+                      <th>Picture</th>
+                      <th>Name</th>
+
+                      <th>Action</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data.map((category, index) => (
+                      <tr key={index}>
+                        <td>{index + 1}</td>
+                        <td>
+                          <div>
+                            <img
+                              src={category?.photos[0]}
+                              alt=""
+                              style={{ width: 120, height: 100 }}
+                            />
+                          </div>
+                        </td>
+
+                        <td>{category?.name}</td>
+                        <td>
+                          <div className="d-flex justify-content-center">
+                            <img
+                              src={img3}
+                              alt=""
+                              data-toggle="modal"
+                              data-target={`#loginModal${category._id}`}
+                            />
+                            <img
+                              src={img}
+                              alt=""
+                              className="ms-3"
+                              onClick={() => handleCategory(category._id)}
+                            />
+                          </div>
+                          <div
+                            className="modal fade"
+                            id={`loginModal${category._id}`}
+                            tabIndex="{-1}"
+                            role="dialog"
+                            aria-labelledby="loginModal"
+                            aria-hidden="true"
+                          >
+                            <div className="modal-dialog modal-dialog-centered">
+                              <div
+                                className="modal-content"
+                                style={{ width: 700 }}
+                              >
+                                <div className="modal-body">
+                                  <Category data={category} />
+                                </div>
+                              </div>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </Table>
               </div>
             </div>
-            {/* /.row (main row) */}
           </div>
-          {/* /.container-fluid */}
         </section>
-        {/* /.content */}
       </div>
-      {/* /.content-wrapper */}
-
-      {/* Control Sidebar */}
     </div>
   );
 };
