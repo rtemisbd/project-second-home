@@ -557,14 +557,14 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                   };
                 })}
                 // minDate={subDays(new Date(), 0)}
-                className={` ps-7 w-28 `}
+                className={`ps-7 w-28 `}
                 dayClassName={(date) =>
                   bookedDates.some(
                     (rent) =>
                       date >= subDays(new Date(rent.bookStartDate), 1) &&
                       date <= addDays(new Date(rent.bookEndDate), 0)
                   )
-                    ? "text-red-500 !text-red-500 bg-red-50 rounded-full line-through  "
+                    ? "line-through  "
                     : ""
                 }
               />
@@ -593,7 +593,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                       date >= subDays(new Date(rent.bookStartDate), 1) &&
                       date <= addDays(new Date(rent.bookEndDate), 0)
                   )
-                    ? "text-red-500 !text-red-500 bg-red-50 rounded-full line-through  "
+                    ? "line-through  "
                     : ""
                 }
               />
