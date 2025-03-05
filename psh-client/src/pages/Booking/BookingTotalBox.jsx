@@ -597,7 +597,6 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                     : ""
                 }
               />
-              ;
             </div>
           </div>
           <div className=" mt-1.5 w-full px-1 py-[0.5px] sm:hidden md:block duration_large_screen ">
