@@ -3,6 +3,7 @@ import React, { useState, useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { baseUrl } from "../utils/getBaseURL";
+import { uploadSingleImage } from "../utils/uploadSingleImage";
 
 const Add_Category = () => {
   const [files, setFiles] = useState("");
@@ -15,20 +16,7 @@ const Add_Category = () => {
       name: formData.get("name"),
     };
     try {
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
+      const list = await uploadSingleImage(formData.get("img"));
 
       const product = {
         ...data2,
