@@ -5,11 +5,11 @@ import AllBranch from "../../components/home/AllBranch";
 import Review from "../../components/home/Review";
 
 import Facility from "../../components/home/Facility";
-import Banner from "../../components/home/Banner";
+// import Banner from "../../components/home/Banner";
 import SearchBoxSm from "../../components/home/SearchBoxSm";
 
 // import Platform from "../../components/home/Platform";
-import SearchBox from "../../components/home/SearchBox";
+// import SearchBox from "../../components/home/SearchBox";
 import BusinessPlatform from "../new/BusinessPlatform";
 import HomePage from "../../components/home/HomePage";
 import useRentRoom from "../../hooks/useRentRoom";

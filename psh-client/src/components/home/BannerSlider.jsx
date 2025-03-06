@@ -17,23 +17,22 @@ const BannerSlider = () => {
     fetchData();
   }, []);
 
-  useEffect(() => {
-    if (data.length === 0) return;
-    setData(data.slice(0, 4)); //to stop slider
+  // useEffect(() => {
+  //   if (data.length === 0) return;
 
-    // const interval = setInterval(() => {
-    //   setAnimate(true);
+  //   const interval = setInterval(() => {
+  //     setAnimate(true);
 
-    //   setTimeout(() => {
-    //     const newIndex = (index + 4) % data.length;
-    //     setVisibleImages(data.slice(newIndex, newIndex + 4));
-    //     setIndex(newIndex);
-    //     setAnimate(false);
-    //   }, 300);
-    // }, 3000);
+  //     setTimeout(() => {
+  //       const newIndex = (index + 4) % data.length;
+  //       setVisibleImages(data.slice(newIndex, newIndex + 4));
+  //       setIndex(newIndex);
+  //       setAnimate(false);
+  //     }, 300);
+  //   }, 3000);
 
-    // return () => clearInterval(interval);
-  }, [data, index]);
+  //   return () => clearInterval(interval);
+  // }, [data, index]);
 
   return (
     <div className="max-w-screen-lg mx-auto flex gap-2  ">

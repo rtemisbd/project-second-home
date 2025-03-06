@@ -71,6 +71,7 @@ import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
 import EditProperty from "./pages/edit/EditProperty";
 import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
 import EditSeat from "./pages/edit/EditSeat";
+import AddResort from "./pages/Resorts/AddResort";
 
 function App() {
   return (
@@ -95,6 +96,7 @@ function App() {
         <Route path="add_category" element={<Add_Category />} />
         <Route path="category_list" element={<Category />} />
         <Route path="add_branch" element={<Add_Branch />} />
+        <Route path="add-resort" element={<AddResort />} />
         <Route path="branch_list" element={<Branch />} />
         <Route path="add_dynamic" element={<Add_Dynamic />} />
         <Route path="dynamic_list" element={<Dynamic />} />

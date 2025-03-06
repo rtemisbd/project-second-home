@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
-import Slider from "react-slick";
 import axios from "axios";
 
 import SingleCard from "./SingleCard";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { useLocation } from "react-router-dom";
-import { useDispatch } from "react-redux";
+
 import { useQuery } from "react-query";
 
 import "./styles/Recommended.css";
@@ -22,17 +20,12 @@ import useSeat from "../../hooks/useSeat";
 // import SharedRoom from "./SharedRoom";
 
 export default function HomePage() {
-  const dispatch = useDispatch();
-
   const [data, setData] = useState([]);
   const [categories, setCategories] = useState([]);
   const [Featured, setFeatured] = useState("yes");
-  const [totalDataCount, setTotalDataCount] = useState(0);
-  const [activeTab, setActiveTab] = useState("");
-  const [isLoaded, setIsLoaded] = useState(false);
+  const [activeTab, setActiveTab] = useState("All");
   const [randomIndex, setRandomIndex] = useState([]);
   const [withSharedRoom, setWithSharedRoom] = useState(true);
-  const { pathname } = useLocation();
 
   // Get Properties
   const { refetch, error } = useQuery(["propertyList"], async () => {
@@ -50,7 +43,6 @@ export default function HomePage() {
 
       setData(response?.data?.properties);
       setRandomIndex(data);
-      setTotalDataCount(response?.data?.totalCount);
     } catch (error) {
       console.error(error);
       throw error;
@@ -94,7 +86,6 @@ export default function HomePage() {
   useEffect(() => {
     if (data?.length > 0) {
       getRandomData();
-      setIsLoaded(true);
     }
   }, [data]);
 
@@ -131,14 +122,14 @@ export default function HomePage() {
               onClick={() => {
                 getRandomData();
                 setFeatured("yes");
-                setActiveTab("");
+                setActiveTab("All");
                 setWithSharedRoom(true);
               }}
               className="w-fit md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4]"
             >
               Featured
             </Tab>
-            {[...categories].map((category, index) => (
+            {categories?.map((category, index) => (
               <Tab
                 value={index}
                 key={index}

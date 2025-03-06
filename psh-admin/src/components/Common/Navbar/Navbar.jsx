@@ -44,6 +44,7 @@ const Navbar = () => {
   const [isActive8, setIsActive8] = useState(false);
   const [isActive9, setIsActive9] = useState(false);
   const [isActive10, setIsActive10] = useState(false);
+  const [isActive11, setIsActive11] = useState(false);
   const [branch, setBranch] = useState(null);
 
   useEffect(() => {
@@ -254,7 +255,6 @@ const Navbar = () => {
                             className={`fas fa-angle-left right `}
                             style={{ rotate: isActive1 ? "-90deg" : "180deg" }}
                           />
-                          {/* <span className="badge badge-info right">2</span> */}
                         </p>
                       </span>
                       <ul
@@ -333,7 +333,6 @@ const Navbar = () => {
                             className={`fas fa-angle-left right`}
                             style={{ rotate: isActive2 ? "-90deg" : "180deg" }}
                           />
-                          {/* <span className="badge badge-info right">2</span> */}
                         </p>
                       </span>
                       <ul
@@ -379,6 +378,85 @@ const Navbar = () => {
                 ) : (
                   ""
                 )}
+                {/* resort management */}
+                <li
+                  className="nav-item"
+                  style={{
+                    backgroundColor: isActive11 ? "#2E3344" : "",
+                    borderLeft: isActive11 ? "2px solid #35b0a7" : "",
+                  }}
+                >
+                  <span
+                    className="nav-link"
+                    onClick={() => {
+                      setIsActive1(false);
+                      setIsActive2(false);
+                      setIsActive3(false);
+                      setIsActive4(false);
+                      setIsActive5(false);
+                      setIsActive6(false);
+                      setIsActive7(false);
+                      setIsActive8(false);
+                      setIsActive9(false);
+                      setIsActive10(false);
+                      setIsActive11(!isActive11);
+                    }}
+                  >
+                    <IoBedOutline
+                      style={{
+                        width: "24px",
+                        height: "24px",
+                        color: "white",
+                        marginRight: "10px",
+                      }}
+                    />
+
+                    <p className="span_text" style={{ color: "white" }}>
+                      Resort & Villa
+                      <i
+                        className={`fas fa-angle-left right`}
+                        style={{ rotate: isActive11 ? "-90deg" : "180deg" }}
+                      />
+                    </p>
+                  </span>
+
+                  <ul
+                    className={` custom-drop ${
+                      isActive11 ? "custom-drop-show" : ""
+                    }`}
+                  >
+                    <Link to={"/dashboard/add-resort"}>
+                      <li className="main_nav-link">
+                        <span className="nav-link">
+                          <div className="menu_flex">
+                            <span className="span_text">Add Resort</span>
+                            <span
+                              className="span_text_mobile"
+                              data-widget="pushmenu"
+                            >
+                              Add Resort
+                            </span>
+                          </div>
+                        </span>
+                      </li>
+                    </Link>
+                    <Link to={"/dashboard/list-of-resort"}>
+                      <li className="main_nav-link">
+                        <span className="nav-link">
+                          <div className="menu_flex">
+                            <span className="span_text">List of Resort</span>
+                            <span
+                              className="span_text_mobile"
+                              data-widget="pushmenu"
+                            >
+                              Add Resort
+                            </span>
+                          </div>
+                        </span>
+                      </li>
+                    </Link>
+                  </ul>
+                </li>
                 <li
                   className="nav-item"
                   style={{
@@ -420,7 +498,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive3 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
@@ -632,7 +709,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive4 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
@@ -783,7 +859,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive5 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
@@ -882,7 +957,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive6 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
@@ -998,7 +1072,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive7 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
@@ -1346,7 +1419,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive8 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
@@ -1529,7 +1601,6 @@ const Navbar = () => {
                           className={`fas fa-angle-left right`}
                           style={{ rotate: isActive9 ? "-90deg" : "180deg" }}
                         />
-                        {/* <span className="badge badge-info right">2</span> */}
                       </p>
                     </span>
                   ) : (
