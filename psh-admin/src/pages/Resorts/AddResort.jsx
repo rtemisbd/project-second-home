@@ -1,70 +1,40 @@
-import React, { useRef, useState } from "react";
-import Swal from "sweetalert2";
-import withReactContent from "sweetalert2-react-content";
-import { uploadSingleImage } from "../../utils/uploadSingleImage";
-import axios from "axios";
-import { baseUrl } from "../../utils/getBaseURL";
+import { useRef, useState } from "react";
 
 const AddResort = () => {
   const [files, setFiles] = useState("");
-  const MySwal = withReactContent(Swal);
+  const [services, setServices] = useState([{ id: Date.now(), title: "", img: "" }]);
 
   const formRef = useRef(null);
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const formData = new FormData(event.target);
-    const data2 = {
-      name: formData.get("name"),
-      locationLink: formData.get("locationLink"),
-      nearLocation1: formData.get("nearLocation1"),
-      nearLocation2: formData.get("nearLocation2"),
-      nearLocation3: formData.get("nearLocation3"),
-      nearLocation4: formData.get("nearLocation4"),
-      nearLocation5: formData.get("nearLocation5"),
-      nearLocation6: formData.get("nearLocation6"),
-      branchEmail: formData.get("branchEmail"),
-      foodAmount: formData.get("foodAmount"),
-      branchAddress: formData.get("branchAddress"),
-      branchMobileNumber: formData.get("branchMobileNumber"),
-      branchBkashNumber: formData.get("branchBkashNumber"),
-      branchNagadNumber: formData.get("branchNagadNumber"),
-      branchDutchNumber: formData.get("branchDutchNumber"),
-    };
-    try {
-      const photo = await uploadSingleImage(formData.get("img"));
-      const banner = await uploadSingleImage(formData.get("banner"));
 
-      const branch = {
-        ...data2,
-        photos: [photo, banner],
-      };
-
-      await axios.post(`${baseUrl}/api/branch`, branch);
-      MySwal.fire("Good job!", "successfully added", "success");
-      formRef.current.reset();
-    } catch (err) {
-      MySwal.fire("Something Error Found.", "warning");
-    }
+  // Function to add a new service
+  const addService = () => {
+    setServices([...services, { id: Date.now(), title: "", img: "" }]);
   };
+
+  // Function to remove a service by ID
+  const removeService = (id) => {
+    setServices(services.filter(service => service.id !== id));
+  };
+ 
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
         <div className="customize registration_div card">
-          <form ref={formRef} onSubmit={handleSubmit}>
+          <form ref={formRef} >
             <div className="row p-3">
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Branch Name
+                  Resort Name
                 </label>
 
                 <input
                   type="text"
                   className="main_form w-100"
                   name="name"
-                  placeholder="Branch Name"
+                  placeholder="Resort Name"
                   required
                 />
               </div>
@@ -73,7 +43,57 @@ const AddResort = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Location (Google Location Link)
+                  Address
+                </label>
+
+                <textarea
+                  cols="50"
+                  rows="2"
+                  className="main_form w-100 px-2"
+                  name="ResortAddress"
+                  placeholder="Details Address"
+                  required
+                />
+              </div>
+              
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Division
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="division"
+                  placeholder="Division"
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  District
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="district"
+                  placeholder="District"
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+               Google Location Link
                 </label>
 
                 <input
@@ -84,7 +104,7 @@ const AddResort = () => {
                   required
                 />
               </div>
-
+              
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -96,7 +116,7 @@ const AddResort = () => {
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="branchMobileNumber"
+                  name="resortMobileNumber"
                   placeholder="Mobile Number"
                   required
                 />
@@ -112,8 +132,8 @@ const AddResort = () => {
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="branchBkashNumber"
-                  placeholder="Branch Bkash Number"
+                  name="resortBkashNumber"
+                  placeholder="Resort Bkash Number"
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
@@ -127,8 +147,8 @@ const AddResort = () => {
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="branchNagadNumber"
-                  placeholder="Branch Nagad Number"
+                  name="resortNagadNumber"
+                  placeholder="Resort Nagad Number"
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
@@ -142,8 +162,8 @@ const AddResort = () => {
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="branchDutchNumber"
-                  placeholder="Branch Dutch-bangla Number"
+                  name="resortDutchNumber"
+                  placeholder="Resort Dutch-bangla Number"
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
@@ -157,148 +177,22 @@ const AddResort = () => {
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="branchEmail"
-                  placeholder="Branch Email"
+                  name="resortEmail"
+                  placeholder="Resort Support Email"
                   required
                 />
               </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Food Amount
-                </label>
-
-                <input
-                  type="number"
-                  className="main_form w-100"
-                  name="foodAmount"
-                  placeholder="Food Amount"
-                  required
-                />
-              </div>
-              {/* Arrount The Building */}
-              <h5>Arround The Building</h5>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:1
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation1"
-                  placeholder="No:1"
-                  // required
-                />
-              </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:2
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation2"
-                  placeholder="No:2"
-                  // required
-                />
-              </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:3
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation3"
-                  placeholder="No:3"
-                  // required
-                />
-              </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:4
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation4"
-                  placeholder="No:4"
-                  // required
-                />
-              </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:5
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation5"
-                  placeholder="No:5"
-                  // required
-                />
-              </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:6
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation6"
-                  placeholder="No:6"
-                  // required
-                />
-              </div>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Address
-                </label>
-
-                <textarea
-                  cols="50"
-                  rows="3"
-                  className=" w-100 px-2"
-                  name="branchAddress"
-                  placeholder="Deatails Address"
-                  required
-                />
-              </div>
+           
+              
+              {/* gallery and video */}
+              <h2 className="profile_label3 profile_bg my-4">Our Gallery</h2>
+            
               <div className="col-md-12 form_sub_stream">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Image upload
+                  Gallery
                 </label>
 
                 <input
@@ -310,8 +204,78 @@ const AddResort = () => {
                   required
                 />
               </div>
-            </div>
 
+              <div className="col-md-12 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Overview Video
+                </label>
+
+                <input
+                  type="file"
+                  className="main_form w-100 p-0"
+                  name="video"
+                  onChange={(e) => setFiles(e.target.filecds)}
+              
+                />
+              </div>
+              <h2 className="profile_label3 profile_bg my-4">Our Services</h2>
+              {services.map((service, index) => (
+                <div key={service.id} className="col-md-12 form_sub_stream border p-3 my-2">
+                  <label className="form-label profile_label3">Service Title</label>
+                  <input 
+                    type="text" 
+                    className="main_form w-100" 
+                    value={service.title} 
+                    onChange={(e) => {
+                      const updatedServices = [...services];
+                      updatedServices[index].title = e.target.value;
+                      setServices(updatedServices);
+                    }}
+                    placeholder="Service Title" 
+                    required
+                  />
+                  
+                  <label className="form-label profile_label3 mt-2">Service Image</label>
+                  <input 
+                    type="file" 
+                    className="main_form w-100 p-0" 
+                    onChange={(e) => {
+                      const updatedServices = [...services];
+                      updatedServices[index].img = e.target.files[0];
+                      setServices(updatedServices);
+                    }}
+                    required 
+                  />
+                  
+                  {services.length > 1 && (
+                    <button 
+                      type="button" 
+                      className="btn btn-danger mt-2" 
+                      onClick={() => removeService(service.id)}
+                    >
+                      Remove Service
+                    </button>
+                  )}
+                </div>
+              ))}
+              
+              <div className="col-md-12 d-flex gap-2 justify-content-end">
+                <button 
+                  type="button" 
+                  className="btn btn-success" 
+                  onClick={addService}
+                >
+                  Add New Service
+                </button>
+              </div>
+          
+
+            
+            
+            </div>
             <div className="d-flex justify-content-center my-5">
               <button
                 type="submit"
