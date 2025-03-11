@@ -440,7 +440,7 @@ const Navbar = () => {
                         </span>
                       </li>
                     </Link>
-                    <Link to={"/dashboard/list-of-resort"}>
+                    <Link to={"/dashboard/resort-list"}>
                       <li className="main_nav-link">
                         <span className="nav-link">
                           <div className="menu_flex">

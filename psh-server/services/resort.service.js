@@ -5,7 +5,13 @@ const createResortIntoDB = async(payload) =>{
     return result;
 }
 
+const getAllResortsFromDB = async()=>{
+    const result = await Resort.find();
+    return result;
+}
+
 
 export const resortServices  = {
-    createResortIntoDB
+    createResortIntoDB,
+    getAllResortsFromDB
 }

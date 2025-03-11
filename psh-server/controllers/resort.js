@@ -15,7 +15,20 @@ const createResort = catchAsync(async(req, res, next)=>{
      
 })
 
+const getAllResorts = catchAsync(async(req, res, next)=>{
+  const data = await resortServices.getAllResortsFromDB();
+
+  sendResponse(res, {
+    statusCode: 200,
+    success: true,
+    data,
+    message:
+      "Resort has been retrived successfully!",
+  });
+})
+
 
 export const resortControllers = {
-    createResort
+    createResort,
+    getAllResorts
 }
