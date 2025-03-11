@@ -38,6 +38,7 @@ import cookieParser from "cookie-parser";
 import cors from "cors";
 import seatsRoute from "./routes/seats.js";
 import paymentRoute from "./routes/payment.js";
+import resortRoute from "./routes/resort.js";
 
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
@@ -136,6 +137,7 @@ app.use("/api/subscription", subscription);
 app.use("/api/subscriptionOrder", subscriptionOrder);
 app.use("/api/rent-rooms", rentRoomRoute);
 app.use("/api/bkash/payment", paymentRoute);
+app.use("/api/resort", resortRoute);
 
 app.use((err, req, res, next) => {
   const errorStatus = err.status || 500;

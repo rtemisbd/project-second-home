@@ -802,7 +802,7 @@ const EditSeat = () => {
                             color: "black",
                             boxShadow: "1px 1px 1px 1px gray",
                             position: "absolute",
-                            right: "4px",
+                            left: "80%",
                             top: "-12px",
                           }}
                           onClick={() => {

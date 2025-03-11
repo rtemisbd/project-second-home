@@ -1,0 +1,18 @@
+.img-preview {
+  height: 120px;
+  width: 120px;
+  margin-right: 20px;
+}
+
+.remove-btn {
+  height: 24px;
+  width: 24px;
+  background-color: white;
+  color: black;
+  border: 1px solid black;
+  border-radius: 50% !important;
+  position: absolute;
+  top: -8px;
+  right: 8px;
+  cursor: pointer;
+}
