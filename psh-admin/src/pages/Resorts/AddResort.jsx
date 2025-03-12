@@ -4,12 +4,16 @@ import "./style/imageUploader.css";
 import { multipleImageUpload } from "../../utils/multipleImageUpload";
 import { baseUrl } from "../../utils/getBaseURL";
 import { toast, ToastContainer } from "react-toastify";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 const AddResort = () => {
+  const MySwal = withReactContent(Swal);
   const [files, setFiles] = useState("");
-  const [services, setServices] = useState([
+  const [facilities, setFacilities] = useState([
     { id: Date.now(), title: "", img: "" },
   ]);
+  const [villaTypes, setVillaTypes] = useState([{ id: Date.now(), name: "" }]);
 
   // location
   const [allDivisions, setAllDivisions] = useState([]);
@@ -41,32 +45,41 @@ const AddResort = () => {
 
   const formRef = useRef(null);
 
-  // Function to add a new service
-  const addService = () => {
-    setServices([...services, { id: Date.now(), title: "", img: "" }]);
+  // Function to add a new facility
+  const addFacility = () => {
+    setFacilities([...facilities, { id: Date.now(), title: "", img: "" }]);
   };
 
-  // Function to remove a service by ID
-  const removeService = (id) => {
-    setServices(services.filter((service) => service.id !== id));
+  // Function to remove a facility by ID
+  const removeFacility = (id) => {
+    setFacilities(facilities.filter((facility) => facility.id !== id));
   };
 
-  const handleServiceImageChange = (index, event) => {
-    const file = event.target.files[0]; // Single file for each service
+  const handleFacilityImageChange = (index, event) => {
+    const file = event.target.files[0]; // Single file for each facility
 
     if (file) {
-      const newServices = [...services];
-      newServices[index].img = file; // Store file in state
-      newServices[index].preview = URL.createObjectURL(file); // Create image preview
-      setServices(newServices);
+      const newFacilities = [...facilities];
+      newFacilities[index].img = file; // Store file in state
+      newFacilities[index].preview = URL.createObjectURL(file); // Create image preview
+      setFacilities(newFacilities);
     }
   };
 
-  const handleRemoveServiceImage = (index) => {
-    const newServices = [...services];
-    newServices[index].img = ""; // Clear the image file
-    newServices[index].preview = ""; // Remove preview URL
-    setServices(newServices);
+  // villa types
+  const addVillaType = () => {
+    setVillaTypes([...villaTypes, { id: Date.now(), name: "" }]);
+  };
+
+  const removeVillaType = (id) => {
+    setVillaTypes(villaTypes.filter((villa) => villa.id !== id));
+  };
+
+  const handleRemoveFacilityImage = (index) => {
+    const newFacilities = [...facilities];
+    newFacilities[index].img = ""; // Clear the image file
+    newFacilities[index].preview = ""; // Remove preview URL
+    setFacilities(newFacilities);
   };
 
   const handleResortSubmit = async (event) => {
@@ -85,24 +98,25 @@ const AddResort = () => {
       resortDutchNumber: formData.get("resortDutchNumber"),
       resortEmail: formData.get("resortEmail"),
       video: formData.get("video"),
+      villaTypes: villaTypes.map((villa) => ({ name: villa.name })),
     };
 
     // host images
     const photoUrls = await multipleImageUpload(selectedFiles);
-    toast("Wait Please...", "success");
     data.photos = photoUrls;
-    // host service images
-    const serviceImages = await multipleImageUpload(
-      services.map((service) => service.img)
+    toast("Wait Please...", "success");
+    // host facility images
+    const facilityImages = await multipleImageUpload(
+      facilities.map((facility) => facility.img)
     );
-    data.services = services.map((service, index) => ({
-      title: service.title,
-      img: serviceImages[index],
+    data.facilities = facilities.map((facility, index) => ({
+      title: facility.title,
+      img: facilityImages[index],
     }));
 
     try {
       const response = await axios.post(`${baseUrl}/api/resort`, data);
-      toast("Uploaded", "success");
+      MySwal.fire("Uploaded", "success");
     } catch (error) {
       toast("Something Went Wrong!", "error");
       console.log(error);
@@ -319,7 +333,56 @@ const AddResort = () => {
                   required
                 />
               </div>
+              <h2 className="profile_label3 profile_bg my-4">
+                Our Villa Types
+              </h2>
+              {villaTypes.map((villa, index) => (
+                <div key={villa.id} className="col-md-4 form_sub_stream">
+                  <label className="form-label profile_label3">
+                    Villa Type Name
+                  </label>
+                  <input
+                    type="text"
+                    className="main_form w-100"
+                    value={villa.name}
+                    onChange={(e) => {
+                      const updatedVillas = [...villaTypes];
+                      updatedVillas[index].name = e.target.value;
+                      setVillaTypes(updatedVillas);
+                    }}
+                    placeholder="Villa Type Name"
+                    required
+                  />
 
+                  <div className="col-md-12 d-flex justify-content-end ">
+                    {villaTypes.length > 1 && (
+                      <button
+                        type="button"
+                        className=""
+                        style={{
+                          background: "none",
+                          color: "red",
+                          marginTop: "-12px",
+
+                          fontWeight: "bold",
+                        }}
+                        onClick={() => removeVillaType(villa.id)}
+                      >
+                        [ Remove ]
+                      </button>
+                    )}
+                  </div>
+                </div>
+              ))}
+              <div className="col-md-12 d-flex gap-2 justify-content-end mt-2">
+                <button
+                  type="button"
+                  className="btn btn-success"
+                  onClick={addVillaType}
+                >
+                  Add New Villa Type
+                </button>
+              </div>
               {/* gallery and video */}
               <h2 className="profile_label3 profile_bg my-4">Our Gallery</h2>
 
@@ -386,46 +449,46 @@ const AddResort = () => {
                   required
                 />
               </div>
-              <h2 className="profile_label3 profile_bg my-4">Our Services</h2>
-              {services.map((service, index) => (
-                <div key={service.id} className="col-md-12 form_sub_stream">
+              <h2 className="profile_label3 profile_bg my-4">Our Facilities</h2>
+              {facilities.map((facility, index) => (
+                <div key={facility.id} className="col-md-12 form_sub_stream">
                   <label className="form-label profile_label3">
-                    Service Title
+                    Facility Title
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={service.title}
+                    value={facility.title}
                     onChange={(e) => {
-                      const updatedServices = [...services];
-                      updatedServices[index].title = e.target.value;
-                      setServices(updatedServices);
+                      const updatedFacilities = [...facilities];
+                      updatedFacilities[index].title = e.target.value;
+                      setFacilities(updatedFacilities);
                     }}
-                    placeholder="Service Title"
+                    placeholder="Facility Title"
                     required
                   />
 
                   <label className="form-label profile_label3 mt-2">
-                    Service Image
+                    Facility Image
                   </label>
                   <input
                     type="file"
                     className="main_form w-100 p-0"
-                    onChange={(e) => handleServiceImageChange(index, e)}
+                    onChange={(e) => handleFacilityImageChange(index, e)}
                     accept="image/*"
                     required
                   />
 
                   {/* Show Image Preview */}
-                  {service.preview && (
+                  {facility.preview && (
                     <div className="col-md-1 position-relative my-4">
                       <img
-                        src={service.preview}
-                        alt={`Service Preview ${index}`}
+                        src={facility.preview}
+                        alt={`Facility Preview ${index}`}
                         className="img-preview"
                       />
                       <button
-                        onClick={() => handleRemoveServiceImage(index)}
+                        onClick={() => handleRemoveFacilityImage(index)}
                         className="remove-btn"
                         style={{ right: -20 }}
                       >
@@ -434,13 +497,13 @@ const AddResort = () => {
                     </div>
                   )}
 
-                  {services.length > 1 && (
+                  {facilities.length > 1 && (
                     <button
                       type="button"
                       className="btn btn-danger mt-2"
-                      onClick={() => removeService(service.id)}
+                      onClick={() => removeFacility(facility.id)}
                     >
-                      Remove Service
+                      Remove Facility
                     </button>
                   )}
                 </div>
@@ -450,9 +513,9 @@ const AddResort = () => {
                 <button
                   type="button"
                   className="btn btn-success"
-                  onClick={addService}
+                  onClick={addFacility}
                 >
-                  Add New Service
+                  Add New facility
                 </button>
               </div>
             </div>

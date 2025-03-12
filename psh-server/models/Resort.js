@@ -1,14 +1,15 @@
 import mongoose from "mongoose";
 
-
-const serviceSchema = new mongoose.Schema({
+const facilitiesSchema = new mongoose.Schema({
     title: { type: String, required: true },
     img: { type: String, required: true }, 
-  });
+});
 
+const villaTypeSchema = new mongoose.Schema({
+    name: { type: String, required: true }
+});
 
 const resortSchema = new mongoose.Schema({
-
     name: { type: String, required: true },
     address: { type: String, required: true },
     division: { type: String, required: true },
@@ -20,8 +21,9 @@ const resortSchema = new mongoose.Schema({
     resortDutchNumber: { type: String },
     resortEmail: { type: String, required: true },
     photos: [{ type: String }],
-    video: { type: String }, 
-    services: [serviceSchema],
-  }, { timestamps: true });
-  
-  export default mongoose.model("Resort", resortSchema);
+    video: { type: String },
+    facilities: [facilitiesSchema],
+    villaTypes: [villaTypeSchema]
+}, { timestamps: true });
+
+export default mongoose.model("Resort", resortSchema);

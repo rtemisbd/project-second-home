@@ -73,6 +73,7 @@ import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
 import EditSeat from "./pages/edit/EditSeat";
 import AddResort from "./pages/Resorts/AddResort";
 import ResortList from "./pages/Resorts/ResortList";
+import AddVilla from "./pages/Villa/AddVilla";
 
 
 function App() {
@@ -98,8 +99,11 @@ function App() {
         <Route path="add_category" element={<Add_Category />} />
         <Route path="category_list" element={<Category />} />
         <Route path="add_branch" element={<Add_Branch />} />
+
         <Route path="add-resort" element={<AddResort />} />
         <Route path="resort-list" element={<ResortList/>} />
+        <Route path="add-villa" element={<AddVilla />} />
+
         <Route path="branch_list" element={<Branch />} />
         <Route path="add_dynamic" element={<Add_Dynamic />} />
         <Route path="dynamic_list" element={<Dynamic />} />

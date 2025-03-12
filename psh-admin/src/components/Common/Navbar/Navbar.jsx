@@ -449,7 +449,37 @@ const Navbar = () => {
                               className="span_text_mobile"
                               data-widget="pushmenu"
                             >
-                              Add Resort
+                              List of Resort
+                            </span>
+                          </div>
+                        </span>
+                      </li>
+                    </Link>
+                    <Link to={"/dashboard/add-villa"}>
+                      <li className="main_nav-link">
+                        <span className="nav-link">
+                          <div className="menu_flex">
+                            <span className="span_text">Add Villa</span>
+                            <span
+                              className="span_text_mobile"
+                              data-widget="pushmenu"
+                            >
+                              Add Villa
+                            </span>
+                          </div>
+                        </span>
+                      </li>
+                    </Link>
+                    <Link to={"/dashboard/villa-list"}>
+                      <li className="main_nav-link">
+                        <span className="nav-link">
+                          <div className="menu_flex">
+                            <span className="span_text">List of Villa</span>
+                            <span
+                              className="span_text_mobile"
+                              data-widget="pushmenu"
+                            >
+                              List of Villa
                             </span>
                           </div>
                         </span>
