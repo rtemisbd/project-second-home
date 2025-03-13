@@ -374,7 +374,7 @@ const AddResort = () => {
                   </div>
                 </div>
               ))}
-              <div className="col-md-12 d-flex gap-2 justify-content-end mt-2">
+              <div className="col-md-12 d-flex justify-content-end ">
                 <button
                   type="button"
                   className="btn btn-success"
@@ -449,7 +449,9 @@ const AddResort = () => {
                   required
                 />
               </div>
-              <h2 className="profile_label3 profile_bg my-4">Our Facilities</h2>
+              <h2 className="profile_label3 profile_bg my-4">
+                Common Facilities
+              </h2>
               {facilities.map((facility, index) => (
                 <div key={facility.id} className="col-md-12 form_sub_stream">
                   <label className="form-label profile_label3">

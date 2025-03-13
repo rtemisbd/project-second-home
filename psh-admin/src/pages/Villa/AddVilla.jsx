@@ -1,17 +1,54 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { ToastContainer } from "react-toastify";
+import React, { useEffect, useRef, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
 import { baseUrl } from "../../utils/getBaseURL";
+import { multipleImageUpload } from "../../utils/multipleImageUpload";
+import Swal from "sweetalert2";
+import withReactContent from "sweetalert2-react-content";
 
 const AddVilla = () => {
+  const MySwal = withReactContent(Swal);
   const [allResorts, setAllResorts] = useState([]);
   const [selectedResort, setSelectedResort] = useState(null);
   const [allTypes, setAllTypes] = useState([]);
-  const [selcetedType, setSelectedType] = useState(null);
+  const [selectedType, setSelectedType] = useState(null);
   const [location, setLocation] = useState(null);
 
-  const [facilities, setFacilities] = useState([]);
-  const [commonFacilities, setCommonaFacilities] = useState([]);
+  const [newFeatures, setNewFeatures] = useState([
+    { id: Date.now(), name: "" },
+  ]);
+
+  // images
+  const [selectedFiles, setSelectedFiles] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
+
+  const formRef = useRef(null);
+
+  const handleFileChange = (e) => {
+    const files = Array.from(e.target.files);
+
+    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
+
+    // Generate image previews
+    const previews = files.map((file) => URL.createObjectURL(file));
+    setImagePreviews((prevPreviews) => [...prevPreviews, ...previews]);
+  };
+
+  // remove images
+  const handleRemoveImage = (index) => {
+    setImagePreviews((prevPreviews) =>
+      prevPreviews.filter((_, i) => i !== index)
+    );
+    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+  };
+
+  const addFeature = () => {
+    setNewFeatures([...newFeatures, { id: Date.now(), name: "" }]);
+  };
+
+  const removeFeature = (id) => {
+    setNewFeatures(newFeatures.filter((feature) => feature.id !== id));
+  };
 
   useEffect(() => {
     const getData = async () => {
@@ -31,31 +68,6 @@ const AddVilla = () => {
     setAllTypes(resort?.villaTypes);
   }, [selectedResort, allResorts]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/api/facilityCategory`);
-        setFacilities(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get(`${baseUrl}/api/commonfacility`);
-        setCommonaFacilities(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
   const handleResortChange = (event) => {
     setSelectedResort(event.target.value);
   };
@@ -63,11 +75,58 @@ const AddVilla = () => {
     setSelectedType(event.target.value);
   };
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const formData = new FormData(formRef.current);
+
+    const villaData = {
+      resortId: selectedResort,
+      location,
+      title: formData.get("villaTitle"),
+      type: selectedType,
+      villaNumber: formData.get("villaNumber"),
+      area: formData.get("area"),
+      totalFloor: formData.get("totalFloor"),
+      totalRoom: formData.get("totalRoom"),
+      totalBalcony: formData.get("balcony"),
+      totalBathroom: formData.get("bathroom"),
+      occupancy: {
+        adult: formData.get("adult"),
+        kids: formData.get("kids"),
+        policy: formData.get("occupancyPolicy"),
+      },
+      features: newFeatures.map((feature) => feature.name),
+      pricing: {
+        perNight: formData.get("perNight"),
+        vat: formData.get("vat"),
+      },
+      policies: {
+        terms: formData.get("terms"),
+        cancellationPolicy: formData.get("cancellationPolicy"),
+      },
+    };
+    const video = formData.get("video");
+    toast("Uploading...", "success");
+    const photos = await multipleImageUpload(selectedFiles);
+    villaData.media = {
+      photos,
+      video,
+    };
+
+    try {
+      const response = await axios.post(`${baseUrl}/api/villa`, villaData);
+      MySwal.fire("Villa added successfully!");
+    } catch (error) {
+      toast.error("Error adding villa. Try again!");
+      console.error(error);
+    }
+  };
+
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
-        <div className="customize registration_div card">
-          <form>
+        <div className="customize registration_div card py-5">
+          <form onSubmit={handleSubmit}>
             <div className="row p-3">
               <div className="col-md-6 form_sub_stream">
                 <label
@@ -286,9 +345,9 @@ const AddVilla = () => {
                   Occupancy Policy
                 </label>
                 <textarea
-                  className="main_form w-100"
+                  className="main_form w-100 h-100"
                   name="occupancyPolicy"
-                  rows="4"
+                  rows="5"
                   cols="50"
                   placeholder=" Write occupancy policy in detail"
                   required
@@ -297,74 +356,213 @@ const AddVilla = () => {
             </div>
 
             <div className="row p-3">
-              <h2 className="profile_label3 profile_bg mt-3">Facility</h2>
+              <h2 className="profile_label3 profile_bg mt-3">
+                Additional Features
+              </h2>
               <div className="p-3">
                 <div className="row">
-                  <h2 className="profile_label3">Regular</h2>
-                  <div>
-                    {commonFacilities.map((facility) => (
-                      <React.Fragment key={facility._id}>
-                        <input
-                          type="checkbox"
-                          id={facility._id}
-                          name="commonfacility[]"
-                          value={facility._id}
-                          multiple
-                          className="me-1"
-                        />
-                        <label className="ms-2 mt-1" htmlFor={facility._id}>
-                          {facility.name ? facility.name : ""}
-                        </label>
-                        <img
-                          src={facility.photos ? facility.photos[0] : ""}
-                          alt=""
-                          style={{ width: 20 }}
-                          className="mx-3"
-                        />
-                      </React.Fragment>
-                    ))}
+                  {newFeatures.map((feature, index) => (
+                    <div key={feature.id} className="col-md-4 form_sub_stream">
+                      <label className="form-label profile_label3">
+                        New Feature Title
+                      </label>
+                      <input
+                        type="text"
+                        className="main_form w-100"
+                        value={feature.name}
+                        onChange={(e) => {
+                          const updatedFeature = [...newFeatures];
+                          updatedFeature[index].name = e.target.value;
+                          setNewFeatures(updatedFeature);
+                        }}
+                        placeholder="Feature Title"
+                        required
+                      />
+
+                      <div className="col-md-12 d-flex justify-content-end ">
+                        {newFeatures.length > 1 && (
+                          <button
+                            type="button"
+                            className=""
+                            style={{
+                              background: "none",
+                              color: "red",
+                              marginTop: "-12px",
+
+                              fontWeight: "bold",
+                            }}
+                            onClick={() => removeFeature(feature.id)}
+                          >
+                            [ Remove ]
+                          </button>
+                        )}
+                      </div>
+                    </div>
+                  ))}
+                  <div className="col-md-12 d-flex justify-content-end">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={addFeature}
+                    >
+                      Add New Feature
+                    </button>
                   </div>
                 </div>
-
-                <div className="row mt-2">
-                  {facilities.map((facility, index) => (
-                    <React.Fragment key={index}>
-                      {facility.name !== "Common" ? ( // Add this condition to check the facility name
-                        <>
-                          <h2 className="profile_label3 mt-2">
-                            {facility.name}
-                          </h2>
-
-                          <div>
-                            {facility.facility.map((pd) => (
-                              <React.Fragment key={pd._id}>
-                                <input
-                                  type="checkbox"
-                                  id={pd._id}
-                                  name="facility[]"
-                                  value={pd._id}
-                                  multiple
-                                  className="me-1"
-                                />
-
-                                <label className="ms-2 mt-1" htmlFor={pd._id}>
-                                  {pd.name ? pd.name : ""}
-                                </label>
-                                <img
-                                  src={pd.photos ? pd.photos[0] : ""}
-                                  alt=""
-                                  style={{ width: 20 }}
-                                  className="mx-3"
-                                />
-                              </React.Fragment>
-                            ))}
-                          </div>
-                        </>
-                      ) : null}
-                    </React.Fragment>
+              </div>
+            </div>
+            <div className="row p-3">
+              <h2 className="profile_label3 profile_bg mt-3">Rent Details</h2>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Per Night(BDT)
+                </label>
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="perNight"
+                  placeholder="Per Night BDT Cost"
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Vat (% BDT){" "}
+                  <span
+                    style={{
+                      color: "gray",
+                      fontSize: "12px",
+                      fontWeight: "400",
+                    }}
+                  >
+                    [excluded]
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="vat"
+                  placeholder="Total Vat (%)"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row p-3">
+              <h2 className="profile_label3 profile_bg mt-3">Villa Gallery</h2>
+              <div className="max-w-lg mx-auto mb-4">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Photos
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  name="photo"
+                  className="main_form w-100"
+                  required
+                />
+                <div className="d-flex flex-wrap my-6">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index}>
+                      <div className="d-flex position-relative my-4">
+                        <img
+                          src={preview}
+                          alt={`Preview ${index}`}
+                          className="img-preview"
+                        />
+                        <button
+                          onClick={() => handleRemoveImage(index)}
+                          className="remove-btn"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
                   ))}
                 </div>
               </div>
+
+              <div className="col-md-12 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Overview Video (Youtube Video Link){" "}
+                  <span
+                    style={{
+                      color: "gray",
+                      fontSize: "12px",
+                      fontWeight: "400",
+                    }}
+                  >
+                    [optional]
+                  </span>
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="video"
+                  placeholder="Youtube Video Link"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row p-3">
+              <h2 className="profile_label3 profile_bg ">
+                Rules and Regulations
+              </h2>
+              <div className="col-md-12 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Terms & Conditions
+                </label>
+                <textarea
+                  className="main_form w-100 h-100"
+                  name="terms"
+                  rows="5"
+                  cols="50"
+                  placeholder=" Write occupancy policy in detail"
+                  required
+                />
+              </div>
+              <div className="col-md-12 form_sub_stream  mt-5">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Cancellation Policy
+                </label>
+                <textarea
+                  className="main_form w-100 h-100"
+                  name="cancellationPolicy"
+                  rows="5"
+                  cols="50"
+                  placeholder=" Write occupancy policy in detail"
+                  required
+                />
+              </div>
+            </div>
+            <div className="d-flex justify-content-center my-5">
+              <button
+                type="submit"
+                className="profile_btn"
+                style={{ width: 175 }}
+              >
+                Add Villa
+              </button>
             </div>
           </form>
         </div>
