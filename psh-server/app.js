@@ -76,8 +76,10 @@ const allowedOrigins = [
   "http://localhost:5173",
   "https://adminps.psh.com.bd",
   "http://localhost:3000",
+  "http://localhost:3001",
   "https://psh.com.bd",
   "https://www.psh.com.bd",
+  "https://partner.psh.com.bd"
 ];
 
 // CORS configuration
