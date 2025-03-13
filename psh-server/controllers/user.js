@@ -168,6 +168,7 @@ export const loginAdminUser = async (req, res) => {
 
     const user = await User.findOne({ email });
 
+
     // If the user does not exist, return an error message
     if (user.role === "user") {
       res.status(404).json({ message: "User not found" });

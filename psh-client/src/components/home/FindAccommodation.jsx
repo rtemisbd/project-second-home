@@ -145,7 +145,7 @@ const FindAccommodation = () => {
   };
   return (
     <>
-      <h2 className="text-base font-bold">Where Do You Want To Stay? </h2>
+      <h2 className="text-base font-bold">Where Do You Want To Stay..? </h2>
       <form className="" onSubmit={handleSearch}>
         <div className="pt-2 space-y-1 ">
           {/* room category */}

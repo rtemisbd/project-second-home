@@ -16,7 +16,7 @@ const Add_Category = () => {
       name: formData.get("name"),
     };
     try {
-      const list = await uploadSingleImage(formData.get("img"));
+      const list = (await uploadSingleImage(formData.get("img"))) || [""];
 
       const product = {
         ...data2,
