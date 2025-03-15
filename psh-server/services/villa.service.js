@@ -1,4 +1,4 @@
-import Villa from "../models/Villa"
+import Villa from "../models/Villa.js"
 
 const createVillaIntoDB = async(payload)=>{
     const result = await Villa.create(payload);

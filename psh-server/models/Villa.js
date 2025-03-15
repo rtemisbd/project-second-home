@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
 
-const featureSchema = new mongoose.Schema({
-    name: { type: String, required: true }
-});
+// const featureSchema = new mongoose.Schema(
+//     { type: String, required: true });
 
 const villaSchema = new mongoose.Schema({
     resortId: { type: mongoose.Schema.Types.ObjectId, ref: "Resort", required: true },
@@ -20,7 +19,8 @@ const villaSchema = new mongoose.Schema({
         kids: { type: Number, required: true },
         policy: { type: String, required: true }
     },
-    features: [featureSchema],
+    features: [{ type: String, required: true }],
+    // features: [featureSchema],
     pricing: {
         perNight: { type: Number, required: true },
         vat: { type: Number, required: true }

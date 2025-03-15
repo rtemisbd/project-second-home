@@ -75,9 +75,9 @@ const AddVilla = () => {
     setSelectedType(event.target.value);
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    const formData = new FormData(formRef.current);
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const formData = new FormData(event.target);
 
     const villaData = {
       resortId: selectedResort,
@@ -91,7 +91,7 @@ const AddVilla = () => {
       totalBalcony: formData.get("balcony"),
       totalBathroom: formData.get("bathroom"),
       occupancy: {
-        adult: formData.get("adult"),
+        adults: formData.get("adult"),
         kids: formData.get("kids"),
         policy: formData.get("occupancyPolicy"),
       },
@@ -179,7 +179,7 @@ const AddVilla = () => {
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="name"
+                  name="villaTitle"
                   placeholder="Enter Villa Title"
                   required
                 />
@@ -481,6 +481,7 @@ const AddVilla = () => {
                           className="img-preview"
                         />
                         <button
+                          type="button"
                           onClick={() => handleRemoveImage(index)}
                           className="remove-btn"
                         >

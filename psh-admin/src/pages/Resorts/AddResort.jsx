@@ -17,7 +17,6 @@ const AddResort = () => {
   const [villaTypes, setVillaTypes] = useState([{ id: Date.now(), name: "" }]);
 
   // location
-  // const [allDivisions, setAllDivisions] = useState([]);
   const allDivisions = allDivision();
   const [selectedDivision, setSelectedDivision] = useState(null);
   const [allDistricts, setAllDistricts] = useState([]);
@@ -125,23 +124,8 @@ const AddResort = () => {
     }
   };
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     const { data } = await axios.get(`https://bdapis.com/api/v1.2/divisions`);
-  //     setAllDivisions(data.data);
-  //   };
-  //   fetchData();
-  // }, []);
-
   useEffect(() => {
     if (!selectedDivision) return;
-    // const fetchDistricts = async () => {
-    //   const { data } = await axios.get(
-    //     `https://bdapis.com/api/v1.2/division/${selectedDivision}`
-    //   );
-    //   setAllDistricts(data.data);
-    // };
-    // fetchDistricts();
     const relatedDistricts = districtsOf(selectedDivision);
     setAllDistricts(relatedDistricts);
   }, [selectedDivision]);
@@ -418,6 +402,7 @@ const AddResort = () => {
                           className="img-preview"
                         />
                         <button
+                          type="button"
                           onClick={() => handleRemoveImage(index)}
                           className="remove-btn"
                         >
