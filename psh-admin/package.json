@@ -4,6 +4,7 @@
   "private": true,
   "proxy": "https://api.psh.com.bd",
   "dependencies": {
+    "@bangladeshi/bangladesh-address": "^1.0.5",
     "@emotion/react": "^11.10.5",
     "@emotion/styled": "^11.10.5",
     "@iconscout/react-unicons": "^1.1.6",

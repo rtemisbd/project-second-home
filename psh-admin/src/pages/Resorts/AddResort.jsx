@@ -6,6 +6,7 @@ import { baseUrl } from "../../utils/getBaseURL";
 import { toast, ToastContainer } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
+import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
 
 const AddResort = () => {
   const MySwal = withReactContent(Swal);
@@ -16,7 +17,8 @@ const AddResort = () => {
   const [villaTypes, setVillaTypes] = useState([{ id: Date.now(), name: "" }]);
 
   // location
-  const [allDivisions, setAllDivisions] = useState([]);
+  // const [allDivisions, setAllDivisions] = useState([]);
+  const allDivisions = allDivision();
   const [selectedDivision, setSelectedDivision] = useState(null);
   const [allDistricts, setAllDistricts] = useState([]);
   const [selectedDistrict, setSelectedDistrict] = useState(null);
@@ -123,23 +125,25 @@ const AddResort = () => {
     }
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const { data } = await axios.get(`https://bdapis.com/api/v1.2/divisions`);
-      setAllDivisions(data.data);
-    };
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     const { data } = await axios.get(`https://bdapis.com/api/v1.2/divisions`);
+  //     setAllDivisions(data.data);
+  //   };
+  //   fetchData();
+  // }, []);
 
   useEffect(() => {
     if (!selectedDivision) return;
-    const fetchDistricts = async () => {
-      const { data } = await axios.get(
-        `https://bdapis.com/api/v1.2/division/${selectedDivision}`
-      );
-      setAllDistricts(data.data);
-    };
-    fetchDistricts();
+    // const fetchDistricts = async () => {
+    //   const { data } = await axios.get(
+    //     `https://bdapis.com/api/v1.2/division/${selectedDivision}`
+    //   );
+    //   setAllDistricts(data.data);
+    // };
+    // fetchDistricts();
+    const relatedDistricts = districtsOf(selectedDivision);
+    setAllDistricts(relatedDistricts);
   }, [selectedDivision]);
 
   const handleDivisionChange = (event) => {
@@ -200,15 +204,16 @@ const AddResort = () => {
                   name="division"
                   placeholder="Division"
                   required
+                  value={selectedDivision || ""}
                   onChange={handleDivisionChange}
                 >
-                  <option selected disabled>
+                  <option selected disabled value={""}>
                     {" "}
                     Choose your division
                   </option>
-                  {allDivisions?.map((data, index) => (
-                    <option key={index} value={data?.division}>
-                      {data?.division}
+                  {allDivisions.map((division) => (
+                    <option key={division} value={division}>
+                      {division}
                     </option>
                   ))}
                 </select>
@@ -225,18 +230,18 @@ const AddResort = () => {
                   name="district"
                   placeholder="District"
                   required
+                  value={selectedDistrict || ""}
                   onChange={handleDistrictChange}
                 >
-                  <option selected disabled>
+                  <option selected disabled value="">
                     {" "}
                     Choose your District
                   </option>
-                  {allDistricts.length &&
-                    allDistricts?.map((data, index) => (
-                      <option key={index} value={data?.district}>
-                        {data?.district}
-                      </option>
-                    ))}
+                  {allDistricts.map((district) => (
+                    <option key={district} value={district}>
+                      {district}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="col-md-6 form_sub_stream">
