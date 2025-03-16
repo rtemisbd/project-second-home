@@ -118,6 +118,7 @@ const AddResort = () => {
     try {
       const response = await axios.post(`${baseUrl}/api/resort`, data);
       MySwal.fire("Uploaded", "success");
+      event.target.reset();
     } catch (error) {
       toast("Something Went Wrong!", "error");
       console.log(error);

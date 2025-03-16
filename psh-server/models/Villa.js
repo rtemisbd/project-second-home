@@ -5,6 +5,7 @@ import mongoose from "mongoose";
 
 const villaSchema = new mongoose.Schema({
     resortId: { type: mongoose.Schema.Types.ObjectId, ref: "Resort", required: true },
+    category: { type: mongoose.Schema.Types.ObjectId, ref: "Category", required: true },
     location: { type: String, required: true },
     title: { type: String, required: true },
     type: { type: String, required: true },

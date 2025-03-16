@@ -1,6 +1,11 @@
+import Category from "../models/Category.js";
 import Villa from "../models/Villa.js"
 
 const createVillaIntoDB = async(payload)=>{
+
+    const category = await Category.findOne({name : "Villa"})
+    payload.category = category._id
+
     const result = await Villa.create(payload);
     return result;
 }
