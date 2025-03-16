@@ -14,9 +14,18 @@ const createVilla = catchAsync(async(req, res, next) =>{
       });
 })
 
+const getAllVilla =  catchAsync(async(req, res, next)=>{
+    const result = await villaServices.getAllVillaFromDB();
+    sendResponse(res, {
+        statusCode : 200,
+        success : true,
+        data : result, message : "Successfully retrives all villas"
+    })
+})
+
 
 
 
 export const villaControllers = {
-    createVilla
+    createVilla, getAllVilla
 }
