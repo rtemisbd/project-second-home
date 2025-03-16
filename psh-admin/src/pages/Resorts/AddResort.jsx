@@ -119,6 +119,12 @@ const AddResort = () => {
       const response = await axios.post(`${baseUrl}/api/resort`, data);
       MySwal.fire("Uploaded", "success");
       event.target.reset();
+      setVillaTypes([{ id: Date.now(), name: "" }]);
+      setSelectedFiles([]);
+      setImagePreviews([]);
+      setFacilities([{ id: Date.now(), title: "", img: "" }]);
+      setSelectedDistrict(null);
+      setSelectedDivision(null);
     } catch (error) {
       toast("Something Went Wrong!", "error");
       console.log(error);
