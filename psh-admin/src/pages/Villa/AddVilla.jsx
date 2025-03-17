@@ -116,6 +116,13 @@ const AddVilla = () => {
     try {
       const response = await axios.post(`${baseUrl}/api/villa`, villaData);
       MySwal.fire("Villa added successfully!");
+      event.target.reset();
+      setSelectedResort(null);
+      setLocation(null);
+      setSelectedType(null);
+      setNewFeatures([{ id: Date.now(), name: "" }]);
+      setSelectedFiles([]);
+      setImagePreviews([]);
     } catch (error) {
       toast.error("Error adding villa. Try again!");
       console.error(error);
