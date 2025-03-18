@@ -1,10 +1,10 @@
 import Property from "../models/Property.js";
 import WishlistModel from "../models/Wishlist.js";
 import { wishlistServices } from "../services/wishlist.service.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 
-export const createWishlist = catchAsync(async (req, res, next) => {
+export const createWishlist = catchAsync2(async (req, res, next) => {
   const { userName, propertyId, userPhone, roomType } = req.body;
   const payload = {
     userName,
@@ -37,13 +37,13 @@ export const getUserPropertyWishlistAdded = async (req, res, next) => {
   });
 };
 
-export const getMyWishlist = catchAsync(async (req, res, next) => {
+export const getMyWishlist = catchAsync2(async (req, res, next) => {
   const result = await wishlistServices.getMyWishes(req.params.userPhone);
 
   return res.status(200).json(result);
 });
 
-export const deleteWishlist = catchAsync(async (req, res, next) => {
+export const deleteWishlist = catchAsync2(async (req, res, next) => {
   const id = req.params.id;
 
   const result = await wishlistServices.deleteWishById(id);

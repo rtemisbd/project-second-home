@@ -41,6 +41,8 @@ import paymentRoute from "./routes/payment.js";
 import resortRoute from "./routes/resort.js";
 import villaRoute from "./routes/villa.js";
 import districtRoute from "./routes/district.js";
+import globalErrorHandler from "./middleware/globalErrorHandler.js";
+import notFound from "./middleware/notFound.js";
 
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
@@ -145,16 +147,11 @@ app.use("/api/resort", resortRoute);
 app.use("/api/villa", villaRoute);
 app.use("/api/district", districtRoute);
 
-app.use((err, req, res, next) => {
-  const errorStatus = err.status || 500;
-  const errorMessage = err.message || "Something went wrong";
+// globally handle error
+app.use(globalErrorHandler);
 
-  return res.status(errorStatus).json({
-    success: false,
-    status: errorStatus,
-    message: errorMessage,
-    stack: err.stack,
-  });
-});
+// handle not found route
+app.use(notFound);
 
 export default app;
+  

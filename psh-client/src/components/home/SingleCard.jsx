@@ -10,6 +10,7 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import "./styles/SingleCard.css";
 
 const SingleCard = ({ item }) => {
+
   return (
     <div className="single-card ">
       <Card className="mb-5 w-full ">

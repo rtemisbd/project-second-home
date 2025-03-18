@@ -1,9 +1,9 @@
 
 import { districtServices } from "../services/district.service.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 
-const createDistrict = catchAsync(async(req, res, next)=>{
+const createDistrict = catchAsync2(async(req, res, next)=>{
     const result = await districtServices.createDistrictIntoDB(req.body);
 
     sendResponse(res, {

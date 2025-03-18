@@ -1,10 +1,10 @@
 import Transaction from "../models/Transaction.js";
 import OrderModel from "../models/Order.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import { transactionServices } from "../services/transaction.service.js";
 
-export const createTransaction = catchAsync(async (req, res, next) => {
+export const createTransaction = catchAsync2(async (req, res, next) => {
   const result = await transactionServices.createTransactionIntoDB(req.body);
   sendResponse(res, {
     statusCode: 200,
@@ -14,7 +14,7 @@ export const createTransaction = catchAsync(async (req, res, next) => {
   });
 });
 
-export const createTransactionByUser = catchAsync(async (req, res, next) => {
+export const createTransactionByUser = catchAsync2(async (req, res, next) => {
   const result = await transactionServices.createTransactionByUserBkash(
     req.body
   );
@@ -26,7 +26,7 @@ export const createTransactionByUser = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getTransaction = catchAsync(async (req, res, next) => {
+export const getTransaction = catchAsync2(async (req, res, next) => {
   const transactions = await transactionServices.getAllTransactionFromDB(
     req.query
   );
@@ -40,7 +40,7 @@ export const getTransaction = catchAsync(async (req, res, next) => {
 });
 
 // get single transaction
-export const getTransactionById = catchAsync(async (req, res, next) => {
+export const getTransactionById = catchAsync2(async (req, res, next) => {
   const result = await transactionServices.getTransactionByIdFromDB(
     req.params.id
   );
@@ -53,7 +53,7 @@ export const getTransactionById = catchAsync(async (req, res, next) => {
   });
 });
 // get transaction by orderId
-export const getTransactionByOrderId = catchAsync(async (req, res, next) => {
+export const getTransactionByOrderId = catchAsync2(async (req, res, next) => {
   const result = await transactionServices.getTransactionByOrderIdFromDB(
     req.params.orderId
   );

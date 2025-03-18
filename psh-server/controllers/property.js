@@ -1,7 +1,7 @@
 import Category from "../models/Category.js";
 import Property from "../models/Property.js";
 import Branch from "../models/Branch.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import { propertyServices } from "../services/property.service.js";
 import { seatServices } from "../services/seat.service.js";
 import sendResponse from "../shared/sendResponse.js";
@@ -190,7 +190,7 @@ export const getBookingReport = async (req, res, next) => {
   }
 };
 
-export const getSinglePropertys = catchAsync(async (req, res, next) => {
+export const getSinglePropertys = catchAsync2(async (req, res, next) => {
   const propertyId = req.params.id;
   const { property, rentRooms } =
     await propertyServices.getSinglePropertyFromDB(propertyId);
@@ -243,7 +243,7 @@ export const deletePropertys = async (req, res, next) => {
   }
 };
 
-export const updatePropertys = catchAsync(async (req, res, next) => {
+export const updatePropertys = catchAsync2(async (req, res, next) => {
   const result = await propertyServices.updatePropertyById(
     req.params.id,
     req.body
@@ -340,7 +340,7 @@ export const updatePropertys = catchAsync(async (req, res, next) => {
 //   }
 // };
 
-export const getRecommendedPropertys = catchAsync(async (req, res, next) => {
+export const getRecommendedPropertys = catchAsync2(async (req, res, next) => {
   const result = await propertyServices.getRecommendedPropertiesFromDB();
   res.status(200).json(result);
 });
