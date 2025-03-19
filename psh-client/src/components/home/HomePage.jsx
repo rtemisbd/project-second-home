@@ -15,6 +15,7 @@ import "@splidejs/react-splide/css/core";
 import { propertySlider } from "../../helpers/utils/projectSlider";
 import useSeat from "../../hooks/useSeat";
 import useVilla from "../../hooks/useVilla";
+import VillaCard from "./VillaCard";
 // import SharedRoom from "./SharedRoom";
 
 export default function HomePage() {
@@ -103,6 +104,8 @@ export default function HomePage() {
     setActiveTab(categoryName);
 
     if (categoryName === "Villa") {
+      // setData(villas);
+      // setRandomIndex(() => villas);
       setData([]);
       setRandomIndex(() => []);
       setShowVilla(true);
@@ -165,6 +168,14 @@ export default function HomePage() {
           {randomIndex?.map((item) => (
             <SplideSlide key={item?._id}>
               <SingleCard item={item} />
+            </SplideSlide>
+          ))}
+        </Splide>
+      ) : villas.length && showVilla ? (
+        <Splide options={propertySlider(villas)}>
+          {villas?.map((villa) => (
+            <SplideSlide key={villa?._id}>
+              <VillaCard villa={villa} />
             </SplideSlide>
           ))}
         </Splide>
