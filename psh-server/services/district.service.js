@@ -11,6 +11,13 @@ const createDistrictIntoDB = async (payload)=>{
     return await District.create(payload);
 }
 
+
+const getAllDistrictFromDB = async()=>{
+  const result = await District.find();
+  return result;
+}
+
 export const districtServices = {
-    createDistrictIntoDB
+    createDistrictIntoDB,
+    getAllDistrictFromDB
 }
