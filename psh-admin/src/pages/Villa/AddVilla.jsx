@@ -100,10 +100,6 @@ const AddVilla = () => {
         perNight: formData.get("perNight"),
         vat: formData.get("vat"),
       },
-      policies: {
-        terms: formData.get("terms"),
-        cancellationPolicy: formData.get("cancellationPolicy"),
-      },
     };
     const video = formData.get("video");
     toast("Uploading...", "success");
@@ -526,43 +522,7 @@ const AddVilla = () => {
                 />
               </div>
             </div>
-            <div className="row p-3">
-              <h2 className="profile_label3 profile_bg ">
-                Rules and Regulations
-              </h2>
-              <div className="col-md-12 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Terms & Conditions
-                </label>
-                <textarea
-                  className="main_form w-100 h-100"
-                  name="terms"
-                  rows="5"
-                  cols="50"
-                  placeholder=" Write occupancy policy in detail"
-                  required
-                />
-              </div>
-              <div className="col-md-12 form_sub_stream  mt-5">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Cancellation Policy
-                </label>
-                <textarea
-                  className="main_form w-100 h-100"
-                  name="cancellationPolicy"
-                  rows="5"
-                  cols="50"
-                  placeholder=" Write occupancy policy in detail"
-                  required
-                />
-              </div>
-            </div>
+
             <div className="d-flex justify-content-center my-5">
               <button
                 type="submit"

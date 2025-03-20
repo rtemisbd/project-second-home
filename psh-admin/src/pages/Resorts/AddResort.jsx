@@ -100,6 +100,18 @@ const AddResort = () => {
       resortEmail: formData.get("resortEmail"),
       video: formData.get("video"),
       villaTypes: villaTypes.map((villa) => ({ name: villa.name })),
+      nearLocation: {
+        nearLocation1: formData.get("nearLocation1"),
+        nearLocation2: formData.get("nearLocation2"),
+        nearLocation3: formData.get("nearLocation3"),
+        nearLocation4: formData.get("nearLocation4"),
+        nearLocation5: formData.get("nearLocation5"),
+        nearLocation6: formData.get("nearLocation6"),
+      },
+      policies: {
+        bookingPolicy: formData.get("bookingPolicy"),
+        cancellationPolicy: formData.get("cancellationPolicy"),
+      },
     };
 
     // host images
@@ -330,6 +342,99 @@ const AddResort = () => {
                 />
               </div>
               <h2 className="profile_label3 profile_bg my-4">
+                Around The Resort
+              </h2>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  No:1
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="nearLocation1"
+                  placeholder="No:1"
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  No:2
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="nearLocation2"
+                  placeholder="No:2"
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  No:3
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="nearLocation3"
+                  placeholder="No:3"
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  No:4
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="nearLocation4"
+                  placeholder="No:4"
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  No:5
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="nearLocation5"
+                  placeholder="No:5"
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  No:6
+                </label>
+
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="nearLocation6"
+                  placeholder="No:6"
+                />
+              </div>
+              <h2 className="profile_label3 profile_bg my-4">
                 Our Villa Types
               </h2>
               {villaTypes.map((villa, index) => (
@@ -516,6 +621,44 @@ const AddResort = () => {
                 >
                   Add New facility
                 </button>
+              </div>
+
+              <div className="row p-3">
+                <h2 className="profile_label3 profile_bg ">
+                  Rules and Regulations
+                </h2>
+                <div className="col-md-12 form_sub_stream">
+                  <label
+                    htmlFor="inputState"
+                    className="form-label profile_label3 "
+                  >
+                    Booking Policy
+                  </label>
+                  <textarea
+                    className="main_form w-100 h-100"
+                    name="bookingPolicy"
+                    rows="5"
+                    cols="50"
+                    placeholder=" Write occupancy policy in detail"
+                    required
+                  />
+                </div>
+                <div className="col-md-12 form_sub_stream  mt-5">
+                  <label
+                    htmlFor="inputState"
+                    className="form-label profile_label3 "
+                  >
+                    Cancellation Policy
+                  </label>
+                  <textarea
+                    className="main_form w-100 h-100"
+                    name="cancellationPolicy"
+                    rows="5"
+                    cols="50"
+                    placeholder=" Write occupancy policy in detail"
+                    required
+                  />
+                </div>
               </div>
             </div>
             <div className="d-flex justify-content-center my-5">

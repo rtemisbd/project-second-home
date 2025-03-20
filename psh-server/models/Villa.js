@@ -30,10 +30,7 @@ const villaSchema = new mongoose.Schema({
         photos: [{ type: String }],
         video: { type: String }
     },
-    policies: {
-        terms: { type: String, required: true },
-        cancellationPolicy: { type: String, required: true }
-    }
+  
 }, { timestamps: true });
 
 
