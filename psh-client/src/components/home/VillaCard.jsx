@@ -28,14 +28,14 @@ const VillaCard = ({ villa }) => {
             />
 
             <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
-              {villa?.resort?.name}
+              {villa?.type}
             </div>
           </CardHeader>
           <CardBody className="p-2">
             <div className="flex villas-center justify-between">
               <div>
                 <span className="text-sm font-medium bg-[#FCA22A] text-white px-2 py-1 rounded">
-                  [{villa?.type}]
+                  [ {villa?.resort?.name} ]
                 </span>
               </div>
 
