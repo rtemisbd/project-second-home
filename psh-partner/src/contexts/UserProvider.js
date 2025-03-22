@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
+import { baseUrl } from "../utils/getBaseUrl";
 
 // Create the context
 export const AuthContext = createContext();
@@ -23,7 +24,7 @@ export const UserProvider = ({ children }) => {
     try {
       // Make your API call here to login the user using Axios
       const response = await axios.post(
-        "https://api.psh.com.bd/api/users/login",
+        `${baseUrl}/users/login-admin`,
         { email, password }
       );
 

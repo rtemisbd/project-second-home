@@ -11,8 +11,6 @@ const getPropertiesFromDB = async (queries) => {
     gender,
     destination,
     bedType,
-    startDate,
-    endDate,
     recommended,
     withSharedRoom,
     roomNumber,
@@ -120,7 +118,7 @@ const getPropertiesFromDB = async (queries) => {
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom && category !== "Private Room" && !roomNumber) {
+  if (withSharedRoom && category !== "Villa" && category !== "Private Room" && !roomNumber) {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
       seatNumber,
@@ -153,7 +151,6 @@ const getPropertiesFromDB = async (queries) => {
 
   //   return a.roomNumber.localeCompare(b.roomNumber); // Fallback for letters
   // });
-
   return {
     properties: allProperties,
     totalCount: totalCount,

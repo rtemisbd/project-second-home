@@ -1,8 +1,8 @@
 import TeachingForm from "../models/TeachingForm.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import nodemailer from "nodemailer";
-export const createTeachingForm = catchAsync(async (req, res) => {
+export const createTeachingForm = catchAsync2(async (req, res) => {
   const { purpose, name, mobileNumber, arrivalDate, arrivalTime } = req.body;
   //   console.log(fullName);
   const newData = new TeachingForm({
@@ -100,7 +100,7 @@ export const createTeachingForm = catchAsync(async (req, res) => {
   });
 });
 
-export const getAllTeachingData = catchAsync(async (req, res) => {
+export const getAllTeachingData = catchAsync2(async (req, res) => {
   const allTeachingsData = await TeachingForm.find({});
 
   sendResponse(res, {

@@ -9,13 +9,13 @@ import { bookingConfirmMail } from "../mail/bookingConfirmMail.js";
 import { cancelBookingMail } from "../mail/cancelBookingMail.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
 import config from "../config/index.js";
 
 // create booking
-export const createOrder = catchAsync(async (req, res, next) => {
+export const createOrder = catchAsync2(async (req, res, next) => {
   const result = await orderServices.createOrderIntoDB(req.body);
   const bookingId = result?.bookingId;
 
@@ -123,7 +123,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
 });
 
 // get orders
-export const getOrder = catchAsync(async (req, res, next) => {
+export const getOrder = catchAsync2(async (req, res, next) => {
   const { result, totalCount } = await orderServices.getOrderFromDB(req.query);
   const orders = result[0]?.paginatedResults || [];
 

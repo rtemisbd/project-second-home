@@ -12,4 +12,4 @@ const sendResponse = (res, { statusCode, success, message, data = null }) => {
   res.status(statusCode).json(responseData);
 };
 
-export default sendResponse;
+export default sendResponse; 

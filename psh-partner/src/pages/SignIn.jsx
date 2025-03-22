@@ -117,7 +117,7 @@ const SignIn = () => {
 
                       <div className="mb-5">
                         <button type="submit" className="form2_btn">
-                          Enter Password
+                          Sign In
                         </button>
                       </div>
                       {/* <h6 style={{ color: "#939198" }}>

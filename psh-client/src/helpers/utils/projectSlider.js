@@ -12,7 +12,6 @@ export const propertySlider = (projects) => ({
       perPage: 1,
       focus: "center",
       arrows: false,
-
       width: "100%",
       height: "auto",
     },
@@ -20,7 +19,6 @@ export const propertySlider = (projects) => ({
       perPage: 1.1,
       focus: "center",
       arrows: false,
-
       width: "100%",
       height: "auto",
       gap: "0.5rem",
@@ -29,7 +27,6 @@ export const propertySlider = (projects) => ({
       perPage: 1.1,
       focus: "center",
       arrows: false,
-
       width: "100%",
       height: "auto",
     },
@@ -37,7 +34,6 @@ export const propertySlider = (projects) => ({
       perPage: 1.1,
       arrows: false,
       focus: "center",
-
       width: "100%",
       height: "auto",
     },

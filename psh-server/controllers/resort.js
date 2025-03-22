@@ -1,11 +1,11 @@
 import { resortServices } from "../services/resort.service.js";
-import catchAsync from "../shared/cathAsync.js";
-import sendResponse from "../shared/sendResponse.js";
+import catchAsync from "../utils/catchAsync.js";
+import responseSend from "../utils/responseSend.js";
 
 const createResort = catchAsync(async(req, res, next)=>{
       const result = await resortServices.createResortIntoDB(req.body);
     
-      sendResponse(res, {
+      responseSend(res, {
         statusCode: 200,
         success: true,
         data: result,
@@ -18,12 +18,12 @@ const createResort = catchAsync(async(req, res, next)=>{
 const getAllResorts = catchAsync(async(req, res, next)=>{
   const data = await resortServices.getAllResortsFromDB();
 
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     data,
     message:
-      "Resort has been retrived successfully!",
+      "Resort has been retrieve successfully!",
   });
 })
 

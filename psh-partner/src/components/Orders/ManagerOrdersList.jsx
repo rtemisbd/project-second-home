@@ -22,6 +22,7 @@ import useBranch from "../../hooks/useBranch";
 import { useLocation } from "react-router-dom";
 import img from "../../img/new/style.png";
 import { Spinner } from "react-bootstrap";
+import { baseUrl } from "../../utils/getBaseUrl";
 
 const ManagerOrdersList = () => {
   const MySwal = withReactContent(Swal);
@@ -54,7 +55,7 @@ const ManagerOrdersList = () => {
 
   // Get All Branch
   useEffect(() => {
-    fetch(`https://api.psh.com.bd/api/branch`)
+    fetch(`${baseUrl}/branch`)
       .then((res) => res.json())
       .then((data) => setAllBranch(data));
   }, []);
@@ -69,7 +70,7 @@ const ManagerOrdersList = () => {
     async () => {
       try {
         const response = await fetch(
-          `https://api.psh.com.bd/api/order?branch=${findManagerBranch?._id}`,
+          `${baseUrl}/order?branch=${findManagerBranch?._id}`,
           {
             method: "GET",
           }
@@ -119,7 +120,7 @@ const ManagerOrdersList = () => {
 
     try {
       const response = await fetch(
-        `https://api.psh.com.bd/api/order?orderId=${orderId}&userId=${bookingUserId}&fromDate=${fromDate}&toDate=${toDate}&branch=${findManagerBranch?._id}&paymentStatus=${paymentStatus}&status=${bookingStatus}`,
+        `${baseUrl}/order?orderId=${orderId}&userId=${bookingUserId}&fromDate=${fromDate}&toDate=${toDate}&branch=${findManagerBranch?._id}&paymentStatus=${paymentStatus}&status=${bookingStatus}`,
         {
           method: "GET",
         }
@@ -446,7 +447,7 @@ const ManagerOrdersList = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/order/${id}`;
+      const url = `${baseUrl}/order/${id}`;
       fetch(url, {
         method: "DELETE",
       })

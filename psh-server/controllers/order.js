@@ -5,11 +5,11 @@ import Transaction from "../models/Transaction.js";
 import Adjustment from "../models/Adjustment.js";
 import RentRoom from "../models/RentRoom.js";
 import { bookingSms } from "../SMS/BookingSms.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
 
-export const createOrder = catchAsync(async (req, res, next) => {
+export const createOrder = catchAsync2(async (req, res, next) => {
   // Booking Save to Database
   const result = await orderServices.createOrderIntoDB(req.body);
 
@@ -22,7 +22,7 @@ export const createOrder = catchAsync(async (req, res, next) => {
   });
 });
 
-export const getOrder = catchAsync(async (req, res, next) => {
+export const getOrder = catchAsync2(async (req, res, next) => {
   const { result, totalCount } = await orderServices.getOrderFromDB(req.query);
 
   const orders = result[0]?.paginatedResults || [];
@@ -165,7 +165,7 @@ export const getSingleOrder = async (req, res, next) => {
     next(err);
   }
 };
-export const getUserOrders = catchAsync(async (req, res, next) => {
+export const getUserOrders = catchAsync2(async (req, res, next) => {
   const { user: phone } = req.params;
 
   const { result, totalCount } = await orderServices.getUserOrderFromDB(
@@ -689,7 +689,7 @@ export const updateBooking = async (req, res, next) => {
   }
 };
 
-export const updateBookingOrder = catchAsync(async (req, res, next) => {
+export const updateBookingOrder = catchAsync2(async (req, res, next) => {
   const result = await orderServices.updateBookingStatusIntoDB({
     id: req.params.id,
     body: req.body,

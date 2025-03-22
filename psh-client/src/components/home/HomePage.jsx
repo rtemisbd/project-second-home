@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import axios from "axios";
-
 import SingleCard from "./SingleCard";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-
 import { useQuery } from "react-query";
-
 import "./styles/Recommended.css";
 import "./styles/SingleCard.css";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
@@ -17,6 +14,8 @@ import "@splidejs/react-splide/css/sea-green";
 import "@splidejs/react-splide/css/core";
 import { propertySlider } from "../../helpers/utils/projectSlider";
 import useSeat from "../../hooks/useSeat";
+import useVilla from "../../hooks/useVilla";
+import VillaCard from "./VillaCard";
 // import SharedRoom from "./SharedRoom";
 
 export default function HomePage() {
@@ -26,6 +25,10 @@ export default function HomePage() {
   const [activeTab, setActiveTab] = useState("All");
   const [randomIndex, setRandomIndex] = useState([]);
   const [withSharedRoom, setWithSharedRoom] = useState(true);
+  const [showVilla, setShowVilla] = useState(false);
+  // get all seats
+  const seats = useSeat();
+  const villas = useVilla();
 
   // Get Properties
   const { refetch, error } = useQuery(["propertyList"], async () => {
@@ -48,8 +51,6 @@ export default function HomePage() {
       throw error;
     }
   });
-  // get all seats
-  const seats = useSeat();
 
   // Get categories
   const { refetch: refetchCategories } = useQuery(["categories"], async () => {
@@ -98,13 +99,26 @@ export default function HomePage() {
     getRandomData();
   }, [activeTab, Featured]);
 
-  useEffect(() => {
-    if (activeTab === "Shared Room") {
+  const handleTabChange = async (categoryName) => {
+    setFeatured("");
+    setActiveTab(categoryName);
+
+    if (categoryName === "Villa") {
+      // setData(villas);
+      // setRandomIndex(() => villas);
+      setData([]);
+      setRandomIndex(() => []);
+      setShowVilla(true);
+      return;
+    }
+
+    if (categoryName === "Shared Room") {
       setRandomIndex(seats);
       setWithSharedRoom(false);
     } else {
+      setWithSharedRoom(true);
     }
-  }, [activeTab]);
+  };
 
   return (
     <div className="category-item">
@@ -133,11 +147,12 @@ export default function HomePage() {
               <Tab
                 value={index}
                 key={index}
-                onClick={() => {
-                  setFeatured("");
-                  setActiveTab(category.name);
-                  setWithSharedRoom(false);
-                }}
+                // onClick={() => {
+                //   setFeatured("");
+                //   setActiveTab(category.name);
+                //   setWithSharedRoom(false);
+                // }}
+                onClick={() => handleTabChange(category.name)}
                 className="w-fit md:text-[20px] sm:text-[12px] category-type px-0 z-0"
               >
                 {category.name}
@@ -153,6 +168,14 @@ export default function HomePage() {
           {randomIndex?.map((item) => (
             <SplideSlide key={item?._id}>
               <SingleCard item={item} />
+            </SplideSlide>
+          ))}
+        </Splide>
+      ) : villas.length && showVilla ? (
+        <Splide options={propertySlider(villas)}>
+          {villas?.map((villa) => (
+            <SplideSlide key={villa?._id}>
+              <VillaCard villa={villa} />
             </SplideSlide>
           ))}
         </Splide>

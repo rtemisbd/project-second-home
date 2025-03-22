@@ -1,8 +1,8 @@
 import FormSubmit from "../models/Form.js";
-import catchAsync from "../shared/cathAsync.js";
+import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import nodemailer from "nodemailer";
-export const createForm = catchAsync(async (req, res) => {
+export const createForm = catchAsync2(async (req, res) => {
   const { fullName, mobileNumber, email } = req.body;
   //   console.log(fullName);
   const newData = new FormSubmit({

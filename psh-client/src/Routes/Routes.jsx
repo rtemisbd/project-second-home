@@ -38,6 +38,7 @@ import UserAuthentication from "../pages/SignUp/UserAuthentication";
 import RoomDetails from "../pages/Details/RoomDetails";
 import Home from "../pages/Home/Home";
 import PaymentPage from "../components/payment/payment2";
+import VillaDetails from "../pages/villa/VillaDetails";
 
 export const router = createBrowserRouter([
   {
@@ -71,6 +72,10 @@ export const router = createBrowserRouter([
       {
         path: "/:category/:room/:id",
         element: <RoomDetails />,
+      },
+      {
+        path: "/villa/:id",
+        element: <VillaDetails />,
       },
       {
         path: "/event/:id",

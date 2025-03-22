@@ -27,6 +27,8 @@ export const getSingleCategory = async (req, res, next) => {
     next(err);
   }
 };
+
+
 export const deleteCategory = async (req, res, next) => {
   try {
     const category = await Category.findByIdAndDelete(req.params.id);
