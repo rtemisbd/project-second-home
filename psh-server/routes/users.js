@@ -17,8 +17,6 @@ import {
   verifyOtp,
 } from "../controllers/user.js";
 import { verifyAdmin, verifyToken, verifyUser } from "../utils/verifyToken.js";
-import auth from "../middleware/auth.js";
-import { ENUM_USER_ROLE } from "../enums/user.js";
 
 const router = express.Router();
 
@@ -45,21 +43,8 @@ router.delete("/:id", deleteUser);
 
 // router.get("/:id", verifyUser, getUser);
 // router.get("/", getUsers);
-router.get("/",  auth(
-  ENUM_USER_ROLE.ADMIN,
-  ENUM_USER_ROLE.SUPER_ADMIN,
-  ENUM_USER_ROLE.MANAGER,
-  ENUM_USER_ROLE.SUB_ADMIN_1,
-  ENUM_USER_ROLE.SUB_ADMIN_2
-), getUsers);
-router.get("/:id", auth(
-  ENUM_USER_ROLE.ADMIN,
-  ENUM_USER_ROLE.SUPER_ADMIN,
-  ENUM_USER_ROLE.MANAGER,
-  ENUM_USER_ROLE.SUB_ADMIN_1,
-  ENUM_USER_ROLE.SUB_ADMIN_2,
-  ENUM_USER_ROLE.USER
-), getUser);
+router.get("/", getUsers);
+router.get("/:id", getUser);
 router.get("/jwt", getJWT);
 router.get("/admin/:email", getAdmin);
 
