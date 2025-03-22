@@ -52,13 +52,21 @@ const Contact = () => {
           </h2>
           <div>
             <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3652.2121161853374!2d90.37714807592732!3d23.739814189181644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b92150a7d46b%3A0x85fbdf9128e8b71f!2sCafe%20Rtemis!5e0!3m2!1sen!2sbd!4v1702806089293!5m2!1sen!2sbd"
+              src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d1535.5756561030648!2d90.37949723537896!3d23.738998186791818!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b90010ae32cd%3A0x5339a7983ddaf8b3!2sPSH-Project%20Second%20Home%2C%20Dhanmondi!5e0!3m2!1sen!2sbd!4v1742636414719!5m2!1sen!2sbd"
               width="100%"
               height="550"
               style={{ border: 0 }}
               loading="lazy"
               referrerPolicy="no-referrer-when-downgrade"
             ></iframe>
+            {/* <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3652.2121161853374!2d90.37714807592732!3d23.739814189181644!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755b92150a7d46b%3A0x85fbdf9128e8b71f!2sCafe%20Rtemis!5e0!3m2!1sen!2sbd!4v1702806089293!5m2!1sen!2sbd"
+              width="100%"
+              height="550"
+              style={{ border: 0 }}
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            ></iframe> */}
           </div>
         </div>
         <div className="md:grid md:grid-cols-12 md:gap-x-8 sm:gap-x-0 gap-y-16 mt-5 ">

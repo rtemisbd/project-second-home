@@ -11,7 +11,7 @@ const Franchise = () => {
         className="promo_img h-[60px] md:h-[100px] w-[200px] lg:w-[434px] object-contain md:object-fill rounded-lg"
       />
       <img
-        src={franchise}
+        src={branch}
         className="promo_img h-[60px] md:h-[100px] w-[200px] lg:w-[434px] object-contain md:object-fill rounded-lg"
       />
     </div>
