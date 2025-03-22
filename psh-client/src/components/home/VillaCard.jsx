@@ -12,7 +12,7 @@ import "./styles/SingleCard.css";
 const VillaCard = ({ villa }) => {
   return (
     <div className="single-card ">
-      <Link to={`/`}>
+      <Link to={`/villa/${villa._id}`}>
         <Card className="mb-5 w-full ">
           <CardHeader
             floated={false}

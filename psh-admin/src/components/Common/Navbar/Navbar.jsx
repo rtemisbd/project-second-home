@@ -28,6 +28,7 @@ import { PiFlagBanner } from "react-icons/pi";
 import { CgProfile } from "react-icons/cg";
 import axios from "axios";
 import { baseUrl } from "../../../utils/getBaseURL";
+import villaIcon from "../../../img/home/villa.png";
 
 const Navbar = () => {
   const { logoutUser, user } = useContext(AuthContext);
@@ -402,11 +403,12 @@ const Navbar = () => {
                       setIsActive11(!isActive11);
                     }}
                   >
-                    <IoBedOutline
+                    <img
+                      src={villaIcon}
+                      alt="villa icon"
                       style={{
                         width: "24px",
                         height: "24px",
-                        color: "white",
                         marginRight: "10px",
                       }}
                     />

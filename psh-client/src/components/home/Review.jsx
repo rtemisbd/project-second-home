@@ -82,11 +82,12 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                প্রজেক্ট সেকেন্ড হোমে একদিনের জন্য অতিথি হয়েছিলাম। খুব সুন্দর,
-                গোছানো ও নিরাপদ জায়গা। কেমন না কেমন হবে, নিরাপদ হবে কিনা এই রকম
-                অনেক সংশয় নিয়ে গিয়েছিলাম এবং আমি মুগ্ধ। সেখানে যারা দেখাশুনার
-                দায়িত্বে আছেন তারাও খুব আন্তরিক। মেয়েদের জন্য তাদের এত সুন্দর
-                একটা উদ্যোগ সত্যিই প্রশংসার দাবি রাখে।
+                I was a guest at Project Second Home for a day. It is a very
+                beautiful, tidy and safe place. I had many doubts about how it
+                would be, whether it would be safe or not, and I was impressed.
+                The people who are in charge of looking after it are also very
+                sincere. Their such a beautiful initiative for the girls really
+                deserves praise.
               </p>
             </div>
           </div>
@@ -100,7 +101,7 @@ const Review = () => {
                 />
               </div>
               <div>
-                <p>Adv Nusrat Munia</p>
+                <p>Nusrat Munia</p>
                 <div className="flex">
                   <AiFillStar className="text-[#F8D254] w-[24px] h-[24px]" />
                   <AiFillStar className="text-[#F8D254] w-[24px] h-[24px]" />
@@ -115,10 +116,10 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                মেয়েদের জন্য ঢাকার মধ্যে বেস্ট একটা হোস্টেল, যেমন পরিবেশ
-                পাশাপাশি খাবার ও খুব ভালো, এবং রিজনেবল cost এ ভালো পরিবেশে থাকতে
-                চাইলে এটার বিকল্প নেই আমি highly recommend করছি আপুদের কে এই
-                হোটেল
+                One of the best hostels in Dhaka for girls, the environment is
+                very good as well as the food, and if you want to stay in a good
+                environment at a reasonable cost, there is no alternative. I
+                highly recommend this hotel to you.
               </p>
             </div>
           </div>
@@ -132,7 +133,7 @@ const Review = () => {
                 />
               </div>
               <div>
-                <p>সাবরিনা চিন্তু</p>
+                <p>Sabrina Chitto</p>
                 <div className="flex">
                   <AiFillStar className="text-[#F8D254] w-[24px] h-[24px]" />
                   <AiFillStar className="text-[#F8D254] w-[24px] h-[24px]" />
@@ -147,9 +148,9 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                ঢাকার বাহির থেকে অনেক মেয়েরা ঢাকায় আসে পড়াশুনা কিংবা চাকরি বাকরি
-                করতে। তাদের জন্য সবথেকে বেশী যেটা প্রয়জন হয় তা হল নিরাপদ আশ্রয়।
-                আপনাদের উদ্যোগ টা খুবই অনুপ্রেরণা জনক। আপনাদের সাধুবাদ জানাই।
+                Many girls from outside Dhaka come to Dhaka to study or work.
+                What they need most is a safe shelter. Your initiative is very
+                inspiring. I applaud you.
               </p>
             </div>
           </div>
@@ -178,8 +179,9 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                মেয়েদের জন্য অনেক সেইভ এবং আধুনিক সব সুবিধা সম্মত অতি মনোরম একটা
-                পরিবেশ। আসলেই এটা সেকেন্ড হোম। অনেক অনেক দোয়া রইলো psh.
+                A very pleasant environment with many savings and all modern
+                facilities for girls. It is truly a second home. Many many
+                blessings for PSH.
               </p>
             </div>
           </div>
@@ -209,7 +211,7 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                ঢাকায় সাধ্যের মধ্যে থাকার জন্য সবথেকে নিরাপদ জায়গা।
+                The safest place to stay in Dhaka within budget.
               </p>
             </div>
           </div>
@@ -238,8 +240,8 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                অনেক ট্রাস্টটেড এবং মেয়েদের জিন্য নিরাপদ একটি হোস্টেল খাবার ও
-                সার্ভিস মাসাল্লাহ শুভ কামনা রইল
+                A very trusted and safe hostel for girls, food and service,
+                Mashallah, best wishes.
               </p>
             </div>
           </div>
@@ -268,8 +270,8 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                মেয়েদের জন্য পারফেক্ট একটা হোস্টেল,, পরিবেশ খুবই সুন্দর। খরচ ও
-                সাধ্যের মধ্যে,,, খাবার নিয়েও নিশ্চিন্ত।
+                A perfect hostel for girls,, the environment is very nice.
+                Within cost and affordability,, also about the food.
               </p>
             </div>
           </div>
@@ -330,8 +332,8 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                মেয়েদের জন্য একটা সৈভ প্লেস, সবধরনের সুজোক সুবিধা আছে, পরিবেশ
-                ওখুব সুন্দর
+                A friendly place for girls, has all kinds of facilities, the
+                environment is very nice.
               </p>
             </div>
           </div>
@@ -360,8 +362,8 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                সেকেন্ড হোমটা বলা হয় এমন একটা পরিবেশকে যেখানে থাকলে মনে হয় নিজের
-                পরিবারেই আছি। এটা এমনই একটা হোস্টেল। শুভকামনা সবসময়।
+                Project Second Home is an environment where I felt like I were
+                in my own family. This is one such hostel. Best wishes always.
               </p>
             </div>
           </div>
@@ -390,8 +392,8 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                মেয়েদের জন্য সেইফ place, হোস্টেল এর পরিবেশ এবং সার্ভিস খুবই
-                ভালো, অনেক শুভকামনা রইলো PSH এর জন্য
+                Safe place for girls, hostel environment and service are very
+                good, best wishes for PSH
               </p>
             </div>
           </div>
@@ -420,8 +422,8 @@ const Review = () => {
                 <img loading="lazy" src={commaIcon} alt="" />
               </div>
               <p className="pr-16">
-                মেয়েদের জন্য অনেক সেভ একটা প্লেস, তাদের সার্ভিস অনেক ভালো,
-                পরিবেশ সুন্দর এবং সকল সুযোগ সুবিধা রয়েছে।
+                A very safe place for girls, their service is very good, the
+                environment is beautiful and all the facilities are there.
               </p>
             </div>
           </div>
