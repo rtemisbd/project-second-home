@@ -185,14 +185,32 @@ const getAllTransactionFromDB = async (queries) => {
 
 // Function to get transaction by ID
 const getTransactionByIdFromDB = async (id) => {
-  if (id.length > 11) {
-    const result = await Transaction.findById(id);
-    return result;
-  } else {
-    const result = await Transaction.find({ userPhone: id });
-    return result;
-  }
+  const matchCondition = id.length > 11 ? { _id: id } : { userPhone: id };
+
+  const result = await Transaction.aggregate([
+    { $match: matchCondition }, 
+    {
+      $lookup: {
+        from: "orders", 
+        localField: "orderId",
+        foreignField: "_id",
+        as: "orderDetail",
+        pipeline: [
+          {
+            $project: {
+              _id: 0, 
+              bookingId: 1, // Only include bookingId
+            },
+          },
+        ],
+      },
+    },
+    
+  ]);
+
+  return result;
 };
+
 // Function to get transaction by OrderId
 const getTransactionByOrderIdFromDB = async (orderId) => {
   const result = await Transaction.find({ orderId });

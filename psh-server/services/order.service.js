@@ -419,8 +419,8 @@ const getOrderFromDB = async (queries) => {
 
 const getUserOrderFromDB = async (queries, phone) => {
   const { paymentStatus, bookingStatus } = queries;
-  const page = parseInt(queries?.page);
-  const size = parseInt(queries?.size);
+  const page = parseInt(queries?.page) || 1;
+  const size = parseInt(queries?.size) || 10;
 
   const matchStage = {};
   if (phone) {
