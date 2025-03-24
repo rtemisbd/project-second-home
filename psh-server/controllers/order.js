@@ -8,6 +8,8 @@ import { bookingSms } from "../SMS/BookingSms.js";
 import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
+import catchAsync from "../utils/catchAsync.js";
+import responseSend from "../utils/responseSend.js";
 
 export const createOrder = catchAsync2(async (req, res, next) => {
   // Booking Save to Database
@@ -165,9 +167,9 @@ export const getSingleOrder = async (req, res, next) => {
     next(err);
   }
 };
-export const getUserOrders = catchAsync2(async (req, res, next) => {
+export const getUserOrders = catchAsync(async (req, res, next) => {
   const { user: phone } = req.params;
-
+  
   const { result, totalCount } = await orderServices.getUserOrderFromDB(
     req.query,
     phone
@@ -175,7 +177,7 @@ export const getUserOrders = catchAsync2(async (req, res, next) => {
 
   const orders = result[0]?.paginatedResults || [];
 
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Orders retrieved successfully",

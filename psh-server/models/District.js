@@ -1,5 +1,8 @@
 import mongoose from "mongoose";
 
+import httpStatus from 'http-status'
+import AppError from "../helpers/errorHandler/AppError.js";
+
 const districtSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true }, 
 });
@@ -10,7 +13,10 @@ districtSchema.pre("save", async function (next) {
     const existingDistrict = await District.findOne({ name: this.name });
 
     if (existingDistrict) {
-      return next(new Error("This district already exists!")); 
+      throw new AppError(
+        httpStatus.NOT_FOUND,
+        'This district already exists!',
+      );
     }
 
     next();

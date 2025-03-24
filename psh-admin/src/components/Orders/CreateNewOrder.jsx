@@ -169,26 +169,6 @@ const CreateNewOrder = ({ category, id, user }) => {
     vatTax,
   ]);
 
-  // useEffect(() => {
-  //   if (user) {
-  //     setDataForBooking((prevData) => ({
-  //       ...prevData,
-  //       userId: user?._id || "",
-  //       fullName: user?.firstName || "",
-  //       phone: user?.phone || "",
-  //       address: user?.userAddress || "",
-  //       validityType: user?.validityType || "",
-  //       emergencyContactName: user?.emergencyContact?.contactName || "",
-  //       emergencyRelationC: user?.emergencyContact?.relation || "",
-  //       emergencyContact: user?.emergencyContact?.contactNumber || "",
-  //       arrivalTime: "09 AM To 10 AM",
-  //       branch: room?.branch?._id,
-  //       totalAmount,
-  //       payableAmount,
-  //     }));
-  //   }
-  // }, [user, payableAmount, room?.branch?._id, totalAmount]);
-
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setDataForBooking((prevData) => ({

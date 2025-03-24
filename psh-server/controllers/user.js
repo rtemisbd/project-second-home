@@ -7,6 +7,9 @@ import Otp from "../models/Otp.js";
 import nodemailer from "nodemailer";
 import { bookingSms } from "../SMS/BookingSms.js";
 import config from "../config/index.js";
+import catchAsync from "../utils/catchAsync.js";
+import { userServices } from "../services/user.service.js";
+import responseSend from "../utils/responseSend.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -446,15 +449,16 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-export const getUser = async (req, res, next) => {
-  try {
-    const user = await User.findById(req.params.id);
+export const getUser = catchAsync(async(req, res, next)=>{
+  const result = await userServices.getUserById(req.params.id);
 
-    res.status(200).json(user);
-  } catch (err) {
-    next(err);
-  }
-};
+  responseSend(res, {
+    statusCode : 200,
+    success : true,
+    message : "User has been retrieved successfully!",
+    data : result
+  })
+})
 
 export const getAdmin = async (req, res, next) => {
   try {

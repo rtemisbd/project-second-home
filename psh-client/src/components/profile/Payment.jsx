@@ -38,9 +38,6 @@ const Payment = () => {
     }
   }, [userOrder, user]);
 
-  // console.log(transactions);
-  // console.log(userOrder);
-
   return (
     <div className="md:p-0 sm:p-2">
       {/* <div className="md:hidden sm:block">
@@ -89,7 +86,7 @@ const Payment = () => {
                   <tr className="border " key={transaction._id}>
                     <td className="p-3 border">
                       <Typography className="font-normal">
-                        {transaction.orderId?.slice(19)}
+                        {transaction?.orderDetail[0]?.bookingId}
                       </Typography>
                     </td>
 

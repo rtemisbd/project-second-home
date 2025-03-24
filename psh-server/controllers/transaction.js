@@ -3,6 +3,8 @@ import OrderModel from "../models/Order.js";
 import catchAsync2 from "../shared/catchAsync2.js";
 import sendResponse from "../shared/sendResponse.js";
 import { transactionServices } from "../services/transaction.service.js";
+import catchAsync from "../utils/catchAsync.js";
+import responseSend from "../utils/responseSend.js";
 
 export const createTransaction = catchAsync2(async (req, res, next) => {
   const result = await transactionServices.createTransactionIntoDB(req.body);
@@ -40,12 +42,12 @@ export const getTransaction = catchAsync2(async (req, res, next) => {
 });
 
 // get single transaction
-export const getTransactionById = catchAsync2(async (req, res, next) => {
+export const getTransactionById = catchAsync(async (req, res, next) => {
   const result = await transactionServices.getTransactionByIdFromDB(
     req.params.id
   );
 
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Transaction retrieved successfully",

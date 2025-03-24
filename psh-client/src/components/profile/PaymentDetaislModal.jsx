@@ -34,7 +34,7 @@ const PaymentDetaislModal = ({
             <label htmlFor="" className="font-bold">
               Booking Id
             </label>
-            <p>{seeTransaction?.orderId?.slice(19)}</p>
+            <p>{seeTransaction?.orderDetail[0]?.bookingId}</p>
           </div>
           <div>
             {" "}

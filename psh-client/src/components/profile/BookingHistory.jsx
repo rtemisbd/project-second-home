@@ -10,6 +10,7 @@ import Pagination from "../pagination/Pagination";
 import { useSelector } from "react-redux";
 import { MdRefresh } from "react-icons/md";
 import BookingCard from "./BookingCard";
+import getHeader from "../../helpers/utils/getHeaders";
 
 const BookingHistory = () => {
   const { user } = useContext(AuthContext);
@@ -54,6 +55,7 @@ const BookingHistory = () => {
     ["fetchBookings"],
     async () => {
       try {
+        const headers = getHeader();
         const queryParams = new URLSearchParams({
           page,
           size,
@@ -65,6 +67,7 @@ const BookingHistory = () => {
           `${serverBaseUrl}/order/${user?.phone}?${queryParams.toString()}`,
           {
             method: "GET",
+            headers,
           }
         );
 
