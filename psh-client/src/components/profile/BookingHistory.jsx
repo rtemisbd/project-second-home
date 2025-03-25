@@ -1,5 +1,4 @@
 import React, { useContext, useEffect, useState } from "react";
-
 import { UserBooking } from "./UserBooking";
 import { CancelBooking } from "./CancelBooking";
 import MakePayment from "./MakePayment";
@@ -11,6 +10,8 @@ import { useSelector } from "react-redux";
 import { MdRefresh } from "react-icons/md";
 import BookingCard from "./BookingCard";
 import getHeader from "../../helpers/utils/getHeaders";
+
+import { decrypt } from "../../utilities/decryption";
 
 const BookingHistory = () => {
   const { user } = useContext(AuthContext);
@@ -76,8 +77,9 @@ const BookingHistory = () => {
         }
 
         const { data } = await response.json();
+        const decrypted = decrypt(data?.encryptedOrders);
 
-        setUserOrder(data?.orders);
+        setUserOrder(decrypted);
         setTotalCount(data?.totalCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
@@ -88,7 +90,6 @@ const BookingHistory = () => {
     }
   );
 
-  // // Re-fetch data whenever size changes
   useEffect(() => {
     refetch();
   }, [page, size, bookingStatus, paymentStatus]);
@@ -107,7 +108,6 @@ const BookingHistory = () => {
             value={paymentStatus}
           >
             <option>All</option>
-
             <option>Paid</option>
             <option>Unpaid</option>
           </select>
@@ -121,7 +121,6 @@ const BookingHistory = () => {
             value={bookingStatus}
           >
             <option value="All">All</option>
-
             <option value="Pending">Pending</option>
             <option value="Approved">Approved</option>
             <option value="Canceled">Canceled</option>
