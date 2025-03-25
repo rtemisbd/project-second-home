@@ -77,7 +77,10 @@ const BookingHistory = () => {
         }
 
         const { data } = await response.json();
+        console.log(data);
+
         const decrypted = decrypt(data?.encryptedOrders);
+        console.log({ decrypted });
 
         setUserOrder(decrypted);
         setTotalCount(data?.totalCount);

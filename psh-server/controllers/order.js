@@ -10,6 +10,7 @@ import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import responseSend from "../utils/responseSend.js";
+import { encrypt } from "../utils/encryption.js";
 
 export const createOrder = catchAsync2(async (req, res, next) => {
   // Booking Save to Database
@@ -169,19 +170,24 @@ export const getSingleOrder = async (req, res, next) => {
 };
 export const getUserOrders = catchAsync(async (req, res, next) => {
   const { user: phone } = req.params;
-  
-  const { result, totalCount } = await orderServices.getUserOrderFromDB(
+
+  const { result, totalCount } =await orderServices.getUserOrderFromDB(
     req.query,
     phone
   );
 
   const orders = result[0]?.paginatedResults || [];
 
+  
+const encryptedOrders = encrypt(orders);
+
+
   responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Orders retrieved successfully",
-    data: { orders, totalCount },
+    // data: { orders, totalCount },
+    data: { encryptedOrders, totalCount },
   });
 });
 

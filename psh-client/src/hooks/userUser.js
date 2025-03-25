@@ -20,6 +20,8 @@ const useUser = () => {
     const fetchUser = async () => {
       try {
         const { data } = await axios.get(`${serverBaseUrl}/users/${user._id}`, {headers});
+        console.log(data);
+        
         const decrypted = decrypt(data?.data);       
         setSingleUser(decrypted);
       } catch (error) {

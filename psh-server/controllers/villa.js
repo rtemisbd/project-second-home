@@ -24,8 +24,18 @@ const getAllVilla =  catchAsync(async(req, res, next)=>{
 })
 
 
+const getVillaById = catchAsync(async(req, res, next)=>{
+    
+    const result = await villaServices.getVillaByIdFromDB(req.params.id);
+    responseSend(res, {
+        statusCode : 200,
+        success : true,
+        data : result, message : "Villa retrieves successfully"
+    })
+})
+
 
 
 export const villaControllers = {
-    createVilla, getAllVilla
+    createVilla, getAllVilla, getVillaById
 }

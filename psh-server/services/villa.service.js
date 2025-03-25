@@ -37,7 +37,15 @@ const getAllVillaFromDB = async()=>{
     return result ;
 }
 
+
+const getVillaByIdFromDB = async(id) =>{
+    const result = await Villa.findById({_id : id});
+
+    return result;
+}
+
 export const villaServices = {
     createVillaIntoDB,
-    getAllVillaFromDB
+    getAllVillaFromDB,
+    getVillaByIdFromDB
 }
