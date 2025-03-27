@@ -10,7 +10,7 @@ import config from "../config/index.js";
 import catchAsync from "../utils/catchAsync.js";
 import { userServices } from "../services/user.service.js";
 import responseSend from "../utils/responseSend.js";
-import { encrypt } from "../utils/encryption.js";
+// import { encrypt } from "../utils/encryption.js";
 
 export const createUser = async (req, res) => {
   try {
@@ -452,13 +452,13 @@ export const deleteUser = async (req, res, next) => {
 
 export const getUser = catchAsync(async(req, res, next)=>{
   const result = await userServices.getUserById(req.params.id);
-  const encrypted = encrypt(result)
+  // const encrypted = encrypt(result)
 
   responseSend(res, {
     statusCode : 200,
     success : true,
     message : "User has been retrieved successfully!",
-    data : encrypted
+    data : result
   })
 })
 
