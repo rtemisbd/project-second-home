@@ -75,17 +75,12 @@ const BookingHistory = () => {
         if (!response.ok) {
           throw new Error("Network Error");
         }
-
         const { data } = await response.json();
-        console.log(data);
-
         const decrypted = decrypt(data?.encryptedOrders);
-        console.log({ decrypted });
-
         setUserOrder(decrypted);
         setTotalCount(data?.totalCount);
       } catch (error) {
-        // console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error);
       }
     },
     {
