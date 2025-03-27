@@ -5,6 +5,8 @@ import catchAsync2 from "../shared/catchAsync2.js";
 import { propertyServices } from "../services/property.service.js";
 import { seatServices } from "../services/seat.service.js";
 import sendResponse from "../shared/sendResponse.js";
+import catchAsync from "../utils/catchAsync.js";
+import responseSend from "../utils/responseSend.js";
 
 export const CreatePropertys = async (req, res, next) => {
   try {
@@ -243,13 +245,13 @@ export const deletePropertys = async (req, res, next) => {
   }
 };
 
-export const updatePropertys = catchAsync2(async (req, res, next) => {
+export const updatePropertys = catchAsync(async (req, res, next) => {
   const result = await propertyServices.updatePropertyById(
     req.params.id,
     req.body
   );
 
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Properties updated successfully",

@@ -1,21 +1,22 @@
 import { seatServices } from "../services/seat.service.js";
-import catchAsync2 from "../shared/catchAsync2.js";
-import sendResponse from "../shared/sendResponse.js";
+import catchAsync from "../utils/catchAsync.js";
 
-export const createSeat = catchAsync2(async (req, res, next) => {
+import responseSend from "../utils/responseSend.js";
+
+export const createSeat = catchAsync(async (req, res, next) => {
   const result = await seatServices.createSeatIntoDB(req.body);
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Seats uploaded successfully",
   });
 });
 
-export const getAllSeats = catchAsync2(async (req, res, next) => {
+export const getAllSeats = catchAsync(async (req, res, next) => {
   const result = await seatServices.getAllSeatsFromDB(req.query);
 
   //   res.status(200).json(result);
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Seats retrieved successfully",
@@ -23,12 +24,12 @@ export const getAllSeats = catchAsync2(async (req, res, next) => {
   });
 });
 
-export const getSeatById = catchAsync2(async (req, res, next) => {
+export const getSeatById = catchAsync(async (req, res, next) => {
   const { seat, rentRooms } = await seatServices.getSeatByIdFromDB(
     req.params.id
   );
 
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Seats retrieved successfully",
@@ -36,10 +37,10 @@ export const getSeatById = catchAsync2(async (req, res, next) => {
   });
 });
 
-export const updateSingleSeat = catchAsync2(async (req, res, next) => {
+export const updateSingleSeat = catchAsync(async (req, res, next) => {
   const result = await seatServices.updateSeatById(req.params.id, req.body);
 
-  sendResponse(res, {
+  responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Seat updated successfully",

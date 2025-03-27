@@ -4,14 +4,12 @@ import { AuthContext } from "../contexts/UserProvider";
 import { serverBaseUrl } from "../serverApi/baseUrl";
 import axios from "axios";
 import getHeader from "../helpers/utils/getHeaders";
-
-
+import { decrypt } from "../utilities/decryption";
 
 const useUser = () => {
   const [singleUser, setSingleUser] = useState(null);
   const { user } = useContext(AuthContext);
   const headers = getHeader()
-
 
   useEffect(() => {
     if (!user?._id || !headers) return; 
@@ -19,8 +17,8 @@ const useUser = () => {
     const fetchUser = async () => {
       try {
         const { data } = await axios.get(`${serverBaseUrl}/users/${user._id}`, {headers});
-
-        setSingleUser(data?.data);
+        const decrypted = decrypt(data?.data);       
+        setSingleUser(decrypted);
       } catch (error) {
         console.error("Error fetching user:", error);
       }

@@ -18,7 +18,6 @@ districtSchema.pre("save", async function (next) {
         'This district already exists!',
       );
     }
-
     next();
   } catch (error) {
     next(error); 

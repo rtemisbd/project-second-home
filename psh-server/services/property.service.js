@@ -228,7 +228,7 @@ const updatePropertyById = async (propertyId, payload) => {
   if (payload.isPublished) {
     await Property.findByIdAndUpdate(
       propertyId,
-      { $set: { isPublished: req.body.isPublished } },
+      { $set: { isPublished: payload.isPublished } },
       { new: true }
     );
   }

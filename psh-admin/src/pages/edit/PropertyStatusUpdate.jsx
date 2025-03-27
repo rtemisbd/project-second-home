@@ -21,70 +21,9 @@ const PropertyStatusUpdate = ({
 
   const MySwal = withReactContent(Swal);
 
-  // useEffect(() => {
-  //   if (category === "Private Room") {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await fetch(`${baseUrl}/api/property/${id}`);
-
-  //         const { property } = await response.json();
-  //         setData(property);
-  //       } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //       }
-  //     };
-
-  //     fetchData();
-  //   }
-  //   if (category === "Shared Room") {
-  //     const fetchData = async () => {
-  //       try {
-  //         const response = await fetch(`${baseUrl}/api/seats/${id}`);
-  //         const { data } = await response.json();
-  //         setSeat(data.seat);
-
-  //         if (data?.seat) {
-  //           try {
-  //             const responseForRoom = await fetch(
-  //               `${baseUrl}/api/property/${data?.seat?.roomId}`
-  //             );
-  //             const { property } = await responseForRoom.json();
-  //             setData(property);
-  //           } catch (error) {
-  //             console.error("Error fetching data:", error);
-  //           }
-  //         }
-  //       } catch (error) {
-  //         console.error("Error fetching data:", error);
-  //       }
-  //     };
-  //     fetchData();
-  //   }
-  // }, [id, category]);
-  // console.log({ data, seat });
-
-  // const { _id, name, seatNumber, desc, status } = data;
-
-  // const [user, setUser] = useState({ data });
-  // const [isPublished, setIsPublished] = useState("Unpublished");
-
-  // const handleOnBlur = (e) => {
-  //   const field = e.target.name;
-  //   const value = e.target.value;
-  //   const newInfo = { ...user };
-  //   if (field === "isPublished") {
-  //     newInfo[field] = value;
-  //   }
-  //   newInfo[field] = value;
-  //   setUser(newInfo);
-  // };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // const newPost = {
-    //   ...user,
-    // };
     try {
       if (category === "Private Room") {
         await axios.patch(`${baseUrl}/api/property/${id}`, {
