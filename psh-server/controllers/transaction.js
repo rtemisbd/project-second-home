@@ -5,7 +5,7 @@ import sendResponse from "../shared/sendResponse.js";
 import { transactionServices } from "../services/transaction.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import responseSend from "../utils/responseSend.js";
-import { encrypt } from "../utils/encryption.js";
+// import { encrypt } from "../utils/encryption.js";
 
 export const createTransaction = catchAsync2(async (req, res, next) => {
   const result = await transactionServices.createTransactionIntoDB(req.body);
@@ -49,13 +49,13 @@ export const getTransactionById = catchAsync(async (req, res, next) => {
     req.params.id
   );
 
-  const encryptedData = encrypt(result)
+  // const encryptedData = encrypt(result)
 
   responseSend(res, {
     statusCode: 200,
     success: true,
     message: "Transaction retrieved successfully",
-    data: encryptedData,
+    data: result,
   });
 });
 // get transaction by orderId
