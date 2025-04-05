@@ -1,6 +1,5 @@
 import mongoose from "mongoose";
 
-import httpStatus from 'http-status'
 import AppError from "../helpers/errorHandler/AppError.js";
 
 const districtSchema = new mongoose.Schema({
@@ -14,7 +13,7 @@ districtSchema.pre("save", async function (next) {
 
     if (existingDistrict) {
       throw new AppError(
-        httpStatus.NOT_FOUND,
+        500,
         'This district already exists!',
       );
     }
