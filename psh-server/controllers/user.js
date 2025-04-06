@@ -461,12 +461,12 @@ export const deleteUser = async (req, res, next) => {
 };
 
 export const getUser = catchAsync(async(req, res, next)=>{
+  
   if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
     return res.status(400).json({ message: "Invalid user ID" });
   }
   
   const result = await userServices.getUserById(req.params.id);
-  // const encrypted = encrypt(result)
 
   responseSend(res, {
     statusCode : 200,
