@@ -15,8 +15,8 @@ const PropertyStatusUpdate = ({
   refetch,
 }) => {
   const { data3 } = UseFetch("facilityCategory");
-  const [data, setData] = useState(null);
-  const [seat, setSeat] = useState(null);
+  // const [data, setData] = useState(null);
+  // const [seat, setSeat] = useState(null);
   const [isPublished, setIsPublished] = useState("Unpublished");
 
   const MySwal = withReactContent(Swal);
