@@ -11,7 +11,7 @@ import { MdRefresh } from "react-icons/md";
 import BookingCard from "./BookingCard";
 import getHeader from "../../helpers/utils/getHeaders";
 
-// import { decrypt } from "../../utilities/decryption";
+
 
 const BookingHistory = () => {
   const { user } = useContext(AuthContext);
@@ -76,8 +76,7 @@ const BookingHistory = () => {
           throw new Error("Network Error");
         }
         const { data } = await response.json();
-        // const decrypted = decrypt(data?.encryptedOrders);
-        // setUserOrder(decrypted);
+
         setUserOrder(data?.orders);
         setTotalCount(data?.totalCount);
       } catch (error) {
