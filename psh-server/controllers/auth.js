@@ -1,5 +1,5 @@
 import UserModel from "../models/User.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
 export const registerUser = async (req, res) => {
@@ -18,7 +18,7 @@ export const registerUser = async (req, res) => {
 
     const token = jwt.sign(
       {
-        username: user?.username,
+        username: user?.firstName,
         id: user._id,
       },
       process.env.JWT_SECRET,
@@ -44,7 +44,7 @@ export const loginUser = async (req, res) => {
       } else {
         const token = jwt.sign(
           {
-            username: user.username,
+            username: user.firstName,
             id: user._id,
           },
           process.env.JWT_SECRET,

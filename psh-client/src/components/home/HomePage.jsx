@@ -90,10 +90,6 @@ export default function HomePage() {
     }
   }, [data]);
 
-  if (error) {
-    return <div>Error occurred: {error.message}</div>; // Placeholder for error state
-  }
-
   useEffect(() => {
     refetch();
     getRandomData();
@@ -119,7 +115,13 @@ export default function HomePage() {
       setWithSharedRoom(true);
     }
   };
-
+  if (error) {
+    return (
+      <div className="text-xl text-red-600 pb-4">
+        Error occurred: {error.message}
+      </div>
+    ); // Placeholder for error state
+  }
   return (
     <div className="category-item">
       <div className="text-left mt-3">

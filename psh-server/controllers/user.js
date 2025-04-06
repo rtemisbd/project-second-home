@@ -1,5 +1,5 @@
 import User from "../models/User.js";
-import bcrypt from "bcrypt";
+import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import jwt from "jsonwebtoken";
 import Branch from "../models/Branch.js";
@@ -10,7 +10,7 @@ import config from "../config/index.js";
 import catchAsync from "../utils/catchAsync.js";
 import { userServices } from "../services/user.service.js";
 import responseSend from "../utils/responseSend.js";
-// import { encrypt } from "../utils/encryption.js";
+
 
 export const createUser = async (req, res) => {
   try {

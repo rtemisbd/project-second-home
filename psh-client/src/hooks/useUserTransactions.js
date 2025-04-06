@@ -5,7 +5,7 @@ import { AuthContext } from "../contexts/UserProvider";
 import { serverBaseUrl } from "../serverApi/baseUrl";
 import axios from "axios";
 import getHeader from "../helpers/utils/getHeaders";
-// import { decrypt } from "../utilities/decryption";
+
 
 const useUserTransactions = () => {
   const [transactions, setTransaction] = useState([]);
@@ -14,8 +14,7 @@ const useUserTransactions = () => {
 
   const { isLoading, refetch } = useQuery([user?.phone], async() =>{
     const {data} = await axios.get(`${serverBaseUrl}/transaction/${user?.phone}`, {headers})
-    // const decrypted =  decrypt(data?.data)
-    // setTransaction(decrypted)
+
     setTransaction(data?.data)
   })
   return [transactions, refetch];
