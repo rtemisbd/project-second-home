@@ -452,12 +452,8 @@ export const deleteUser = async (req, res, next) => {
 };
 
 export const getUser = catchAsync(async(req, res, next)=>{
-  
- 
-  
-  console.log(req.params.id);
+
   const result = await userServices.getUserById(req.params.id);
-  
 
   responseSend(res, {
     statusCode : 200,
