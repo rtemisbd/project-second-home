@@ -11,7 +11,6 @@ const useUser = () => {
   const { user } = useContext(AuthContext);
   // const headers = getHeader()
 
-// console.log(headers);
 
   useEffect(() => {
     if (!user?._id) return; 
@@ -21,7 +20,7 @@ const useUser = () => {
 
         const { data } = await axios.get(`${serverBaseUrl}/users/${user?._id}`);
         // const { data } = await axios.get(`${serverBaseUrl}/users/${user?._id}`, {headers});
-    
+        
         setSingleUser(data?.data);
       } catch (error) {
         // console.error("Error fetching user:", error);
@@ -29,7 +28,7 @@ const useUser = () => {
     };
 
     fetchUser();
-  }, []); 
+  }, [user?._id]); 
 
   return [singleUser, setSingleUser]; 
 };
