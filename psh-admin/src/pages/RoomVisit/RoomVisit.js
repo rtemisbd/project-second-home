@@ -10,6 +10,7 @@ import { useQuery } from "react-query";
 
 import { ToastContainer } from "react-toastify";
 import { AuthContext } from "../../contexts/UserProvider";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const RoomVisit = () => {
   const { user } = useContext(AuthContext);
@@ -17,7 +18,7 @@ const RoomVisit = () => {
   const MySwal = withReactContent(Swal);
   const [data, setData] = useState([]);
   const { isLoading, refetch } = useQuery([], () =>
-    fetch(`https://api.psh.com.bd/api/requestVisit`, {
+    fetch(`${baseUrl}/api/requestVisit`, {
       method: "GET",
     })
       .then((res) => res.json())

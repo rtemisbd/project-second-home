@@ -4,10 +4,10 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite --port 3001",
+    "dev": "vite",
     "build": "vite build",
     "lint": "eslint src --ext js",
-    "start": "vite preview --port 3001"
+    "preview": "vite preview"
   },
   "dependencies": {
     "@heroicons/react": "^2.0.18",
