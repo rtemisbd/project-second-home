@@ -65,7 +65,7 @@ const PersonalInfo = () => {
     fetch(`${serverBaseUrl}/users/${user?._id}`)
       .then((res) => res.json())
       .then((data) => {
-        setSingleUser(data);
+        setSingleUser(data?.data);
         // setValidityType(data?.validityType ? data?.validityType : "Select One");
       });
   }, [user?._id]);
