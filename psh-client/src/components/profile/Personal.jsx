@@ -17,13 +17,13 @@ function Personal() {
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 border-b pb-3 ">
           <span>{singleUser?._id}</span>
         </div> */}
-        <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
-        <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3">
+        {/* <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div> */}
+        {/* <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3">
           <span>Name</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2  border-b pb-3 ">
           <span>{singleUser?.firstName}</span>
-        </div>
+        </div> */}
         <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>User Name</span>
@@ -74,8 +74,8 @@ function Personal() {
             {singleUser?.nationality ? singleUser?.nationality : "Empty"}
           </span>
         </div>
-        {/* <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div> */}
-        {/* <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
+        {/* <div className="col-span-1 border-b pb-3 sm:hidden xs:hidden xl:block lg:block md:block"></div>
+        <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2 font-medium border-b pb-3 ">
           <span>Gender</span>
         </div>
         <div className="mt-6 xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2 xs:col-span-2  border-b pb-3 ">

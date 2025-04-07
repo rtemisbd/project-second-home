@@ -1,131 +1,26 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
-import axios from "axios";
 import SingleCard from "./SingleCard";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
-import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { useQuery } from "react-query";
-import "./styles/Recommended.css";
-import "./styles/SingleCard.css";
+import VillaCard from "./VillaCard";
 import { Splide, SplideSlide } from "@splidejs/react-splide";
 import "@splidejs/react-splide/css";
-import "@splidejs/react-splide/css/skyblue";
-import "@splidejs/react-splide/css/sea-green";
-import "@splidejs/react-splide/css/core";
 import { propertySlider } from "../../helpers/utils/projectSlider";
-import useSeat from "../../hooks/useSeat";
-import useVilla from "../../hooks/useVilla";
-import VillaCard from "./VillaCard";
-// import SharedRoom from "./SharedRoom";
+import "./styles/Recommended.css";
+import "./styles/SingleCard.css";
 
-export default function HomePage() {
-  const [data, setData] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [Featured, setFeatured] = useState("yes");
-  const [activeTab, setActiveTab] = useState("All");
-  const [randomIndex, setRandomIndex] = useState([]);
-  const [withSharedRoom, setWithSharedRoom] = useState(true);
-  const [showVilla, setShowVilla] = useState(false);
-  // get all seats
-  const seats = useSeat();
-  const villas = useVilla();
-
-  // Get Properties
-  const { refetch, error } = useQuery(["propertyList"], async () => {
-    try {
-      const queryParams = new URLSearchParams({
-        Featured,
-        category: activeTab,
-        isPublished: "Published",
-        fromClient: true,
-        withSharedRoom,
-      });
-      const response = await axios.get(
-        `${serverBaseUrl}/property?${queryParams.toString()}`
-      );
-
-      setData(response?.data?.properties);
-      setRandomIndex(data);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  });
-
-  // Get categories
-  const { refetch: refetchCategories } = useQuery(["categories"], async () => {
-    try {
-      const response = await axios.get(`${serverBaseUrl}/category`);
-      setCategories(response?.data);
-    } catch (error) {
-      console.error(error);
-      throw error;
-    }
-  });
-
-  // Show Random Data
-  const getRandomData = () => {
-    const shuffledData = [...data];
-
-    for (let i = shuffledData?.length - 1; i > 0; i--) {
-      const random = Math.floor(Math.random() * (i + 1));
-      [shuffledData[i], shuffledData[random]] = [
-        shuffledData[random],
-        shuffledData[i],
-      ];
-    }
-
-    setRandomIndex([...shuffledData]);
-  };
-
-  useEffect(() => {
-    if (activeTab === "") {
-      setData(randomIndex);
-    }
-  }, [activeTab]);
-
-  useEffect(() => {
-    if (data?.length > 0) {
-      getRandomData();
-    }
-  }, [data]);
-
-  useEffect(() => {
-    refetch();
-    getRandomData();
-  }, [activeTab, Featured]);
-
-  const handleTabChange = async (categoryName) => {
-    setFeatured("");
-    setActiveTab(categoryName);
-
-    if (categoryName === "Villa") {
-      // setData(villas);
-      // setRandomIndex(() => villas);
-      setData([]);
-      setRandomIndex(() => []);
-      setShowVilla(true);
-      return;
-    }
-
-    if (categoryName === "Shared Room") {
-      setRandomIndex(seats);
-      setWithSharedRoom(false);
-    } else {
-      setWithSharedRoom(true);
-    }
-  };
-  if (error) {
-    return (
-      <div className="text-xl text-red-600 pb-4">
-        Error occurred: {error.message}
-      </div>
-    ); // Placeholder for error state
-  }
+export default function HomePage({
+  data,
+  activeTab,
+  categories,
+  handleTabChange,
+  villas,
+  showVilla,
+}) {
   return (
     <div className="category-item">
       <div className="text-left mt-3">
-        <Tabs value={activeTab} className=" ">
+        <Tabs value={activeTab}>
           <TabsHeader
             className="rounded-none bg-transparent p-0 md:gap-x-5 sm:gap-x-4 mb-2"
             indicatorProps={{
@@ -135,25 +30,15 @@ export default function HomePage() {
           >
             <Tab
               value="All"
-              onClick={() => {
-                getRandomData();
-                setFeatured("yes");
-                setActiveTab("All");
-                setWithSharedRoom(true);
-              }}
+              onClick={() => handleTabChange("All")}
               className="w-fit md:text-[20px] sm:text-[14px] category-type z-0 text-[#00bbb4]"
             >
               Featured
             </Tab>
             {categories?.map((category, index) => (
               <Tab
-                value={index}
+                value={category.name}
                 key={index}
-                // onClick={() => {
-                //   setFeatured("");
-                //   setActiveTab(category.name);
-                //   setWithSharedRoom(false);
-                // }}
                 onClick={() => handleTabChange(category.name)}
                 className="w-fit md:text-[20px] sm:text-[12px] category-type px-0 z-0"
               >
@@ -165,17 +50,17 @@ export default function HomePage() {
       </div>
 
       {/* Cards */}
-      {randomIndex?.length ? (
-        <Splide options={propertySlider(randomIndex)}>
-          {randomIndex?.map((item) => (
+      {data?.length ? (
+        <Splide options={propertySlider(data)}>
+          {data.map((item) => (
             <SplideSlide key={item?._id}>
               <SingleCard item={item} />
             </SplideSlide>
           ))}
         </Splide>
-      ) : villas.length && showVilla ? (
+      ) : villas?.length && showVilla ? (
         <Splide options={propertySlider(villas)}>
-          {villas?.map((villa) => (
+          {villas.map((villa) => (
             <SplideSlide key={villa?._id}>
               <VillaCard villa={villa} />
             </SplideSlide>

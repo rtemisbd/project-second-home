@@ -54,18 +54,22 @@ const PartnerModal = ({ handleOpen }) => {
       };
 
       await axios.post(`${serverBaseUrl}/leaseproperty`, product);
-      dispatch(placeLoadingShow(false));
-      toast.success("Thank you, we will contact you very soon");
+      toast.success("Thank you, we will contact you very soon.");
       handleOpen(null);
       formRef.current.reset();
     } catch (err) {
-      dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");
       // console.log(err);
+    } finally {
+      dispatch(placeLoadingShow(false));
     }
   };
   return (
     <div className="sm:mb-32 md:mb-5 custom-container">
+      <Toaster
+        containerStyle={{ top: 200 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <div>
         {main.length <= 0 ? (
           <div>

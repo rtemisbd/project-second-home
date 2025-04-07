@@ -38,14 +38,10 @@ const SeeLeasePropropery = ({ data }) => {
                   <p>{formattedDate}</p>
                 </div>
                 <div className="col-lg-3">
-                  <label htmlFor="">First Name</label>
-                  <p>{data?.firstName}</p>
+                  <label htmlFor="">Full Name</label>
+                  <p>{data?.fullname}</p>
                 </div>
-                <div className="col-lg-3">
-                  {" "}
-                  <label htmlFor="">Last Name</label>
-                  <p>{data?.lastName}</p>
-                </div>
+
                 <div className="col-lg-3">
                   <label htmlFor="">Phone Number</label>
                   <p>{data?.phoneNumber}</p>

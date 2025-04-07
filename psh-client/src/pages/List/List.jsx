@@ -238,7 +238,8 @@ function List() {
   return (
     <div className="custom-container">
       <div className=" mt-3 ml-2 flex justify-between items-center">
-        <p>{data?.length} Results Found</p>
+        {/* <p>{data?.length} Results Found</p> */}
+        <p></p>
         <p className="">
           <span className="hidden md:inline"> Search Number </span>
           <select

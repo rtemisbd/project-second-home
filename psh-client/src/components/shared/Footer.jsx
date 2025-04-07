@@ -243,7 +243,7 @@ const Footer = () => {
                     </p>
                   </div>
                 </li>
-                <li className="sm:mt-5 md:mt-0 md:flex sm:hidden">
+                <li className="sm:mt-5 md:mt-0 md:flex items-center sm:hidden">
                   <div>
                     <div className="flex gap-x-3 items-center justify-center">
                       <a
@@ -280,7 +280,7 @@ const Footer = () => {
                           <p className="mt-2 text-[14px]"> Login / Signup</p>
                         </Link>
                       </div>
-                      <div className="mt-6 ">
+                      {/* <div className="mt-6 ">
                         <button className="footer_btn ">
                           <img
                             src="/assets/img/appstore.svg.png"
@@ -297,7 +297,7 @@ const Footer = () => {
                             Download PSH
                           </span>
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </li>
@@ -343,7 +343,7 @@ const Footer = () => {
                       <p className="mt-2 text-[14px]"> Login / Signup</p>
                     </Link>
                   </div>
-                  <div className="mt-6 ">
+                  {/* <div className="mt-6 ">
                     <button className="footer_btn ">
                       <img
                         src="/assets/img/appstore.svg.png"
@@ -360,7 +360,7 @@ const Footer = () => {
                         Download PSH
                       </span>
                     </button>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>

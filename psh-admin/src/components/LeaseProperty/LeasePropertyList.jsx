@@ -10,6 +10,7 @@ import BootstrapTable from "react-bootstrap-table-next";
 
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import SeeLeasePropropery from "./SeeLeasePropropery";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const LeasePropertyList = () => {
   const MySwal = withReactContent(Swal);
@@ -31,7 +32,7 @@ const LeasePropertyList = () => {
     },
 
     {
-      dataField: `firstName`,
+      dataField: `fullname`,
       text: "User Name",
     },
 
@@ -132,12 +133,9 @@ const LeasePropertyList = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(
-          `https://api.psh.com.bd/api/leaseproperty`,
-          {
-            mode: "cors",
-          }
-        );
+        const { data } = await axios.get(`${baseUrl}/api/leaseproperty`, {
+          mode: "cors",
+        });
         setData(data);
       } catch (error) {
         console.log(error);
@@ -150,7 +148,7 @@ const LeasePropertyList = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/leaseProperty/${id}`;
+      const url = `${baseUrl}/api/leaseProperty/${id}`;
       fetch(url, {
         method: "DELETE",
       })
