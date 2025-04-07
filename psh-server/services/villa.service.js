@@ -39,7 +39,7 @@ const getAllVillaFromDB = async()=>{
 
 
 const getVillaByIdFromDB = async(id) =>{
-    const result = await Villa.findById({_id : id});
+    const result = await Villa.findOne({_id : id});
 
     return result;
 }
