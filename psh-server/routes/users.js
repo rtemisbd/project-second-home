@@ -45,7 +45,7 @@ router.delete("/:id", deleteUser);
 
 // router.get("/:id", verifyUser, getUser);
 router.get("/", getUsers);
-router.get("/:id",auth(ENUM_USER_ROLE.USER),  getUser);
+router.get("/:id",auth(ENUM_USER_ROLE.USER, ENUM_USER_ROLE.SUPER_ADMIN, ENUM_USER_ROLE.SUB_ADMIN_1, ENUM_USER_ROLE.SUB_ADMIN_2),  getUser);
 router.get("/jwt", getJWT);
 router.get("/admin/:email", getAdmin);
 

@@ -70,7 +70,6 @@ const UserSchema = new mongoose.Schema(
     gender: {
       type: String,
       enum: ["Male", "Female", "Other"],
-      default: "Other",
     },
     nationalId: {
       type: Number,

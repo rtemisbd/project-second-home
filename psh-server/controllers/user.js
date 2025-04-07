@@ -226,9 +226,6 @@ export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
     // Status Update
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
 
     if (req?.body?.userStatus) {
       await User.updateOne(
@@ -427,9 +424,6 @@ export const verifyOtp = async (req, res) => {
 export const resetPassword = async (req, res) => {
   try {
     const { id } = req.params;
-    if (!mongoose.Types.ObjectId.isValid(id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
     const { newPassword } = req.body;
     const hashedPassword = await bcrypt.hash(
       newPassword,
@@ -450,9 +444,6 @@ export const resetPassword = async (req, res) => {
 
 export const deleteUser = async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
     await User.findByIdAndDelete(req.params.id);
     res.status(200).json("deleted successfully");
   } catch (err) {
@@ -462,11 +453,11 @@ export const deleteUser = async (req, res, next) => {
 
 export const getUser = catchAsync(async(req, res, next)=>{
   
-  if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-    return res.status(400).json({ message: "Invalid user ID" });
-  }
+ 
   
+  console.log(req.params.id);
   const result = await userServices.getUserById(req.params.id);
+  
 
   responseSend(res, {
     statusCode : 200,
@@ -570,10 +561,6 @@ export const getJWT = async (req, res, next) => {
 //update admin user
 export const updateUserAdmin = async (req, res, next) => {
   try {
-    if (!mongoose.Types.ObjectId.isValid(req.params.id)) {
-      return res.status(400).json({ message: "Invalid user ID" });
-    }
-    
     const banner = await User.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
