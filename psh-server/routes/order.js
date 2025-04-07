@@ -33,7 +33,7 @@ router.get(
   getOrder
 );
 // router.get("/", getOrder);
-router.get("/:user",auth(ENUM_USER_ROLE.USER), getUserOrders);
+router.get("/:user", getUserOrders);
 // router.route("/:user").get(getMyBooking);
 router.get("/:id", getSingleOrder);
 

@@ -12,7 +12,8 @@ const BookNow = () => {
 
   useEffect(() => {
     if (userOrder) {
-      const lastOrder = userOrder[userOrder?.length - 1];
+      const lastOrder =
+        userOrder?.data?.orders[userOrder?.data?.orders.length - 1];
       setEndOrder(lastOrder);
     }
   }, [userOrder, user]);
@@ -27,6 +28,9 @@ const BookNow = () => {
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [pathname]);
+
+  console.log(endOrder);
+
   return (
     <div className=" custom-container  py-20 text-black sm:p-10">
       {/* Personal Info */}
