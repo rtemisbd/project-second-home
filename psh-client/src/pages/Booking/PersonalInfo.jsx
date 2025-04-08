@@ -549,7 +549,7 @@ const PersonalInfo = () => {
                     >
                       <i
                         className="fa-solid fa-calendar-days location-icon"
-                        style={{ color: "#00bbb4", marginTop: -3 }}
+                        style={{ color: "#00bbb4", marginTop: -10 }}
                       ></i>
                       <input
                         className="ps-7 w-36"
@@ -568,7 +568,7 @@ const PersonalInfo = () => {
                     >
                       <i
                         className="fa-solid fa-calendar-days location-icon"
-                        style={{ color: "#00bbb4", marginTop: -3 }}
+                        style={{ color: "#00bbb4", marginTop: -10 }}
                       ></i>
                       <input
                         className="ps-7 w-36"

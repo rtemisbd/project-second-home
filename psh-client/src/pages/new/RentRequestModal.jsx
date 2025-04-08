@@ -44,13 +44,13 @@ const RentRequestModal = ({ handleOpen }) => {
 
       await axios.post(`${serverBaseUrl}/requestRent`, product);
       dispatch(placeLoadingShow(false));
-      toast.success("Thank you, we will contact you very soon");
-      handleOpen(null);
+      // toast.success("Thank you, we will contact you very soon");
+      await handleOpen("success");
       // formRef.current.reset();
     } catch (err) {
       dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");
-      console.log(err);
+      // console.log(err);
     }
   };
   return (
@@ -58,6 +58,10 @@ const RentRequestModal = ({ handleOpen }) => {
       {/* <h3 className="md:text-[32px] sm:text-[22px] font-bold whitespace-normal">
         Tell us your needs
       </h3> */}
+      <Toaster
+        containerStyle={{ top: 200 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <div>
         {main.length <= 0 ? (
           <>

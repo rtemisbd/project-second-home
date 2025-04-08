@@ -12,12 +12,13 @@ import { useQuery } from "react-query";
 
 import { ToastContainer } from "react-toastify";
 import SeeRoomRentDetails from "./SeeRoomRentDetails";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const RoomRent = () => {
   const MySwal = withReactContent(Swal);
   const [data, setData] = useState([]);
   const { isLoading, refetch } = useQuery([], () =>
-    fetch(`https://api.psh.com.bd/api/requestRent`, {
+    fetch(`${baseUrl}/api/requestRent`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -28,12 +29,12 @@ const RoomRent = () => {
 
   const columns = [
     {
-      text: <span>FirstName</span>,
+      text: <span>Full Name</span>,
       formatter: (cellContent, row, index) => {
         return (
           <>
             {" "}
-            <p>{row?.firstName}</p>
+            <p>{row?.fullname}</p>
           </>
         );
       },
@@ -198,7 +199,7 @@ const RoomRent = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/requestRent/${id}`;
+      const url = `${baseUrl}/api/requestRent/${id}`;
       fetch(url, {
         method: "DELETE",
       })

@@ -54,14 +54,14 @@ const PartnerModal = ({ handleOpen }) => {
       };
 
       await axios.post(`${serverBaseUrl}/leaseproperty`, product);
-      toast.success("Thank you, we will contact you very soon.");
-      handleOpen(null);
-      formRef.current.reset();
+      // toast.success("Thank you, we will contact you very soon.");
+      await formRef.current.reset();
+      dispatch(placeLoadingShow(false));
+      await handleOpen("success");
     } catch (err) {
       toast.error("Something is wrong");
-      // console.log(err);
-    } finally {
       dispatch(placeLoadingShow(false));
+      // console.log(err);
     }
   };
   return (
