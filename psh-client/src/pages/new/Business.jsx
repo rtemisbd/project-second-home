@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
-
+import toast, { Toaster } from "react-hot-toast";
 import LeftArrow from "../../assets/img/left-arrow.svg";
 import RightArrow from "../../assets/img/right-arrow.svg";
 import partnerImg from "../../assets/img/corporate-banner.png";
@@ -19,6 +19,14 @@ const Business = () => {
   const [size, setSize] = useState(null);
   const handleOpen = (value) => setSize(value);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
+
+  useEffect(() => {
+    if (size === "success") {
+      toast.success("Thank you, we will contact you very soon.");
+      setSize(null);
+    }
+  }, [size]);
+
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
     <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
@@ -90,6 +98,10 @@ const Business = () => {
   };
   return (
     <div>
+      <Toaster
+        containerStyle={{ top: 200 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <div className="hidden md:block mt-[-20px]">
         <div className="md:grid md:grid-cols-12 md:gap-x-8 sm:gap-x-0 gap-y-16 mt-5 banner-left">
           <div className="flex flex-col space-y-3 sm:col-span-12 md:col-span-6 ">

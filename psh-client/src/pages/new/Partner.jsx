@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import { Dialog, DialogHeader, DialogBody } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import Slider from "react-slick";
@@ -15,13 +15,25 @@ import PartnerModal from "./PartnerModal";
 import OtherOpportunities from "./OtherOpportunities";
 
 import "./partner.css";
+import toast, { Toaster } from "react-hot-toast";
 
 const Partner = () => {
-  const [size, setSize] = React.useState(null);
+  const [size, setSize] = useState(null);
   const handleOpen = (value) => setSize(value);
+
+  useEffect(() => {
+    if (size === "success") {
+      toast.success("Thank you, we will contact you very soon.");
+      setSize(null);
+    }
+  }, [size]);
 
   return (
     <div>
+      <Toaster
+        containerStyle={{ top: 200 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <div className="hidden md:block mt-[-20px]">
         <div className="md:grid md:grid-cols-12 md:gap-x-8 sm:gap-x-0 gap-y-16 mt-5 banner-left">
           <div className="flex flex-col space-y-3 sm:col-span-12 md:col-span-6 ">

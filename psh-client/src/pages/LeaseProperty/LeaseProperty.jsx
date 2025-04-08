@@ -48,7 +48,7 @@ const LeaseProperty = () => {
       };
 
       await axios.post(`${serverBaseUrl}/leaseproperty`, product);
-      toast.success("successfully added");
+      toast.success("Successfully Submitted!");
       formRef.current.reset();
     } catch (err) {
       toast.error("Something Error Found");
@@ -56,6 +56,10 @@ const LeaseProperty = () => {
   };
   return (
     <div className=" mt-5  custom-container">
+      <Toaster
+        containerStyle={{ top: 100 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <h3 className="text-[32px] font-bold whitespace-normal		">
         Lease Your Property{" "}
       </h3>
@@ -384,12 +388,7 @@ const LeaseProperty = () => {
                 top: 8,
                 left: 8,
               }}
-            >
-              <Toaster
-                containerStyle={{ top: 100 }}
-                toastOptions={{ position: "top-center" }}
-              ></Toaster>
-            </div>
+            ></div>
           </>
         ) : (
           <div

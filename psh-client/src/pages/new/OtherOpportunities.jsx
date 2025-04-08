@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState, useEffect } from "react";
 import Slider from "react-slick";
 import { Dialog, DialogBody, DialogHeader } from "@material-tailwind/react";
 
@@ -8,11 +8,20 @@ import ShareHolderImg from "../../assets/img/share-holder.png";
 import LeftArrow from "../../assets/img/left-arrow.svg";
 import RightArrow from "../../assets/img/right-arrow.svg";
 import ExtraForm from "../ExtraForm/ExtraForm";
+import toast, { Toaster } from "react-hot-toast";
 
 const OtherOpportunities = () => {
-  const [size, setSize] = useState(null);
-  const handleOpen = (value) => setSize(value);
+  const [size2, setSize2] = useState(null);
+  const handleOpenFranchiseForm = (value) => setSize2(value);
   const [lastSlideIndex, setLastSlideIndex] = useState(0);
+
+  useEffect(() => {
+    if (size2 === "success") {
+      toast.success("Thank you, we will contact you very soon.");
+      setSize2(null);
+    }
+  }, [size2]);
+
   const SlickArrowLeft = ({ currentSlide, slideCount, ...props }) => (
     <img loading="lazy" src={LeftArrow} alt="prevArrow" {...props} />
   );
@@ -84,6 +93,10 @@ const OtherOpportunities = () => {
   };
   return (
     <div className="custom-container ">
+      {/* <Toaster
+        containerStyle={{ top: 100 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster> */}
       <h2 className="text-xl font-bold mb-5 mt-12 uppercase md:mx-0 sm:mx-2">
         Other Opportunities :
       </h2>
@@ -105,7 +118,7 @@ const OtherOpportunities = () => {
                 </p>
                 <button
                   className="partner_btn"
-                  onClick={() => handleOpen("sm")}
+                  onClick={() => handleOpenFranchiseForm("sm")}
                 >
                   Apply Now
                 </button>
@@ -131,7 +144,7 @@ const OtherOpportunities = () => {
                 </p>
                 <button
                   className="partner_btn"
-                  onClick={() => handleOpen("sm")}
+                  onClick={() => handleOpenFranchiseForm("sm")}
                 >
                   Apply Now
                 </button>
@@ -161,7 +174,7 @@ const OtherOpportunities = () => {
 
                 <button
                   className="partner_btn"
-                  onClick={() => handleOpen("sm")}
+                  onClick={() => handleOpenFranchiseForm("sm")}
                 >
                   Apply Now
                 </button>
@@ -171,22 +184,22 @@ const OtherOpportunities = () => {
         </Slider>
       </div>
       <Dialog
-        open={size === "sm"}
-        size={size || "sm"}
-        handler={handleOpen}
+        open={size2 === "sm"}
+        size2={size2 || "sm"}
+        handler={handleOpenFranchiseForm}
         style={{ height: "100vh", overflow: "scroll" }}
       >
         <DialogHeader>
           {" "}
           <div
             className="flex justify-end text-3xl text-black"
-            onClick={() => handleOpen(null)}
+            onClick={() => handleOpenFranchiseForm(null)}
           >
             <i className="fa-solid fa-circle-xmark cursor-pointer"></i>
           </div>
         </DialogHeader>
         <DialogBody className="p-2">
-          <ExtraForm />
+          <ExtraForm handleOpenFranchiseForm={handleOpenFranchiseForm} />
         </DialogBody>
       </Dialog>
     </div>

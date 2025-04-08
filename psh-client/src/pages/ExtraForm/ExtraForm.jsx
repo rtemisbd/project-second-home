@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
-
 import "./ExtraForm.css";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
 import LoadingState from "../LoadingState/LoadingState";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 
-const ExtraForm = ({ handleOpen }) => {
+const ExtraForm = ({ handleOpenFranchiseForm }) => {
   const [image, setImage] = useState([]);
   const dispatch = useDispatch();
   const handleExtraForm = async (e) => {
@@ -63,9 +62,7 @@ const ExtraForm = ({ handleOpen }) => {
         return toast.error("Visiting Card is not valid");
       }
     }
-
     // Form Data Append
-
     formData.append("purpose", purpose);
     formData.append("propertySize", propertySize);
     formData.append("numberOfRooms", numberOfRooms);
@@ -83,14 +80,14 @@ const ExtraForm = ({ handleOpen }) => {
     try {
       dispatch(placeLoadingShow(true));
       await axios.post(`${serverBaseUrl}/extraForm`, formData);
+      // toast.success("Thank you, we will contact you very soon");
+      e.target.reset();
       dispatch(placeLoadingShow(false));
-      toast.success("Thank you, we will contact you very soon");
-      handleOpen(null);
+      await handleOpenFranchiseForm("success");
     } catch (error) {
-      dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");
+      dispatch(placeLoadingShow(false));
     }
-    e.target.reset();
   };
 
   const { pathname } = useLocation();
@@ -118,6 +115,10 @@ const ExtraForm = ({ handleOpen }) => {
   return (
     <>
       <LoadingState />
+      <Toaster
+        containerStyle={{ top: 100 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <form onSubmit={handleExtraForm} className="md:mx-5 sm:mx-3 extra-form m">
         <div className="grid lg:grid-cols-1 md:grid-cols-1 sm:grid-cols-1 mb-10">
           <div className="">

@@ -15,6 +15,7 @@ import { useQuery } from "react-query";
 
 import { ToastContainer } from "react-toastify";
 import SeeFinanceDetails from "./SeeFinanceDetails";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Finance = () => {
   const MySwal = withReactContent(Swal);
@@ -23,7 +24,7 @@ const Finance = () => {
   const [data, setData] = useState([]);
 
   const { isLoading, refetch } = useQuery([], () =>
-    fetch(`https://api.psh.com.bd/api/extraForm`, {
+    fetch(`${baseUrl}/api/extraForm`, {
       method: "GET",
     })
       .then((res) => res.json())
@@ -47,16 +48,16 @@ const Finance = () => {
     {
       text: "name",
       formatter: (cellContent, row, index) => {
-        const formattedDate = new Date(row?.createdAt).toLocaleString();
+        
         return (
           <>
-            {" "}
-            <p>{formattedDate?.split(",")[0]}</p>
+           
+            <p>{row?.name}</p>
           </>
         );
       },
     },
-
+    
     {
       text: <span>Phone</span>,
       formatter: (cellContent, row, index) => {
@@ -68,6 +69,19 @@ const Finance = () => {
         );
       },
     },
+    {
+      text: "Visiting Date",
+      formatter: (cellContent, row, index) => {
+        const formattedDate = new Date(row?.availabilityForVisit).toLocaleString();
+        return (
+          <>
+            {" "}
+            <p>{formattedDate?.split(",")[0]}</p>
+          </>
+        );
+      },
+    },
+
     // {
     //   text: "email",
     //   formatter: (cellContent, row, index) => {
@@ -80,16 +94,27 @@ const Finance = () => {
     //   },
     // },
     {
-      text: "Birth Day",
+      text: "Vising Time",
       formatter: (cellContent, row, index) => {
         return (
           <>
             {" "}
-            <p>{row?.birthDate}</p>
+            <p>{row?.availabilityForVisitTime}</p>
           </>
         );
       },
     },
+    // {
+    //   text: "Birth Day",
+    //   formatter: (cellContent, row, index) => {
+    //     return (
+    //       <>
+    //         {" "}
+    //         <p>{row?.birthDate}</p>
+    //       </>
+    //     );
+    //   },
+    // },
     {
       text: "Profession",
       formatter: (cellContent, row, index) => {
@@ -238,7 +263,7 @@ const Finance = () => {
   const handleDelete = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/extraForm/${id}`;
+      const url = `${baseUrl}/api/extraForm/${id}`;
       fetch(url, {
         method: "DELETE",
       })

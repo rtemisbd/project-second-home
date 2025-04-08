@@ -1550,6 +1550,29 @@ const Navbar = () => {
                     {(user && user?.role === "SuperAdmin") ||
                     user?.role === "admin" ||
                     user?.role === "subAdmin1" ? (
+                      <Link to={"/dashboard/finance"}>
+                        <li className="main_nav-link">
+                          <span className="nav-link">
+                            <div className="menu_flex">
+                              <span className="span_text">
+                                Franchises Request
+                              </span>
+                              <span  
+                                className="span_text_mobile"
+                                data-widget="pushmenu"
+                              >
+                                Franchises Request
+                              </span>
+                            </div>
+                          </span>
+                        </li>
+                      </Link>
+                    ) : (
+                      ""
+                    )}
+                    {(user && user?.role === "SuperAdmin") ||
+                    user?.role === "admin" ||
+                    user?.role === "subAdmin1" ? (
                       <Link to={"/dashboard/corporate-housing"}>
                         <li className="main_nav-link">
                           <span className="nav-link">

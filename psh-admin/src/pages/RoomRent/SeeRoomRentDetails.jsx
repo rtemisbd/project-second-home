@@ -38,7 +38,7 @@ const SeeRoomRentDetails = ({ data }) => {
                   <label htmlFor="" className="fw-medium">
                     Name
                   </label>
-                  <p>{data?.firstName}</p>
+                  <p>{data?.fullname}</p>
                 </div>
 
                 <div className="col-lg-3">
@@ -85,7 +85,7 @@ const SeeRoomRentDetails = ({ data }) => {
                 </div>
                 <div className="col-lg-3">
                   <label htmlFor="" className="fw-medium">
-                    A vailability For Visit Time
+                    Availability For Visit Time
                   </label>
                   <p>{data?.availabilityForVisitTime}</p>
                 </div>

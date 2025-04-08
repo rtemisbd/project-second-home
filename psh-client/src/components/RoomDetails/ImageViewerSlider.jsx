@@ -32,7 +32,7 @@ const ImageViewerSlider = ({ photos }) => {
           )}
         </div>
         <div className="grid grid-cols-2 gap-3 ml-3 relative">
-          {photos ? (
+          {photos?.slice(1, 5).length ? (
             photos?.slice(1, 5).map((photo, index) => (
               <div key={index} onClick={() => openImageViewer(index)}>
                 <img

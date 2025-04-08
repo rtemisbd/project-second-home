@@ -1,6 +1,8 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import Skeleton from "react-loading-skeleton";
+import "react-loading-skeleton/dist/skeleton.css";
 
 const BannerSlider = () => {
   const [data, setData] = useState([]);
@@ -36,24 +38,33 @@ const BannerSlider = () => {
 
   return (
     <div className="max-w-screen-lg mx-auto flex gap-2  ">
-      {visibleImages.map((item, ind) => (
-        <div
-          key={item?._id}
-          className={`h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden relative transition-all duration-500 ease-in
+      {visibleImages.length ? (
+        visibleImages.map((item, ind) => (
+          <div
+            key={item?._id}
+            className={`h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden relative transition-all duration-500 ease-in
              ${ind === 0 || ind === 2 ? "sm:mt-2 md:mt-4" : "mt-0"}`}
-        >
-          <img
-            src={item?.photos[0]}
-            alt={item?.name}
-            className={`absolute top-0 left-0 h-full w-full object-fill rounded-xl transition-all duration-500 ease-in
+          >
+            <img
+              src={item?.photos[0]}
+              alt={item?.name}
+              className={`absolute top-0 left-0 h-full w-full object-fill rounded-xl transition-all duration-500 ease-in
                ${
                  animate
-                   ? "-translate-x-full opacity-0"
+                   ? "-translate-x-full opacity-0 animate-pulse"
                    : "translate-x-0 opacity-100"
                }`}
-          />
-        </div>
-      ))}
+            />
+          </div>
+        ))
+      ) : (
+        <>
+          <Skeleton className="h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden" />
+          <Skeleton className="h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden" />
+          <Skeleton className="h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden" />
+          <Skeleton className="h-[170px] md:h-[346px] w-[245px] rounded-xl shadow overflow-hidden" />
+        </>
+      )}
     </div>
   );
 };
