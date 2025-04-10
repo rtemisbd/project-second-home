@@ -35,11 +35,15 @@ const Banner_list = () => {
       formatter: (cellContent, row) => {
         return (
           <div>
-            <img
-              src={row?.photos[0] && row?.photos[0]}
-              alt=""
-              style={{ width: 120 }}
-            />
+            {row?.photos ? (
+              <img
+                src={row?.photos[0] && row?.photos[0]}
+                alt=""
+                style={{ width: 120 }}
+              />
+            ) : (
+              <></>
+            )}
           </div>
         );
       },

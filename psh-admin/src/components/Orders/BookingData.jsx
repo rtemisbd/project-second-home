@@ -150,7 +150,6 @@ const BookingData = ({
           </p>
         </td>
         <td>
-          {" "}
           <span
             className=" fw-bold "
             style={{
