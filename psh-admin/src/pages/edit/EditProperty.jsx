@@ -152,7 +152,7 @@ const EditProperty = () => {
                 />
               </div>
               {/* branch */}
-              {(user && user.role === "SuperAdmin") || user.role === "admin" ? (
+              {(user && user.role === "SuperAdmin") || user.role === "admin" || user.role === "subAdmin1" ? (
                 <div className="col-md-6 form_sub_stream ">
                   <label htmlFor="inputState" className="profile_label3">
                     Branch
