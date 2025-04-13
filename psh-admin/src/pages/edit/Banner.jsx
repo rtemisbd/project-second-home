@@ -4,6 +4,8 @@ import withReactContent from "sweetalert2-react-content";
 
 import "./Main_steam.css";
 import axios from "axios";
+import { baseUrl } from "../../utils/getBaseURL";
+import { uploadSingleImage } from "../../utils/uploadSingleImage";
 
 const Banner = ({ data }) => {
   const { _id, name } = data;
@@ -22,35 +24,23 @@ const Banner = ({ data }) => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
+    const formData = new FormData(e.target);
     const newPost = {
       ...user,
     };
     try {
-      const list = await Promise.all(
-        Object.values(files).map(async (file) => {
-          const data = new FormData();
-          data.append("file", file);
-          data.append("upload_preset", "rtemis");
-          const uploadRes = await axios.post(
-            "https://api.cloudinary.com/v1_1/dzakjyd9w/image/upload",
-            data
-          );
-
-          const { secure_url } = uploadRes.data;
-          return secure_url;
-        })
-      );
+      const list = await uploadSingleImage(formData.get("img"));
 
       const product = {
         ...newPost,
         photos: list,
       };
 
-      await axios.put(`https://api.psh.com.bd/api/banner/${_id}`, product);
+      await axios.put(`${baseUrl}/api/banner/${_id}`, product);
       MySwal.fire("Good job!", "successfully edited", "success");
     } catch (err) {
       MySwal.fire("Something Error Found.", "warning");
+      console.log(err);
     }
   };
   return (
@@ -86,7 +76,6 @@ const Banner = ({ data }) => {
                   className="main_form w-100 p-0"
                   name="img"
                   onChange={(e) => setFiles(e.target.files)}
-                  multiple
                 />
               </div>
 

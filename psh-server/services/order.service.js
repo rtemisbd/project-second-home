@@ -92,6 +92,7 @@ export const createOrderByManualBkash = async (payload) => {
     dataForBooking.bookingId = generateId;
 
     dataForBooking.paymentType = "bkash";
+    dataForBooking.paymentStatus = dataForBooking.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
     const result = await OrderModel.create([dataForBooking], { session });
 
     // Step 6: Create user transaction

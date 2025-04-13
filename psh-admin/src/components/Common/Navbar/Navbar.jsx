@@ -1557,7 +1557,7 @@ const Navbar = () => {
                               <span className="span_text">
                                 Franchises Request
                               </span>
-                              <span  
+                              <span
                                 className="span_text_mobile"
                                 data-widget="pushmenu"
                               >

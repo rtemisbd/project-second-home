@@ -116,6 +116,7 @@ const callBack = async (req, res) => {
 
         dataForBooking.bookingId = generateId;
         dataForBooking.status = "Approved";
+        dataForBooking.paymentStatus = dataForBooking?.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
 
         const orderData = new OrderModel({
           ...dataForBooking,
