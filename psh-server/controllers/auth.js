@@ -1,6 +1,9 @@
 import UserModel from "../models/User.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import catchAsync from "../utils/catchAsync.js";
+import { authServices } from "../services/auth.service.js";
+import responseSend from "../utils/responseSend.js";
 
 export const registerUser = async (req, res) => {
   const salt = await bcrypt.genSalt(10);
@@ -59,3 +62,18 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: err.message });
   }
 };
+
+
+export const loginUserWithJWTAuthentication = catchAsync(async(req, res, next)=>{
+  console.log(req.body);
+  
+  const result = await authServices.loginUserWithJWT(req.body);
+  console.log({result})
+
+  responseSend(res, {
+    statusCode : 200,
+    success : true,
+    data : result,
+    message :"User logged in successfully!"
+})
+})
