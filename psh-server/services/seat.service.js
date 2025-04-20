@@ -2,6 +2,8 @@ import mongoose from "mongoose";
 import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 import { propertyServices } from "./property.service.js";
+import AppError from "../helpers/errorHandler/AppError.js";
+import httpStatus from "http-status";
 
 const createSeatIntoDB = async (payload) => {
   const result = await Seat.create(payload);
@@ -103,7 +105,10 @@ const getSeatByIdFromDB = async (id) => {
     seatId: 1,
     seatNumber: 1,
   });
-  const seat = await Seat.findById(id).populate("category branch");
+  const seat = await Seat.findOne({_id :id}).populate("category branch");
+  // if (seat?.isSeatPublished === "Unpublished") {
+  //   throw new AppError(httpStatus.NO_CONTENT, "This seat has been unpublished!");
+  // }
 
   return { seat, rentRooms };
 };

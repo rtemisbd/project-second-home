@@ -1,4 +1,6 @@
 import mongoose from "mongoose";
+import AppError from "../helpers/errorHandler/AppError.js";
+import httpStatus from "http-status";
 
 const rentDateSchema = new mongoose.Schema({
   bookStartDate: {
@@ -82,5 +84,43 @@ const SeatSchema = new mongoose.Schema(
     timestamps: true,
   }
 );
+
+
+// Apply to findOne and findById queries
+// SeatSchema.pre("findOne", async function (next) {
+//   try {
+//     const {_id} = this.getQuery(); // Access query filter
+
+//     const Seat = mongoose.model("Seat");
+
+//     const theSeat = await Seat.findOne({_id });
+//     if (theSeat?.isSeatPublished === "Unpublished") {
+//       throw new AppError(httpStatus.NO_CONTENT, "This seat has been unpublished!");
+//     }
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+// SeatSchema.post("findOne", async function (doc, next) {
+//   try {
+//     if (doc?.isSeatPublished === "Unpublished") {
+//       return next(
+//         new AppError(httpStatus.FORBIDDEN, "This seat has been unpublished!")
+//       );
+//     }
+//     next();
+//   } catch (error) {
+//     next(error);
+//   }
+// });
+
+
+// SeatSchema.pre(/^find/, function (next) {
+//   this.where({ isSeatPublished: { $ne: "Unpublished" } });
+//   next();
+// });
+
+
 
 export default mongoose.model("Seat", SeatSchema);

@@ -5,6 +5,7 @@ import { baseUrl } from "../../utils/getBaseURL";
 import { multipleImageUpload } from "../../utils/multipleImageUpload";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import TextEditor from "../../components/TextEditor/TextEditor";
 
 const AddVilla = () => {
   const MySwal = withReactContent(Swal);
@@ -12,7 +13,23 @@ const AddVilla = () => {
   const [selectedResort, setSelectedResort] = useState(null);
   const [allTypes, setAllTypes] = useState([]);
   const [selectedType, setSelectedType] = useState(null);
-  const [location, setLocation] = useState(null);
+  const [occupancyPolicy, setOccupancyPolicy] = useState("");
+  const [houseRules, setHouseRules] = useState("");
+
+  const [commonFeatures, setCommonFeatures] = useState([
+    "24/7 Room Services",
+    "Welcome Drink On Arrival",
+    "Complementary Breakfast",
+    "Wireless Internet Service",
+    "Ac",
+    "Non Ac",
+    "Wall-mounted LCD TV",
+    "Electronic Safety Deposit Box",
+    "Fast Aid Box",
+    "Tea/Coffee Making Facility",
+    "Fruits Basket In Arrival Day",
+    "Study Table",
+  ]);
 
   const [newFeatures, setNewFeatures] = useState([
     { id: Date.now(), name: "" },
@@ -64,7 +81,6 @@ const AddVilla = () => {
 
   useEffect(() => {
     const resort = allResorts.find((res) => res._id === selectedResort);
-    setLocation(resort?.district);
     setAllTypes(resort?.villaTypes);
   }, [selectedResort, allResorts]);
 
@@ -78,13 +94,15 @@ const AddVilla = () => {
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
-
+    const selectedRoomFeatures = formData.getAll("commonfeature[]");
+    const addedFeatures = newFeatures.map((feature) => feature.name);
     const villaData = {
       resortId: selectedResort,
-      location,
       title: formData.get("villaTitle"),
       type: selectedType,
+      // markedLocation: formData.get("markedLocation"),
       villaNumber: formData.get("villaNumber"),
+      view: formData.get("view"),
       area: formData.get("area"),
       totalFloor: formData.get("totalFloor"),
       totalRoom: formData.get("totalRoom"),
@@ -93,13 +111,17 @@ const AddVilla = () => {
       occupancy: {
         adults: formData.get("adult"),
         kids: formData.get("kids"),
-        policy: formData.get("occupancyPolicy"),
+        policy: occupancyPolicy,
       },
-      features: newFeatures.map((feature) => feature.name),
+      // features: newFeatures.map((feature) => feature.name),
+      features: [...selectedRoomFeatures, ...addedFeatures],
       pricing: {
         perNight: formData.get("perNight"),
-        vat: formData.get("vat"),
+        securityDeposit: formData.get("securityDeposit"),
+        adultAddition: formData.get("adultAddition"),
+        kidAddition: formData.get("kidAddition"),
       },
+      houseRules: houseRules,
     };
     const video = formData.get("video");
     toast("Uploading...", "success");
@@ -114,11 +136,12 @@ const AddVilla = () => {
       MySwal.fire("Villa added successfully!");
       event.target.reset();
       setSelectedResort(null);
-      setLocation(null);
       setSelectedType(null);
       setNewFeatures([{ id: Date.now(), name: "" }]);
       setSelectedFiles([]);
       setImagePreviews([]);
+      setOccupancyPolicy("");
+      setHouseRules("");
     } catch (error) {
       toast.error("Error adding villa. Try again!");
       console.error(error);
@@ -155,23 +178,21 @@ const AddVilla = () => {
                   ))}
                 </select>
               </div>
-              <div className="col-md-6 form_sub_stream">
+              {/* <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Location
+                  Location (Google Location Link)
                 </label>
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="name"
+                  name="markedLocation"
                   placeholder="Enter Villa Location"
                   required
-                  disabled
-                  value={location}
                 />
-              </div>
+              </div> */}
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -203,7 +224,7 @@ const AddVilla = () => {
                 >
                   <option selected disabled>
                     {" "}
-                    Select your villa type
+                    Select Your Villa Type
                   </option>
                   {allTypes?.map((data, index) => (
                     <option key={index} value={data?.name}>
@@ -232,6 +253,24 @@ const AddVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
+                  View
+                </label>
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="view"
+                  placeholder="Enter Villa View"
+                  required
+                />
+              </div>
+            </div>
+            <div className="row p-3">
+              <h2 className="profile_label3 profile_bg mt-3">Short Details</h2>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
                   Villa Area
                 </label>
                 <input
@@ -242,9 +281,6 @@ const AddVilla = () => {
                   required
                 />
               </div>
-            </div>
-            <div className="row p-3">
-              <h2 className="profile_label3 profile_bg mt-3">Short Details</h2>
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -340,35 +376,51 @@ const AddVilla = () => {
                   required
                 />
               </div>
-              <div className="col-md-12 form_sub_stream">
+
+              <div className="col-md-12 form_sub_stream mt-2">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
                   Occupancy Policy
                 </label>
-                <textarea
-                  className="main_form w-100 h-100"
-                  name="occupancyPolicy"
-                  rows="5"
-                  cols="50"
-                  placeholder=" Write occupancy policy in detail"
-                  required
+              </div>
+              <div className="col-md-12 form_sub_stream">
+                <TextEditor
+                  editorValue={occupancyPolicy}
+                  setEditorValue={setOccupancyPolicy}
                 />
               </div>
             </div>
 
             <div className="row p-3">
               <h2 className="profile_label3 profile_bg mt-3">
-                Additional Features
+                Room Amenities & Services
               </h2>
+              <div>
+                {commonFeatures.map((feature, ind) => (
+                  <React.Fragment key={ind}>
+                    <input
+                      type="checkbox"
+                      id={ind}
+                      name="commonfeature[]"
+                      value={feature}
+                      multiple
+                      className="me-1"
+                    />
+                    <label className="ml-1 mr-3 mt-1" htmlFor={feature}>
+                      {feature}
+                    </label>
+                  </React.Fragment>
+                ))}
+              </div>
               <div className="p-3">
                 <div className="row">
                   {newFeatures.map((feature, index) => (
                     <div key={feature.id} className="col-md-4 form_sub_stream">
-                      <label className="form-label profile_label3">
+                      {/* <label className="form-label profile_label3">
                         New Feature Title
-                      </label>
+                      </label> */}
                       <input
                         type="text"
                         className="main_form w-100"
@@ -378,7 +430,7 @@ const AddVilla = () => {
                           updatedFeature[index].name = e.target.value;
                           setNewFeatures(updatedFeature);
                         }}
-                        placeholder="Feature Title"
+                        placeholder="New Amenity or Service"
                         required
                       />
 
@@ -408,7 +460,7 @@ const AddVilla = () => {
                       className="btn btn-success"
                       onClick={addFeature}
                     >
-                      Add New Feature
+                      Add New
                     </button>
                   </div>
                 </div>
@@ -424,7 +476,7 @@ const AddVilla = () => {
                   Per Night(BDT)
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="main_form w-100"
                   name="perNight"
                   placeholder="Per Night BDT Cost"
@@ -436,26 +488,48 @@ const AddVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Vat (% BDT){" "}
-                  <span
-                    style={{
-                      color: "gray",
-                      fontSize: "12px",
-                      fontWeight: "400",
-                    }}
-                  >
-                    [excluded]
-                  </span>
+                  Security Deposit
                 </label>
                 <input
-                  type="text"
+                  type="number"
                   className="main_form w-100"
-                  name="vat"
-                  placeholder="Total Vat (%)"
+                  name="securityDeposit"
+                  placeholder=" Security Deposit"
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Extra For Additional Adult (BDT)
+                </label>
+                <input
+                  type="number"
+                  className="main_form w-100"
+                  name="adultAddition"
+                  placeholder=" Extra For Additional Adult "
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Extra For Additional Kid (BDT)
+                </label>
+                <input
+                  type="number"
+                  className="main_form w-100"
+                  name="kidAddition"
+                  placeholder=" Extra For Additional Kid "
                   required
                 />
               </div>
             </div>
+
             <div className="row p-3">
               <h2 className="profile_label3 profile_bg mt-3">Villa Gallery</h2>
               <div className="max-w-lg mx-auto mb-4">
@@ -519,6 +593,27 @@ const AddVilla = () => {
                   name="video"
                   placeholder="Youtube Video Link"
                   required
+                />
+              </div>
+            </div>
+
+            <div className="row p-3">
+              <h2 className="profile_label3 profile_bg mt-3">
+                House Rules And Policy
+              </h2>
+
+              <div className="col-md-12 form_sub_stream mt-2">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  House Rules And Policy
+                </label>
+              </div>
+              <div className="col-md-12 form_sub_stream">
+                <TextEditor
+                  editorValue={houseRules}
+                  setEditorValue={setHouseRules}
                 />
               </div>
             </div>

@@ -10,7 +10,6 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import "./styles/SingleCard.css";
 
 const SingleCard = ({ item }) => {
-
   return (
     <div className="single-card ">
       <Card className="mb-5 w-full ">
@@ -78,7 +77,10 @@ const SingleCard = ({ item }) => {
             <div className="">
               <h2 className=" text-[14px] card-title ">
                 Room No-{}
-                {item?.roomNumber}
+                {/* {item?.roomNumber} */}
+                {item?.categoryDetails?.name === "Private Room"
+                  ? item?.roomNumber
+                  : item?.property?.roomNumber}
               </h2>
             </div>
           </Link>

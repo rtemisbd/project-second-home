@@ -1,6 +1,6 @@
 import React, { createContext, useState, useEffect } from "react";
 import axios from "axios";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useDispatch } from "react-redux";
 import { placeModalShow } from "../redux/reducers/smProfileMenuSlice";
 import { serverBaseUrl } from "../serverApi/baseUrl";
@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
   const dispatch = useDispatch();
 
   const [user, setUser] = useState(
-    JSON.parse(localStorage.getItem("user")) || null
+    JSON.parse(localStorage?.getItem("user")) || null
   );
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
@@ -23,35 +23,23 @@ export const UserProvider = ({ children }) => {
 
   const loginUser = async (phone, password) => {
     try {
-      const response = await axios.post(`${serverBaseUrl}/users/login`, {
+      const { data } = await axios.post(`${serverBaseUrl}/auth/login`, {
         phone,
         password,
       });
 
-      if (response.status === 200) {
-        const { data } = response;
-        setUser(data?.user);
-        setToken(data?.token);
-        setLoading(false);
-        toast.success("Login Success");
-        // setTimeout(() => {
-        //   dispatch(placeModalShow(false));
-        // }, 1000);
-      } else {
-        throw new Error("Invalid phone or password");
-      }
+      console.log(data);
+
+      setUser(data?.data?.user);
+      setToken(data?.data?.token);
+      setLoading(false);
+      toast.success(data?.message || "User Login Successfully!");
     } catch (error) {
-      if (error.response && error.response.status === 401) {
-        const errorMessage = error.response.data.message;
-
-        toast.error(errorMessage);
-      } else if (error.response && error.response.status === 404) {
-        const errorMessage = error.response.data.message;
-
-        toast.error(errorMessage);
-      } else {
-        toast.error("An error occurred. Please try again later.");
-      }
+      console.log(error);
+      toast.error(
+        error?.response?.data?.message ||
+          "Something went wrong. Please try again!"
+      );
     }
     return user;
   };

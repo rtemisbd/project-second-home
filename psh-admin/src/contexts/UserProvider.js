@@ -29,8 +29,10 @@ export const UserProvider = ({ children }) => {
         password,
       });
 
+      console.log(response);
       if (response.status === 200) {
         const { data } = response;
+        
         setUser(data.user);
         setToken(data.token);
         setLoading(false);

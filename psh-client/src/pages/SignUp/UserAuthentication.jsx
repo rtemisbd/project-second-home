@@ -12,7 +12,6 @@ import { IoIosArrowBack } from "react-icons/io";
 
 const UserAuthentication = () => {
   const dispatch = useDispatch();
-
   // const isModalShow = useSelector((state) => state?.profileMenu?.isModalShow);
   const [showSignIn, setShowSignIn] = useState(true);
   const [showSignUp, setShowSignUp] = useState(false);
@@ -113,12 +112,13 @@ const UserAuthentication = () => {
 
     const user = loginUser(phone, password);
     if (user) {
-      // toast.success("Login Successfully!");
-      if (window.history.length > 1) {
-        navigate(-1);
-      } else {
-        navigate("/");
-      }
+      navigate(-1);
+      // if (window.history.length > 1) {
+      // navigate(-1);
+      // }
+      // else {
+      //   navigate("/");
+      // }
     }
   };
 

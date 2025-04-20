@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 
 import AppError from "../helpers/errorHandler/AppError.js";
 
+
 const districtSchema = new mongoose.Schema({
   name: { type: String, required: true, unique: true }, 
 });
