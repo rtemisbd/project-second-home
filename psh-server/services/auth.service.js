@@ -1,7 +1,7 @@
 import config from "../config/index.js";
 import AppError from "../helpers/errorHandler/AppError.js";
 import User from "../models/User.js";
-import httpStatus from "http-status";
+// import httpStatus from "http-status";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -15,12 +15,12 @@ const loginUserWithJWT = async(payload)=>{
     
         // If the user does not exist, return an error message
         if (!user) {
-            console.log(1);
-           throw new AppError(httpStatus.NOT_FOUND, "User Not Found!");
+            // console.log(1);
+           throw new AppError(404, "User Not Found!");
         }
         if (user.userStatus === "Blocked" || user.userStatus === "Deactive") {
-            console.log(2);
-            throw new AppError(httpStatus.NO_CONTENT , "User is blocked or deactivated and cannot log in");
+            // console.log(2);
+            throw new AppError(204 , "User is blocked or deactivated and cannot log in");
         }
     
         // Compare the provided password with the stored password
@@ -28,8 +28,8 @@ const loginUserWithJWT = async(payload)=>{
      
         // If the passwords do not match, return an error message
         if (!passwordMatch) {
-            console.log(3);
-            throw new AppError(httpStatus.NOT_ACCEPTABLE, "Invalid password. Please try again!");
+            // console.log(3);
+            throw new AppError(406, "Invalid password. Please try again!");
         }
     
         // Create a user object with limited properties, including the branch

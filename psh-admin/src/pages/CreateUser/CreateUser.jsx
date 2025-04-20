@@ -74,6 +74,8 @@ const CreateUser = () => {
           toast.error("Registration failed");
         }
       } catch (error) {
+        console.log(error);
+
         if (error.response && error.response.status === 401) {
           toast.error(error.response.data.message);
         } else if (error.response && error.response.status === 400) {
@@ -165,7 +167,7 @@ const CreateUser = () => {
       toast.success("Please Check Your Phone Number");
       setShowOtpPage(true);
     } catch (error) {
-      // console.log(error);
+      console.log(error);
 
       return toast.error(error?.response?.data?.message);
     }

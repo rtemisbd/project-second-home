@@ -20,12 +20,13 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import MobileBanking from "../Payment/MobileBanking";
+import useUser from "../../hooks/userUser";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [singleUser, setSingleUser] = useState({});
+  const [singleUser] = useUser();
   const [bookingItem, setBookingItem] = useState({});
   // const [bookingItem, setBookingItem] = useState({});
   const [amountForPay, setAmountForPay] = useState(0);
@@ -59,16 +60,6 @@ const PersonalInfo = () => {
       setBookingItem(parseToJson);
     }
   }, []);
-
-  // Get Single singleUser
-  useEffect(() => {
-    fetch(`${serverBaseUrl}/users/${user?._id}`)
-      .then((res) => res.json())
-      .then((data) => {
-        setSingleUser(data?.data);
-        // setValidityType(data?.validityType ? data?.validityType : "Select One");
-      });
-  }, [user?._id]);
 
   useEffect(() => {
     if (singleUser) {
