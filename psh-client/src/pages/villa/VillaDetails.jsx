@@ -50,6 +50,7 @@ const VillaDetails = () => {
             video={villa?.media?.video}
             photos={villa?.media?.photos}
           />
+          
         </div>
       </div>
     </div>

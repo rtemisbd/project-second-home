@@ -6,7 +6,6 @@ import { multipleImageUpload } from "../../utils/multipleImageUpload";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import TextEditor from "../../components/TextEditor/TextEditor";
-import { Wallet } from "@mui/icons-material";
 
 const AddVilla = () => {
   const MySwal = withReactContent(Swal);

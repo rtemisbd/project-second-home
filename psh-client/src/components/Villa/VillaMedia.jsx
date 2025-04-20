@@ -101,7 +101,7 @@ const VillaMedia = ({ video, photos = [] }) => {
         {/* Video Section */}
         <div
           ref={playerContainerRef}
-          className="relative group rounded w-full lg:h-[371px] md:h-[280px] sm:h-[230px] cursor-pointer overflow-hidden"
+          className="relative group rounded w-full lg:h-[371px] md:h-[280px] sm:h-[200px] cursor-pointer overflow-hidden"
           onClick={openVideoInYouTube}
         >
           {videoId ? (
@@ -132,14 +132,14 @@ const VillaMedia = ({ video, photos = [] }) => {
         </div>
 
         {/* Image Gallery */}
-        <div className="grid grid-cols-2 gap-y-1 gap-x-[6px] ml-[6px] relative">
+        <div className="grid grid-cols-2 gap-y-[3px] md:gap-y-1 gap-x-1 md:gap-x-[6px] ml-1 md:ml-[6px] relative">
           {photos?.slice(0, 4).length ? (
             photos?.slice(0, 4).map((photo, index) => (
               <div key={index} onClick={() => openImageViewer(index)}>
                 <img
                   src={photo}
                   alt=""
-                  className="rounded w-full lg:h-[183px] md:h-[134px] sm:h-[110px]"
+                  className="rounded w-full lg:h-[183px] md:h-[134px] sm:h-[100px]"
                 />
               </div>
             ))
@@ -148,7 +148,7 @@ const VillaMedia = ({ video, photos = [] }) => {
               {[...Array(4)].map((_, i) => (
                 <Skeleton
                   key={i}
-                  className="rounded w-full lg:h-[180px] md:h-[134px] sm:h-[110px]"
+                  className="rounded w-full lg:h-[180px] md:h-[134px] sm:h-[100px]"
                 />
               ))}
             </>
