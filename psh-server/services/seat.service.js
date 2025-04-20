@@ -65,7 +65,7 @@ const getAllSeatsFromDB = async (queries) => {
     {
       $facet: {
         paginatedResults: [
-          { $sort: { createdAt: -1 } },
+          { $sort: { seatNumber: 1 } },
           ...(page >= 1 && size >= 1
             ? [{ $skip: (page - 1) * size }, { $limit: size }]
             : []),
