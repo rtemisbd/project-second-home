@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import AppError from "../helpers/errorHandler/AppError.js";
-import httpStatus from "http-status";
+// import httpStatus from "http-status";
 
 const rentDateSchema = new mongoose.Schema({
   bookStartDate: {

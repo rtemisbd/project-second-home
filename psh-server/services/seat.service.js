@@ -3,7 +3,7 @@ import RentRoom from "../models/RentRoom.js";
 import Seat from "../models/Seat.js";
 import { propertyServices } from "./property.service.js";
 import AppError from "../helpers/errorHandler/AppError.js";
-import httpStatus from "http-status";
+// import httpStatus from "http-status";
 
 const createSeatIntoDB = async (payload) => {
   const result = await Seat.create(payload);
