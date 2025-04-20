@@ -36,6 +36,8 @@ const AdminPropertyList2 = () => {
   const [category, setCategory] = useState("All");
   const [id, setId] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [allStatus, setAllStatus] = useState(["Published", "Unpublished"]);
+  const [status, setStatus] = useState("");
 
   // Get All Branch
   const { allBranch: branches } = useBranch();
@@ -62,6 +64,7 @@ const AdminPropertyList2 = () => {
         withSharedRoom: true,
         roomNumber,
         seatNumber,
+        isPublished: status,
       });
 
       // Pass the query parameters in the URL
@@ -85,7 +88,7 @@ const AdminPropertyList2 = () => {
   // Re-fetch data whenever `page` or `size` changes
   useEffect(() => {
     refetch();
-  }, [refetch, page, size, roomNumber, seatNumber]);
+  }, [refetch, page, size, roomNumber, seatNumber, status]);
 
   const handleShowDetails = () => {
     setShowDetailModal(true);
@@ -126,62 +129,75 @@ const AdminPropertyList2 = () => {
                 <h6 className="college_h6">Property List</h6>
               </div>
             </div>
-            <div className="d-flex justify-content-between align-items-center ">
-              <div className="d-flex gap-2">
-                <h6>Category: </h6>
-                <div>
-                  {/* "All" Option */}
-                  <label>
-                    <input
-                      type="radio"
-                      name="category"
-                      value="All"
-                      checked={category === "All"}
-                      onChange={(e) => setCategory(e.target.value)}
-                      style={{ marginRight: "3px", marginTop: "1px" }}
-                    />
-                    All
-                  </label>
-
-                  {/* Dynamic Categories */}
-                  {categories?.map((categoryItem) => (
-                    <label
-                      key={categoryItem._id}
-                      style={{ marginLeft: "10px" }}
-                    >
+            <div className="d-flex justify-content-between align-items-center">
+              <div>
+                <div className="d-flex gap-2">
+                  <h6>Category: </h6>
+                  <div>
+                    {/* "All" Option */}
+                    <label>
                       <input
                         type="radio"
                         name="category"
-                        value={categoryItem.name}
-                        checked={category === categoryItem.name}
+                        value="All"
+                        checked={category === "All"}
                         onChange={(e) => setCategory(e.target.value)}
                         style={{ marginRight: "3px", marginTop: "1px" }}
                       />
-                      {categoryItem.name}
+                      All
                     </label>
-                  ))}
+
+                    {/* Dynamic Categories */}
+                    {categories?.map((categoryItem) => (
+                      <label
+                        key={categoryItem._id}
+                        style={{ marginLeft: "10px" }}
+                      >
+                        <input
+                          type="radio"
+                          name="category"
+                          value={categoryItem.name}
+                          checked={category === categoryItem.name}
+                          onChange={(e) => setCategory(e.target.value)}
+                          style={{ marginRight: "3px", marginTop: "1px" }}
+                        />
+                        {categoryItem.name}
+                      </label>
+                    ))}
+                  </div>
+                </div>
+                <div className="d-flex gap-2">
+                  <h6>Status: </h6>
+                  <div>
+                    {/* "All" Option */}
+                    <label>
+                      <input
+                        type="radio"
+                        name="status"
+                        value="All"
+                        checked={status === ""}
+                        onChange={(e) => setStatus("")}
+                        style={{ marginRight: "3px", marginTop: "1px" }}
+                      />
+                      All
+                    </label>
+                    {allStatus?.map((item) => (
+                      <label key={item} style={{ marginLeft: "10px" }}>
+                        <input
+                          type="radio"
+                          name="status"
+                          value={item}
+                          checked={status === item}
+                          onChange={(e) => setStatus(e.target.value)}
+                          style={{ marginRight: "3px", marginTop: "1px" }}
+                        />
+                        {item}
+                      </label>
+                    ))}
+                  </div>
                 </div>
               </div>
-
               <div className="d-flex justify-content-end">
-                {/* <div>
-                  <div>
-                    <label htmlFor="Category">Category: </label>
-                  </div>
-                  <select
-                    onChange={(e) => setCategory(e.target.value)}
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <option value="All">All</option>
-                    {categories?.map((category) => (
-                      <option key={category._id} value={category?.name}>
-                        {category?.name}
-                      </option>
-                    ))}
-                  </select>
-                </div> */}
                 {user?.role !== "manager" && (
                   <div style={{ marginLeft: 10 }}>
                     <div>
