@@ -154,6 +154,7 @@ const OrderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
+      enum : ["Paid", "Unpaid"]
     },
     bookingExtend: {
       type: Boolean,
