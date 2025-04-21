@@ -43,6 +43,7 @@ const createOrderIntoDB = async (payload) => {
     // Step 2: Generate booking ID
     const generateId = await generateBookingId();
     dataForBooking.bookingId = generateId;
+    dataForBooking.paymentStatus = dataForBooking.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
 
     if (selectMethod === "manual") {
       const result = await createOrderByManualBkash(dataForBooking);
@@ -221,37 +222,34 @@ const getOrderFromDB = async (queries) => {
     runningStatus,
     guestType,
     filteredPhone,
-    // status
   } = queries;
+
   const today = new Date();
   const formattedDate = today.toISOString().split("T")[0];
 
   const bookingStatus = queries?.status;
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
+
   let matchStage = {};
 
   if (orderId && orderId !== "All") matchStage._id = orderId;
   if (userId && userId !== "All") matchStage.userId = userId;
-  if (branch && branch !== "All")
-    matchStage.branch = mongoose.Types.ObjectId(branch);
-  if (paymentStatus && paymentStatus !== "All")
-    matchStage.paymentStatus = paymentStatus;
-  if (bookingStatus && bookingStatus !== "All")
-    matchStage.status = bookingStatus;
-  if (filteredPhone && filteredPhone !== "")
-    matchStage.phone = { $regex: `^${filteredPhone}` };
+  if (branch && branch !== "All") matchStage.branch = mongoose.Types.ObjectId(branch);
+  if (paymentStatus && paymentStatus !== "All") matchStage.paymentStatus = paymentStatus;
+  if (bookingStatus && bookingStatus !== "All") matchStage.status = bookingStatus;
+  if (filteredPhone && filteredPhone !== "") matchStage.phone = { $regex: `^${filteredPhone}` };
   if (fromDate && toDate) {
     matchStage.createdAt = {
       $gte: new Date(fromDate),
       $lte: new Date(toDate),
     };
   }
-  if (runningStatus && runningStatus === "Running") {
+  if (runningStatus === "Running") {
     matchStage["bookingInfo.rentDate.bookStartDate"] = { $lte: formattedDate };
     matchStage["bookingInfo.rentDate.bookEndDate"] = { $gte: formattedDate };
   }
-  if (runningStatus && runningStatus === "Closed") {
+  if (runningStatus === "Closed") {
     matchStage["bookingInfo.rentDate.bookEndDate"] = { $lt: formattedDate };
   }
   if (guestType && guestType !== "All") matchStage.customerType = guestType;
@@ -267,8 +265,7 @@ const getOrderFromDB = async (queries) => {
   ];
 
   const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
-  const totalCount =
-    totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
+  const totalCount = totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
 
   const pipeline = [
     { $match: matchStage },
@@ -287,8 +284,6 @@ const getOrderFromDB = async (queries) => {
             },
           },
           { $unwind: "$branchDetails" },
-
-          //get transaction by order Id
           {
             $lookup: {
               from: "transactions",
@@ -414,10 +409,31 @@ const getOrderFromDB = async (queries) => {
     },
   ];
 
-  const result = await OrderModel.aggregate(pipeline);
+  const aggregatedResult = await OrderModel.aggregate(pipeline);
 
-  return { result, totalCount };
+  const orders = aggregatedResult?.[0]?.paginatedResults || [];
+
+  // 🔁 Update paymentStatus based on payableAmount vs receivedTk
+  for (const order of orders) {
+    const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
+    const payableAmount = order?.payableAmount || 0;
+
+    const newPaymentStatus = receivedTk === payableAmount ? "Paid" : "Unpaid";
+
+    if (order.paymentStatus !== newPaymentStatus) {
+      await OrderModel.updateOne(
+        { _id: order._id },
+        { $set: { paymentStatus: newPaymentStatus } }
+      );
+    }
+
+    // Optional: Attach payment status to result directly if needed
+    order.paymentStatus = newPaymentStatus;
+  }
+
+  return { result: aggregatedResult, totalCount };
 };
+
 
 const getUserOrderFromDB = async (queries, phone) => {
   const { paymentStatus, bookingStatus } = queries;
