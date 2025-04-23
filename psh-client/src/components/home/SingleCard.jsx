@@ -28,15 +28,19 @@ const SingleCard = ({ item }) => {
             />
           </Link>
           {item.branchDetails?.name === "Bashundhara" ? (
-            <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
-              <span>Already Booked</span>
+            <div className="absolute bottom-0 right-0  flex justify-end">
+              <p className="bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1 ">
+                Already Booked
+              </p>
             </div>
           ) : (
             ""
           )}
           {item?.categoryDetails?.name === "Shared Room" ? (
-            <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
-              {item?.seatType}-{item?.seatNumber}
+            <div className="absolute bottom-0 right-0  flex justify-end">
+              <p className="bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1 ">
+                {item?.seatType}-{item?.seatNumber}
+              </p>
             </div>
           ) : (
             ""

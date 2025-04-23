@@ -3,22 +3,8 @@ import { MdClose, MdVolumeOff, MdVolumeUp } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 import YouTube from "react-youtube";
 import ImageViewer from "react-simple-image-viewer";
-
-// Helper to extract YouTube video ID
-const getYouTubeVideoId = (url) => {
-  try {
-    const parsed = new URL(url);
-    if (parsed.hostname === "youtu.be") {
-      return parsed.pathname.slice(1);
-    }
-    if (parsed.searchParams.has("v")) {
-      return parsed.searchParams.get("v");
-    }
-    return null;
-  } catch {
-    return null;
-  }
-};
+import getYouTubeVideoId from "../../helpers/utils/getYouTubeVideoId";
+import { playerOptions } from "../../helpers/utils/playerOptions";
 
 const VillaMedia = ({ video, photos = [] }) => {
   const videoId = getYouTubeVideoId(video);
@@ -81,19 +67,6 @@ const VillaMedia = ({ video, photos = [] }) => {
       }
     };
   }, []);
-
-  const playerOptions = {
-    height: "100%",
-    width: "100%",
-    playerVars: {
-      autoplay: 1,
-      controls: 1,
-      modestbranding: 1,
-      rel: 0,
-      showinfo: 0,
-      mute: 1,
-    },
-  };
 
   return (
     <div>

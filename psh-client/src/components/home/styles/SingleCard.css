@@ -80,6 +80,7 @@
 
 .single-card div {
   font-family: "Rubik", sans-serif !important;
+  /* width: 280px; */
 }
 
 .single-card:hover {

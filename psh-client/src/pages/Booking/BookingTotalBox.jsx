@@ -17,7 +17,6 @@ import usePromos from "../../hooks/usePromos";
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/UserProvider";
 import "../../components/shared/Custom.css";
-import "./BookingTotalBox.css";
 import { placeModalShow } from "../../redux/reducers/smProfileMenuSlice";
 
 import { serverBaseUrl } from "../../serverApi/baseUrl";

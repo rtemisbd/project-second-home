@@ -1,4 +1,5 @@
 
+import mongoose from "mongoose";
 import Category from "../models/Category.js";
 import Villa from "../models/Villa.js"
 
@@ -38,14 +39,14 @@ const getAllVillaFromDB = async()=>{
 }
 
 
-const getVillaByIdFromDB = async(id) =>{
-    const result = await Villa.findOne({_id : id});
+const getVillaByIdFromDB = async (id) => {
 
+    const result = await Villa.findOne({_id : id}).populate("resortId");
     return result;
-}
+};
 
 export const villaServices = {
     createVillaIntoDB,
     getAllVillaFromDB,
     getVillaByIdFromDB
-}
+}  
