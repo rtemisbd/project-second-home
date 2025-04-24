@@ -118,7 +118,7 @@ const VillaDetails = () => {
                 <div className="grid md:grid-cols-12 sm:grid-cols-6">
                   <div className="col-span-10">
                     <div>
-                      <h1 className="text-xl font-bold text-gray-900 px-2 ">
+                      <h1 className="text-xl font-bold text-gray-900 px-1 ">
                         {villa?.title} - {villa?.resortId?.name}
                       </h1>
                       <div className="mt-2">
@@ -183,7 +183,7 @@ const VillaDetails = () => {
                   >
                     Services & Room Amenities
                   </h2>
-                  <ul className=" grid grid-cols-2 px-5">
+                  <ul className=" grid md:grid-cols-2 px-5">
                     {villa?.features?.map((feature, ind) => (
                       <li key={ind} className="list-disc">
                         {feature}
@@ -330,15 +330,10 @@ const VillaDetails = () => {
               {/* Total Box */}
 
               <div className="flex flex-col items-start  sm:col-span-12 md:col-span-6 lg:col-span-4 ">
-                {/* <BookingTotalBox
-                  data={data}
-                  bookedDates={bookedDates}
-                  seat={seat}
-                /> */}
                 <VillaBookingBox villa={villa} />
                 <div
                   ref={playerContainerRef}
-                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden mt-3"
+                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden mt-3 bg-gray-100"
                   onClick={openVideoInYouTube}
                 >
                   {videoId ? (
@@ -373,9 +368,10 @@ const VillaDetails = () => {
                 </div>
                 <div className="relative group rounded rounded-t-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden">
                   <Link
+                    to={`/resort/${villa?.resortId?._id}`}
                     className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a] hover:text-white text-white `}
                   >
-                    Visit Resort
+                    More About Resort
                   </Link>
                 </div>
               </div>

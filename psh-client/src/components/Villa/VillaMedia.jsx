@@ -74,7 +74,7 @@ const VillaMedia = ({ video, photos = [] }) => {
         {/* Video Section */}
         <div
           ref={playerContainerRef}
-          className="relative group rounded w-full lg:h-[371px] md:h-[280px] sm:h-[200px] cursor-pointer overflow-hidden"
+          className="relative group rounded w-full lg:h-[371px] md:h-[280px] sm:h-[200px] cursor-pointer overflow-hidden bg-gray-100"
           onClick={openVideoInYouTube}
         >
           {videoId ? (

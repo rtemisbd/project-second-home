@@ -117,7 +117,7 @@ const AddVilla = () => {
       features: [...selectedRoomFeatures, ...addedFeatures],
       pricing: {
         perNight: formData.get("perNight"),
-        securityDeposit: formData.get("securityDeposit"),
+        advancePayment: formData.get("advancePayment"),
         adultAddition: formData.get("adultAddition"),
         kidAddition: formData.get("kidAddition"),
       },
@@ -431,7 +431,6 @@ const AddVilla = () => {
                           setNewFeatures(updatedFeature);
                         }}
                         placeholder="New Amenity or Service"
-                        required
                       />
 
                       <div className="col-md-12 d-flex justify-content-end ">
@@ -467,7 +466,9 @@ const AddVilla = () => {
               </div>
             </div>
             <div className="row p-3">
-              <h2 className="profile_label3 profile_bg mt-3">Rent Details</h2>
+              <h2 className="profile_label3 profile_bg mt-3">
+                Pricing Details
+              </h2>
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -488,13 +489,13 @@ const AddVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Security Deposit
+                  Advance Payment
                 </label>
                 <input
                   type="number"
                   className="main_form w-100"
-                  name="securityDeposit"
-                  placeholder=" Security Deposit"
+                  name="advancePayment"
+                  placeholder=" Minimum Payment"
                   required
                 />
               </div>

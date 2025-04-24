@@ -8,12 +8,18 @@ import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 
 import { placeBooking } from "../../redux/reducers/bookingSlice";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
+import { format } from "date-fns";
 import promoIcon from "../../assets/img/coupon.png";
 import { Typography, Tooltip } from "@material-tailwind/react";
+
+import { useContext } from "react";
+import { AuthContext } from "../../contexts/UserProvider";
+import { isAlreadyBookings } from "../../utilities/bookingChecking";
 
 const VillaBookingBox = ({ villa }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
+  const { user } = useContext(AuthContext);
   const startDate = useSelector((state) => state.dateCount.startDate);
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
@@ -21,7 +27,11 @@ const VillaBookingBox = ({ villa }) => {
   const [promoCode, setPromoCode] = useState(null);
   const [promoCodeCheck, setPromoCodeCheck] = useState(false);
 
-  const [subTotal, setSubTotal] = useState(villa?.pricing?.perNight || 0);
+  const [subTotal, setSubTotal] = useState(0);
+  const [totalAmount, setTotalAmount] = useState(0);
+  const [payableAmount, setPayableAmount] = useState(0);
+  const [discount, setDiscount] = useState(0);
+  const [advance, setAdvance] = useState(0);
 
   // handle Scrolled
   const [scrollY, setScrollY] = useState(0);
@@ -31,8 +41,71 @@ const VillaBookingBox = ({ villa }) => {
   };
 
   useEffect(() => {
+    setSubTotal(villa?.pricing?.perNight);
+    setTotalAmount(villa?.pricing?.perNight);
+    setAdvance(villa?.pricing?.advancePayment);
+  }, [villa]);
+
+  useEffect(() => {
     setSubTotal(villa?.pricing?.perNight * customerRent?.daysDifference);
+    setTotalAmount(villa?.pricing?.perNight * customerRent?.daysDifference);
   }, [customerRent]);
+
+  const handleAddItem = () => {
+    if (!user) {
+      return navigate("/authentication", { state: location?.pathname });
+    }
+
+    let bookingData = {
+      villa: villa?._id,
+      user: user?._id,
+      subTotal,
+      totalAmount,
+      payableAmount,
+      rentDate: {
+        // bookingStartDate: new Date(startDate).toISOString().split("T")[0],
+        // bookingEndDate: new Date(endDate).toISOString().split("T")[0],
+        bookingStartDate: format(new Date(startDate), "dd-MM-yyyy"),
+        bookingEndDate: format(new Date(endDate), "dd-MM-yyyy"),
+        daysDifference: customerRent?.daysDifference,
+      },
+    };
+
+    // Already Booking Handle
+    // if already Bookings Dates select then from startDate - 1 day
+    const selectStartDate = new Date(startDate);
+    const minus1dFromStartDate = new Date(startDate);
+    minus1dFromStartDate.setDate(selectStartDate.getDate() + 1);
+
+    const inputStartDate = new Date(minus1dFromStartDate)
+      .toISOString()
+      .split("T")[0];
+
+    const inputEndDate = new Date(endDate).toISOString().split("T")[0];
+    // const isBooked = isAlreadyBookings(
+    //   inputStartDate,
+    //   inputEndDate,
+    //   bookedDates
+    // );
+
+    // if (!isBooked) {
+    //   if (showMiniumPayment) {
+    //     dispatch(placeBooking(bookingDataUpdate));
+    //   } else {
+    //     dispatch(placeBooking(bookingData));
+    //   }
+    //   if (!user) {
+    //     dispatch(placeModalShow(true));
+    //   } else {
+    //     navigate("/personal-info");
+    //   }
+    // } else {
+    //   toast.error("Sorry ! The date you select is already booked.");
+    // }
+
+    dispatch(placeBooking(bookingData));
+    navigate("/book-villa");
+  };
 
   return (
     <div>
@@ -267,9 +340,14 @@ const VillaBookingBox = ({ villa }) => {
             {/* <p>BDT {isNaN(subTotal) ? 0 : subTotal?.toLocaleString()}</p> */}
           </div>
 
+          <hr className="mt-1 ml-5 text-black" />
+          <div className="flex justify-between mt-2">
+            <p className="ml-16">Total Amount</p>
+            <p>BDT {isNaN(totalAmount) ? 0 : totalAmount?.toLocaleString()}</p>
+          </div>
           <div className="flex justify-between">
-            <div className="ml-16 flex items-center">
-              <p>VAT</p>
+            <div className="ml-16 flex items-center payment-check">
+              <p className="text-red-500">Advance Payment</p>
               <div className="ml-2">
                 <Tooltip
                   content={
@@ -283,8 +361,10 @@ const VillaBookingBox = ({ villa }) => {
                         }}
                         className="font-normal opacity-75 px-5 py-2 rounded"
                       >
-                        {/* {extraCharge[0]?.vatTax?.toLocaleString()} */}% VAT
-                        added based on Rent
+                        <p>
+                          Non-refundable (It will be adjust in your Final
+                          Payment)
+                        </p>
                       </Typography>
                     </div>
                   }
@@ -306,23 +386,13 @@ const VillaBookingBox = ({ villa }) => {
                 </Tooltip>
               </div>
             </div>
-
-            {/* <p> + BDT {isNaN(vatTax) ? 0 : vatTax?.toLocaleString()}</p> */}
-          </div>
-
-          <hr className="mt-1 ml-5 text-black" />
-          <div className="flex justify-between mt-2">
-            <p className="ml-16">Total Amount</p>
-            <p>
-              BDT{" "}
-              {/* {isNaN(totalRentAmount) ? 0 : totalRentAmount?.toLocaleString()} */}
-            </p>
+            <p> BDT {advance} </p>
           </div>
         </div>
 
         <div
           className={`bg-[#35B0A7] h-[35px] flex justify-center items-center hover:bg-[#02625a] mt-2  `}
-          // onClick={handleAddItem}
+          onClick={handleAddItem}
           style={{ cursor: "pointer" }}
         >
           <div>
@@ -388,11 +458,6 @@ const VillaBookingBox = ({ villa }) => {
           </div>
         </div>
       )}
-
-      {/* <Toaster
-        containerStyle={{ top: 300 }}
-        toastOptions={{ position: "top-center" }}
-      ></Toaster> */}
     </div>
   );
 };

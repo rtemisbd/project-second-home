@@ -22,7 +22,7 @@ const getAllVillaFromDB = async()=>{
                 as: "resort",
                 pipeline: [
                     {
-                        $project: { _id: 1, name: 1 }
+                        $project: { _id: 1, name: 1, address : 1 }
                     }
                 ]
             }

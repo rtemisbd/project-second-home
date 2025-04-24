@@ -39,6 +39,8 @@ import RoomDetails from "../pages/Details/RoomDetails";
 import Home from "../pages/Home/Home";
 import PaymentPage from "../components/payment/payment2";
 import VillaDetails from "../pages/villa/VillaDetails";
+import VillaBookingForm from "../pages/Booking/VillaBookingForm";
+import ResortDetail from "../pages/resorts/ResortDetail";
 
 export const router = createBrowserRouter([
   {
@@ -76,6 +78,10 @@ export const router = createBrowserRouter([
       {
         path: "/villa/:id",
         element: <VillaDetails />,
+      },
+      {
+        path: "/resort/:id",
+        element: <ResortDetail />,
       },
       {
         path: "/event/:id",
@@ -191,6 +197,21 @@ export const router = createBrowserRouter([
       {
         path: "/personal-info",
         element: <PersonalInfo></PersonalInfo>,
+      },
+    ],
+  },
+  {
+    path: "/book-villa",
+    element: (
+      <PrivateRoute>
+        <VillaBookingForm />
+      </PrivateRoute>
+    ),
+
+    children: [
+      {
+        path: "/book-villa",
+        element: <VillaBookingForm />,
       },
     ],
   },
