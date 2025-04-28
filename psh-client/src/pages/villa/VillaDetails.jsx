@@ -121,18 +121,7 @@ const VillaDetails = () => {
                       <h1 className="text-xl font-bold text-gray-900 px-1 ">
                         {villa?.title} - {villa?.resortId?.name}
                       </h1>
-                      <div className="mt-2">
-                        <div className="flex items-center text-black">
-                          <p className="ms-1 md:text-xl sm:text-[1rem]">
-                            Villa Number : {villa?.villaNumber}{" "}
-                            <span className="text-base font-bold">
-                              [{villa?.type}]
-                            </span>
-                          </p>
-                        </div>
-                      </div>
-
-                      <div className="flex text-[#9A9A9A] items-center gap-4 mt-2 font-bold ms-1">
+                      <div className="flex items-center gap-4 mt-2 font-bold ms-1">
                         {/* <FaEye className="md:w-[25px] sm:w-[35px]" /> */}
 
                         <p>View : {villa?.view} ,</p>
@@ -141,6 +130,17 @@ const VillaDetails = () => {
                           {villa?.occupancy?.kids} [kids]
                         </p>
                       </div>
+                      <div className="mt-2">
+                        <div className="flex items-center text-[#9A9A9A]">
+                          <p className="ms-1 text-xl font-bold">
+                            Villa Type : {villa?.type}{" "}
+                            <span className="text-base  ">
+                              [{villa?.villaNumber}]
+                            </span>
+                          </p>
+                        </div>
+                      </div>
+
                       <div className="flex text-[#9A9A9A] items-center mt-2">
                         <div>
                           <IoCallOutline className="md:w-[25px] h-[25px] sm:w-[35px]" />
@@ -204,30 +204,51 @@ const VillaDetails = () => {
                     </h2>
                   </div>
                   <div className="grid grid-cols-12 pt-4 ">
-                    <p className="col-span-3 text-xl font-[500]">Per Night</p>
+                    <p className="col-span-3 font-[600]">Per Night</p>
                     <p className="col-span-1">:</p>
                     <p className="col-span-8 text[18px]">
                       {" "}
                       {villa?.pricing?.perNight} BDT
                     </p>
 
-                    <p className="col-span-3 text-xl font-[500]">
-                      Additional Adult
-                    </p>
+                    {villa?.pricing?.adultAddition && (
+                      <>
+                        {" "}
+                        <p className="col-span-3 font-[600]">
+                          Additional Adult
+                        </p>
+                        <p className="col-span-1">:</p>
+                        <p className="col-span-8 text[18px]">
+                          {" "}
+                          {villa?.pricing?.adultAddition} BDT
+                          <span className="text-sm"> [per adult]</span>
+                        </p>{" "}
+                      </>
+                    )}
+                    {villa?.pricing?.kidAddition && (
+                      <>
+                        <p className="col-span-3 font-[600]">
+                          Additional Children
+                        </p>
+                        <p className="col-span-1">:</p>
+                        <p className="col-span-8 text[18px]">
+                          {" "}
+                          {villa?.pricing?.kidAddition} BDT
+                          <span className="text-sm"> [per child]</span>
+                        </p>
+                      </>
+                    )}
+                    <p className="col-span-3 font-[600]">Check In Time</p>
                     <p className="col-span-1">:</p>
                     <p className="col-span-8 text[18px]">
                       {" "}
-                      {villa?.pricing?.adultAddition} BDT
-                      <span className="text-sm"> [per adult]</span>
+                      {villa?.pricing?.checkIn}
                     </p>
-                    <p className="col-span-3 text-xl font-[500]">
-                      Additional Children
-                    </p>
+                    <p className="col-span-3 font-[600]">Check Out Time</p>
                     <p className="col-span-1">:</p>
                     <p className="col-span-8 text[18px]">
                       {" "}
-                      {villa?.pricing?.kidAddition} BDT
-                      <span className="text-sm"> [per child]</span>
+                      {villa?.pricing?.checkOut}
                     </p>
                   </div>
                 </div>
