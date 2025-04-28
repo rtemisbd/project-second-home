@@ -86,7 +86,7 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
             // "exportpdf",
           ],
           toolbar:
-            "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table  |   typography | align  | checklist   indent outdent | emoticons  ",
+            "undo redo | blocks  fontsize | bold italic underline strikethrough | link image media table  |   typography | align  | checklist   indent outdent | emoticons  ",
           file_picker_callback: handleImageUpload,
           fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt", // Font sizes available
           content_style: `

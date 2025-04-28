@@ -17,6 +17,7 @@ import Skeleton from "react-loading-skeleton";
 import YouTube from "react-youtube";
 import getYouTubeVideoId from "../../helpers/utils/getYouTubeVideoId";
 import { playerOptions } from "../../helpers/utils/playerOptions";
+import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 
 const VillaDetails = () => {
   const { id } = useParams();
@@ -25,8 +26,20 @@ const VillaDetails = () => {
   const videoId = getYouTubeVideoId(villa?.resortId.video);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
+  const [keyValue, setKeyValue] = useState("");
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
+
+  const navItems = [
+    { name: "Key Details", id: "keyDetails" },
+    { name: "Services & Amenities", id: "amenities" },
+    { name: "Price Details", id: "price" },
+    { name: "Policies", id: "policies" },
+  ];
+
+  const anchorClick = (e) => {
+    anchorClickHandler(e);
+  };
 
   const toggleMute = (e) => {
     e.stopPropagation();
@@ -112,6 +125,29 @@ const VillaDetails = () => {
             video={villa?.media?.video}
             photos={villa?.media?.photos}
           />
+          <div className="sticky lg:top-[70px] sm:top-[70px] bg-white py-1 ">
+            <div className="flex text-[24px] font-medium">
+              <div className="sm:flex flex-wrap">
+                {navItems?.map((item, index) => (
+                  <div key={index} onClick={() => setKeyValue(index)}>
+                    <span>
+                      <a
+                        href={`#${item?.id}`}
+                        onClick={anchorClick}
+                        className={`hover:text-black hover:border-b-2 border-[#27b3b1] sm:text-[12px] md:text-[1rem] md:px-8 custom_key sm:px-1 py-1 border ${
+                          keyValue === index
+                            ? "bg-[#00bbb4] text-white hover:text-white"
+                            : ""
+                        }`}
+                      >
+                        {item?.name}
+                      </a>
+                    </span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
           <div className=" text-start ">
             <div className="grid grid-cols-12 lg:gap-x-5 gap-y-16 ">
               <div className="flex flex-col items-start space-y-3 sm:col-span-12 lg:col-span-8  pt-2">
@@ -175,12 +211,56 @@ const VillaDetails = () => {
                     </div>
                   </div>
                 </div>
+                {/* key details */}
+                <div id="keyDetails" className="w-full">
+                  <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
+                    Key Details
+                  </h2>
+                </div>
 
-                <div className="w-full">
-                  <h2
-                    id="apartmentDetails"
-                    className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5"
-                  >
+                <div className="grid grid-cols-6 gap-x-4 md:gap-y-6 sm:gap-y-4 ">
+                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold">Villa Type</p>
+                    <p>{villa?.type}</p>
+                  </div>
+                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold">View</p>
+                    <p>{villa?.view}</p>
+                  </div>
+                  {/* <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold">Area</p>
+                    <p>{villa?.area} Sqft</p>
+                  </div> */}
+                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold">Total Floor</p>
+                    <p>{villa?.totalFloor} floor </p>
+                  </div>
+                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold"> Bedrooms</p>
+                    <p>
+                      {villa?.totalRoom}{" "}
+                      {villa?.totalRoom > 1 ? "Bedrooms" : "Bedroom"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold"> Bathrooms</p>
+                    <p>
+                      {villa?.totalBathroom}{" "}
+                      {villa?.totalBathroom > 1 ? "Bathrooms" : "Bathroom"}
+                    </p>
+                  </div>
+                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                    <p className="font-bold"> Balcony</p>
+                    <p>
+                      {villa?.totalBalcony}{" "}
+                      {villa?.totalBalcony > 1 ? "Balconies" : "Balcony"}
+                    </p>
+                  </div>
+                </div>
+
+                {/* services and amenities */}
+                <div id="amenities" className="w-full">
+                  <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
                     Services & Room Amenities
                   </h2>
                   <ul className=" grid md:grid-cols-2 px-5">
@@ -194,7 +274,7 @@ const VillaDetails = () => {
 
                 {/* Price Deatils */}
 
-                <div className="w-full">
+                <div id="price" className="w-full">
                   <div className="facility_h1 p-2">
                     <h2
                       id="priceDetails"
@@ -253,10 +333,10 @@ const VillaDetails = () => {
                   </div>
                 </div>
 
-                <div className="w-full">
+                <div id="policies" className="w-full">
                   <h2
-                    id="apartmentDetails"
-                    className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5"
+                    className="text-xl font-bold text-gra
+                  3y-900 mb-5  facility_h1 p-2 mt-5"
                   >
                     Occupancy Policy
                   </h2>
@@ -269,10 +349,7 @@ const VillaDetails = () => {
                   </div>
                 </div>
                 <div className="w-full">
-                  <h2
-                    id="apartmentDetails"
-                    className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5"
-                  >
+                  <h2 className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5">
                     Villa Rules
                   </h2>
                   <div className="leading-8 w-full">
@@ -284,10 +361,7 @@ const VillaDetails = () => {
                   </div>
                 </div>
                 <div className="w-full">
-                  <h2
-                    id="apartmentDetails"
-                    className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5"
-                  >
+                  <h2 className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5">
                     Booking Policy
                   </h2>
                   <div className="leading-8 w-full">
@@ -301,10 +375,7 @@ const VillaDetails = () => {
                   </div>
                 </div>
                 <div className="w-full">
-                  <h2
-                    id="apartmentDetails"
-                    className="text-xl font-bold text-gray-900   facility_h1 p-2 mt-5"
-                  >
+                  <h2 className="text-xl font-bold text-gray-900   facility_h1 p-2 mt-5">
                     Cancellation Policy
                   </h2>
                   <div className="w-full">

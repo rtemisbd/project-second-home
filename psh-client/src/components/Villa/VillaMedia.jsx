@@ -70,7 +70,7 @@ const VillaMedia = ({ video, photos = [] }) => {
 
   return (
     <div>
-      <div className="grid grid-cols-2 mb-10">
+      <div className="grid grid-cols-2 mb-4">
         {/* Video Section */}
         <div
           ref={playerContainerRef}
