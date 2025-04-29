@@ -53,16 +53,20 @@ const CreateUser = () => {
       }
     }
   };
+  console.log({ otp });
 
   const handleOtp = async (e) => {
     e.preventDefault();
 
     if (Number(otp.join("")) === randomCode) {
+      console.log(1);
+
       try {
         const response = await axios.post(`${baseUrl}/api/users`, {
           firstName,
           phone,
         });
+        console.log(response);
 
         if (response.status === 200) {
           toast.success("Congratulations! Your account has been created.");
@@ -218,6 +222,7 @@ const CreateUser = () => {
               padding: "32px 0px",
             }}
           >
+            {/* choose */}
             <div
               style={{ display: "flex", gap: "8px", marginBottom: "24px" }}
               className="content customize_list"

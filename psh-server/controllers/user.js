@@ -36,6 +36,8 @@ export const createUser = async (req, res) => {
       req.body.password || config.user_default_password,
       10
     );
+    console.log(hashedPassword);
+    
 
     const user = new User({
       firstName,
