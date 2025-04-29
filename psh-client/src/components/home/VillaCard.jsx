@@ -10,6 +10,8 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import "./styles/SingleCard.css";
 
 const VillaCard = ({ villa }) => {
+  console.log(villa);
+
   return (
     <div className="single-card ">
       <Link to={`/villa/${villa._id}`}>
@@ -38,30 +40,22 @@ const VillaCard = ({ villa }) => {
                   [ {villa?.resort?.name} ]
                 </span>
               </div>
-
-              <div>
-                {villa?.branchDetails?.foodAmount === 0 && (
-                  <span className="text-sm font-medium bg-[#27B3B1] text-white px-2 py-1 rounded">
-                    With Food
-                  </span>
-                )}
-              </div>
             </div>
-            <div className="flex itmes-center">
+            <div className="flex items-center">
               <img
-                className="mt-1"
+                className="mt-1 mr-1"
                 src={locationIcon}
                 style={{ height: "15px", width: "15px" }}
                 alt=""
               />
               <p className="branch-location">
-                <span className="text-[10px]">{villa?.location}</span>
+                <span className="text-[12px] ">{villa?.resort?.address}</span>
               </p>
             </div>
 
             <div className="">
               <h2 className=" text-[14px] card-title ">
-                {villa?.totalFloor} Floor, {villa?.totalRoom} Room
+                {villa?.occupancy?.adults} Adult, {villa?.occupancy?.kids} kids
               </h2>
             </div>
           </CardBody>

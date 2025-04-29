@@ -7,14 +7,16 @@ import { toast, ToastContainer } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
+import TextEditor from "../../components/TextEditor/TextEditor";
 
 const AddResort = () => {
   const MySwal = withReactContent(Swal);
   const [files, setFiles] = useState("");
-  const [facilities, setFacilities] = useState([
-    { id: Date.now(), title: "", img: "" },
-  ]);
+  const [facilities, setFacilities] = useState([{ id: Date.now(), title: "" }]);
   const [villaTypes, setVillaTypes] = useState([{ id: Date.now(), name: "" }]);
+
+  const [bookingPolicy, setBookingPolicy] = useState("");
+  const [cancellationPolicy, setCancellationPolicy] = useState("");
 
   // location
   const allDivisions = allDivision();
@@ -48,23 +50,12 @@ const AddResort = () => {
 
   // Function to add a new facility
   const addFacility = () => {
-    setFacilities([...facilities, { id: Date.now(), title: "", img: "" }]);
+    setFacilities([...facilities, { id: Date.now(), title: "" }]);
   };
 
   // Function to remove a facility by ID
   const removeFacility = (id) => {
     setFacilities(facilities.filter((facility) => facility.id !== id));
-  };
-
-  const handleFacilityImageChange = (index, event) => {
-    const file = event.target.files[0]; // Single file for each facility
-
-    if (file) {
-      const newFacilities = [...facilities];
-      newFacilities[index].img = file; // Store file in state
-      newFacilities[index].preview = URL.createObjectURL(file); // Create image preview
-      setFacilities(newFacilities);
-    }
   };
 
   // villa types
@@ -74,13 +65,6 @@ const AddResort = () => {
 
   const removeVillaType = (id) => {
     setVillaTypes(villaTypes.filter((villa) => villa.id !== id));
-  };
-
-  const handleRemoveFacilityImage = (index) => {
-    const newFacilities = [...facilities];
-    newFacilities[index].img = ""; // Clear the image file
-    newFacilities[index].preview = ""; // Remove preview URL
-    setFacilities(newFacilities);
   };
 
   const handleResortSubmit = async (event) => {
@@ -99,18 +83,14 @@ const AddResort = () => {
       resortDutchNumber: formData.get("resortDutchNumber"),
       resortEmail: formData.get("resortEmail"),
       video: formData.get("video"),
+      welcomeNote: formData.get("welcomeNote"),
       villaTypes: villaTypes.map((villa) => ({ name: villa.name })),
-      nearLocation: {
-        nearLocation1: formData.get("nearLocation1"),
-        nearLocation2: formData.get("nearLocation2"),
-        nearLocation3: formData.get("nearLocation3"),
-        nearLocation4: formData.get("nearLocation4"),
-        nearLocation5: formData.get("nearLocation5"),
-        nearLocation6: formData.get("nearLocation6"),
-      },
+      facilities: facilities.map((facility) => ({
+        title: facility.title,
+      })),
       policies: {
-        bookingPolicy: formData.get("bookingPolicy"),
-        cancellationPolicy: formData.get("cancellationPolicy"),
+        bookingPolicy,
+        cancellationPolicy,
       },
     };
 
@@ -118,14 +98,6 @@ const AddResort = () => {
     const photoUrls = await multipleImageUpload(selectedFiles);
     data.photos = photoUrls;
     toast("Wait Please...", "success");
-    // host facility images
-    const facilityImages = await multipleImageUpload(
-      facilities.map((facility) => facility.img)
-    );
-    data.facilities = facilities.map((facility, index) => ({
-      title: facility.title,
-      img: facilityImages[index],
-    }));
 
     try {
       const response = await axios.post(`${baseUrl}/api/resort`, data);
@@ -134,7 +106,7 @@ const AddResort = () => {
       setVillaTypes([{ id: Date.now(), name: "" }]);
       setSelectedFiles([]);
       setImagePreviews([]);
-      setFacilities([{ id: Date.now(), title: "", img: "" }]);
+      setFacilities([{ id: Date.now(), title: "" }]);
       setSelectedDistrict(null);
       setSelectedDivision(null);
     } catch (error) {
@@ -341,104 +313,30 @@ const AddResort = () => {
                   required
                 />
               </div>
-              <h2 className="profile_label3 profile_bg my-4">
-                Around The Resort
-              </h2>
-              <div className="col-md-4 form_sub_stream">
+
+              <h2 className="profile_label3 profile_bg my-4">Welcome Note</h2>
+              <div className="col-md-12 form_sub_stream mb-5">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  No:1
+                  Short Description or Welcome Note
                 </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation1"
-                  placeholder="No:1"
+                <textarea
+                  className="main_form w-100 h-100"
+                  name="welcomeNote"
+                  rows="5"
+                  cols="50"
+                  placeholder=" Write your note in detail"
+                  required
                 />
               </div>
-              <div className="col-md-4 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:2
-                </label>
 
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation2"
-                  placeholder="No:2"
-                />
-              </div>
-              <div className="col-md-4 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:3
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation3"
-                  placeholder="No:3"
-                />
-              </div>
-              <div className="col-md-4 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:4
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation4"
-                  placeholder="No:4"
-                />
-              </div>
-              <div className="col-md-4 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:5
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation5"
-                  placeholder="No:5"
-                />
-              </div>
-              <div className="col-md-4 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  No:6
-                </label>
-
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="nearLocation6"
-                  placeholder="No:6"
-                />
-              </div>
               <h2 className="profile_label3 profile_bg my-4">
                 Our Villa Types
               </h2>
               {villaTypes.map((villa, index) => (
-                <div key={villa.id} className="col-md-4 form_sub_stream">
+                <div key={villa.id} className="col-md-4 form_sub_stream mb-4">
                   <label className="form-label profile_label3">
                     Villa Type Name
                   </label>
@@ -513,6 +411,7 @@ const AddResort = () => {
                           alt={`Preview ${index}`}
                           className="img-preview"
                         />
+
                         <button
                           type="button"
                           onClick={() => handleRemoveImage(index)}
@@ -555,7 +454,7 @@ const AddResort = () => {
                 Common Facilities
               </h2>
               {facilities.map((facility, index) => (
-                <div key={facility.id} className="col-md-12 form_sub_stream">
+                <div key={facility.id} className="col-md-4 form_sub_stream">
                   <label className="form-label profile_label3">
                     Facility Title
                   </label>
@@ -572,42 +471,20 @@ const AddResort = () => {
                     required
                   />
 
-                  <label className="form-label profile_label3 mt-2">
-                    Facility Image
-                  </label>
-                  <input
-                    type="file"
-                    className="main_form w-100 p-0"
-                    onChange={(e) => handleFacilityImageChange(index, e)}
-                    accept="image/*"
-                    required
-                  />
-
-                  {/* Show Image Preview */}
-                  {facility.preview && (
-                    <div className="col-md-1 position-relative my-4">
-                      <img
-                        src={facility.preview}
-                        alt={`Facility Preview ${index}`}
-                        className="img-preview"
-                      />
-                      <button
-                        onClick={() => handleRemoveFacilityImage(index)}
-                        className="remove-btn"
-                        style={{ right: -20 }}
-                      >
-                        ✕
-                      </button>
-                    </div>
-                  )}
-
                   {facilities.length > 1 && (
                     <button
                       type="button"
-                      className="btn btn-danger mt-2"
+                      className=""
+                      style={{
+                        background: "none",
+                        color: "red",
+                        marginTop: "-12px",
+
+                        fontWeight: "bold",
+                      }}
                       onClick={() => removeFacility(facility.id)}
                     >
-                      Remove Facility
+                      [ Remove ]
                     </button>
                   )}
                 </div>
@@ -627,36 +504,36 @@ const AddResort = () => {
                 <h2 className="profile_label3 profile_bg ">
                   Rules and Regulations
                 </h2>
-                <div className="col-md-12 form_sub_stream">
+
+                <div className="col-md-12 form_sub_stream mt-2">
                   <label
                     htmlFor="inputState"
                     className="form-label profile_label3 "
                   >
                     Booking Policy
                   </label>
-                  <textarea
-                    className="main_form w-100 h-100"
-                    name="bookingPolicy"
-                    rows="5"
-                    cols="50"
-                    placeholder=" Write occupancy policy in detail"
-                    required
+                </div>
+
+                <div className="col-md-12 form_sub_stream">
+                  <TextEditor
+                    editorValue={bookingPolicy}
+                    setEditorValue={setBookingPolicy}
                   />
                 </div>
-                <div className="col-md-12 form_sub_stream  mt-5">
+
+                <div className="col-md-12 form_sub_stream mt-2">
                   <label
                     htmlFor="inputState"
                     className="form-label profile_label3 "
                   >
                     Cancellation Policy
                   </label>
-                  <textarea
-                    className="main_form w-100 h-100"
-                    name="cancellationPolicy"
-                    rows="5"
-                    cols="50"
-                    placeholder=" Write occupancy policy in detail"
-                    required
+                </div>
+
+                <div className="col-md-12 form_sub_stream">
+                  <TextEditor
+                    editorValue={cancellationPolicy}
+                    setEditorValue={setCancellationPolicy}
                   />
                 </div>
               </div>

@@ -199,6 +199,8 @@ const PersonalInfo = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
+  // console.log(bookingItem);
+
   return (
     <div>
       <LoadingState />

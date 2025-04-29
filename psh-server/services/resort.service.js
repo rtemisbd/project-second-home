@@ -16,8 +16,13 @@ const getAllResortsFromDB = async()=>{
     return result;
 }
 
+const getResortByIdFromDB  = async(id)=>{
+    const result = await Resort.findOne({ _id : id});
+    return result;
+}
 
 export const resortServices  = {
     createResortIntoDB,
-    getAllResortsFromDB
+    getAllResortsFromDB,
+    getResortByIdFromDB
 }

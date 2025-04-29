@@ -24,8 +24,7 @@ const getAllVilla =  catchAsync(async(req, res, next)=>{
 })
 
 
-const getVillaById = catchAsync(async(req, res, next)=>{
-    
+const getVillaById = catchAsync(async(req, res, next)=>{ 
     const result = await villaServices.getVillaByIdFromDB(req.params.id);
     responseSend(res, {
         statusCode : 200,

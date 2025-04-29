@@ -3,22 +3,8 @@ import { MdClose, MdVolumeOff, MdVolumeUp } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 import YouTube from "react-youtube";
 import ImageViewer from "react-simple-image-viewer";
-
-// Helper to extract YouTube video ID
-const getYouTubeVideoId = (url) => {
-  try {
-    const parsed = new URL(url);
-    if (parsed.hostname === "youtu.be") {
-      return parsed.pathname.slice(1);
-    }
-    if (parsed.searchParams.has("v")) {
-      return parsed.searchParams.get("v");
-    }
-    return null;
-  } catch {
-    return null;
-  }
-};
+import getYouTubeVideoId from "../../helpers/utils/getYouTubeVideoId";
+import { playerOptions } from "../../helpers/utils/playerOptions";
 
 const VillaMedia = ({ video, photos = [] }) => {
   const videoId = getYouTubeVideoId(video);
@@ -82,26 +68,13 @@ const VillaMedia = ({ video, photos = [] }) => {
     };
   }, []);
 
-  const playerOptions = {
-    height: "100%",
-    width: "100%",
-    playerVars: {
-      autoplay: 1,
-      controls: 1,
-      modestbranding: 1,
-      rel: 0,
-      showinfo: 0,
-      mute: 1,
-    },
-  };
-
   return (
     <div>
-      <div className="grid grid-cols-2 mb-10">
+      <div className="grid grid-cols-2 mb-4">
         {/* Video Section */}
         <div
           ref={playerContainerRef}
-          className="relative group rounded w-full lg:h-[371px] md:h-[280px] sm:h-[200px] cursor-pointer overflow-hidden"
+          className="relative group rounded w-full lg:h-[371px] md:h-[280px] sm:h-[200px] cursor-pointer overflow-hidden bg-gray-100"
           onClick={openVideoInYouTube}
         >
           {videoId ? (

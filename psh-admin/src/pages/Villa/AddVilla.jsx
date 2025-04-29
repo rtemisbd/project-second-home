@@ -91,11 +91,30 @@ const AddVilla = () => {
     setSelectedType(event.target.value);
   };
 
+  const convertToAMPM = (time24) => {
+    if (!time24) return "";
+    const [hours, minutes] = time24.split(":");
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const adjustedHour = hour % 12 || 12; // 0 becomes 12
+    return `${adjustedHour}:${minutes} ${ampm}`;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
     const selectedRoomFeatures = formData.getAll("commonfeature[]");
-    const addedFeatures = newFeatures.map((feature) => feature.name);
+    // const addedFeatures = newFeatures?.map((feature) => feature.name);
+    const addedFeatures = newFeatures
+      ?.map((feature) => feature.name.trim())
+      .filter((name) => name !== "");
+
+    const checkInTime24 = formData.get("checkInTime");
+    const checkOutTime24 = formData.get("checkOutTime");
+
+    const checkInTime = convertToAMPM(checkInTime24);
+    const checkOutTime = convertToAMPM(checkOutTime24);
+
     const villaData = {
       resortId: selectedResort,
       title: formData.get("villaTitle"),
@@ -117,9 +136,11 @@ const AddVilla = () => {
       features: [...selectedRoomFeatures, ...addedFeatures],
       pricing: {
         perNight: formData.get("perNight"),
-        securityDeposit: formData.get("securityDeposit"),
+        advancePayment: formData.get("advancePayment"),
         adultAddition: formData.get("adultAddition"),
         kidAddition: formData.get("kidAddition"),
+        checkIn: checkInTime,
+        checkOut: checkOutTime,
       },
       houseRules: houseRules,
     };
@@ -418,20 +439,16 @@ const AddVilla = () => {
                 <div className="row">
                   {newFeatures.map((feature, index) => (
                     <div key={feature.id} className="col-md-4 form_sub_stream">
-                      {/* <label className="form-label profile_label3">
-                        New Feature Title
-                      </label> */}
                       <input
                         type="text"
                         className="main_form w-100"
-                        value={feature.name}
+                        value={feature.name || ""}
                         onChange={(e) => {
                           const updatedFeature = [...newFeatures];
                           updatedFeature[index].name = e.target.value;
                           setNewFeatures(updatedFeature);
                         }}
                         placeholder="New Amenity or Service"
-                        required
                       />
 
                       <div className="col-md-12 d-flex justify-content-end ">
@@ -467,7 +484,9 @@ const AddVilla = () => {
               </div>
             </div>
             <div className="row p-3">
-              <h2 className="profile_label3 profile_bg mt-3">Rent Details</h2>
+              <h2 className="profile_label3 profile_bg mt-3">
+                Pricing Details
+              </h2>
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -488,13 +507,13 @@ const AddVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Security Deposit
+                  Advance Payment
                 </label>
                 <input
                   type="number"
                   className="main_form w-100"
-                  name="securityDeposit"
-                  placeholder=" Security Deposit"
+                  name="advancePayment"
+                  placeholder=" Minimum Payment"
                   required
                 />
               </div>
@@ -510,7 +529,7 @@ const AddVilla = () => {
                   className="main_form w-100"
                   name="adultAddition"
                   placeholder=" Extra For Additional Adult "
-                  required
+                  // required
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
@@ -525,6 +544,39 @@ const AddVilla = () => {
                   className="main_form w-100"
                   name="kidAddition"
                   placeholder=" Extra For Additional Kid "
+                  // required
+                />
+              </div>
+              {/* Check-In Time */}
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="checkInTime"
+                  className="form-label profile_label3"
+                >
+                  Check-In Time (AM/PM)
+                </label>
+                <input
+                  type="time"
+                  className="main_form w-100"
+                  name="checkInTime"
+                  placeholder="Check-In Time (AM/PM)"
+                  required
+                />
+              </div>
+
+              {/* Check-Out Time */}
+              <div className="col-md-6 form_sub_stream">
+                <label
+                  htmlFor="checkOutTime"
+                  className="form-label profile_label3"
+                >
+                  Check-Out Time (AM/PM)
+                </label>
+                <input
+                  type="time"
+                  className="main_form w-100"
+                  name="checkOutTime"
+                  placeholder="Check-Out Time (AM/PM)"
                   required
                 />
               </div>

@@ -2,21 +2,13 @@ import mongoose from "mongoose";
 
 const facilitiesSchema = new mongoose.Schema({
     title: { type: String, required: true },
-    img: { type: String, required: true }, 
+    
 });
 
 const villaTypeSchema = new mongoose.Schema({
     name: { type: String, required: true }
 });
 
-const nearLocationSchema = new mongoose.Schema({
-    nearLocation1: { type: String},
-    nearLocation2: { type: String},
-    nearLocation3: { type: String},
-    nearLocation4: { type: String},
-    nearLocation5: { type: String},
-    nearLocation6: { type: String},
-})
 
 const resortSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -29,7 +21,7 @@ const resortSchema = new mongoose.Schema({
     resortNagadNumber: { type: String },
     resortDutchNumber: { type: String },
     resortEmail: { type: String, required: true },
-    nearLocation : nearLocationSchema,
+    welcomeNote : {type : String},
     photos: [{ type: String }],
     video: { type: String },
     facilities: [facilitiesSchema],

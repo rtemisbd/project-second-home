@@ -24,9 +24,12 @@ const villaSchema = new mongoose.Schema({
     // features: [featureSchema],
     pricing: {
         perNight: { type: Number, required: true },
-        securityDeposit: { type: Number, required: true },
-        adultAddition: { type: Number, required: true },
-        kidAddition: { type: Number, required: true },
+        advancePayment: { type: Number, required: true },
+        adultAddition: { type: Number},
+        kidAddition: { type: Number},
+        checkIn : {type : String, required : true},
+        checkOut : {type : String, required : true},
+        
     },
     media: {
         photos: [{ type: String }],
