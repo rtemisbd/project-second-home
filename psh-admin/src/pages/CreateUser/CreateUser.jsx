@@ -53,7 +53,6 @@ const CreateUser = () => {
       }
     }
   };
-  console.log({ otp });
 
   const handleOtp = async (e) => {
     e.preventDefault();
