@@ -94,7 +94,7 @@ const RoomOverview = () => {
           withSharedRoom: true,
           roomNumber,
           seatNumber,
-          // isPublished: "Published",
+          isPublished: "Published",
         });
 
         const response = await fetch(

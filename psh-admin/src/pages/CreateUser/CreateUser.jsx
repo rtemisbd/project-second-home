@@ -212,14 +212,12 @@ const CreateUser = () => {
           <section
             className="content customize_list"
             style={{
-              // border: "3px solid white",
               background: "white",
               width: "60%",
               margin: "auto",
               padding: "32px 0px",
             }}
           >
-            {/* choose */}
             <div
               style={{ display: "flex", gap: "8px", marginBottom: "24px" }}
               className="content customize_list"
