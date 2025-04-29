@@ -633,7 +633,7 @@ const RoomDetails = () => {
                               </p>
                             </div>
                           )}
-                        </div>
+                        </div> 
                       ) : (
                         ""
                       )}

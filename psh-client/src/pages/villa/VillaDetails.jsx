@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import VillaMedia from "../../components/Villa/VillaMedia";
+import ExpandableText from "../../helpers/utils/ExpandableText";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { AiFillHeart, AiOutlineShareAlt } from "react-icons/ai";
 import Map from "../Details/Map";
@@ -11,7 +12,6 @@ import { IoCallOutline } from "react-icons/io5";
 import { convertHtml } from "../../helpers/utils/convertHtml";
 import VillaBookingBox from "../Booking/VillaBookingBox";
 import { FaEye } from "react-icons/fa";
-
 import { MdClose, MdVolumeOff, MdVolumeUp } from "react-icons/md";
 import Skeleton from "react-loading-skeleton";
 import YouTube from "react-youtube";
@@ -27,6 +27,8 @@ const VillaDetails = () => {
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
   const [keyValue, setKeyValue] = useState("");
+  const [showAll, setShowAll] = useState(false);
+  const [features, setFeatures] = useState([]);
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
 
@@ -88,9 +90,12 @@ const VillaDetails = () => {
     const fetchVilla = async () => {
       const { data } = await axios.get(`${serverBaseUrl}/villa/${id}`);
       setVilla(data?.data);
+      setFeatures(
+        showAll ? data?.data?.features : data?.data?.features.slice(0, 8)
+      );
     };
     fetchVilla();
-  }, [id]);
+  }, [id, showAll]);
   console.log(villa);
 
   return (
@@ -157,10 +162,10 @@ const VillaDetails = () => {
                       <h1 className="text-xl font-bold text-gray-900 px-1 ">
                         {villa?.title} - {villa?.resortId?.name}
                       </h1>
-                      <div className="flex items-center gap-4 mt-2 font-bold ms-1">
+                      <div className="flex flex-col md:flex-row md:gap-4 mt-2 font-bold ms-1">
                         {/* <FaEye className="md:w-[25px] sm:w-[35px]" /> */}
 
-                        <p>View : {villa?.view} ,</p>
+                        <p>View : {villa?.view} </p>
                         <p>
                           Occupancy : {villa?.occupancy?.adults} [adult] ,{" "}
                           {villa?.occupancy?.kids} [kids]
@@ -168,24 +173,15 @@ const VillaDetails = () => {
                       </div>
                       <div className="mt-2">
                         <div className="flex items-center text-[#9A9A9A]">
-                          <p className="ms-1 text-xl font-bold">
+                          <p className="ms-1 md:text-xl font-bold">
                             Villa Type : {villa?.type}{" "}
-                            <span className="text-base  ">
+                            <span className="text-sm md:text-base  ">
                               [{villa?.villaNumber}]
                             </span>
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex text-[#9A9A9A] items-center mt-2">
-                        <div>
-                          <IoCallOutline className="md:w-[25px] h-[25px] sm:w-[35px]" />
-                        </div>
-                        <p className="ms-1">
-                          {" "}
-                          {villa?.resortId?.resortMobileNumber}{" "}
-                        </p>
-                      </div>
                       <div className="flex text-[#9A9A9A] items-center mt-2">
                         <img
                           src="/public/images/icon/marker-02.png"
@@ -195,9 +191,18 @@ const VillaDetails = () => {
 
                         <p className="ms-1"> {villa?.resortId?.address} </p>
                       </div>
+                      <div className="flex text-[#9A9A9A] items-center mt-2">
+                        <div>
+                          <IoCallOutline className="md:w-[25px] h-[25px] sm:w-[35px]" />
+                        </div>
+                        <p className="ms-1">
+                          {" "}
+                          {villa?.resortId?.resortMobileNumber}{" "}
+                        </p>
+                      </div>
                     </div>
                   </div>
-                  <div className="col-span-2 flex md:ml-[50px] md:justify-between sm:mt-3 md:mt-0">
+                  <div className="col-span-6 md:col-span-2 flex md:ml-[50px] justify-end md:justify-between pr-4">
                     <div>
                       <AiFillHeart
                         className={`w-[24px] h-[30px] cursor-pointer ${
@@ -263,13 +268,25 @@ const VillaDetails = () => {
                   <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
                     Services & Room Amenities
                   </h2>
-                  <ul className=" grid md:grid-cols-2 px-5">
-                    {villa?.features?.map((feature, ind) => (
-                      <li key={ind} className="list-disc">
-                        {feature}
-                      </li>
-                    ))}
+                  <ul className=" grid md:grid-cols-2 px-5 ">
+                    <>
+                      {features?.map((feature, ind) => (
+                        <li key={ind} className="list-disc">
+                          {feature}
+                        </li>
+                      ))}
+                    </>
                   </ul>
+                  {villa?.features.length > 8 && (
+                    <div
+                      className=" flex justify-end cursor-pointer"
+                      onClick={() => setShowAll(!showAll)}
+                    >
+                      <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
+                        {showAll ? "See Less" : "See More"}
+                      </p>
+                    </div>
+                  )}
                 </div>
 
                 {/* Price Deatils */}
@@ -284,9 +301,11 @@ const VillaDetails = () => {
                     </h2>
                   </div>
                   <div className="grid grid-cols-12 pt-4 ">
-                    <p className="col-span-3 font-[600]">Per Night</p>
+                    <p className="col-span-5 md:col-span-3 font-[600]">
+                      Per Night
+                    </p>
                     <p className="col-span-1">:</p>
-                    <p className="col-span-8 text[18px]">
+                    <p className="col-span-6 md:col-span-8 text[18px]">
                       {" "}
                       {villa?.pricing?.perNight} BDT
                     </p>
@@ -294,11 +313,11 @@ const VillaDetails = () => {
                     {villa?.pricing?.adultAddition && (
                       <>
                         {" "}
-                        <p className="col-span-3 font-[600]">
+                        <p className="col-span-5 md:col-span-3 font-[600]">
                           Additional Adult
                         </p>
                         <p className="col-span-1">:</p>
-                        <p className="col-span-8 text[18px]">
+                        <p className="col-span-6 md:col-span-8 text[18px]">
                           {" "}
                           {villa?.pricing?.adultAddition} BDT
                           <span className="text-sm"> [per adult]</span>
@@ -307,26 +326,30 @@ const VillaDetails = () => {
                     )}
                     {villa?.pricing?.kidAddition && (
                       <>
-                        <p className="col-span-3 font-[600]">
+                        <p className="col-span-5 md:col-span-3 font-[600]">
                           Additional Children
                         </p>
                         <p className="col-span-1">:</p>
-                        <p className="col-span-8 text[18px]">
+                        <p className="col-span-6 md:col-span-8 text[18px]">
                           {" "}
                           {villa?.pricing?.kidAddition} BDT
                           <span className="text-sm"> [per child]</span>
                         </p>
                       </>
                     )}
-                    <p className="col-span-3 font-[600]">Check In Time</p>
+                    <p className="col-span-5 md:col-span-3 font-[600]">
+                      Check In Time
+                    </p>
                     <p className="col-span-1">:</p>
-                    <p className="col-span-8 text[18px]">
+                    <p className="col-span-6 md:col-span-8 text[18px]">
                       {" "}
                       {villa?.pricing?.checkIn}
                     </p>
-                    <p className="col-span-3 font-[600]">Check Out Time</p>
+                    <p className="col-span-5 md:col-span-3 font-[600]">
+                      Check Out Time
+                    </p>
                     <p className="col-span-1">:</p>
-                    <p className="col-span-8 text[18px]">
+                    <p className="col-span-6 md:col-span-8 text[18px]">
                       {" "}
                       {villa?.pricing?.checkOut}
                     </p>
@@ -334,59 +357,43 @@ const VillaDetails = () => {
                 </div>
 
                 <div id="policies" className="w-full">
-                  <h2
-                    className="text-xl font-bold text-gra
-                  3y-900 mb-5  facility_h1 p-2 mt-5"
-                  >
+                  <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
                     Occupancy Policy
                   </h2>
-                  <div className="leading-8 w-full">
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: convertHtml(villa?.occupancy?.policy),
-                      }}
-                    ></span>
-                  </div>
+                  <ExpandableText
+                    htmlContent={convertHtml(villa?.occupancy?.policy)}
+                  />
                 </div>
+
                 <div className="w-full">
-                  <h2 className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5">
+                  <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
                     Villa Rules
                   </h2>
-                  <div className="leading-8 w-full">
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: convertHtml(villa?.houseRules),
-                      }}
-                    ></span>
-                  </div>
+                  <ExpandableText
+                    htmlContent={convertHtml(villa?.houseRules)}
+                  />
                 </div>
+
                 <div className="w-full">
-                  <h2 className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5">
+                  <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
                     Booking Policy
                   </h2>
-                  <div className="leading-8 w-full">
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: convertHtml(
-                          villa?.resortId?.policies?.bookingPolicy
-                        ),
-                      }}
-                    ></span>
-                  </div>
+                  <ExpandableText
+                    htmlContent={convertHtml(
+                      villa?.resortId?.policies?.bookingPolicy
+                    )}
+                  />
                 </div>
+
                 <div className="w-full">
-                  <h2 className="text-xl font-bold text-gray-900   facility_h1 p-2 mt-5">
+                  <h2 className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5">
                     Cancellation Policy
                   </h2>
-                  <div className="w-full">
-                    <span
-                      dangerouslySetInnerHTML={{
-                        __html: convertHtml(
-                          villa?.resortId?.policies?.cancellationPolicy
-                        ),
-                      }}
-                    ></span>
-                  </div>
+                  <ExpandableText
+                    htmlContent={convertHtml(
+                      villa?.resortId?.policies?.cancellationPolicy
+                    )}
+                  />
                 </div>
 
                 <div className="w-full">
