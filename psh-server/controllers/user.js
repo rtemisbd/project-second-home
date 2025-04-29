@@ -25,10 +25,9 @@ export const createUser = async (req, res) => {
       photos,
       branch: branchId,
     } = req.body;
-console.log(req.body);
+
 
     const existingMobile = await User.findOne({ phone });
-console.log({existingMobile});
 
     if (existingMobile) {
       return res.status(400).json({ message: "User already exists" });
@@ -38,9 +37,7 @@ console.log({existingMobile});
       req.body.password || config.user_default_password,
       10
     );
-    console.log({hashedPassword});
     
-
     const user = new User({
       firstName,
       address,
@@ -52,7 +49,6 @@ console.log({existingMobile});
       password: hashedPassword,
       branch: branchId,
     });
-    console.log({user});
     
 
     await user.save();
