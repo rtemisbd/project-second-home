@@ -36,6 +36,11 @@ const villaSchema = new mongoose.Schema({
         video: { type: String }
     },
     houseRules: { type: String, required: true },  
+    isPublished: {
+        type: String,
+        enum: ["Unpublished", "Published"],
+        default: "Published",
+      },
 }, { timestamps: true });
 
 
