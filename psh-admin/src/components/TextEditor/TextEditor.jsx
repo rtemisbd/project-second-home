@@ -7,6 +7,11 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
 
   // Function to handle editor change
   const handleEditorChange = (content) => {
+    // const cleanedContent = content;
+    // .replace(/^\s*[\r\n]/, "")
+    // .replace(/[\r\n]\s*$/, "")
+    // .trim();
+    // setEditorValue(cleanedContent);
     setEditorValue(content);
   };
 
@@ -41,7 +46,7 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
       //   }}
     >
       <Editor
-        apiKey="c78helvex5rb6eeip9mygjdr749vftwuzx17s9vmpt5aogm4"
+        apiKey={process.env.TEXT_EDITOR_API}
         value={editorValue}
         onEditorChange={handleEditorChange}
         init={{
@@ -93,7 +98,6 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
             body {
               font-size: 16px !important;  
               line-height: 1.6 !important;
-              font-family: Arial, sans-serif !important; 
               margin: 0 !important;
               padding: 0 !important;
             }

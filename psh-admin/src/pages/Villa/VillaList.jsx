@@ -25,7 +25,6 @@ const VillaList = () => {
     getData();
   }, []);
 
-
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
@@ -53,7 +52,7 @@ const VillaList = () => {
             <div className="card">
               <div className="card-body card_body_sm">
                 <Table bordered>
-                  <thead>
+                  <thead style={{ textAlign: "center" }}>
                     <tr>
                       <th>No</th>
                       <th>Picture</th>
@@ -65,16 +64,16 @@ const VillaList = () => {
                       <th>Status</th>
                     </tr>
                   </thead>
-                  <tbody>
+                  <tbody style={{ textAlign: "center" }}>
                     {data?.map((villa, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td>
+                        <td style={{ width: 140, height: 120 }}>
                           <div>
                             <img
                               src={villa?.media?.photos[0]}
                               alt={villa?.title}
-                              style={{ width: 120, height: 100 }}
+                              style={{ width: 140, height: 120 }}
                             />
                           </div>
                         </td>
@@ -82,7 +81,6 @@ const VillaList = () => {
                         <td>{villa?.title}</td>
                         <td>{villa?.type}</td>
                         <td>{villa?.view}</td>
-                        {/* <td>{villa?.totalRoom}</td> */}
                         <td>
                           <p>Bedroom : {villa?.totalRoom}</p>
                           <p>Balcony : {villa?.totalBalcony}</p>
@@ -95,7 +93,7 @@ const VillaList = () => {
                           </div>
                         </td>
                         <td>
-                          <div className=" d-flex fw-bold">
+                          <div className="d-flex justify-content-center fw-bold">
                             <div>
                               <p
                                 style={{
@@ -129,12 +127,9 @@ const VillaList = () => {
                         {/* action */}
                         <td>
                           <div className="d-flex justify-content-center">
-                            <img
-                              src={img3}
-                              alt=""
-                              data-toggle="modal"
-                              data-target={`#loginModal${villa._id}`}
-                            />
+                            <Link to={`/dashboard/edit/villa/${villa?._id}`}>
+                              <img src={img3} alt="" />
+                            </Link>
                             <img src={img} alt="" className="ms-3" />
                           </div>
                           <div
