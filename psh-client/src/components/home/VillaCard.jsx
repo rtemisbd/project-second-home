@@ -63,14 +63,35 @@ const VillaCard = ({ villa }) => {
             <div className="card-price flex gap-x-3 px-2 mb-2 hover:text-black">
               <div>
                 <div className="flex gap-x-2">
-                  <p>
-                    <span className="card-price-sub">
-                      BDT {villa?.pricing?.perNight?.toLocaleString()}
-                    </span>
-                    <span className="day">/per night</span>
-                  </p>
+                  {villa?.pricing?.perNight ===
+                  villa?.pricing?.afterDiscountPerNight ? (
+                    <p>
+                      <span className="card-price-sub">
+                        BDT{" "}
+                        {villa?.pricing?.afterDiscountPerNight?.toLocaleString()}
+                      </span>
+                      <span className="day">/Night</span>
+                    </p>
+                  ) : (
+                    <>
+                      <p className="rotate-line-through text-red-500">
+                        <span className="card-price-sub">
+                          BDT {villa?.pricing?.perNight?.toLocaleString()}
+                        </span>
+                        <span className="day">/Night</span>
+                      </p>
+                      <p>
+                        <span className="card-price-sub">
+                          BDT{" "}
+                          {villa?.pricing?.afterDiscountPerNight?.toLocaleString()}
+                        </span>
+                        <span className="day">/Night</span>
+                      </p>
+                    </>
+                  )}
                 </div>
               </div>
+             
             </div>
           </CardFooter>
         </Card>

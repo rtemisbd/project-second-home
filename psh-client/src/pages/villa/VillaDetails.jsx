@@ -69,6 +69,15 @@ const VillaDetails = () => {
     }
   };
 
+  const convertToAMPM = (time24) => {
+    if (!time24) return "";
+    const [hours, minutes] = time24.split(":");
+    const hour = parseInt(hours);
+    const ampm = hour >= 12 ? "PM" : "AM";
+    const adjustedHour = hour % 12 || 12; // 0 becomes 12
+    return `${adjustedHour}:${minutes} ${ampm}`;
+  };
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsPlaying(entry.isIntersecting),
@@ -223,38 +232,35 @@ const VillaDetails = () => {
                   </h2>
                 </div>
 
-                <div className="grid grid-cols-6 gap-x-4 md:gap-y-6 sm:gap-y-4 ">
-                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                <div className="w-full flex flex-wrap justify-between gap-x-4 md:gap-y-6 sm:gap-y-4 p-0 lg:pr-8 ">
+                  <div className="flex flex-col items-start ">
                     <p className="font-bold">Villa Type</p>
                     <p>{villa?.type}</p>
                   </div>
-                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                  <div className="flex flex-col items-start ">
                     <p className="font-bold">View</p>
                     <p>{villa?.view}</p>
                   </div>
-                  {/* <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
-                    <p className="font-bold">Area</p>
-                    <p>{villa?.area} Sqft</p>
-                  </div> */}
-                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                
+                  <div className="flex flex-col items-start ">
                     <p className="font-bold">Total Floor</p>
                     <p>{villa?.totalFloor} floor </p>
                   </div>
-                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                  <div className="flex flex-col items-start ">
                     <p className="font-bold"> Bedrooms</p>
                     <p>
                       {villa?.totalRoom}{" "}
                       {villa?.totalRoom > 1 ? "Bedrooms" : "Bedroom"}
                     </p>
                   </div>
-                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                  <div className="flex flex-col items-start ">
                     <p className="font-bold"> Bathrooms</p>
                     <p>
                       {villa?.totalBathroom}{" "}
                       {villa?.totalBathroom > 1 ? "Bathrooms" : "Bathroom"}
                     </p>
                   </div>
-                  <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                  <div className="flex flex-col items-start ">
                     <p className="font-bold"> Balcony</p>
                     <p>
                       {villa?.totalBalcony}{" "}
@@ -305,10 +311,39 @@ const VillaDetails = () => {
                       Per Night
                     </p>
                     <p className="col-span-1">:</p>
-                    <p className="col-span-6 md:col-span-8 text[18px]">
+                    {/* <p className="col-span-6 md:col-span-8 text[18px]">
                       {" "}
                       {villa?.pricing?.perNight} BDT
-                    </p>
+                    </p> */}
+
+                    <div className="col-span-6 md:col-span-8 text[18px] flex gap-x-2">
+                      {villa?.pricing?.perNight ===
+                      villa?.pricing?.afterDiscountPerNight ? (
+                        <p>
+                          <span className="card-price-sub">
+                            BDT{" "}
+                            {villa?.pricing?.afterDiscountPerNight?.toLocaleString()}
+                          </span>
+                          <span className="day">/Night</span>
+                        </p>
+                      ) : (
+                        <>
+                          <p className="rotate-line-through text-red-500">
+                            <span className="card-price-sub">
+                              BDT {villa?.pricing?.perNight?.toLocaleString()}
+                            </span>
+                            {/* <span className="day">/Night</span> */}
+                          </p>
+                          <p>
+                            <span className="card-price-sub">
+                              BDT{" "}
+                              {villa?.pricing?.afterDiscountPerNight?.toLocaleString()}
+                            </span>
+                            <span className="day">/Night</span>
+                          </p>
+                        </>
+                      )}
+                    </div>
 
                     {villa?.pricing?.adultAddition && (
                       <>
@@ -343,7 +378,7 @@ const VillaDetails = () => {
                     <p className="col-span-1">:</p>
                     <p className="col-span-6 md:col-span-8 text[18px]">
                       {" "}
-                      {villa?.pricing?.checkIn}
+                      {convertToAMPM(villa?.pricing?.checkIn)}
                     </p>
                     <p className="col-span-5 md:col-span-3 font-[600]">
                       Check Out Time
@@ -351,7 +386,7 @@ const VillaDetails = () => {
                     <p className="col-span-1">:</p>
                     <p className="col-span-6 md:col-span-8 text[18px]">
                       {" "}
-                      {villa?.pricing?.checkOut}
+                      {convertToAMPM(villa?.pricing?.checkOut)}
                     </p>
                   </div>
                 </div>

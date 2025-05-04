@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import DatePicker from "react-datepicker";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
@@ -9,7 +9,6 @@ import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import { placeBooking } from "../../redux/reducers/bookingSlice";
 import { addDays, addMonths, addYears, subDays } from "date-fns";
 import { format } from "date-fns";
-import promoIcon from "../../assets/img/coupon.png";
 import { Typography, Tooltip } from "@material-tailwind/react";
 
 import { useContext } from "react";
@@ -24,15 +23,12 @@ const VillaBookingBox = ({ villa }) => {
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
 
-  const [promoCode, setPromoCode] = useState(null);
-  const [promoCodeCheck, setPromoCodeCheck] = useState(false);
-
   const [subTotal, setSubTotal] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [advance, setAdvance] = useState(0);
-
+  
+  
   // handle Scrolled
   const [scrollY, setScrollY] = useState(0);
 
@@ -41,15 +37,14 @@ const VillaBookingBox = ({ villa }) => {
   };
 
   useEffect(() => {
-    setSubTotal(villa?.pricing?.perNight);
-    setTotalAmount(villa?.pricing?.perNight);
+    setSubTotal(
+      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference
+    );
+    setTotalAmount(
+      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference
+    );
     setAdvance(villa?.pricing?.advancePayment);
-  }, [villa]);
-
-  useEffect(() => {
-    setSubTotal(villa?.pricing?.perNight * customerRent?.daysDifference);
-    setTotalAmount(villa?.pricing?.perNight * customerRent?.daysDifference);
-  }, [customerRent]);
+  }, [customerRent, villa]);
 
   const handleAddItem = () => {
     if (!user) {
@@ -59,9 +54,10 @@ const VillaBookingBox = ({ villa }) => {
     let bookingData = {
       villa: villa?._id,
       user: user?._id,
+      perNight: villa?.pricing?.perNight,
       subTotal,
       totalAmount,
-      payableAmount,
+      minimumPayment: villa?.pricing?.advancePayment,
       rentDate: {
         // bookingStartDate: new Date(startDate).toISOString().split("T")[0],
         // bookingEndDate: new Date(endDate).toISOString().split("T")[0],
@@ -222,9 +218,9 @@ const VillaBookingBox = ({ villa }) => {
           <div className=" mt-1.5 w-full px-1 py-[0.5px] sm:hidden md:block duration_large_screen ">
             <p className="text-center font-bold mb-2 mt-[-5px]">Duration</p>
             <p className=" duraion-count font-normal ps-1 text-sm ">
-              {customerRent?.daysDifference >= 0
-                ? `${customerRent?.daysDifference} days`
-                : ""}
+              {customerRent?.daysDifference > 1
+                ? `${customerRent?.daysDifference} Nights`
+                : `${customerRent?.daysDifference} Night`}
             </p>
           </div>
         </div>
@@ -234,64 +230,18 @@ const VillaBookingBox = ({ villa }) => {
             <div>
               <input
                 type="text"
-                value={`${
-                  customerRent?.daysDifference >= 0
-                    ? `${customerRent?.daysDifference} days`
-                    : ""
-                }`}
+                value={
+                  customerRent?.daysDifference > 1
+                    ? `${customerRent?.daysDifference} Nights`
+                    : `${customerRent?.daysDifference} Night`
+                }
                 disabled
               />
             </div>
           </div>
         </div>
 
-        <form
-        // onSubmit={handlePromoCode}
-        >
-          <div className="flex total-area relative md:mx-3 sm:mx-2 my-3">
-            <div>
-              <input
-                className="sm:px-5 md:px-6 text-sm"
-                type="text"
-                name="promoCode"
-                onChange={(e) => setPromoCode(e.target.value)}
-                style={{ height: "25px", width: "80%" }}
-                placeholder="Pormo Code"
-                disabled={promoCodeCheck ? true : false}
-                required
-              />
-              <div className="absolute top-1 left-3">
-                <img loading="lazy" src={promoIcon} alt="" />
-              </div>
-            </div>
-            <div className=" ">
-              <button
-                type="submit"
-                style={{
-                  border: "1px solid #399",
-                  backgroundColor: promoCodeCheck ? "#9eebe8" : "#35B0A7 ",
-                  color: "white",
-                  borderRadius: "0px 2px 2px 0px",
-                  padding: "1px 5px",
-                  fontSize: "14px",
-                }}
-                disabled={promoCodeCheck ? true : false}
-                className="ms-[-40px]"
-              >
-                Confirm
-              </button>
-            </div>
-            <Link
-              to="/promo"
-              className="md:text-[14px] sm:text-[12px] ms-5 mt-1 hover:text-[#02625a]  text-[#35B0A7] font-[600] underline"
-              target="_blank"
-            >
-              {" "}
-              Your Offers
-            </Link>
-          </div>
-        </form>
-        <div className="text-black text-sm pr-5 ">
+        <div className="text-black text-sm pr-5 my-5">
           <div className="flex justify-between ">
             <div className="ml-16 flex items-center">
               <p>Sub Total</p>
@@ -309,9 +259,9 @@ const VillaBookingBox = ({ villa }) => {
                         className="font-normal opacity-75 px-5 py-2 rounded"
                       >
                         <span>
-                          {customerRent?.remainingDays + " day"} X{" "}
-                          {villa?.pricing?.perNight} = {""}
-                          {villa?.pricing?.perNight *
+                          {customerRent?.remainingDays + " night"} X{" "}
+                          {villa?.pricing?.afterDiscountPerNight} = {""}
+                          {villa?.pricing?.afterDiscountPerNight *
                             customerRent?.remainingDays +
                             " Tk"}
                         </span>
@@ -419,11 +369,11 @@ const VillaBookingBox = ({ villa }) => {
             color: "#02625a",
             fontWeight: "bolder",
           }}
-          className="px-3 py-2"
+          className="px-2 py-2"
         >
           <span
             style={{
-              fontSize: "18px",
+              fontSize: "16px",
               color: "red",
             }}
           >
@@ -431,10 +381,12 @@ const VillaBookingBox = ({ villa }) => {
           </span>
           <span>
             {" "}
-            Please bring two{" "}
-            <span className="text-black">Passport-Size Photos</span> and one
-            copy of your <span className="text-black"> NID Card</span> at the
-            time of check-in.
+            Please bring one copy of your{" "}
+            <span className="text-black">
+              {" "}
+              NID Card / Passport / Birth Certificate / Driving License
+            </span>{" "}
+            at the time of check-in.
           </span>
         </div>
       </div>

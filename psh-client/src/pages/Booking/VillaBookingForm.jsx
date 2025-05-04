@@ -10,7 +10,7 @@ import { Tooltip, Typography } from "@material-tailwind/react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { format, parseISO } from "date-fns";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 const VillaBookingForm = () => {
   const [singleUser] = useUser();
@@ -18,9 +18,9 @@ const VillaBookingForm = () => {
   const [isBlur, setIsBlur] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [requiredMessage, setRequiredMessage] = useState(false);
-
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
   const [dataForBooking, setDataForBooking] = useState({
-    arrivalTime: "",
     bookingExtend: false,
   });
   const [bookingItem, setBookingItem] = useState({});
@@ -43,6 +43,21 @@ const VillaBookingForm = () => {
     anchorClickHandler(e);
   };
 
+  const formatToInputDate = (dateStr) => {
+    if (!dateStr) return "";
+    const [day, month, year] = dateStr.split("-");
+    return `${day}/${month}/${year}`; // "16-05-2025" → "16/05/2025"
+  };
+
+  const handlePaymentOption = () => {
+    if (agreeTerms) {
+      setIsBlur(true);
+      setShowPayment(true);
+    } else {
+      setRequiredMessage(true);
+    }
+  };
+
   useEffect(() => {
     const storedBookingItem = localStorage.getItem("bookingItem");
     if (storedBookingItem) {
@@ -61,12 +76,6 @@ const VillaBookingForm = () => {
     fetchVilla();
   }, [bookingItem.villa]);
   console.log(bookingItem);
-
-  const formatToInputDate = (dateStr) => {
-    if (!dateStr) return "";
-    const [day, month, year] = dateStr.split("-");
-    return `${year}-${month}-${day}`; // "16-05-2025" → "2025-05-16"
-  };
 
   return (
     <div>
@@ -153,47 +162,6 @@ const VillaBookingForm = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-
-                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
-                  <label htmlFor="">Choose Your Identity Verification</label>
-                  <select
-                    className="personal-info lg:w-[350px] md:w-[300px] sm:w-full h-[45px] rounded"
-                    name="validityType"
-                    onChange={handleInputChange}
-                    defaultValue={singleUser?.validityType}
-                    // disabled={singleUser?.validityType ? true : false}
-                    // required={validityType === "Select One"}
-                    required
-                  >
-                    <option selected>Select One</option>
-                    <option
-                      selected={singleUser?.validityType === "National ID Card"}
-                      value="National ID Card"
-                    >
-                      National ID Card
-                    </option>
-                    <option
-                      selected={singleUser?.validityType === "Passport"}
-                      value="Passport"
-                    >
-                      Passport
-                    </option>
-                    <option
-                      selected={singleUser?.validityType === "Driving Licence"}
-                      value="Driving Licence"
-                    >
-                      Driving Licence
-                    </option>
-                    <option
-                      selected={
-                        singleUser?.validityType === "Birth Certificate"
-                      }
-                      value="Birth Certificate"
-                    >
-                      Birth Certificate
-                    </option>
-                  </select>
-                </div>
               </div>
             </div>
 
@@ -218,7 +186,6 @@ const VillaBookingForm = () => {
                       height: "45px",
                       padding: "0px 10px",
                     }}
-                    // onChange={(e) => setEmergencyContactName(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -234,7 +201,6 @@ const VillaBookingForm = () => {
                       padding: "0px 10px",
                     }}
                     defaultValue={singleUser?.emergencyContact?.relation}
-                    // onChange={(e) => setEmergencyRelationC(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -251,7 +217,6 @@ const VillaBookingForm = () => {
                       height: "45px",
                       padding: "0px 10px",
                     }}
-                    // onChange={(e) => setEmergencyContact(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -259,26 +224,6 @@ const VillaBookingForm = () => {
             </div>
 
             <div>
-              <p className="text-black flex justify-left mt-5 font-bold">
-                Arrival information
-              </p>
-
-              <div>
-                <select
-                  className="text-black personal-info rounded mt-5 lg:w-[350px] md:w-[300px] sm:w-full"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  name="arrivalTime"
-                  onChange={handleInputChange}
-                >
-                  <option disabled>Time of Arrival</option>
-                  <option>09 AM To 10 AM</option>
-                  <option>10 AM To 11 AM</option>
-                  <option>11 AM To 12 PM</option>
-                </select>
-              </div>
               <div className="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-x-36 gap-y-3 mt-5">
                 <div>
                   <p className="mb-2">Special Request</p>
@@ -370,8 +315,7 @@ const VillaBookingForm = () => {
                       ></i>
                       <input
                         className="ps-7 w-36"
-                        type="date"
-                        dateFormat="dd/MM/yyyy"
+                        type="text"
                         defaultValue={formatToInputDate(
                           bookingItem?.rentDate?.bookingStartDate
                         )}
@@ -392,7 +336,7 @@ const VillaBookingForm = () => {
                       ></i>
                       <input
                         className="ps-7 w-36"
-                        type="date"
+                        type="text"
                         defaultValue={formatToInputDate(
                           bookingItem?.rentDate?.bookingEndDate
                         )}
@@ -405,9 +349,9 @@ const VillaBookingForm = () => {
                       Duration
                     </p>
                     <p className=" duraion-count font-normal ps-1 text-sm ">
-                      {bookingItem?.rentDate?.daysDifference >= 0
-                        ? `${bookingItem?.rentDate?.daysDifference} Days`
-                        : ""}
+                      {bookingItem?.rentDate?.daysDifference > 1
+                        ? `${bookingItem?.rentDate?.daysDifference} Nights`
+                        : `${bookingItem?.rentDate?.daysDifference} Night`}
                     </p>
                   </div>
                 </div>
@@ -417,13 +361,12 @@ const VillaBookingForm = () => {
 
                     <div>
                       <input
-                        className=""
                         type="text"
-                        value={`${
-                          bookingItem?.customerRent?.daysDifference >= 0
-                            ? `${bookingItem?.customerRent?.daysDifference} Days`
-                            : ""
-                        }`}
+                        value={
+                          bookingItem?.bookingItem?.rentDate?.daysDifference > 1
+                            ? `${bookingItem?.rentDate?.daysDifference} Nights`
+                            : `${bookingItem?.rentDate?.daysDifference} Night`
+                        }
                         disabled
                       />
                     </div>
@@ -435,145 +378,45 @@ const VillaBookingForm = () => {
                     <div className="ml-16 flex items-center">
                       <p>Rent</p>
                       <div className="ml-2">
-                        {bookingItem?.roomType === "Shared Room" ? (
-                          <Tooltip
-                            content={
-                              <div>
-                                <Typography
-                                  variant="small"
-                                  style={{
-                                    color: "white",
-                                    backgroundColor: "black",
-                                    width: "200px",
-                                  }}
-                                  className="font-normal opacity-75 px-5 py-2 rounded"
-                                >
-                                  {bookingItem?.customerRent?.months ===
-                                    undefined &&
-                                  bookingItem?.customerRent?.years ===
-                                    undefined ? (
-                                    <span>
-                                      {bookingItem?.customerRent
-                                        ?.remainingDays + " day"}{" "}
-                                      X {bookingItem?.seatBooking?.perDay} ={" "}
-                                      {""}
-                                      {bookingItem?.seatBooking?.perDay *
-                                        bookingItem?.customerRent
-                                          ?.remainingDays +
-                                        " Tk"}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-
-                                  {bookingItem?.customerRent?.months >= 1 &&
-                                  bookingItem?.customerRent?.years ===
-                                    undefined ? (
-                                    <span>
-                                      {bookingItem?.customerRent.months +
-                                        " month"}{" "}
-                                      = {""}
-                                      {bookingItem?.seatBooking?.perMonth *
-                                        bookingItem?.customerRent.months +
-                                        " Tk"}
-                                      {bookingItem?.customerRent?.days > 0 ? (
-                                        <span>
-                                          +{" "}
-                                          {bookingItem?.customerRent?.days +
-                                            " Days"}{" "}
-                                          = {""}
-                                          {bookingItem?.seatBooking?.perDay *
-                                            bookingItem?.customerRent?.days +
-                                            " Tk"}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-
-                                  {bookingItem?.customerRent?.years === 1 ? (
-                                    <span>
-                                      {bookingItem?.customerRent?.years +
-                                        " Year"}{" "}
-                                      = {""}
-                                      {bookingItem?.seatBooking?.perYear *
-                                        bookingItem?.customerRent?.years +
-                                        " Tk"}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </Typography>
-                              </div>
-                            }
+                        <Tooltip
+                          content={
+                            <div>
+                              <Typography
+                                variant="small"
+                                style={{
+                                  color: "white",
+                                  backgroundColor: "black",
+                                  width: "200px",
+                                }}
+                                className="font-normal opacity-75 px-5 py-2 rounded"
+                              >
+                                <span>
+                                  {bookingItem?.rentDate?.daysDifference +
+                                    " night"}{" "}
+                                  X {bookingItem?.perNight} = {""}
+                                  {bookingItem?.perNight *
+                                    bookingItem?.rentDate?.daysDifference +
+                                    " Tk"}
+                                </span>
+                              </Typography>
+                            </div>
+                          }
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            className="h-5 w-5 cursor-pointer text-blue-gray-500"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              className="h-5 w-5 cursor-pointer text-blue-gray-500"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                              />
-                            </svg>
-                          </Tooltip>
-                        ) : (
-                          <Tooltip
-                            content={
-                              <div>
-                                <Typography
-                                  variant="small"
-                                  style={{
-                                    color: "white",
-                                    backgroundColor: "black",
-                                    width: "200px",
-                                  }}
-                                  className="font-normal opacity-75 px-5 py-2 rounded"
-                                >
-                                  {bookingItem?.customerRent?.months ===
-                                    undefined &&
-                                  bookingItem?.customerRent?.years ===
-                                    undefined ? (
-                                    <span>
-                                      {bookingItem?.customerRent
-                                        ?.remainingDays + " day"}{" "}
-                                      X {bookingItem?.data?.perDay} = {""}
-                                      {bookingItem?.data?.perDay *
-                                        bookingItem?.customerRent
-                                          ?.remainingDays +
-                                        " Tk"}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </Typography>
-                              </div>
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              className="h-5 w-5 cursor-pointer text-blue-gray-500"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                              />
-                            </svg>
-                          </Tooltip>
-                        )}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            />
+                          </svg>
+                        </Tooltip>
                       </div>
                     </div>
                     <p>BDT {bookingItem?.subTotal?.toLocaleString()}</p>
@@ -582,19 +425,10 @@ const VillaBookingForm = () => {
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.payableAmount?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.totalAmount?.toLocaleString()}</p>
                   </div>
 
-                  <div
-                    className={`flex justify-between ${
-                      (bookingItem?.customerRent?.months >= 1 &&
-                        bookingItem?.customerRent?.years === undefined) ||
-                      (bookingItem?.customerRent?.months === 0 &&
-                        bookingItem?.customerRent?.years >= 1)
-                        ? "hidden"
-                        : "block"
-                    }`}
-                  >
+                  <div className={`flex justify-between `}>
                     <div className="ml-16 flex items-center payment-check">
                       <p className="text-red-500">Advance Payment</p>
                       <div className="ml-2">
@@ -697,10 +531,10 @@ const VillaBookingForm = () => {
                 )}
                 <button
                   type="button"
-                  //   onClick={handlePaymentOption}
+                  onClick={handlePaymentOption}
                   className="text-[1rem] p-2 cursor-pointer bg-[#35B0A7] hover:bg-[#02625a] w-full text-white h-[35px]"
                 >
-                  Continue Payment
+                  Confirm Booking
                 </button>
               </div>
               <div
@@ -711,11 +545,11 @@ const VillaBookingForm = () => {
                   color: "#02625a",
                   fontWeight: "bolder",
                 }}
-                className="px-3 py-2"
+                className="px-2 py-2"
               >
                 <span
                   style={{
-                    fontSize: "18px",
+                    fontSize: "16px",
                     color: "red",
                   }}
                 >
@@ -723,9 +557,11 @@ const VillaBookingForm = () => {
                 </span>
                 <span>
                   {" "}
-                  Please bring two{" "}
-                  <span className="text-black">Passport-Size Photos</span> and
-                  one copy of your <span className="text-black"> NID Card</span>{" "}
+                  Please bring one copy of your{" "}
+                  <span className="text-black">
+                    {" "}
+                    NID Card / Passport / Birth Certificate / Driving License
+                  </span>{" "}
                   at the time of check-in.
                 </span>
               </div>
@@ -758,6 +594,180 @@ const VillaBookingForm = () => {
           toastOptions={{ position: "top-center" }}
         ></Toaster>
       </form>
+
+      {showPayment && (
+        <div
+          style={{
+            boxShadow:
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25) ",
+            borderRadius: "3px",
+            backgroundColor: "white",
+          }}
+          className="bg-white z-50 absolute top-[15%] lg:top-[20%] w-[96%] lg:w-[50%] left-2 md:left-4 lg:left-1/4 lg:right-1/2"
+        >
+          <div
+            style={{
+              backgroundColor: "#35B0A7",
+              height: "35px",
+              borderRadius: "3px 3px 0px 0px",
+            }}
+            className="flex justify-end items-center pr-2"
+          >
+            <button
+              onClick={() => {
+                setShowPayment(false);
+                setIsBlur(false);
+              }}
+            >
+              <IoCloseCircleOutline color="white" size={28} />
+            </button>
+          </div>
+          <div className="my-4 flex items-center mx-4">
+            <input
+              type="radio"
+              id="app"
+              name="method"
+              value="app"
+              defaultChecked
+              className=" mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+            <span className="text-[15px] mr-2">Pay By BKash</span>
+            <input
+              type="radio"
+              id="cash"
+              name="method"
+              value="cash"
+              // defaultChecked
+              // className="mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+            <span className="text-[15px] ml-1">Cash</span>
+          </div>
+          {/*
+            <div>
+              {selectMethod === "app" ? (
+                <div className="my-4 flex justify-center mx-4">
+                  <div>
+                    <h2 className="font-medium text-center mb-4">
+                      How much do you want to pay now?
+                    </h2>
+                    {bkashError && bkashError}
+                    <div className="flex flex-wrap gap-4">
+                      <button
+                        onClick={() =>
+                          handlePayByBkash(bookingItem?.minimumPayment)
+                        }
+                        className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                      >
+                        Minimum - {bookingItem?.minimumPayment} ৳
+                      </button>
+                      <button
+                        onClick={() =>
+                          handlePayByBkash(bookingItem?.totalAmount)
+                        }
+                        className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                      >
+                        Total Amount - {bookingItem?.totalAmount} ৳
+                      </button>
+                      <button
+                        onClick={() => setShowUserInputForPayment(true)}
+                        className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
+                      >
+                        Custom Amount
+                      </button>
+                    </div>
+                    {showUserInputForPayment && (
+                      <div>
+                        <div className="flex justify-center w-full my-4">
+                          <input
+                            type="number"
+                            placeholder="Enter your amount"
+                            className="border px-3 py-2 rounded-l-xl w-[66%] md:w-[80%] "
+                            name="amountForPay"
+                            onChange={handleUserInputAmount}
+                          />
+                          <button
+                            onClick={() => handlePayByBkash(amountForPay)}
+                            className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
+                            disabled={isLessAmount}
+                          >
+                            Pay Now
+                          </button>
+                        </div>
+                        {isLessAmount && (
+                          <p className="text-sm text-red-600">
+                            Please Pay Atleast ৳ {bookingItem.minimumPayment}
+                          </p>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              ) : (
+                <div className="mx-4 mb-4">
+                  <p className="text-left font-bold my-2">
+                    bkash (Merchant) :{" "}
+                    {bookingItem?.branch?.branchBkashNumber
+                      ? bookingItem?.branch?.branchBkashNumber
+                      : ""}{" "}
+                  </p>
+                  <p>1. Select Make Payment</p>
+                  <p>2. Enter The Merchant Number (01407001410)</p>
+                  <p>
+                    3. Enter The Amount You Want To Pay{" "}
+                    <span className="text-[#35B0A7]">
+                      (minimum amount to pay : ৳{bookingItem?.minimumPayment})
+                    </span>
+                  </p>
+                  <p className="text-left my-2">
+                    Please fill the form to submit your booking
+                  </p>
+
+                  <div className="mt-3">
+                    <div>
+                      <p className="text-[1rem]">
+                        bKash Number (from which you make payment) :{" "}
+                      </p>
+                    </div>
+                    <div className="w-[250px]">
+                      <input
+                        className="mt-2 ps-2  border h-8 w-[250px]"
+                        name="bkashNumber"
+                        required
+                        type="text"
+                        placeholder="017xxxxxxxx"
+                        onChange={(e) => setPaymentNumber(e.target.value)}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="mt-3">
+                    <div>
+                      <p>How much money have you send :</p>
+                    </div>
+                    <div className="w-[250px]">
+                      <input
+                        className=" mt-2 ps-2 border h-8 w-[250px]"
+                        name="receivedTk"
+                        required
+                        type="text"
+                        placeholder="Sending Amount"
+                        onChange={(e) => setReceivedTk(e.target.value)}
+                      />
+                    </div>
+                  </div>
+                  <button
+                    onClick={() => handlePayByBkash(receivedTk)}
+                    className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
+                  >
+                    Place Booking Now
+                  </button>
+                </div>
+              )}
+            </div> */}
+        </div>
+      )}
     </div>
   );
 };
