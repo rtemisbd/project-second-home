@@ -500,7 +500,7 @@ const EditVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Per Night(BDT)
+                  Total Discount Count(%)
                 </label>
                 <input
                   type="number"

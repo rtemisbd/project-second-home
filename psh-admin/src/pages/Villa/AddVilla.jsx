@@ -16,6 +16,10 @@ const AddVilla = () => {
   const [occupancyPolicy, setOccupancyPolicy] = useState("");
   const [houseRules, setHouseRules] = useState("");
 
+  const [perNight, setPerNight] = useState(0);
+  const [afterDiscountPerNight, setAfterDiscountPerNight] = useState(0);
+  const [discountPercent, setDiscountPercent] = useState("0.00");
+
   const [commonFeatures, setCommonFeatures] = useState([
     "24/7 Room Services",
     "Welcome Drink On Arrival",
@@ -136,6 +140,8 @@ const AddVilla = () => {
       features: [...selectedRoomFeatures, ...addedFeatures],
       pricing: {
         perNight: formData.get("perNight"),
+        afterDiscountPerNight: formData.get("afterDiscountPerNight"),
+        discountPercent: formData.get("discountPercent"),
         advancePayment: formData.get("advancePayment"),
         adultAddition: formData.get("adultAddition"),
         kidAddition: formData.get("kidAddition"),
@@ -170,6 +176,18 @@ const AddVilla = () => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    if (perNight > 0) {
+      const discountAmountForNight = Number(perNight - afterDiscountPerNight);
+      const percentageDiscount =
+        (discountAmountForNight / Number(perNight)) * 100;
+
+      setDiscountPercent(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+  }, [perNight, afterDiscountPerNight]);
 
   return (
     <div className="wrapper">
@@ -489,7 +507,7 @@ const AddVilla = () => {
               <h2 className="profile_label3 profile_bg mt-3">
                 Pricing Details
               </h2>
-              <div className="col-md-6 form_sub_stream">
+              <div className="col-md-4 form_sub_stream">
                 <label
                   htmlFor="inputState"
                   className="form-label profile_label3 "
@@ -501,7 +519,41 @@ const AddVilla = () => {
                   className="main_form w-100"
                   name="perNight"
                   placeholder="Per Night BDT Cost"
+                  onChange={(e) => setPerNight(e.target.value)}
                   required
+                  onWheel={(e) => e.target.blur()}
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  After Discount - Per Night(BDT)
+                </label>
+                <input
+                  type="number"
+                  className="main_form w-100"
+                  name="afterDiscountPerNight"
+                  placeholder="After Discount - Per Night"
+                  onChange={(e) => setAfterDiscountPerNight(e.target.value)}
+                  onWheel={(e) => e.target.blur()}
+                />
+              </div>
+              <div className="col-md-4 form_sub_stream">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Total Discount Count(%)
+                </label>
+                <input
+                  type="text"
+                  className="main_form w-100"
+                  name="discountPercent"
+                  value={`${discountPercent} %`}
+                  placeholder="Discount Amount (%)"
+                  disabled
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
