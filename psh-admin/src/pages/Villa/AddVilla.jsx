@@ -18,7 +18,7 @@ const AddVilla = () => {
 
   const [perNight, setPerNight] = useState(0);
   const [afterDiscountPerNight, setAfterDiscountPerNight] = useState(0);
-  const [discountPercent, setDiscountPercent] = useState("0.00");
+  const [discountPercent, setDiscountPercent] = useState(0);
 
   const [commonFeatures, setCommonFeatures] = useState([
     "24/7 Room Services",
@@ -126,7 +126,6 @@ const AddVilla = () => {
       // markedLocation: formData.get("markedLocation"),
       villaNumber: formData.get("villaNumber"),
       view: formData.get("view"),
-      area: formData.get("area"),
       totalFloor: formData.get("totalFloor"),
       totalRoom: formData.get("totalRoom"),
       totalBalcony: formData.get("balcony"),
@@ -164,8 +163,8 @@ const AddVilla = () => {
       const response = await axios.post(`${baseUrl}/api/villa`, villaData);
       MySwal.fire("Villa added successfully!");
       event.target.reset();
-      setSelectedResort(null);
-      setSelectedType(null);
+      // setSelectedResort(null);
+      // setSelectedType(null);
       setNewFeatures([{ id: Date.now(), name: "" }]);
       setSelectedFiles([]);
       setImagePreviews([]);
@@ -307,21 +306,7 @@ const AddVilla = () => {
             </div>
             <div className="row p-3">
               <h2 className="profile_label3 profile_bg mt-3">Short Details</h2>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Villa Area
-                </label>
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="area"
-                  placeholder="Please Type in Sqft"
-                  required
-                />
-              </div>
+
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"

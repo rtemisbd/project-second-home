@@ -8,6 +8,27 @@ const facilitiesSchema = new mongoose.Schema({
 const villaTypeSchema = new mongoose.Schema({
     name: { type: String, required: true }
 });
+const contactNumberSchema = new mongoose.Schema({
+    number: { type: String }
+});
+
+const mobileBankingSchema = new mongoose.Schema({
+    resortBkashNumber : {type : String},
+    bkashAccountType : {type : String},
+    bkashAccountHolder : {type : String},
+    resortNagadNumber : {type : String},
+    nagadAccountType : {type : String},
+    nagadAccountHolder : {type : String},
+})
+
+const bankDetailsSchema = new mongoose.Schema({
+    bankName : {type : String},
+    accountNumber : {type : String},
+    accountHolder : {type : String},
+    accountType : {type : String},
+    branchName : {type : String},
+    routingNumber : {type : String},
+})
 
 
 const resortSchema = new mongoose.Schema({
@@ -16,11 +37,11 @@ const resortSchema = new mongoose.Schema({
     division: { type: String, required: true },
     district: { type: String, required: true },
     locationLink: { type: String, required: true },
-    resortMobileNumber: { type: String, required: true },
-    resortBkashNumber: { type: String },
-    resortNagadNumber: { type: String },
-    resortDutchNumber: { type: String },
+   
+    contactNumbers : [contactNumberSchema],
     resortEmail: { type: String, required: true },
+    mobileBanking : mobileBankingSchema,
+    bankDetails : [bankDetailsSchema],
     welcomeNote : {type : String},
     photos: [{ type: String }],
     video: { type: String },

@@ -10,7 +10,7 @@ const villaSchema = new mongoose.Schema({
     type: { type: String, required: true },
     villaNumber: { type: String, required: true },
     view: { type: String, required: true },
-    area: { type: String, required: true },
+    
     totalFloor: { type: Number, required: true },
     totalRoom: { type: Number, required: true },
     totalBalcony: { type: Number, required: true },

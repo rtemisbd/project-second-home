@@ -26,6 +26,8 @@ const VillaBookingForm = () => {
   const [bookingItem, setBookingItem] = useState({});
   const [villa, setVilla] = useState({});
 
+  const [selectMethod, setSelectMethod] = useState("bkash");
+
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setDataForBooking((prevData) => ({
@@ -603,7 +605,7 @@ const VillaBookingForm = () => {
             borderRadius: "3px",
             backgroundColor: "white",
           }}
-          className="bg-white z-50 absolute top-[15%] lg:top-[20%] w-[96%] lg:w-[50%] left-2 md:left-4 lg:left-1/4 lg:right-1/2"
+          className="bg-white z-50 absolute top-[10%] lg:top-[15%] w-[96%] lg:w-[50%] left-2 md:left-4 lg:left-1/4 lg:right-1/2"
         >
           <div
             style={{
@@ -622,17 +624,26 @@ const VillaBookingForm = () => {
               <IoCloseCircleOutline color="white" size={28} />
             </button>
           </div>
-          <div className="my-4 flex items-center mx-4">
+          <div className="flex items-end gap-2 p-5">
+            <div className="hidden md:block">
+              <img loading="lazy" src={cashImg} alt="" />
+            </div>
+            <p className="text-lg ">
+              NOTE : You can pay directly in our structure with any kind of
+              credit card or cash.
+            </p>
+          </div>
+          <div className=" md:my-6 flex items-center mx-4">
             <input
               type="radio"
-              id="app"
+              id="bkash"
               name="method"
-              value="app"
+              value="bkash"
               defaultChecked
               className=" mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-            <span className="text-[15px] mr-2">Pay By BKash</span>
+            <span className="text-[15px] mr-2">Pay Via Online</span>
             <input
               type="radio"
               id="cash"
@@ -642,130 +653,79 @@ const VillaBookingForm = () => {
               // className="mr-1"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-            <span className="text-[15px] ml-1">Cash</span>
+            <span className="text-[15px] ml-1">Cash / Card</span>
           </div>
-          {/*
-            <div>
-              {selectMethod === "app" ? (
-                <div className="my-4 flex justify-center mx-4">
-                  <div>
-                    <h2 className="font-medium text-center mb-4">
-                      How much do you want to pay now?
-                    </h2>
-                    {bkashError && bkashError}
-                    <div className="flex flex-wrap gap-4">
-                      <button
-                        onClick={() =>
-                          handlePayByBkash(bookingItem?.minimumPayment)
-                        }
-                        className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
-                      >
-                        Minimum - {bookingItem?.minimumPayment} ৳
-                      </button>
-                      <button
-                        onClick={() =>
-                          handlePayByBkash(bookingItem?.totalAmount)
-                        }
-                        className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
-                      >
-                        Total Amount - {bookingItem?.totalAmount} ৳
-                      </button>
-                      <button
-                        onClick={() => setShowUserInputForPayment(true)}
-                        className="border border-[#35B0A7] px-3 py-1 rounded-xl hover:bg-[#35B0A7] hover:text-white"
-                      >
-                        Custom Amount
-                      </button>
-                    </div>
-                    {showUserInputForPayment && (
-                      <div>
-                        <div className="flex justify-center w-full my-4">
-                          <input
-                            type="number"
-                            placeholder="Enter your amount"
-                            className="border px-3 py-2 rounded-l-xl w-[66%] md:w-[80%] "
-                            name="amountForPay"
-                            onChange={handleUserInputAmount}
-                          />
-                          <button
-                            onClick={() => handlePayByBkash(amountForPay)}
-                            className="bg-[#02625a] px-3 py-2 rounded-r-xl text-white"
-                            disabled={isLessAmount}
-                          >
-                            Pay Now
-                          </button>
-                        </div>
-                        {isLessAmount && (
-                          <p className="text-sm text-red-600">
-                            Please Pay Atleast ৳ {bookingItem.minimumPayment}
-                          </p>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
-              ) : (
-                <div className="mx-4 mb-4">
-                  <p className="text-left font-bold my-2">
-                    bkash (Merchant) :{" "}
-                    {bookingItem?.branch?.branchBkashNumber
-                      ? bookingItem?.branch?.branchBkashNumber
-                      : ""}{" "}
-                  </p>
-                  <p>1. Select Make Payment</p>
-                  <p>2. Enter The Merchant Number (01407001410)</p>
-                  <p>
-                    3. Enter The Amount You Want To Pay{" "}
-                    <span className="text-[#35B0A7]">
-                      (minimum amount to pay : ৳{bookingItem?.minimumPayment})
-                    </span>
-                  </p>
-                  <p className="text-left my-2">
-                    Please fill the form to submit your booking
-                  </p>
+          {selectMethod === "bkash" ? (
+            <div className="mx-4 mb-4">
+              <p className="text-left font-bold my-2">
+                bkash (Merchant) :{" "}
+                {bookingItem?.branch?.branchBkashNumber
+                  ? bookingItem?.branch?.branchBkashNumber
+                  : ""}{" "}
+              </p>
+              <p>1. Select Make Payment</p>
+              <p>2. Enter The Merchant Number (01407001410)</p>
+              <p>
+                3. Enter The Amount You Want To Pay{" "}
+                <span className="text-[#35B0A7]">
+                  (minimum amount to pay : ৳{bookingItem?.minimumPayment})
+                </span>
+              </p>
+              <p className="text-left my-2">
+                Please fill the form to submit your booking
+              </p>
 
-                  <div className="mt-3">
-                    <div>
-                      <p className="text-[1rem]">
-                        bKash Number (from which you make payment) :{" "}
-                      </p>
-                    </div>
-                    <div className="w-[250px]">
-                      <input
-                        className="mt-2 ps-2  border h-8 w-[250px]"
-                        name="bkashNumber"
-                        required
-                        type="text"
-                        placeholder="017xxxxxxxx"
-                        onChange={(e) => setPaymentNumber(e.target.value)}
-                      />
-                    </div>
-                  </div>
-
-                  <div className="mt-3">
-                    <div>
-                      <p>How much money have you send :</p>
-                    </div>
-                    <div className="w-[250px]">
-                      <input
-                        className=" mt-2 ps-2 border h-8 w-[250px]"
-                        name="receivedTk"
-                        required
-                        type="text"
-                        placeholder="Sending Amount"
-                        onChange={(e) => setReceivedTk(e.target.value)}
-                      />
-                    </div>
-                  </div>
-                  <button
-                    onClick={() => handlePayByBkash(receivedTk)}
-                    className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
-                  >
-                    Place Booking Now
-                  </button>
+              <div className="mt-3">
+                <div>
+                  <p className="text-[1rem]">
+                    bKash Number (from which you make payment) :{" "}
+                  </p>
                 </div>
-              )}
-            </div> */}
+                <div className="w-[250px]">
+                  <input
+                    className="mt-2 ps-2  border h-8 w-[250px]"
+                    name="bkashNumber"
+                    required
+                    type="text"
+                    placeholder="017xxxxxxxx"
+                    onChange={(e) => setPaymentNumber(e.target.value)}
+                  />
+                </div>
+              </div>
+
+              <div className="mt-3">
+                <div>
+                  <p>How much money have you send :</p>
+                </div>
+                <div className="w-[250px]">
+                  <input
+                    className=" mt-2 ps-2 border h-8 w-[250px]"
+                    name="receivedTk"
+                    required
+                    type="text"
+                    placeholder="Sending Amount"
+                    onChange={(e) => setReceivedTk(e.target.value)}
+                  />
+                </div>
+              </div>
+              <button
+                onClick={() => handlePayByBkash(receivedTk)}
+                className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
+              >
+                Place Booking Now
+              </button>
+            </div>
+          ) : (
+            <div  className="mx-4 mb-4">
+              <button
+                onClick={() => handlePayByBkash(receivedTk)}
+                className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
+              >
+                Place Booking Now
+              </button>
+            </div>
+          )}
+
         </div>
       )}
     </div>
