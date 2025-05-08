@@ -52,15 +52,13 @@ const VillaBookingBox = ({ villa }) => {
     }
 
     let bookingData = {
-      villa: villa?._id,
+      villa: villa,
       user: user?._id,
       perNight: villa?.pricing?.perNight,
       subTotal,
       totalAmount,
       minimumPayment: villa?.pricing?.advancePayment,
       rentDate: {
-        // bookingStartDate: new Date(startDate).toISOString().split("T")[0],
-        // bookingEndDate: new Date(endDate).toISOString().split("T")[0],
         bookingStartDate: format(new Date(startDate), "dd-MM-yyyy"),
         bookingEndDate: format(new Date(endDate), "dd-MM-yyyy"),
         daysDifference: customerRent?.daysDifference,

@@ -406,10 +406,10 @@ const AddResort = () => {
                   bKash Account Type
                 </label>
                 <select className="main_form w-100" name="bkashAccountType">
-                  <option value="merchant" selected>
+                  <option value="Merchant" selected>
                     Merchant Account
                   </option>
-                  <option value="personal">Personal Account</option>
+                  <option value="Personal">Personal Account</option>
                 </select>
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -450,10 +450,10 @@ const AddResort = () => {
                   Nagad Account Type
                 </label>
                 <select className="main_form w-100" name="nagadAccountType">
-                  <option value="merchant" selected>
+                  <option value="Merchant" selected>
                     Merchant Account
                   </option>
-                  <option value="personal">Personal Account</option>
+                  <option value="Personal">Personal Account</option>
                 </select>
               </div>
               <div className="col-md-4 form_sub_stream">

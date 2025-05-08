@@ -16,8 +16,8 @@ const ExpandableText = ({ htmlContent }) => {
       const lineHeight = parseFloat(
         getComputedStyle(contentRef.current).lineHeight
       );
-      const maxHeight = lineHeight * 4;
-      if (contentRef.current.scrollHeight > maxHeight + 1) {
+      const maxHeight = lineHeight * 5;
+      if (contentRef.current.scrollHeight >= maxHeight + 1) {
         setIsOverflowing(true);
       }
     }

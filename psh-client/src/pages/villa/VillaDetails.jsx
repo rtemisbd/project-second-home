@@ -78,6 +78,7 @@ const VillaDetails = () => {
     return `${adjustedHour}:${minutes} ${ampm}`;
   };
 
+
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsPlaying(entry.isIntersecting),
@@ -105,7 +106,6 @@ const VillaDetails = () => {
     };
     fetchVilla();
   }, [id, showAll]);
-  console.log(villa);
 
   return (
     <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
@@ -206,7 +206,17 @@ const VillaDetails = () => {
                         </div>
                         <p className="ms-1">
                           {" "}
-                          {villa?.resortId?.resortMobileNumber}{" "}
+                          {villa?.resortId?.contactNumbers?.map(
+                            (contact, ind) => (
+                              <span key={ind}>
+                                <span className="mx-1">{contact?.number}</span>
+                                {ind + 1 <
+                                  villa?.resortId?.contactNumbers?.length && (
+                                  <span className="text-2xl">,</span>
+                                )}
+                              </span>
+                            )
+                          )}{" "}
                         </p>
                       </div>
                     </div>
@@ -241,7 +251,7 @@ const VillaDetails = () => {
                     <p className="font-bold">View</p>
                     <p>{villa?.view}</p>
                   </div>
-                
+
                   <div className="flex flex-col items-start ">
                     <p className="font-bold">Total Floor</p>
                     <p>{villa?.totalFloor} floor </p>
@@ -463,11 +473,12 @@ const VillaDetails = () => {
               </div>
               {/* Total Box */}
 
-              <div className="flex flex-col items-start  sm:col-span-12 md:col-span-6 lg:col-span-4 ">
+              <div className="flex flex-col  items-start  sm:col-span-12 lg:col-span-4 ">
                 <VillaBookingBox villa={villa} />
+
                 <div
                   ref={playerContainerRef}
-                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden mt-3 bg-gray-100"
+                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden sm:mt-3 md:mt-0 lg:mt-3 bg-gray-100"
                   onClick={openVideoInYouTube}
                 >
                   {videoId ? (

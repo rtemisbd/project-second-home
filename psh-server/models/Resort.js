@@ -14,10 +14,10 @@ const contactNumberSchema = new mongoose.Schema({
 
 const mobileBankingSchema = new mongoose.Schema({
     resortBkashNumber : {type : String},
-    bkashAccountType : {type : String},
+    bkashAccountType : {type : String, enum: ["Merchant", "Personal"]},
     bkashAccountHolder : {type : String},
     resortNagadNumber : {type : String},
-    nagadAccountType : {type : String},
+    nagadAccountType : {type : String, enum: ["Merchant", "Personal"]},
     nagadAccountHolder : {type : String},
 })
 
