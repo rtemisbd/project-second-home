@@ -12,8 +12,19 @@ const createVillaIntoDB = async(payload)=>{
     return result;
 }
 
-const getAllVillaFromDB = async()=>{
+const getAllVillaFromDB = async(queries)=>{
+
+    const {resortId} = queries;
+
+    let query = {};
+
+    if (resortId && mongoose.Types.ObjectId.isValid(resortId)) {
+        query.resortId = new mongoose.Types.ObjectId(resortId);
+      }
+
+
     const pipeline = [
+        { $match: query },
         {
             $lookup: {
                 from: "resorts",
