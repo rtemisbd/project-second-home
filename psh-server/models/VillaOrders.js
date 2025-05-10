@@ -2,25 +2,31 @@ import mongoose from "mongoose";
 
 
 const rentDateSchema = new mongoose.Schema({
-    bookStartDate: { type: mongoose.Schema.Types.Mixed, required: true},
-    bookEndDate: { type: mongoose.Schema.Types.Mixed , required: true},
-    dayDifference : {type : Number, required: true}
+    bookingStartDate: { type: mongoose.Schema.Types.Mixed, required: true},
+    bookingEndDate: { type: mongoose.Schema.Types.Mixed , required: true},
+    daysDifference : {type : Number, required: true}
 })
 
 const villaOrderSchema = new mongoose.Schema({
-    bookingId: { type: String,},
+    bookingId: { type: String},
     villa: { type: mongoose.Schema.Types.ObjectId, ref: "Villa", required: true },
     user: {type : mongoose.Schema.Types.ObjectId, ref : "User", required : true},
+    bookingPlatform : {type : String, required : true},
+    minimumAmount : {type : Number },
+    paymentMethod : {type : String, required : true, enum : ["online", "cash"], default : "online"},
+    paymentProof : {type : String, required : true},
+    perNight : {type : Number, required : true},
+    sendAmount : {type : Number, required : true},
+    senderAccountNumber : {type : String, required : true},
     subTotal : {type : Number, required : true},
     totalAmount : {type : Number, required : true},
+    rentDate : rentDateSchema,
     payableAmount : {type : Number, required : true},
-    paidAmount : {type : Number, required : true},
     status: {
         type: String,
         enum: ["Pending", "Processing", "Approved", "Canceled"],
-        default: "Pending",
+        default: "Processing",
       },
-      rentDate : rentDateSchema
 
 
 }, { timestamps: true });

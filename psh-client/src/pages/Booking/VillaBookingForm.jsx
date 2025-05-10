@@ -24,9 +24,7 @@ const VillaBookingForm = () => {
   const [requiredMessage, setRequiredMessage] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
-  const [dataForBooking, setDataForBooking] = useState({
-    bookingExtend: false,
-  });
+  const [dataForBooking, setDataForBooking] = useState({});
   const [bookingItem, setBookingItem] = useState({});
   const [villa, setVilla] = useState({});
 
@@ -74,26 +72,32 @@ const VillaBookingForm = () => {
 
   const handleBookingConfirmation = async () => {
     try {
-      // dispatch(placeLoadingShow(true));
+      dispatch(placeLoadingShow(true));
 
       let paymentProofImg;
       if (paymentProof) {
         paymentProofImg = await uploadImageToImgBB(paymentProof?.[0]);
       }
 
-      const { villa, ...bookingInfo } = bookingItem;
-      setDataForBooking((prevData) => ({
-        ...prevData,
-        ...bookingInfo,
-        villa: villa?._id,
-        paymentMethod: selectMethod,
-        bookingPlatform: selectMethod !== "cash" ? selectPlatform : "",
-        senderAccountNumber: senderAccountNumber,
-        sendAmount: sendAmount,
-        paymentProof: paymentProofImg,
-      }));
+      dataForBooking.paymentMethod = selectMethod;
+      dataForBooking.bookingPlatform =
+        selectMethod !== "cash" ? selectPlatform : "";
+      dataForBooking.senderAccountNumber = senderAccountNumber;
+      dataForBooking.sendAmount = sendAmount;
+      dataForBooking.paymentProof = paymentProofImg;
+
+      const data = await axios.post(
+        `${serverBaseUrl}/villa-order`,
+        dataForBooking
+      );
+      console.log(data);
+      setShowPayment(false);
+      setIsBlur(false);
+      dispatch(placeLoadingShow(false));
+      // localStorage.removeItem("bookingItem");
     } catch (error) {
       console.log(error);
+      dispatch(placeLoadingShow(false));
     }
   };
   console.log(dataForBooking);
@@ -102,7 +106,14 @@ const VillaBookingForm = () => {
     const storedBookingItem = localStorage.getItem("bookingItem");
     if (storedBookingItem) {
       const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
+      const { villa, ...bookingInfo } = parseToJson;
       setBookingItem(parseToJson);
+      setDataForBooking((prevData) => ({
+        ...prevData,
+        ...bookingInfo,
+        villa: villa?._id,
+      }));
+
       setVilla(parseToJson?.villa);
       setPlatformAccNumber(
         parseToJson?.villa?.resortId?.mobileBanking?.resortBkashNumber
@@ -525,20 +536,7 @@ const VillaBookingForm = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center px-4 text-black">
-                  <div>
-                    <input
-                      type="checkbox"
-                      name="bookingExtend"
-                      id=""
-                      value={true}
-                      onClick={handleInputChange}
-                    />
-                  </div>
-                  <p className="text-left pl-3 text-[#35B0A7] font-bold text-[12px]">
-                    I Would Like to Extend in Future
-                  </p>
-                </div>
+
                 <div className="flex px-4 mt-1 text-black  mb-1">
                   <div>
                     <input

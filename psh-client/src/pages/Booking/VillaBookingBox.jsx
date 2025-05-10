@@ -27,8 +27,7 @@ const VillaBookingBox = ({ villa }) => {
   const [totalAmount, setTotalAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [advance, setAdvance] = useState(0);
-  
-  
+
   // handle Scrolled
   const [scrollY, setScrollY] = useState(0);
 
@@ -57,6 +56,7 @@ const VillaBookingBox = ({ villa }) => {
       perNight: villa?.pricing?.perNight,
       subTotal,
       totalAmount,
+      payableAmount: totalAmount,
       minimumPayment: villa?.pricing?.advancePayment,
       rentDate: {
         bookingStartDate: format(new Date(startDate), "dd-MM-yyyy"),
