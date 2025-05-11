@@ -7,7 +7,7 @@ import useUser from "../../hooks/userUser";
 import cashImg from "../../assets/img/Cash-1.png";
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
 import { Tooltip, Typography } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { IoCloseCircleOutline } from "react-icons/io5";
@@ -18,6 +18,7 @@ import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 const VillaBookingForm = () => {
   const [singleUser] = useUser();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isBlur, setIsBlur] = useState(false);
   const [scrollY, setScrollY] = useState(0);
@@ -86,11 +87,15 @@ const VillaBookingForm = () => {
       dataForBooking.sendAmount = sendAmount;
       dataForBooking.paymentProof = paymentProofImg;
 
-      const data = await axios.post(
+      const { data } = await axios.post(
         `${serverBaseUrl}/villa-order`,
         dataForBooking
       );
-      console.log(data);
+
+      console.log(data.data);
+      if (data?.success) {
+        navigate("/booking-confirmation", { state: data?.data });
+      }
       setShowPayment(false);
       setIsBlur(false);
       dispatch(placeLoadingShow(false));
@@ -100,7 +105,6 @@ const VillaBookingForm = () => {
       dispatch(placeLoadingShow(false));
     }
   };
-  console.log(dataForBooking);
 
   useEffect(() => {
     const storedBookingItem = localStorage.getItem("bookingItem");
@@ -689,13 +693,13 @@ const VillaBookingForm = () => {
               onChange={(e) => setSelectMethod(e.target.value)}
             />
             <span className="text-[15px] mr-2">Pay Via Online</span>
-            <input
+            {/* <input
               type="radio"
               name="method"
               value="cash"
               onChange={(e) => setSelectMethod(e.target.value)}
             />
-            <span className="text-[15px] ml-1">Cash / Card</span>
+            <span className="text-[15px] ml-1">Cash / Card</span> */}
           </div>
           {selectMethod === "online" ? (
             <div>

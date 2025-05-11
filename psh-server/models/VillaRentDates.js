@@ -9,9 +9,13 @@ const villaRentDateSchema = new mongoose.Schema(
     bookingEndDate: {
       type: mongoose.Schema.Types.Mixed,
     },
-    bookingId: {
+    orderId: {
       type: ObjectId,
       ref: "order",
+    },
+    bookingId: {
+      type: String,
+      required : true
     },
     villaId: {
       type: ObjectId,
@@ -22,7 +26,6 @@ const villaRentDateSchema = new mongoose.Schema(
       ref: "User",
     },
     
-
     bookingStatus: {
       type: String,
       enum: ["Reserved", "Booked", "Complete"],
