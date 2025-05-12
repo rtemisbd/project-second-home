@@ -11,7 +11,7 @@ const villaOrderSchema = new mongoose.Schema({
     bookingId: { type: String},
     villa: { type: mongoose.Schema.Types.ObjectId, ref: "Villa", required: true },
     user: {type : mongoose.Schema.Types.ObjectId, ref : "User", required : true},
-    bookingPlatform : {type : String, required : true},
+    paymentPlatform : {type : String, required : true},
     minimumAmount : {type : Number },
     paymentMethod : {type : String, required : true, enum : ["online", "cash"], default : "online"},
     paymentProof : {type : String, required : true},

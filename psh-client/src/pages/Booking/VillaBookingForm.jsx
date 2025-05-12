@@ -81,7 +81,7 @@ const VillaBookingForm = () => {
       }
 
       dataForBooking.paymentMethod = selectMethod;
-      dataForBooking.bookingPlatform =
+      dataForBooking.paymentPlatform =
         selectMethod !== "cash" ? selectPlatform : "";
       dataForBooking.senderAccountNumber = senderAccountNumber;
       dataForBooking.sendAmount = sendAmount;

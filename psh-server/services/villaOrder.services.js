@@ -2,9 +2,10 @@ import { setValue } from "node-global-storage";
 import User from "../models/User.js";
 import VillaOrders from "../models/VillaOrders.js"
 import { generateBookingId } from "../utils/generateBookingId.js";
+import TransactionForVilla from "../models/TransactionForVilla.js";
+import VillaRentDates from "../models/VillaRentDates.js";
 
 const createVillaOrderIntoDB = async(payload)=>{
-    console.log(payload);
     await setValue("userId", payload?.user);
 
     // Step 1: Update user information
@@ -21,29 +22,44 @@ const createVillaOrderIntoDB = async(payload)=>{
     await User.updateOne(
       { phone: payload?.phone },
       { $set: userUpdate },
-      { runValidators: true, session }
+      { runValidators: true}
+      // { runValidators: true, session }
     );
 
     // step 2 : generate booking ID
     payload.bookingId = await generateBookingId();
-    // step 3 : create transaction
+
+    //step 3 : create booking
+    const order = await VillaOrders.create(payload);
+
+    // step 4 : create transaction
     const newTransaction ={
       userId : payload.user,
       bookingId : payload.bookingId,
       paymentProof : payload.paymentProof,
       receivedAmount : payload.sendAmount,
-      // orderId : ,
-      senderNumber : payload.senderNumber,
+      orderId : order?._id,
+      senderNumber : payload.senderAccountNumber,
       paymentMethod : payload.paymentMethod,
       paymentPlatform : payload.paymentPlatform,
     };
-    // step 4 : create rentDate
+    await TransactionForVilla.create(newTransaction);
+
+    // step 5 : create rentDate
+    const newRentDate = {
+      bookingStartDate:payload.rentDate.bookingStartDate,
+      bookingEndDate:payload.rentDate.bookingEndDate,
+      daysDifference:payload.rentDate.daysDifference,
+      orderId : order?._id,
+      bookingId:payload.bookingId,
+      villaId:payload.villa,
+      userId:payload.user,
+    }
+
+    await VillaRentDates.create(newRentDate);
     
-    
-    //step 5 : create booking
-    
-    const result = await VillaOrders.create(payload);
-    return result;
+ 
+    return order;
 }
 
 
