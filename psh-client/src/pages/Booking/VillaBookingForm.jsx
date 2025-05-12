@@ -1,4 +1,4 @@
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import LoadingState from "../LoadingState/LoadingState";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -92,8 +92,8 @@ const VillaBookingForm = () => {
         dataForBooking
       );
 
-      console.log(data.data);
       if (data?.success) {
+        toast.success("Your booking hash been placed.");
         navigate("/booking-confirmation", { state: data?.data });
       }
       setShowPayment(false);
@@ -101,7 +101,8 @@ const VillaBookingForm = () => {
       dispatch(placeLoadingShow(false));
       // localStorage.removeItem("bookingItem");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      toast.error("Something is wrong");
       dispatch(placeLoadingShow(false));
     }
   };

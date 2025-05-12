@@ -15,8 +15,8 @@ const RoomOverview = () => {
   const [toDate, setToDate] = useState("");
   const [branch, setBranch] = useState("");
   const [category, setCategory] = useState("All");
-  const [roomNumber, setRoomNumber] = useState("");
-  const [seatNumber, setSeatNumber] = useState("");
+  const [roomId, setRoomId] = useState("");
+  const [seatId, setSeatId] = useState("");
 
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
@@ -92,8 +92,8 @@ const RoomOverview = () => {
           destination: branch,
           category,
           withSharedRoom: true,
-          roomNumber,
-          seatNumber,
+          roomId,
+          seatId,
           isPublished: "Published",
         });
 
@@ -183,14 +183,7 @@ const RoomOverview = () => {
   useEffect(() => {
     refetchProperties();
     refetchRentDates();
-  }, [
-    branch,
-    category,
-    roomNumber,
-    seatNumber,
-    refetchProperties,
-    refetchRentDates,
-  ]);
+  }, [branch, category, roomId, seatId, refetchProperties, refetchRentDates]);
 
   // Default date range initialization
   useEffect(() => {
@@ -215,13 +208,13 @@ const RoomOverview = () => {
     const booking = isPrivateRoom
       ? bookedRooms.find(
           (br) =>
-            br.roomNumber === room.roomNumber &&
+            br.roomId === room._id &&
             new Date(br.bookStartDate) <= new Date(date) &&
             new Date(br.bookEndDate) >= new Date(date)
         )
       : bookedSeats.find(
           (bs) =>
-            bs.seatNumber === room.seatNumber &&
+            bs.seatId === room._id &&
             new Date(bs.bookStartDate) <= new Date(date) &&
             new Date(bs.bookEndDate) >= new Date(date)
         );
@@ -234,13 +227,13 @@ const RoomOverview = () => {
     const booking = isPrivateRoom
       ? reserved.find(
           (br) =>
-            br.roomNumber === room.roomNumber &&
+            br.roomId === room._id &&
             new Date(br.bookStartDate) <= new Date(date) &&
             new Date(br.bookEndDate) >= new Date(date)
         )
       : reserved.find(
           (bs) =>
-            bs.seatNumber === room.seatNumber &&
+            bs.seatId === room._id &&
             new Date(bs.bookStartDate) <= new Date(date) &&
             new Date(bs.bookEndDate) >= new Date(date)
         );
@@ -258,7 +251,7 @@ const RoomOverview = () => {
         setBookingInfo(
           bookedSeats.filter(
             (bs) =>
-              bs.seatNumber === room.seatNumber &&
+              bs.seatId === room._id &&
               new Date(bs.bookStartDate) <= new Date(date) &&
               new Date(bs.bookEndDate) >= new Date(date)
           )
@@ -267,7 +260,7 @@ const RoomOverview = () => {
         setBookingInfo(
           reserved.filter(
             (bs) =>
-              bs.seatNumber === room.seatNumber &&
+              bs.seatId === room._id &&
               new Date(bs.bookStartDate) <= new Date(date) &&
               new Date(bs.bookEndDate) >= new Date(date)
           )
@@ -278,7 +271,7 @@ const RoomOverview = () => {
         setBookingInfo(
           bookedRooms.filter(
             (br) =>
-              br.roomNumber === room.roomNumber &&
+              br.roomId === room._id &&
               new Date(br.bookStartDate) <= new Date(date) &&
               new Date(br.bookEndDate) >= new Date(date)
           )
@@ -287,7 +280,7 @@ const RoomOverview = () => {
         setBookingInfo(
           reserved.filter(
             (br) =>
-              br.roomNumber === room.roomNumber &&
+              br.roomId === room._id &&
               new Date(br.bookStartDate) <= new Date(date) &&
               new Date(br.bookEndDate) >= new Date(date)
           )
@@ -360,8 +353,8 @@ const RoomOverview = () => {
                 <input
                   type="text"
                   className="rounded  "
-                  value={roomNumber}
-                  onChange={(e) => setRoomNumber(e.target.value)}
+                  value={roomId}
+                  onChange={(e) => setRoomId(e.target.value)}
                 />
               </div>
               <div>
@@ -369,8 +362,8 @@ const RoomOverview = () => {
                 <input
                   type="text"
                   className="rounded  "
-                  value={seatNumber}
-                  onChange={(e) => setSeatNumber(e.target.value)}
+                  value={seatId}
+                  onChange={(e) => setSeatId(e.target.value)}
                 />
               </div>
             </div>
