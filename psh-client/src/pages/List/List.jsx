@@ -27,7 +27,7 @@ function List() {
   );
 
   const [gender, setGender] = useState(location?.state?.gender || "");
-  const [category, setCategory] = useState(location?.state?.category || "");
+  const [category, setCategory] = useState(location?.state?.category || "All");
 
   const [bedrooms, setBedrooms] = useState(location?.state?.bedrooms || "");
   const [withSharedRoom, setWithSharedRoom] = useState(true);
@@ -83,6 +83,7 @@ function List() {
           page,
           sort,
         });
+
         const response = await axios.get(
           `${serverBaseUrl}/property?${queryParams.toString()}`
         );
@@ -123,16 +124,16 @@ function List() {
 
   useEffect(() => {
     if (!data.length) return;
+    if (!startDate || !endDate) return;
 
     const alreadyBookedRoomNumbers = bookedRooms?.map((br) => br.roomId) || [];
-    const alreadyBookedSeatNumbers =
-      bookedSeats?.map((bs) => bs.seatNumber) || [];
+    const alreadyBookedSeatNumbers = bookedSeats?.map((bs) => bs.seatId) || [];
 
     setAvailableRooms(
       data.filter((room) => !alreadyBookedRoomNumbers.includes(room._id))
     );
     setAvailableSeats(
-      data.filter((room) => !alreadyBookedSeatNumbers.includes(room.seatNumber))
+      data.filter((room) => !alreadyBookedSeatNumbers.includes(room.seatId))
     );
   }, [bookedRooms, bookedSeats]);
 

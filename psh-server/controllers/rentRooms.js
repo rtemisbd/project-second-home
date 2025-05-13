@@ -90,6 +90,7 @@ export const getRentRooms = async (req, res, next) => {
         },
       },
     ]);
+    
 
     // Update bookingStatus to "reserved" for upcoming rent rooms
     await RentRoom.updateMany(
