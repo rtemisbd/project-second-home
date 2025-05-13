@@ -75,6 +75,7 @@ import AddResort from "./pages/Resorts/AddResort";
 import ResortList from "./pages/Resorts/ResortList";
 import AddVilla from "./pages/Villa/AddVilla";
 import VillaList from "./pages/Villa/VillaList";
+import EditVilla from "./pages/Villa/EditVilla";
 
 
 function App() {
@@ -105,6 +106,7 @@ function App() {
         <Route path="resort-list" element={<ResortList/>} />
         <Route path="add-villa" element={<AddVilla />} />
         <Route path="villa-list" element={<VillaList />} />
+        <Route path="edit/villa/:id" element={<EditVilla />} />
 
         <Route path="branch_list" element={<Branch />} />
         <Route path="add_dynamic" element={<Add_Dynamic />} />
@@ -129,7 +131,6 @@ function App() {
         <Route path="add_property" element={<Add_property />} />
         <Route path="property_list_p" element={<Partner_property_list />} />
 
-        {/* test purpose */}
         <Route path="property_list" element={<AdminPropertyList2 />} />
         <Route path="edit/:category/:id" element={<EditProperty />} />
         <Route path="edit/private-room/:id" element={<EditPrivateProperty />} />

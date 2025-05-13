@@ -10,7 +10,7 @@ const villaSchema = new mongoose.Schema({
     type: { type: String, required: true },
     villaNumber: { type: String, required: true },
     view: { type: String, required: true },
-    area: { type: String, required: true },
+    
     totalFloor: { type: Number, required: true },
     totalRoom: { type: Number, required: true },
     totalBalcony: { type: Number, required: true },
@@ -18,12 +18,16 @@ const villaSchema = new mongoose.Schema({
     occupancy: {
         adults: { type: Number, required: true },
         kids: { type: Number, required: true },
-        policy: { type: String, required: true }
+        policy: { type: String,
+            //  required: true 
+            }
     },
     features: [{ type: String, required: true }],
     // features: [featureSchema],
     pricing: {
         perNight: { type: Number, required: true },
+        afterDiscountPerNight  : {type : Number},
+        discountPercent  : {type : Number},
         advancePayment: { type: Number, required: true },
         adultAddition: { type: Number},
         kidAddition: { type: Number},
@@ -35,7 +39,14 @@ const villaSchema = new mongoose.Schema({
         photos: [{ type: String }],
         video: { type: String }
     },
-    houseRules: { type: String, required: true },  
+    houseRules: { type: String, 
+        // required: true
+     },  
+    isPublished: {
+        type: String,
+        enum: ["Unpublished", "Published"],
+        default: "Published",
+      },
 }, { timestamps: true });
 
 

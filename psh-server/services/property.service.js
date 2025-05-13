@@ -167,7 +167,7 @@ const getRecommendedPropertiesFromDB = async () => {
         as: "categoryDetails",
       },
     },
-    { $unwind: "$categoryDetails" },
+    { $unwind: "$categoryDetails" }, 
   ]);
   const extractedSeats = await seatServices.getAllSeatsFromDB({});
   const properties = [

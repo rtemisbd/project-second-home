@@ -7,6 +7,11 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
 
   // Function to handle editor change
   const handleEditorChange = (content) => {
+    // const cleanedContent = content;
+    // .replace(/^\s*[\r\n]/, "")
+    // .replace(/[\r\n]\s*$/, "")
+    // .trim();
+    // setEditorValue(cleanedContent);
     setEditorValue(content);
   };
 
@@ -41,7 +46,8 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
       //   }}
     >
       <Editor
-        apiKey="c78helvex5rb6eeip9mygjdr749vftwuzx17s9vmpt5aogm4"
+        // apiKey={process.env.TEXT_EDITOR_API}
+        apiKey="nvbvxd0cj96xmtdbsjv7bqktdbgfzzu9txnvx4pov58i8q0f"
         value={editorValue}
         onEditorChange={handleEditorChange}
         init={{
@@ -86,14 +92,13 @@ const TextEditor = ({ setEditorValue, editorValue }) => {
             // "exportpdf",
           ],
           toolbar:
-            "undo redo | blocks  fontsize | bold italic underline strikethrough | link image media table  |   typography | align  | checklist   indent outdent | emoticons  ",
+            "undo redo | blocks fontfamily fontsize | bold italic underline strikethrough | link image media table | align lineheight | numlist bullist indent outdent | emoticons charmap | removeformat",
           file_picker_callback: handleImageUpload,
           fontsize_formats: "8pt 10pt 12pt 14pt 18pt 24pt 36pt", // Font sizes available
           content_style: `
             body {
               font-size: 16px !important;  
               line-height: 1.6 !important;
-              font-family: Arial, sans-serif !important; 
               margin: 0 !important;
               padding: 0 !important;
             }

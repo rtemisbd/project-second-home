@@ -29,8 +29,6 @@ const BookNow = () => {
     window.scrollTo(0, 0);
   }, [pathname]);
 
-  console.log(endOrder);
-
   return (
     <div className=" custom-container  py-20 text-black sm:p-10">
       {/* Personal Info */}
@@ -71,7 +69,7 @@ const BookNow = () => {
         <hr className="mt-2" />
         <div className="flex justify-between mt-4">
           <p className="flex ">
-            <span>Cuopon</span> <span className="md:ml-[110px] sm:ml-2">:</span>
+            <span>Coupon</span> <span className="md:ml-[110px] sm:ml-2">:</span>
           </p>
           <p>None</p>
         </div>

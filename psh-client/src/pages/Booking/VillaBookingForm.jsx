@@ -1,4 +1,4 @@
-import { Toaster } from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import LoadingState from "../LoadingState/LoadingState";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
@@ -7,24 +7,37 @@ import useUser from "../../hooks/userUser";
 import cashImg from "../../assets/img/Cash-1.png";
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
 import { Tooltip, Typography } from "@material-tailwind/react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
-import { format, parseISO } from "date-fns";
+import { IoCloseCircleOutline } from "react-icons/io5";
+import { uploadImageToImgBB } from "../../utilities/singleImageUploader";
+import { useDispatch } from "react-redux";
+import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 
 const VillaBookingForm = () => {
   const [singleUser] = useUser();
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [isBlur, setIsBlur] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [requiredMessage, setRequiredMessage] = useState(false);
-
-  const [dataForBooking, setDataForBooking] = useState({
-    arrivalTime: "",
-    bookingExtend: false,
-  });
+  const [agreeTerms, setAgreeTerms] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
+  const [dataForBooking, setDataForBooking] = useState({});
   const [bookingItem, setBookingItem] = useState({});
   const [villa, setVilla] = useState({});
+
+  const [selectMethod, setSelectMethod] = useState("online");
+  const [selectPlatform, setSelectPlatform] = useState("");
+  const [platformAccountType, setPlatformAccountType] = useState("Merchant");
+  const [platformAccNumber, setPlatformAccNumber] = useState();
+  const [selectedBank, setSelectedBank] = useState(null);
+
+  const [senderAccountNumber, setSenderAccountNumber] = useState(null);
+  const [sendAmount, setsendAmount] = useState(0);
+  const [paymentProof, setPaymentProof] = useState(null);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -43,30 +56,98 @@ const VillaBookingForm = () => {
     anchorClickHandler(e);
   };
 
+  const formatToInputDate = (dateStr) => {
+    if (!dateStr) return "";
+    const [day, month, year] = dateStr.split("-");
+    return `${day}/${month}/${year}`; // "16-05-2025" → "16/05/2025"
+  };
+
+  const handlePaymentOption = () => {
+    if (agreeTerms) {
+      setIsBlur(true);
+      setShowPayment(true);
+    } else {
+      setRequiredMessage(true);
+    }
+  };
+
+  const handleBookingConfirmation = async () => {
+    try {
+      dispatch(placeLoadingShow(true));
+
+      let paymentProofImg;
+      if (paymentProof) {
+        paymentProofImg = await uploadImageToImgBB(paymentProof?.[0]);
+      }
+
+      dataForBooking.paymentMethod = selectMethod;
+      dataForBooking.paymentPlatform =
+        selectMethod !== "cash" ? selectPlatform : "";
+      dataForBooking.senderAccountNumber = senderAccountNumber;
+      dataForBooking.sendAmount = sendAmount;
+      dataForBooking.paymentProof = paymentProofImg;
+
+      const { data } = await axios.post(
+        `${serverBaseUrl}/villa-order`,
+        dataForBooking
+      );
+
+      if (data?.success) {
+        toast.success("Your booking hash been placed.");
+        navigate("/booking-confirmation", { state: data?.data });
+      }
+      setShowPayment(false);
+      setIsBlur(false);
+      dispatch(placeLoadingShow(false));
+      // localStorage.removeItem("bookingItem");
+    } catch (error) {
+      // console.log(error);
+      toast.error("Something is wrong");
+      dispatch(placeLoadingShow(false));
+    }
+  };
+
   useEffect(() => {
     const storedBookingItem = localStorage.getItem("bookingItem");
     if (storedBookingItem) {
       const parseToJson = JSON.parse(localStorage.getItem("bookingItem"));
+      const { villa, ...bookingInfo } = parseToJson;
       setBookingItem(parseToJson);
+      setDataForBooking((prevData) => ({
+        ...prevData,
+        ...bookingInfo,
+        villa: villa?._id,
+      }));
+
+      setVilla(parseToJson?.villa);
+      setPlatformAccNumber(
+        parseToJson?.villa?.resortId?.mobileBanking?.resortBkashNumber
+      );
+      setPlatformAccountType(
+        parseToJson?.villa?.resortId?.mobileBanking?.bkashAccountType
+      );
     }
   }, []);
 
   useEffect(() => {
-    const fetchVilla = async () => {
-      const { data } = await axios.get(
-        `${serverBaseUrl}/villa/${bookingItem?.villa}`
+    if (selectPlatform === "bKash") {
+      setPlatformAccountType(villa?.resortId?.mobileBanking?.bkashAccountType);
+      setPlatformAccNumber(villa?.resortId?.mobileBanking?.resortBkashNumber);
+    }
+    if (selectPlatform === "Nagad") {
+      setPlatformAccountType(villa?.resortId?.mobileBanking?.nagadAccountType);
+      setPlatformAccNumber(villa?.resortId?.mobileBanking?.resortNagadNumber);
+    }
+    if (selectMethod === "cash") {
+      setSelectPlatform("");
+    }
+    if (selectPlatform !== "bKash" && selectPlatform !== "Nagad") {
+      const bank = villa?.resortId?.bankDetails.find(
+        (bank) => bank?.bankName === selectPlatform
       );
-      setVilla(data?.data);
-    };
-    fetchVilla();
-  }, [bookingItem.villa]);
-  console.log(bookingItem);
-
-  const formatToInputDate = (dateStr) => {
-    if (!dateStr) return "";
-    const [day, month, year] = dateStr.split("-");
-    return `${year}-${month}-${day}`; // "16-05-2025" → "2025-05-16"
-  };
+      setSelectedBank(bank);
+    }
+  }, [villa, selectPlatform, selectMethod]);
 
   return (
     <div>
@@ -74,7 +155,9 @@ const VillaBookingForm = () => {
       <form
         // onSubmit={bookingOrder}
         className={`custom-container user_info_page ${
-          isBlur ? "blur-lg relative h-[100vh] md:h-[80vh] overflow-hidden" : ""
+          isBlur
+            ? "blur-lg relative h-[100vh] md:h-[80vh] overflow-hidden mb-16 lg:mb-0"
+            : ""
         }`}
       >
         <div
@@ -153,47 +236,6 @@ const VillaBookingForm = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-
-                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
-                  <label htmlFor="">Choose Your Identity Verification</label>
-                  <select
-                    className="personal-info lg:w-[350px] md:w-[300px] sm:w-full h-[45px] rounded"
-                    name="validityType"
-                    onChange={handleInputChange}
-                    defaultValue={singleUser?.validityType}
-                    // disabled={singleUser?.validityType ? true : false}
-                    // required={validityType === "Select One"}
-                    required
-                  >
-                    <option selected>Select One</option>
-                    <option
-                      selected={singleUser?.validityType === "National ID Card"}
-                      value="National ID Card"
-                    >
-                      National ID Card
-                    </option>
-                    <option
-                      selected={singleUser?.validityType === "Passport"}
-                      value="Passport"
-                    >
-                      Passport
-                    </option>
-                    <option
-                      selected={singleUser?.validityType === "Driving Licence"}
-                      value="Driving Licence"
-                    >
-                      Driving Licence
-                    </option>
-                    <option
-                      selected={
-                        singleUser?.validityType === "Birth Certificate"
-                      }
-                      value="Birth Certificate"
-                    >
-                      Birth Certificate
-                    </option>
-                  </select>
-                </div>
               </div>
             </div>
 
@@ -218,7 +260,6 @@ const VillaBookingForm = () => {
                       height: "45px",
                       padding: "0px 10px",
                     }}
-                    // onChange={(e) => setEmergencyContactName(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -234,7 +275,6 @@ const VillaBookingForm = () => {
                       padding: "0px 10px",
                     }}
                     defaultValue={singleUser?.emergencyContact?.relation}
-                    // onChange={(e) => setEmergencyRelationC(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -251,7 +291,6 @@ const VillaBookingForm = () => {
                       height: "45px",
                       padding: "0px 10px",
                     }}
-                    // onChange={(e) => setEmergencyContact(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -259,26 +298,6 @@ const VillaBookingForm = () => {
             </div>
 
             <div>
-              <p className="text-black flex justify-left mt-5 font-bold">
-                Arrival information
-              </p>
-
-              <div>
-                <select
-                  className="text-black personal-info rounded mt-5 lg:w-[350px] md:w-[300px] sm:w-full"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  name="arrivalTime"
-                  onChange={handleInputChange}
-                >
-                  <option disabled>Time of Arrival</option>
-                  <option>09 AM To 10 AM</option>
-                  <option>10 AM To 11 AM</option>
-                  <option>11 AM To 12 PM</option>
-                </select>
-              </div>
               <div className="grid xl:grid-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-1 gap-x-36 gap-y-3 mt-5">
                 <div>
                   <p className="mb-2">Special Request</p>
@@ -295,15 +314,6 @@ const VillaBookingForm = () => {
               <p className="flex flex-left text-black mt-2 special-req">
                 Special requests cannot be guaranteed but we will do our best to
                 meet your needs
-              </p>
-            </div>
-            <div className="flex items-start mt-20">
-              <div>
-                <img loading="lazy" src={cashImg} alt="" />
-              </div>
-              <p className="text-lg ">
-                NOTE : You could pay directly in our structure with any kind of
-                credit card or cash.
               </p>
             </div>
           </div>
@@ -370,8 +380,7 @@ const VillaBookingForm = () => {
                       ></i>
                       <input
                         className="ps-7 w-36"
-                        type="date"
-                        dateFormat="dd/MM/yyyy"
+                        type="text"
                         defaultValue={formatToInputDate(
                           bookingItem?.rentDate?.bookingStartDate
                         )}
@@ -392,7 +401,7 @@ const VillaBookingForm = () => {
                       ></i>
                       <input
                         className="ps-7 w-36"
-                        type="date"
+                        type="text"
                         defaultValue={formatToInputDate(
                           bookingItem?.rentDate?.bookingEndDate
                         )}
@@ -405,9 +414,9 @@ const VillaBookingForm = () => {
                       Duration
                     </p>
                     <p className=" duraion-count font-normal ps-1 text-sm ">
-                      {bookingItem?.rentDate?.daysDifference >= 0
-                        ? `${bookingItem?.rentDate?.daysDifference} Days`
-                        : ""}
+                      {bookingItem?.rentDate?.daysDifference > 1
+                        ? `${bookingItem?.rentDate?.daysDifference} Nights`
+                        : `${bookingItem?.rentDate?.daysDifference} Night`}
                     </p>
                   </div>
                 </div>
@@ -417,13 +426,12 @@ const VillaBookingForm = () => {
 
                     <div>
                       <input
-                        className=""
                         type="text"
-                        value={`${
-                          bookingItem?.customerRent?.daysDifference >= 0
-                            ? `${bookingItem?.customerRent?.daysDifference} Days`
-                            : ""
-                        }`}
+                        value={
+                          bookingItem?.bookingItem?.rentDate?.daysDifference > 1
+                            ? `${bookingItem?.rentDate?.daysDifference} Nights`
+                            : `${bookingItem?.rentDate?.daysDifference} Night`
+                        }
                         disabled
                       />
                     </div>
@@ -435,145 +443,45 @@ const VillaBookingForm = () => {
                     <div className="ml-16 flex items-center">
                       <p>Rent</p>
                       <div className="ml-2">
-                        {bookingItem?.roomType === "Shared Room" ? (
-                          <Tooltip
-                            content={
-                              <div>
-                                <Typography
-                                  variant="small"
-                                  style={{
-                                    color: "white",
-                                    backgroundColor: "black",
-                                    width: "200px",
-                                  }}
-                                  className="font-normal opacity-75 px-5 py-2 rounded"
-                                >
-                                  {bookingItem?.customerRent?.months ===
-                                    undefined &&
-                                  bookingItem?.customerRent?.years ===
-                                    undefined ? (
-                                    <span>
-                                      {bookingItem?.customerRent
-                                        ?.remainingDays + " day"}{" "}
-                                      X {bookingItem?.seatBooking?.perDay} ={" "}
-                                      {""}
-                                      {bookingItem?.seatBooking?.perDay *
-                                        bookingItem?.customerRent
-                                          ?.remainingDays +
-                                        " Tk"}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-
-                                  {bookingItem?.customerRent?.months >= 1 &&
-                                  bookingItem?.customerRent?.years ===
-                                    undefined ? (
-                                    <span>
-                                      {bookingItem?.customerRent.months +
-                                        " month"}{" "}
-                                      = {""}
-                                      {bookingItem?.seatBooking?.perMonth *
-                                        bookingItem?.customerRent.months +
-                                        " Tk"}
-                                      {bookingItem?.customerRent?.days > 0 ? (
-                                        <span>
-                                          +{" "}
-                                          {bookingItem?.customerRent?.days +
-                                            " Days"}{" "}
-                                          = {""}
-                                          {bookingItem?.seatBooking?.perDay *
-                                            bookingItem?.customerRent?.days +
-                                            " Tk"}
-                                        </span>
-                                      ) : (
-                                        ""
-                                      )}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-
-                                  {bookingItem?.customerRent?.years === 1 ? (
-                                    <span>
-                                      {bookingItem?.customerRent?.years +
-                                        " Year"}{" "}
-                                      = {""}
-                                      {bookingItem?.seatBooking?.perYear *
-                                        bookingItem?.customerRent?.years +
-                                        " Tk"}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </Typography>
-                              </div>
-                            }
+                        <Tooltip
+                          content={
+                            <div>
+                              <Typography
+                                variant="small"
+                                style={{
+                                  color: "white",
+                                  backgroundColor: "black",
+                                  width: "200px",
+                                }}
+                                className="font-normal opacity-75 px-5 py-2 rounded"
+                              >
+                                <span>
+                                  {bookingItem?.rentDate?.daysDifference +
+                                    " night"}{" "}
+                                  X {bookingItem?.perNight} = {""}
+                                  {bookingItem?.perNight *
+                                    bookingItem?.rentDate?.daysDifference +
+                                    " Tk"}
+                                </span>
+                              </Typography>
+                            </div>
+                          }
+                        >
+                          <svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor"
+                            strokeWidth={2}
+                            className="h-5 w-5 cursor-pointer text-blue-gray-500"
                           >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              className="h-5 w-5 cursor-pointer text-blue-gray-500"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                              />
-                            </svg>
-                          </Tooltip>
-                        ) : (
-                          <Tooltip
-                            content={
-                              <div>
-                                <Typography
-                                  variant="small"
-                                  style={{
-                                    color: "white",
-                                    backgroundColor: "black",
-                                    width: "200px",
-                                  }}
-                                  className="font-normal opacity-75 px-5 py-2 rounded"
-                                >
-                                  {bookingItem?.customerRent?.months ===
-                                    undefined &&
-                                  bookingItem?.customerRent?.years ===
-                                    undefined ? (
-                                    <span>
-                                      {bookingItem?.customerRent
-                                        ?.remainingDays + " day"}{" "}
-                                      X {bookingItem?.data?.perDay} = {""}
-                                      {bookingItem?.data?.perDay *
-                                        bookingItem?.customerRent
-                                          ?.remainingDays +
-                                        " Tk"}
-                                    </span>
-                                  ) : (
-                                    ""
-                                  )}
-                                </Typography>
-                              </div>
-                            }
-                          >
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              fill="none"
-                              viewBox="0 0 24 24"
-                              stroke="currentColor"
-                              strokeWidth={2}
-                              className="h-5 w-5 cursor-pointer text-blue-gray-500"
-                            >
-                              <path
-                                strokeLinecap="round"
-                                strokeLinejoin="round"
-                                d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
-                              />
-                            </svg>
-                          </Tooltip>
-                        )}
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z"
+                            />
+                          </svg>
+                        </Tooltip>
                       </div>
                     </div>
                     <p>BDT {bookingItem?.subTotal?.toLocaleString()}</p>
@@ -582,19 +490,10 @@ const VillaBookingForm = () => {
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.payableAmount?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.totalAmount?.toLocaleString()}</p>
                   </div>
 
-                  <div
-                    className={`flex justify-between ${
-                      (bookingItem?.customerRent?.months >= 1 &&
-                        bookingItem?.customerRent?.years === undefined) ||
-                      (bookingItem?.customerRent?.months === 0 &&
-                        bookingItem?.customerRent?.years >= 1)
-                        ? "hidden"
-                        : "block"
-                    }`}
-                  >
+                  <div className={`flex justify-between `}>
                     <div className="ml-16 flex items-center payment-check">
                       <p className="text-red-500">Advance Payment</p>
                       <div className="ml-2">
@@ -642,20 +541,7 @@ const VillaBookingForm = () => {
                     </p>
                   </div>
                 </div>
-                <div className="flex items-center px-4 text-black">
-                  <div>
-                    <input
-                      type="checkbox"
-                      name="bookingExtend"
-                      id=""
-                      value={true}
-                      onClick={handleInputChange}
-                    />
-                  </div>
-                  <p className="text-left pl-3 text-[#35B0A7] font-bold text-[12px]">
-                    I Would Like to Extend in Future
-                  </p>
-                </div>
+
                 <div className="flex px-4 mt-1 text-black  mb-1">
                   <div>
                     <input
@@ -697,10 +583,10 @@ const VillaBookingForm = () => {
                 )}
                 <button
                   type="button"
-                  //   onClick={handlePaymentOption}
+                  onClick={handlePaymentOption}
                   className="text-[1rem] p-2 cursor-pointer bg-[#35B0A7] hover:bg-[#02625a] w-full text-white h-[35px]"
                 >
-                  Continue Payment
+                  Confirm Booking
                 </button>
               </div>
               <div
@@ -711,11 +597,11 @@ const VillaBookingForm = () => {
                   color: "#02625a",
                   fontWeight: "bolder",
                 }}
-                className="px-3 py-2"
+                className="px-2 py-2"
               >
                 <span
                   style={{
-                    fontSize: "18px",
+                    fontSize: "16px",
                     color: "red",
                   }}
                 >
@@ -723,9 +609,11 @@ const VillaBookingForm = () => {
                 </span>
                 <span>
                   {" "}
-                  Please bring two{" "}
-                  <span className="text-black">Passport-Size Photos</span> and
-                  one copy of your <span className="text-black"> NID Card</span>{" "}
+                  Please bring one copy of your{" "}
+                  <span className="text-black">
+                    {" "}
+                    NID Card / Passport / Birth Certificate / Driving License
+                  </span>{" "}
                   at the time of check-in.
                 </span>
               </div>
@@ -758,6 +646,288 @@ const VillaBookingForm = () => {
           toastOptions={{ position: "top-center" }}
         ></Toaster>
       </form>
+
+      {showPayment && (
+        <div
+          style={{
+            boxShadow:
+              "0px 4px 4px 0px rgba(0, 0, 0, 0.25), 0px 4px 4px 0px rgba(0, 0, 0, 0.25) ",
+            borderRadius: "3px",
+            backgroundColor: "white",
+          }}
+          className="bg-white z-50 absolute top-[10%] lg:top-[15%] w-[96%] lg:w-[50%] left-2 md:left-4 lg:left-1/4 lg:right-1/2 "
+        >
+          <div
+            style={{
+              backgroundColor: "#35B0A7",
+              height: "35px",
+              borderRadius: "3px 3px 0px 0px",
+            }}
+            className="flex justify-end items-center pr-2"
+          >
+            <button
+              onClick={() => {
+                setSelectPlatform("");
+                setSelectMethod("online");
+                setShowPayment(false);
+                setIsBlur(false);
+              }}
+            >
+              <IoCloseCircleOutline color="white" size={28} />
+            </button>
+          </div>
+          <Toaster
+            containerStyle={{ top: 300 }}
+            toastOptions={{ position: "top-center" }}
+          ></Toaster>
+          <div className="flex items-end gap-2 p-5">
+            <p className="text-lg ">Our Available Payment System</p>
+          </div>
+
+          <div className=" md:mb-4 flex items-center mx-4">
+            <input
+              type="radio"
+              name="method"
+              value="online"
+              defaultChecked
+              className=" mr-1"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+            <span className="text-[15px] mr-2">Pay Via Online</span>
+            {/* <input
+              type="radio"
+              name="method"
+              value="cash"
+              onChange={(e) => setSelectMethod(e.target.value)}
+            />
+            <span className="text-[15px] ml-1">Cash / Card</span> */}
+          </div>
+          {selectMethod === "online" ? (
+            <div>
+              <div className="my-2 flex flex-col md:flex-row items-start md:items-center mx-4">
+                {/* Payment platform selection */}
+                <div className="flex flex-wrap items-center">
+                  <label className="flex items-center mr-3">
+                    <input
+                      type="radio"
+                      name="platform"
+                      value="bKash"
+                      // defaultChecked
+                      className=" hidden"
+                      onChange={(e) => setSelectPlatform(e.target.value)}
+                    />
+                    <span className="w-full px-6 md:px-8 py-3 bg-gray-200 cursor-pointer font-semibold  rounded text-[18px] md:text-xl">
+                      bKash
+                    </span>
+                  </label>
+                  <label className="flex items-center mr-3">
+                    <input
+                      type="radio"
+                      name="platform"
+                      value="Nagad"
+                      className="hidden "
+                      onChange={(e) => setSelectPlatform(e.target.value)}
+                    />
+                    <span className="w-full px-6 md:px-8 py-3 bg-gray-200 cursor-pointer font-semibold  rounded text-[18px] md:text-xl">
+                      Nagad
+                    </span>
+                  </label>
+
+                  {villa?.resortId?.bankDetails?.map((bank) => (
+                    <label
+                      key={bank?.bankName}
+                      className="flex items-center mr-3"
+                    >
+                      <input
+                        type="radio"
+                        name="platform"
+                        value={bank?.bankName}
+                        className="hidden "
+                        onChange={(e) => setSelectPlatform(e.target.value)}
+                      />
+                      <span className="w-full px-6 md:px-8 py-3 bg-gray-200 cursor-pointer font-semibold  rounded text-[18px] md:text-xl">
+                        {bank?.bankName}
+                      </span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Payment instructions */}
+              {(selectPlatform === "bKash" || selectPlatform === "Nagad") && (
+                <div className="mx-4">
+                  <p className="font-bold mb-2">
+                    {selectPlatform} ( {platformAccountType}) :
+                  </p>
+                  <ol className="list-decimal list-inside space-y-1">
+                    <li>
+                      Select{" "}
+                      {platformAccountType === "Merchant" ? (
+                        <span>Make Payment</span>
+                      ) : (
+                        <span>Send Money</span>
+                      )}
+                    </li>
+                    <li>
+                      Enter The Number{" "}
+                      <span className="font-bold">( {platformAccNumber} )</span>
+                    </li>
+                    <li>
+                      Enter the amount you want to pay{" "}
+                      <span className="text-[#35B0A7]">
+                        (minimum amount to pay: ৳{bookingItem?.minimumPayment})
+                      </span>
+                    </li>
+                  </ol>
+
+                  <p className="mt-3">
+                    Please fill the form to submit your booking:
+                  </p>
+
+                  {/* Payment number input */}
+                  <div className="mt-3">
+                    <p className="text-[1rem] mb-1">
+                      Account Number (from which you made payment):
+                    </p>
+                    <input
+                      className="ps-2 border h-8 w-[250px]"
+                      name="senderAccountNumber"
+                      required
+                      type="text"
+                      placeholder="017xxxxxxxx"
+                      onChange={(e) => setSenderAccountNumber(e.target.value)}
+                    />
+                  </div>
+
+                  {/* Amount input */}
+                  <div className="mt-3">
+                    <p className="mb-1">How much money have you sent:</p>
+                    <input
+                      className="ps-2 border h-8 w-[250px]"
+                      name="sendAmount"
+                      required
+                      type="text"
+                      placeholder="Sending Amount"
+                      onChange={(e) => setsendAmount(e.target.value)}
+                    />
+                  </div>
+                  <div className="mt-3">
+                    <p className="mb-1">
+                      Payment Proof (screen shot or any image of your payment) :
+                    </p>
+                    <input
+                      className=" border h-8 w-[250px]"
+                      name="proof"
+                      required
+                      type="file"
+                      onChange={(e) => setPaymentProof(e.target.files)}
+                    />
+                  </div>
+
+                  {/* Submit button */}
+                  <button
+                    onClick={handleBookingConfirmation}
+                    className="bg-[#35B0A7] py-1 rounded text-white my-4 w-[250px] hover:bg-[#02625a]"
+                  >
+                    Place Booking Now
+                  </button>
+                </div>
+              )}
+
+              {selectPlatform !== "bKash" &&
+                selectPlatform !== "Nagad" &&
+                selectPlatform !== "" && (
+                  <div className="mx-4">
+                    <p className="font-bold mb-2">{selectPlatform} :</p>
+
+                    {selectedBank && (
+                      <ol className="list-disc list-inside space-y-1">
+                        <li>Account Number: {selectedBank.accountNumber}</li>
+                        <li>
+                          Account Holder Name: {selectedBank.accountHolder}
+                        </li>
+                        <li>Branch Name: {selectedBank.branchName}</li>
+                      </ol>
+                    )}
+
+                    <p className="mt-3">
+                      Please fill the form to submit your booking:
+                    </p>
+
+                    {/* Payment number input */}
+                    <div className="mt-3">
+                      <p className="text-[1rem] mb-1">
+                        Account Number (from which you made payment):
+                      </p>
+                      <input
+                        className="ps-2 border h-8 w-[250px]"
+                        name="senderAccountNumber"
+                        required
+                        type="text"
+                        placeholder="xxxxxxxxxxx"
+                        onChange={(e) => setSenderAccountNumber(e.target.value)}
+                      />
+                    </div>
+
+                    {/* Amount input */}
+                    <div className="mt-3">
+                      <p className="mb-1">How much money have you sent:</p>
+                      <input
+                        className="ps-2 border h-8 w-[250px]"
+                        name="sendAmount"
+                        required
+                        type="text"
+                        placeholder="Sending Amount"
+                        onChange={(e) => setsendAmount(e.target.value)}
+                      />
+                    </div>
+                    <div className="mt-3">
+                      <p className="mb-1">
+                        Payment Proof (screen shot or any image of your payment)
+                        :
+                      </p>
+                      <input
+                        className=" border h-8 w-[250px]"
+                        name="proof"
+                        required
+                        type="file"
+                        onChange={(e) => setPaymentProof(e.target.files)}
+                      />
+                    </div>
+
+                    {/* Submit button */}
+                    <button
+                      onClick={handleBookingConfirmation}
+                      className="bg-[#35B0A7] py-1 rounded text-white my-4 w-[250px] hover:bg-[#02625a]"
+                    >
+                      Place Booking Now
+                    </button>
+                  </div>
+                )}
+            </div>
+          ) : (
+            <div>
+              <div className="flex items-end gap-2 p-5">
+                <div className="hidden md:block">
+                  <img loading="lazy" src={cashImg} alt="" />
+                </div>
+                <p className="text-lg ">
+                  NOTE : You can pay directly in our structure with any kind of
+                  card or cash.
+                </p>
+              </div>
+              <div className="mx-4 mb-4">
+                <button
+                  onClick={handleBookingConfirmation}
+                  className=" bg-[#35B0A7] py-1 rounded  text-white my-4 w-[250px] hover:bg-[#02625a]"
+                >
+                  Place Booking Now
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   );
 };

@@ -58,14 +58,11 @@ const CreateUser = () => {
     e.preventDefault();
 
     if (Number(otp.join("")) === randomCode) {
-      console.log(1);
-
       try {
         const response = await axios.post(`${baseUrl}/api/users`, {
           firstName,
           phone,
         });
-        console.log(response);
 
         if (response.status === 200) {
           toast.success("Congratulations! Your account has been created.");
@@ -77,7 +74,7 @@ const CreateUser = () => {
           toast.error("Registration failed");
         }
       } catch (error) {
-        console.log(error);
+        // console.log(error);
 
         if (error.response && error.response.status === 401) {
           toast.error(error.response.data.message);

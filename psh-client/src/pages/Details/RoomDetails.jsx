@@ -130,6 +130,7 @@ const RoomDetails = () => {
       fetchData();
     }
   }, [roomType, id]);
+  console.log(bookedDates);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");
@@ -633,7 +634,7 @@ const RoomDetails = () => {
                               </p>
                             </div>
                           )}
-                        </div> 
+                        </div>
                       ) : (
                         ""
                       )}

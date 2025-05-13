@@ -1,6 +1,6 @@
 import OrderModel from "../models/Order.js";
 import Property from "../models/Property.js";
-import User from "../models/User.js";
+import User from "../models/User.js"; 
 import Transaction from "../models/Transaction.js";
 import Adjustment from "../models/Adjustment.js";
 import RentRoom from "../models/RentRoom.js";

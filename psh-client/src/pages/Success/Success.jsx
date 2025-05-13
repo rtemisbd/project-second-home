@@ -1,8 +1,10 @@
 import React, { useEffect } from "react";
-import { Link } from "react-router-dom";
 import BookNow from "../Booking/BookNow";
-
+import { useLocation } from "react-router-dom";
 const Success = () => {
+  const location = useLocation();
+  const villaBookingData = location.state || "";
+
   useEffect(() => {
     const hasReloaded = sessionStorage.getItem("hasReloaded");
 
