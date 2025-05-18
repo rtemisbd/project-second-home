@@ -119,7 +119,7 @@ const VillaBookingForm = () => {
       dispatch(placeLoadingShow(false));
       // localStorage.removeItem("bookingItem");
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       toast.error(error?.response?.data?.message || "Something is wrong");
       dispatch(placeLoadingShow(false));
     }

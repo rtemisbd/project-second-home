@@ -189,7 +189,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                     new Date()
                   );
                   return {
-                    start: subDays(start, 1),
+                    start: subDays(start, 0),
                     end: addDays(end, -1),
                   };
                 })}
@@ -208,7 +208,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                       new Date()
                     );
                     return (
-                      date >= subDays(start, 1) && date <= addDays(end, -1)
+                      date >= subDays(start, 0) && date <= addDays(end, -1)
                     );
                   })
                     ? "line-through"
@@ -237,7 +237,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                   );
                   const end = parse(rent.bookEndDate, "dd-MM-yyyy", new Date());
                   return {
-                    start: subDays(start, 1),
+                    start: subDays(start, 0),
                     end: addDays(end, -1),
                   };
                 })}
@@ -255,7 +255,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                       new Date()
                     );
                     return (
-                      date >= subDays(start, 1) && date <= addDays(end, -1)
+                      date >= subDays(start, 0) && date <= addDays(end, -1)
                     );
                   })
                     ? "line-through"

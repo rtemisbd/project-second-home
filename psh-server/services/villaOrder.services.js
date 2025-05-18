@@ -30,7 +30,7 @@ const createVillaOrderIntoDB = async(payload)=>{
     payload.bookingId = await generateBookingId();
 
     //step 3 : create booking
-     await VillaOrders.create(payload);
+      const order = await VillaOrders.create(payload);
    
     // step 4 : create transaction
     const newTransaction ={
