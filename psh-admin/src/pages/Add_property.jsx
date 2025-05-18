@@ -876,7 +876,7 @@ const Add_property = () => {
                           htmlFor="inputState"
                           className="form-label profile_label3 "
                         >
-                          After Discount Amount (Year)s
+                          After Discount Amount (Year)
                         </label>
 
                         <input
