@@ -2,6 +2,7 @@
 import mongoose from "mongoose";
 import Category from "../models/Category.js";
 import Villa from "../models/Villa.js"
+import VillaRentDates from "../models/VillaRentDates.js";
 
 const createVillaIntoDB = async(payload)=>{
 
@@ -51,9 +52,13 @@ const getAllVillaFromDB = async(queries)=>{
 
 
 const getVillaByIdFromDB = async (id) => {
+    const bookedDates = await VillaRentDates.find({
+        villaId: id,
+        bookingStatus: { $in: ["Booked", "Completed"] },
+      })
 
-    const result = await Villa.findOne({_id : id}).populate("resortId");
-    return result;
+    const villa = await Villa.findOne({_id : id}).populate("resortId");
+    return {villa, bookedDates};
 };
 
 export const villaServices = {

@@ -22,6 +22,7 @@ import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 const VillaDetails = () => {
   const { id } = useParams();
   const [villa, setVilla] = useState(null);
+  const [bookedDates, setBookDates] = useState(null);
   const [addedWishList, setAddedWishlist] = useState(false);
   const videoId = getYouTubeVideoId(villa?.resortId.video);
   const [isMuted, setIsMuted] = useState(true);
@@ -78,7 +79,6 @@ const VillaDetails = () => {
     return `${adjustedHour}:${minutes} ${ampm}`;
   };
 
-
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => setIsPlaying(entry.isIntersecting),
@@ -99,9 +99,13 @@ const VillaDetails = () => {
   useEffect(() => {
     const fetchVilla = async () => {
       const { data } = await axios.get(`${serverBaseUrl}/villa/${id}`);
-      setVilla(data?.data);
+
+      setVilla(data?.data?.villa);
+      setBookDates(data?.data?.bookedDates);
       setFeatures(
-        showAll ? data?.data?.features : data?.data?.features.slice(0, 8)
+        showAll
+          ? data?.data?.villa.features
+          : data?.data?.villa.features.slice(0, 8)
       );
     };
     fetchVilla();
@@ -474,7 +478,7 @@ const VillaDetails = () => {
               {/* Total Box */}
 
               <div className="flex flex-col  items-start  sm:col-span-12 lg:col-span-4 ">
-                <VillaBookingBox villa={villa} />
+                <VillaBookingBox villa={villa} bookedDates={bookedDates} />
 
                 <div
                   ref={playerContainerRef}

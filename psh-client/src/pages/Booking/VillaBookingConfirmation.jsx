@@ -1,7 +1,10 @@
 import { useState } from "react";
+import { useLocation } from "react-router-dom";
 
 const VillaBookingConfirmation = () => {
-  // const {} = useState()
+  const location = useLocation();
+  const booking = location.state || {};
+  console.log(booking);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-gray-900">

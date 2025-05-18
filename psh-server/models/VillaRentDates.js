@@ -32,7 +32,7 @@ const villaRentDateSchema = new mongoose.Schema(
     
     bookingStatus: {
       type: String,
-      enum: [ "Booked", "Complete", "Cancel"],
+      enum: [ "Booked", "Completed", "Cancelled"],
       default: "Booked",
     },
   },

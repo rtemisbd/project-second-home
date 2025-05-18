@@ -7,15 +7,15 @@ import DatePicker from "react-datepicker";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 
 import { placeBooking } from "../../redux/reducers/bookingSlice";
-import { addDays, addMonths, addYears, subDays } from "date-fns";
+import { addDays, parse, subDays } from "date-fns";
 import { format } from "date-fns";
 import { Typography, Tooltip } from "@material-tailwind/react";
 
 import { useContext } from "react";
 import { AuthContext } from "../../contexts/UserProvider";
-import { isAlreadyBookings } from "../../utilities/bookingChecking";
+import toast, { Toaster } from "react-hot-toast";
 
-const VillaBookingBox = ({ villa }) => {
+const VillaBookingBox = ({ villa, bookedDates }) => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const { user } = useContext(AuthContext);
@@ -25,7 +25,6 @@ const VillaBookingBox = ({ villa }) => {
 
   const [subTotal, setSubTotal] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [discount, setDiscount] = useState(0);
   const [advance, setAdvance] = useState(0);
 
   // handle Scrolled
@@ -45,12 +44,36 @@ const VillaBookingBox = ({ villa }) => {
     setAdvance(villa?.pricing?.advancePayment);
   }, [customerRent, villa]);
 
+  const isAlreadyVillaBookings = (startDate, endDate, bookings) => {
+    const inputStart = parse(startDate, "dd-MM-yyyy", new Date());
+    const inputEnd = parse(endDate, "dd-MM-yyyy", new Date());
+
+    for (const booking of bookings) {
+      const bookingStart = parse(
+        booking.bookStartDate,
+        "dd-MM-yyyy",
+        new Date()
+      );
+      const bookingEnd = parse(booking.bookEndDate, "dd-MM-yyyy", new Date());
+
+      if (
+        (inputStart >= bookingStart && inputStart <= bookingEnd) ||
+        (inputEnd >= bookingStart && inputEnd <= bookingEnd) ||
+        (inputStart <= bookingStart && inputEnd >= bookingEnd)
+      ) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
   const handleAddItem = () => {
     if (!user) {
       return navigate("/authentication", { state: location?.pathname });
     }
 
-    let bookingData = {
+    const bookingData = {
       villa: villa,
       user: user?._id,
       perNight: villa?.pricing?.perNight,
@@ -65,44 +88,37 @@ const VillaBookingBox = ({ villa }) => {
       },
     };
 
-    // Already Booking Handle
-    // if already Bookings Dates select then from startDate - 1 day
-    const selectStartDate = new Date(startDate);
-    const minus1dFromStartDate = new Date(startDate);
-    minus1dFromStartDate.setDate(selectStartDate.getDate() + 1);
+    // Ensure we are comparing correctly formatted date strings
+    const inputStartDate = format(
+      addDays(new Date(startDate), 1),
+      "dd-MM-yyyy"
+    );
+    const inputEndDate = format(new Date(endDate), "dd-MM-yyyy");
 
-    const inputStartDate = new Date(minus1dFromStartDate)
-      .toISOString()
-      .split("T")[0];
+    const isBooked = isAlreadyVillaBookings(
+      inputStartDate,
+      inputEndDate,
+      bookedDates
+    );
 
-    const inputEndDate = new Date(endDate).toISOString().split("T")[0];
-    // const isBooked = isAlreadyBookings(
-    //   inputStartDate,
-    //   inputEndDate,
-    //   bookedDates
-    // );
-
-    // if (!isBooked) {
-    //   if (showMiniumPayment) {
-    //     dispatch(placeBooking(bookingDataUpdate));
-    //   } else {
-    //     dispatch(placeBooking(bookingData));
-    //   }
-    //   if (!user) {
-    //     dispatch(placeModalShow(true));
-    //   } else {
-    //     navigate("/personal-info");
-    //   }
-    // } else {
-    //   toast.error("Sorry ! The date you select is already booked.");
-    // }
-
-    dispatch(placeBooking(bookingData));
-    navigate("/book-villa");
+    if (!isBooked) {
+      dispatch(placeBooking(bookingData));
+      if (!user) {
+        dispatch(placeModalShow(true));
+      } else {
+        navigate("/book-villa");
+      }
+    } else {
+      toast.error("Sorry! The date you selected is already booked.");
+    }
   };
 
   return (
     <div>
+      <Toaster
+        containerStyle={{ top: 300 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
       <div
         style={{
           boxShadow:
@@ -161,26 +177,43 @@ const VillaBookingBox = ({ villa }) => {
                 selected={new Date(startDate)}
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(leftDate(date))}
-                //     excludeDateIntervals=
-                //     {bookedDates?.map((rent) => {
-                //       return {
-                //         start: subDays(new Date(rent?.bookStartDate), 1),
-                //         end: addDays(new Date(rent?.bookEndDate), -1),
-                //       };
-                //     }
-                //   )
-                // }
-                // minDate={subDays(new Date(), 0)}
+                excludeDateIntervals={bookedDates?.map((rent) => {
+                  const start = parse(
+                    rent?.bookStartDate,
+                    "dd-MM-yyyy",
+                    new Date()
+                  );
+                  const end = parse(
+                    rent?.bookEndDate,
+                    "dd-MM-yyyy",
+                    new Date()
+                  );
+                  return {
+                    start: subDays(start, 1),
+                    end: addDays(end, -1),
+                  };
+                })}
+                minDate={subDays(new Date(), 0)}
                 className={`ps-7 w-[124px] `}
-                // dayClassName={(date) =>
-                //   bookedDates.some(
-                //     (rent) =>
-                //       date >= subDays(new Date(rent.bookStartDate), 1) &&
-                //       date <= addDays(new Date(rent.bookEndDate), 0)
-                //   )
-                //     ? "line-through  "
-                //     : ""
-                // }
+                dayClassName={(date) =>
+                  bookedDates.some((rent) => {
+                    const start = parse(
+                      rent.bookStartDate,
+                      "dd-MM-yyyy",
+                      new Date()
+                    );
+                    const end = parse(
+                      rent.bookEndDate,
+                      "dd-MM-yyyy",
+                      new Date()
+                    );
+                    return (
+                      date >= subDays(start, 1) && date <= addDays(end, -1)
+                    );
+                  })
+                    ? "line-through"
+                    : ""
+                }
               />
             </div>
           </div>
@@ -196,20 +229,38 @@ const VillaBookingBox = ({ villa }) => {
                 selected={new Date(endDate)}
                 dateFormat="dd/MM/yyyy"
                 onChange={(date) => dispatch(rightDate(date))}
-                // excludeDateIntervals={bookedDates.map((rent) => ({
-                //   start: subDays(new Date(rent.bookStartDate), 1),
-                //   end: addDays(new Date(rent.bookEndDate), 0),
-                // }))}
+                excludeDateIntervals={bookedDates?.map((rent) => {
+                  const start = parse(
+                    rent.bookStartDate,
+                    "dd-MM-yyyy",
+                    new Date()
+                  );
+                  const end = parse(rent.bookEndDate, "dd-MM-yyyy", new Date());
+                  return {
+                    start: subDays(start, 1),
+                    end: addDays(end, -1),
+                  };
+                })}
                 className="ps-7 w-[124px] "
-                // dayClassName={(date) =>
-                //   bookedDates.some(
-                //     (rent) =>
-                //       date >= subDays(new Date(rent.bookStartDate), 1) &&
-                //       date <= addDays(new Date(rent.bookEndDate), 0)
-                //   )
-                //     ? "line-through  "
-                //     : ""
-                // }
+                dayClassName={(date) =>
+                  bookedDates.some((rent) => {
+                    const start = parse(
+                      rent.bookStartDate,
+                      "dd-MM-yyyy",
+                      new Date()
+                    );
+                    const end = parse(
+                      rent.bookEndDate,
+                      "dd-MM-yyyy",
+                      new Date()
+                    );
+                    return (
+                      date >= subDays(start, 1) && date <= addDays(end, -1)
+                    );
+                  })
+                    ? "line-through"
+                    : ""
+                }
               />
             </div>
           </div>
@@ -346,14 +397,6 @@ const VillaBookingBox = ({ villa }) => {
           <div>
             <button
               className={`text-[16px] p-2 text-white bg-transparent cursor-pointer  `}
-              // onClick={() => handleDateSelection("2023-09-19")}
-              // disabled={
-              //   data?.endDate === endDate ||
-              //   data?.endDate > endDate ||
-              //   data?.endDate > startDate
-              //     ? true
-              //     : false
-              // }
             >
               Apply For Booking
             </button>

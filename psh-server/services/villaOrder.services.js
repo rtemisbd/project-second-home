@@ -19,23 +19,19 @@ const createVillaOrderIntoDB = async(payload)=>{
         contactNumber: payload?.emergencyContact,
       },
     };
-   const updatedUser = await User.updateOne(
+    await User.updateOne(
       { phone: payload?.phone },
       { $set: userUpdate },
       { runValidators: true}
       // { runValidators: true, session }
     );
-    console.log({updatedUser});
-    
 
     // step 2 : generate booking ID
     payload.bookingId = await generateBookingId();
 
     //step 3 : create booking
-    const order = await VillaOrders.create(payload);
-    console.log({order});
-    
-
+     await VillaOrders.create(payload);
+   
     // step 4 : create transaction
     const newTransaction ={
       userId : payload.user,
@@ -47,24 +43,20 @@ const createVillaOrderIntoDB = async(payload)=>{
       paymentMethod : payload.paymentMethod,
       paymentPlatform : payload.paymentPlatform,
     };
-   const transaction = await TransactionForVilla.create(newTransaction);
-   console.log({transaction});
-   
-
+   await TransactionForVilla.create(newTransaction);
+  
     // step 5 : create rentDate
     const newRentDate = {
-      bookingStartDate:payload.rentDate.bookingStartDate,
-      bookingEndDate:payload.rentDate.bookingEndDate,
+      bookStartDate:payload.rentDate.bookStartDate,
+      bookEndDate:payload.rentDate.bookEndDate,
       daysDifference:payload.rentDate.daysDifference,
       orderId : order?._id,
       bookingId:payload.bookingId,
       villaId:payload.villa,
       userId:payload.user,
     }
-
-   const rent =  await VillaRentDates.create(newRentDate);
-   console.log({rent});
-   
+    await VillaRentDates.create(newRentDate);
+  
   return order;
 }
 
