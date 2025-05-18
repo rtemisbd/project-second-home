@@ -59,8 +59,8 @@ const VillaBookingBox = ({ villa }) => {
       payableAmount: totalAmount,
       minimumPayment: villa?.pricing?.advancePayment,
       rentDate: {
-        bookingStartDate: format(new Date(startDate), "dd-MM-yyyy"),
-        bookingEndDate: format(new Date(endDate), "dd-MM-yyyy"),
+        bookStartDate: format(new Date(startDate), "dd-MM-yyyy"),
+        bookEndDate: format(new Date(endDate), "dd-MM-yyyy"),
         daysDifference: customerRent?.daysDifference,
       },
     };

@@ -1,8 +1,7 @@
 import { useState } from "react";
 
 const VillaBookingConfirmation = () => {
-  const {} = useState()
-
+  // const {} = useState()
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-gray-900">

@@ -2,8 +2,8 @@ import mongoose from "mongoose";
 
 
 const rentDateSchema = new mongoose.Schema({
-    bookingStartDate: { type: mongoose.Schema.Types.Mixed, required: true},
-    bookingEndDate: { type: mongoose.Schema.Types.Mixed , required: true},
+    bookStartDate: { type: mongoose.Schema.Types.Mixed, required: true},
+    bookEndDate: { type: mongoose.Schema.Types.Mixed , required: true},
     daysDifference : {type : Number, required: true}
 })
 
@@ -27,7 +27,7 @@ const villaOrderSchema = new mongoose.Schema({
         enum: ["Pending", "Processing", "Approved", "Canceled"],
         default: "Processing",
       },
-
+    specialRequest : {type : String},
 
 }, { timestamps: true });
 

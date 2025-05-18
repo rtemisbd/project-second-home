@@ -3,10 +3,10 @@ const { ObjectId } = mongoose.Schema.Types;
 
 const villaRentDateSchema = new mongoose.Schema(
   {
-    bookingStartDate: {
+    bookStartDate: {
       type: mongoose.Schema.Types.Mixed,
     },
-    bookingEndDate: {
+    bookEndDate: {
       type: mongoose.Schema.Types.Mixed,
     },
     daysDifference : {
