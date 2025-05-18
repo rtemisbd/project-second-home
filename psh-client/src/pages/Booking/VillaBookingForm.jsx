@@ -112,12 +112,12 @@ const VillaBookingForm = () => {
 
       if (data?.success) {
         toast.success("Your booking has been placed.");
-        navigate("/booking-confirmation", { state: data?.data });
+        navigate("/booking-confirmation", { state: data?.data?._id });
       }
       setShowPayment(false);
       setIsBlur(false);
       dispatch(placeLoadingShow(false));
-      // localStorage.removeItem("bookingItem");
+      localStorage.removeItem("bookingItem");
     } catch (error) {
       console.log(error);
       toast.error(error?.response?.data?.message || "Something is wrong");

@@ -60,8 +60,24 @@ const createVillaOrderIntoDB = async(payload)=>{
   return order;
 }
 
+const getVillaOrderByIdFromDB = async (id) => {
+  const result = await VillaOrders.findById({ _id: id })
+    .populate({
+      path: "villa",
+      select: "title type villaNumber resortId",
+      populate: {
+        path: "resortId",
+        select: "name", 
+      },
+    });
+
+  return result;
+};
+
+
 
 
 export const villaOrderServices = {
-    createVillaOrderIntoDB
+    createVillaOrderIntoDB,
+    getVillaOrderByIdFromDB
 }
