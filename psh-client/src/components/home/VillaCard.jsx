@@ -10,8 +10,6 @@ import locationIcon from "../../assets/img/branchLocationIcon.png";
 import "./styles/SingleCard.css";
 
 const VillaCard = ({ villa }) => {
-  console.log(villa);
-
   return (
     <div className="single-card ">
       <Link to={`/villa/${villa._id}`}>
@@ -91,7 +89,6 @@ const VillaCard = ({ villa }) => {
                   )}
                 </div>
               </div>
-             
             </div>
           </CardFooter>
         </Card>

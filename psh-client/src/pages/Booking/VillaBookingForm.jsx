@@ -12,7 +12,7 @@ import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { uploadImageToImgBB } from "../../utilities/singleImageUploader";
-import { useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";   
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 
 const VillaBookingForm = () => {
@@ -72,6 +72,23 @@ const VillaBookingForm = () => {
   };
 
   const handleBookingConfirmation = async () => {
+    if (!senderAccountNumber?.trim()) {
+      toast.error("Please enter your sender account number");
+      return;
+    }
+    if (!senderAccountNumber) {
+      toast.error("Invalid phone number format for account number");
+      return;
+    }
+
+    if (!sendAmount || isNaN(sendAmount) || Number(sendAmount) <= 0) {
+      toast.error("Please enter a valid payment amount");
+      return;
+    }
+    if (!paymentProof?.[0]) {
+      toast.error("Please upload a valid payment proof");
+      return;
+    }
     try {
       dispatch(placeLoadingShow(true));
 
@@ -755,7 +772,7 @@ const VillaBookingForm = () => {
 
               {/* Payment instructions */}
               {(selectPlatform === "bKash" || selectPlatform === "Nagad") && (
-                <div className="mx-4">
+                <form className="mx-4">
                   <p className="font-bold mb-2">
                     {selectPlatform} ( {platformAccountType}) :
                   </p>
@@ -831,13 +848,13 @@ const VillaBookingForm = () => {
                   >
                     Place Booking Now
                   </button>
-                </div>
+                </form>
               )}
 
               {selectPlatform !== "bKash" &&
                 selectPlatform !== "Nagad" &&
                 selectPlatform !== "" && (
-                  <div className="mx-4">
+                  <form className="mx-4">
                     <p className="font-bold mb-2">{selectPlatform} :</p>
 
                     {selectedBank && (
@@ -902,7 +919,7 @@ const VillaBookingForm = () => {
                     >
                       Place Booking Now
                     </button>
-                  </div>
+                  </form>
                 )}
             </div>
           ) : (
