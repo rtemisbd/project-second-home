@@ -30,7 +30,6 @@ const bankDetailsSchema = new mongoose.Schema({
     routingNumber : {type : String},
 })
 
-
 const resortSchema = new mongoose.Schema({
     name: { type: String, required: true },
     address: { type: String, required: true },

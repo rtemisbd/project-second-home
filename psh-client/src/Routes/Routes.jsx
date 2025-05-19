@@ -42,6 +42,7 @@ import VillaDetails from "../pages/villa/VillaDetails";
 import VillaBookingForm from "../pages/Booking/VillaBookingForm";
 import VillaBookingConfirmation from "../pages/Booking/VillaBookingConfirmation";
 import ResortDetail from "../pages/resorts/ResortDetail";
+import VillaInvoice from "../pages/Invoice/VillaInvoice";
 
 export const router = createBrowserRouter([
   {
@@ -133,6 +134,10 @@ export const router = createBrowserRouter([
       {
         path: "/invoice",
         element: <Invoice />,
+      },
+      {
+        path: "/invoice/:id",
+        element: <VillaInvoice />,
       },
       {
         path: "/privacy",

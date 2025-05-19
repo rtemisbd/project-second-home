@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import useUser from "../../hooks/userUser";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
@@ -9,6 +9,10 @@ const VillaBookingConfirmation = () => {
   const orderId = location.state || {};
   const [singleUser] = useUser();
   const [booking, setBooking] = useState({});
+
+  // const getInvoice = () => {
+  //   navigate(`/invoice/${orderId}`);
+  // };
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -141,14 +145,14 @@ const VillaBookingConfirmation = () => {
         </div>
 
         <div className="flex justify-center  mt-20">
-          <div
-            // onClick={getInvoice}
+          <Link
+            to={`/invoice/${orderId}`}
             className="bg-[#35B0A7] md:px-[120px] sm:px-[60px] py-[8px] rounded"
           >
             <button className="text-xl text-white text-center">
               Get Invoice
             </button>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

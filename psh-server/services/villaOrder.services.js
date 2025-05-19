@@ -67,12 +67,17 @@ const getVillaOrderByIdFromDB = async (id) => {
       select: "title type villaNumber resortId",
       populate: {
         path: "resortId",
-        select: "name", 
+        select: "name logo address contactNumbers resortEmail",
       },
+    })
+    .populate({
+      path: "user",
+      select: "firstName phone userAddress",
     });
 
   return result;
 };
+
 
 
 
