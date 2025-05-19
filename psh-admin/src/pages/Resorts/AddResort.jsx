@@ -8,6 +8,7 @@ import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
 import TextEditor from "../../components/TextEditor/TextEditor";
+import { uploadSingleImage } from "../../utils/uploadSingleImage";
 
 const AddResort = () => {
   const MySwal = withReactContent(Swal);
@@ -153,7 +154,9 @@ const AddResort = () => {
 
     try {
       // Upload images
+      const logo = await uploadSingleImage(formData.get("logo"));
       const photoUrls = await multipleImageUpload(selectedFiles);
+      data.logo = logo;
       data.photos = photoUrls;
       toast("Saving resort details...", "success");
 
@@ -327,6 +330,22 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="resortEmail"
                   placeholder="Resort Support Email"
+                  required
+                />
+              </div>
+              <div className="col-md-6 form_sub_stream ">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Logo
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="logo"
+                  className="main_form w-100 p-0"
                   required
                 />
               </div>

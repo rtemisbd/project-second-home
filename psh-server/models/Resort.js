@@ -37,6 +37,7 @@ const resortSchema = new mongoose.Schema({
     division: { type: String, required: true },
     district: { type: String, required: true },
     locationLink: { type: String, required: true },
+    logo : {type : String},
    
     contactNumbers : [contactNumberSchema],
     resortEmail: { type: String, required: true },
