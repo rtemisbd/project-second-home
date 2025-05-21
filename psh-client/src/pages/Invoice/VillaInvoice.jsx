@@ -4,17 +4,23 @@ import { useParams } from "react-router-dom";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { format, parseISO } from "date-fns";
+import logo from "../../assets/img/logo.png";
+import ReactToPrint from "react-to-print";
+import { usePDF } from "react-to-pdf";
 
 const VillaInvoice = () => {
   const ref = useRef();
   const pdfRef = useRef();
   const { id } = useParams();
   const [booking, setBooking] = useState({});
+  const [dueAmount, setDueAmount] = useState(0);
+  const { toPDF, targetRef } = usePDF({ filename: "invoice.pdf" });
 
   useEffect(() => {
     const fetchBooking = async () => {
       const { data } = await axios.get(`${serverBaseUrl}/villa-order/${id}`);
       setBooking(data?.data);
+      setDueAmount(data?.data?.totalAmount - data?.data?.sendAmount);
     };
     fetchBooking();
   }, [id]);
@@ -22,10 +28,10 @@ const VillaInvoice = () => {
   console.log(booking);
 
   return (
-    <div className="  md:flex md:justify-center">
+    <div className=" md:flex md:justify-center">
       <div className=" ">
         <div className=" ">
-          <div className="flex items-center mt-[50px] ">
+          <div className="flex items-center mt-[50px] mb-10">
             <div className="flex bg-[#A5F8F2] p-[20px] ">
               <div>
                 <img loading="lazy" src={right} alt="" />
@@ -40,17 +46,17 @@ const VillaInvoice = () => {
           <div
             ref={ref}
             id="invoice "
-            className="md:overflow-hidden sm:overflow-scroll "
+            // className="md:overflow-hidden sm:overflow-scroll "
           >
-            <div ref={pdfRef} className="">
-              <div className=" px-10 py-6 mt-5 payment-info  md:w-auto sm:w-[952px] border">
-                <div className="flex justify-between  gap-x-0  ">
+            <div ref={targetRef} className="">
+              <div className=" pt-6  payment-info  md:w-auto sm:w-[952px] border flex flex-col">
+                <div className=" px-10 flex justify-between  gap-x-0">
                   <div>
                     <img
                       loading="lazy"
                       src={booking?.villa?.resortId?.logo}
                       alt={booking?.villa?.resortId?.name}
-                      className="h-24 w-24 rounded-full"
+                      className="h-24 w-24 "
                     />{" "}
                   </div>
                   <div className="text-right">
@@ -71,7 +77,7 @@ const VillaInvoice = () => {
                   </div>
                 </div>
                 {/* Booking Location */}
-                <div className="flex justify-between mt-6 text-left">
+                <div className=" px-10 flex justify-between my-12 text-left">
                   <div>
                     <p className="text-[#35B0A7] font-bold">
                       {booking?.villa?.resortId?.name}
@@ -113,324 +119,217 @@ const VillaInvoice = () => {
                         <span className="font-bold">Mobile :</span>{" "}
                         {booking?.user?.phone}
                       </p>
-                      
 
                       <div className="mt-2.5">
                         <p>
-                          Check in Time :{" "}
-                          {booking?.rentDate?.bookStartDate}
+                          Check in Time : {booking?.rentDate?.bookStartDate}
                         </p>
-                        <p>
-                          Check Out Time :{" "}
-                          {booking?.rentDate?.bookEndDate}
-                        </p>
+                        <p>Check Out Time : {booking?.rentDate?.bookEndDate}</p>
                       </div>
                     </div>
                   </div>
                 </div>
                 {/* Booking Table */}
 
-                <div>
-                  <div className="bg-[#35B0A7] booking-table mt-3 text-white">
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium">
-                        <p>No</p>
-                        <p className="ml-10">Service Name</p>
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <p>Total Duration</p>
-                        <p>Amount</p>
-                      </div>
-                    </div>
+                <div className="relative ">
+                  <div className="bg-[#35B0A7] booking-table mt-3 text-white grid grid-cols-4 py-2 mx-10  justify-items-center">
+                    <p>Villa Number</p>
+                    <p>Villa Name</p>
+                    <p>Total Duration</p>
+                    <p>Amount</p>
+                  </div>
+                  <div className="absolute left-[45%] top-[12%] opacity-20 ">
+                    <img src={logo} className="w-120 h-40 " />
                   </div>
                   <div
-                    className=" booking-table"
                     style={{
                       backgroundColor: "rgba(53, 176, 167, 0.10)",
                     }}
+                    className="booking-table grid grid-cols-4 py-2  justify-items-center mx-10"
                   >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium">
-                        <p>01.</p>
-                        {booking?.bookingInfo?.roomType === "Shared Room" ? (
-                          <p className="ml-10">
-                            {booking?.bookingInfo?.roomName +
-                              ", Room Number : " +
-                              booking?.bookingInfo?.roomNumber +
-                              ", Seat Number : " +
-                              booking?.bookingInfo?.seatBooking?.seatNumber}
-                          </p>
-                        ) : (
-                          <p className="ml-10">
-                            {booking?.bookingInfo?.roomName +
-                              ", Room Number : " +
-                              booking?.bookingInfo?.roomNumber}
-                          </p>
-                        )}
-                      </div>
-                      <div className="flex items-center justify-between">
-                        <p>
-                          {booking?.bookingInfo?.customerRent?.daysDifference >=
-                          0
-                            ? `${booking?.bookingInfo?.customerRent?.daysDifference} days`
-                            : "" ||
-                              (booking?.bookingInfo?.customerRent?.months &&
-                                booking?.bookingInfo?.customerRent?.days >= 0 &&
-                                !booking?.bookingInfo?.customerRent?.years)
-                            ? `${booking?.bookingInfo?.customerRent?.months} months, ${booking?.bookingInfo?.customerRent?.days} days`
-                            : "" ||
-                              (booking?.bookingInfo?.customerRent?.years &&
-                                booking?.bookingInfo?.customerRent?.months >=
-                                  0 &&
-                                booking?.bookingInfo?.customerRent?.days >= 0)
-                            ? `${booking?.bookingInfo?.customerRent?.years} year`
-                            : ""}
-                        </p>
-                        <p>
-                          BDT {booking?.bookingInfo?.subTotal?.toLocaleString()}
-                        </p>
-                      </div>
-                    </div>
+                    <p>{booking?.villa?.villaNumber}</p>
+                    <p>{booking?.villa?.title}</p>
+                    <p>
+                      {booking?.rentDate?.daysDifference}{" "}
+                      {booking?.rentDate?.daysDifference === 1
+                        ? "Night"
+                        : "Nights"}
+                    </p>
+                    <p>BDT {booking?.totalAmount}</p>
                   </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table "
-                    style={{
-                      backgroundColor: "rgba(53, 176, 167, 0.10)",
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      backgroundColor: "rgba(53, 176, 167, 0.10)",
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      backgroundColor: "rgba(53, 176, 167, 0.10)",
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  {/* Booking Total Tk */}
 
-                  <div className="flex justify-between mt-10 text-left">
+                  <div
+                    className=" booking-table bg-white "
+                    style={{
+                      height: "30px",
+                    }}
+                  >
+                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
+                      <div className="flex col-span-1 items-center font-medium"></div>
+                      <div className="flex items-center justify-between"></div>
+                    </div>
+                  </div>
+                  <div
+                    className=" booking-table mx-10 "
+                    style={{
+                      backgroundColor: "rgba(53, 176, 167, 0.10)",
+                      height: "30px",
+                    }}
+                  >
+                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
+                      <div className="flex col-span-1 items-center font-medium"></div>
+                      <div className="flex items-center justify-between"></div>
+                    </div>
+                  </div>
+                  <div
+                    className=" booking-table bg-white"
+                    style={{
+                      height: "30px",
+                    }}
+                  >
+                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
+                      <div className="flex col-span-1 items-center font-medium"></div>
+                      <div className="flex items-center justify-between"></div>
+                    </div>
+                  </div>
+                  <div
+                    className=" booking-table bg-white mx-10"
+                    style={{
+                      backgroundColor: "rgba(53, 176, 167, 0.10)",
+                      height: "30px",
+                    }}
+                  >
+                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
+                      <div className="flex col-span-1 items-center font-medium"></div>
+                      <div className="flex items-center justify-between"></div>
+                    </div>
+                  </div>
+                  <div
+                    className=" booking-table bg-white"
+                    style={{
+                      height: "30px",
+                    }}
+                  >
+                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
+                      <div className="flex col-span-1 items-center font-medium"></div>
+                      <div className="flex items-center justify-between"></div>
+                    </div>
+                  </div>
+                  <div
+                    className=" booking-table bg-white mx-10"
+                    style={{
+                      backgroundColor: "rgba(53, 176, 167, 0.10)",
+                      height: "30px",
+                    }}
+                  >
+                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
+                      <div className="flex col-span-1 items-center font-medium"></div>
+                      <div className="flex items-center justify-between"></div>
+                    </div>
+                  </div>
+
+                  {/*  Payment History */}
+
+                  <div className="flex justify-between my-10 text-left px-10">
                     <div className="total-amount-left">
                       <p className=" font-bold mb-2 ">
-                        <span className="text-[#35B0A7] p-1 rounded-sm">
+                        <span className="text-[#35B0A7]  rounded-sm">
                           Payment History
                         </span>
                       </p>
-                      {/* <p>
+                      <p>
                         <span className="font-bold mr-3">
                           Payment Method :{" "}
                         </span>{" "}
-                        {booking?.transactions[0]?.allProperties[
-                          booking?.transactions[0]?.allProperties.length - 1
-                        ]?.paymentType
-                          ? booking?.transactions[0]?.allProperties[
-                              booking?.transactions[0]?.allProperties.length - 1
-                            ]?.paymentType
-                          : " null"}
-                      </p> */}
-                      {/* <p>
+                        {booking?.paymentPlatform}
+                      </p>
+                      <p>
                         <span className="font-bold mr-3">Account Number :</span>{" "}
-                        {booking?.paymentNumber
-                          ? booking.paymentNumber
-                          : transactions[transactions?.length - 1]
-                              ?.paymentNumber}
-                      </p> */}
-
-                      {/* <p>
-                        <span className="font-bold mr-3">
-                          Transaction ID <span className="ml-[10px]">:</span>
-                        </span>{" "}
-                        {transactions[transactions?.length - 1]?.transactionId}
-                      </p> */}
+                        {booking?.senderAccountNumber}
+                      </p>
                     </div>
                     <div>
                       <div className="text-right total-amount-right font-[600] ">
-                        <div className="flex justify-between">
-                          <p className="font-bold">Subtotal</p>{" "}
-                          <p className="ml-[55px]">:</p>{" "}
-                          <p className="">
-                            BDT{" "}
-                            {booking?.bookingInfo?.subTotal?.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="flex justify-between">
-                          <p className="font-bold">Food</p>{" "}
-                          <p className="ml-[55px]">:</p>{" "}
-                          <p className="">
-                            BDT{" "}
-                            {booking?.bookingInfo?.foodAmount?.toLocaleString()}
-                          </p>
-                        </div>
-
-                        <div className="flex justify-between">
-                          <p className="font-bold">VAT </p>{" "}
-                          <p className="ml-[70px]">:</p>
-                          <p className="">
-                            BDT {booking?.bookingInfo?.vatTax?.toLocaleString()}
-                          </p>
-                        </div>
-                        <div className="flex justify-between">
-                          <p className="font-bold">Admission Fee</p>
-                          <p className="mx-5">:</p>
-                          <p className="">
-                            BDT{" "}
-                            {booking?.bookingInfo?.addMissionFee > 0
-                              ? booking?.bookingInfo?.addMissionFee?.toLocaleString()
-                              : 0}
-                          </p>
-                        </div>
-                        <div className="flex justify-between">
-                          <p className="font-bold">Security Fee </p>{" "}
-                          <p className="ml-4">:</p>
-                          <p className="">
-                            BDT{" "}
-                            {booking?.bookingInfo?.securityFee > 0
-                              ? booking?.bookingInfo?.securityFee?.toLocaleString()
-                              : 0}
-                          </p>
-                        </div>
-                        <hr className="mt-1" />
-                        <div className="flex justify-between">
+                        <div className="flex justify-between w-32">
                           <p className="font-bold">Total </p>
-                          <p className="ml-[68px]">:</p>
+                          <p>:</p>
                           <p className="">
                             BDT {booking?.totalAmount?.toLocaleString()}
                           </p>
                         </div>
-                        <div className="flex justify-between">
-                          <p className="font-bold">Discount</p>
-                          <p className="ml-8">:</p>
-                          {/* <p className="">BDT {discount}</p> */}
+                        <div className="flex justify-between w-32">
+                          <p className="font-bold ">Paid</p>
+                          <p className="-ml-2">:</p>
+                          <p>BDT {booking?.sendAmount}</p>
                         </div>
                         <hr className="mt-1" />
-                        <div className="paid-amount flex justify-between">
-                          <p className="font-bold text-[12px]">Payable</p>{" "}
-                          <p className="ml-[55px]">:</p>
-                          {/* <p className=" text-[12px]">BDT {payableAmount}</p> */}
-                        </div>
-                        <hr className="mt-1" />
-                        <div className="paid-amount flex justify-between">
-                          <p className="font-bold text-[12px]">Paid</p>{" "}
-                          <p className="ml-[55px]">:</p>
-                          {/* {transactions?.length >= 1 ? (
-                            <p className=" text-[12px]">
-                              BDT {booking?.transactions[0]?.totalReceiveTk}
-                            </p>
-                          ) : (
-                            <p className="text-red-500">Pending</p>
-                          )} */}
-                        </div>
-                        <hr className="mt-1" />
-                        <div className="paid-amount flex justify-between">
+                        <div className="paid-amount flex justify-between w-32">
                           <p
-                            className="font-bold text-[12px]"
+                            className="font-bold"
                             style={{
-                              color: booking?.dueAmount > 0 ? "red" : "",
+                              color: dueAmount > 0 ? "red" : "",
                             }}
                           >
                             Due
                           </p>
-                          <p className="ml-[75px]">:</p>
-                          <p className=" text-[12px]">
-                            BDT{" "}
-                            {/* {payableAmount -
-                              booking?.transactions[0]?.totalReceiveTk} */}
-                            {/* {transactions[transactions?.length - 1]?.payableAmount -
-                                          transactions[transactions?.length - 1]?.receivedTk}{" "} */}
-                            {/* {booking?.dueAmount?.toLocaleString()} */}
-                          </p>
+                          <p>:</p>
+                          <p>BDT {dueAmount}</p>
                         </div>
                       </div>
                     </div>
                   </div>
                   {/* Note */}
-                  <div className="flex justify-between items-center">
-                    <div className="note-area">
+                  <div className="flex  justify-between items-end px-10 ">
+                    <div className="note-area w-1/2">
                       <label className="text-left text-[#35b0a7]">Note:</label>
                       <textarea
                         name=""
                         id=""
                         cols="50"
-                        rows="3"
+                        rows="6"
                         className="rounded pl-2 sm:w-full"
                         disabled
                       ></textarea>
                     </div>
-                    <div className="pr-5 signature mt-[50px] font-[500]">
+                    <div className=" signature  font-[500] ">
                       <p>Authorized Signature</p>
-                      <hr className="mt-6" style={{ width: "200px" }} />
+                      <hr className="my-6" style={{ width: "200px" }} />
                     </div>
                   </div>
-                  {/* Term and Condition */}
-                  <div className="text-left mt-5">
-                    <p>Terms:</p>
-                    <p className="font-medium">
-                      Please Read All Terms and Conditions
-                    </p>
-                  </div>
                 </div>
-                {/* Invoice Footer */}
-                <div className="flex justify-between bg-[#35B0A7] px-10 py-2 text-white invoice-footer mt-2">
-                  <p>Head Office : House-23, Road-03, Dhanmondi, Dhaka</p>
-                  <p>Mobile: +8801647647404</p>
-                  <p>www.psh.com.bd</p>
+                <div className="flex w-full items-end">
+                  <div className="w-full flex justify-between bg-[#35B0A7] px-10 py-2 text-white invoice-footer mt-6 ">
+                    <p>Head Office : House-23, Road-03, Dhanmondi, Dhaka</p>
+                    <p>Mobile: +8801647647404</p>
+                    <p>www.psh.com.bd</p>
+                  </div>
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* print and download */}
+        <div className="w-full flex justify-end items-center gap-12 my-10  ">
+          {/* print */}
+          <div className="hidden md:block ">
+            <ReactToPrint
+              trigger={() => (
+                <button className=" bg-[#399] px-5 py-2 rounded text-white font-medium text-xl">
+                  Print
+                </button>
+              )}
+              content={() => targetRef.current}
+            />
+          </div>
+          {/* download */}
+          <div>
+            <button
+              onClick={() => toPDF()}
+              className="bg-[#399] px-5 py-2 rounded text-white font-medium text-xl hover:text-white "
+            >
+              Download PDF
+            </button>
           </div>
         </div>
       </div>
