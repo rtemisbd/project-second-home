@@ -7,6 +7,7 @@ import { format, parseISO } from "date-fns";
 import logo from "../../assets/img/logo.png";
 import ReactToPrint from "react-to-print";
 import { usePDF } from "react-to-pdf";
+import "./invoice.css";
 
 const VillaInvoice = () => {
   const ref = useRef();
@@ -49,7 +50,7 @@ const VillaInvoice = () => {
             // className="md:overflow-hidden sm:overflow-scroll "
           >
             <div ref={targetRef} className="">
-              <div className=" pt-6  payment-info  md:w-auto sm:w-[952px] border flex flex-col">
+              <div className=" pt-6  payment-info  md:w-auto sm:w-[952px] border  flex flex-col">
                 <div className=" px-10 flex justify-between  gap-x-0">
                   <div>
                     <img
@@ -63,30 +64,30 @@ const VillaInvoice = () => {
                     <h2 className="text-[28px] font-[500] text-[#35B0A7]">
                       INVOICE
                     </h2>
-                    <p className="text-[1rem] text-[#35B0A7]">
+                    <div className="text-[1rem] text-[#35B0A7]">
                       #{booking?.bookingId}
-                    </p>
+                    </div>
                     <div className="flex justify-between mt-2">
-                      <p>Date :</p>{" "}
-                      <p>
+                      <div>Date :</div>{" "}
+                      <div>
                         {booking?.createdAt
                           ? format(parseISO(booking.createdAt), "dd/MM/yyyy")
                           : "N/A"}
-                      </p>
+                      </div>
                     </div>
                   </div>
                 </div>
                 {/* Booking Location */}
                 <div className=" px-10 flex justify-between my-12 text-left">
                   <div>
-                    <p className="text-[#35B0A7] font-bold">
+                    <div className="text-[#35B0A7] font-bold">
                       {booking?.villa?.resortId?.name}
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                       <span className="font-bold">Address :</span>{" "}
                       {booking?.villa?.resortId?.address}
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                       <span className="font-bold">Contact :</span>{" "}
                       {booking?.villa?.resortId?.contactNumbers?.map(
                         (contact, ind) => (
@@ -98,33 +99,35 @@ const VillaInvoice = () => {
                           </span>
                         )
                       )}
-                    </p>
-                    <p>
+                    </div>
+                    <div>
                       <span className="font-bold">Email :</span>{" "}
                       {booking?.villa?.resortId?.resortEmail}
-                    </p>
+                    </div>
                   </div>
-                  <div>
+                  <div className="">
                     <div className="text-left ">
-                      <p className="text-[#35B0A7] font-bold ">Bill To,</p>
-                      <p className="">
+                      <div className="text-[#35B0A7] font-bold ">Bill To,</div>
+                      <div className="">
                         <span className="font-bold">Name :</span>{" "}
                         {booking?.user?.firstName}
-                      </p>
-                      <p className="w-[180px]">
+                      </div>
+                      <div className="">
                         <span className="font-bold">Address :</span>{" "}
                         {booking?.user?.userAddress}
-                      </p>
-                      <p className="">
+                      </div>
+                      <div className="">
                         <span className="font-bold">Mobile :</span>{" "}
                         {booking?.user?.phone}
-                      </p>
+                      </div>
 
                       <div className="mt-2.5">
-                        <p>
-                          Check in Time : {booking?.rentDate?.bookStartDate}
-                        </p>
-                        <p>Check Out Time : {booking?.rentDate?.bookEndDate}</p>
+                        <div>
+                          Check In  : {booking?.rentDate?.bookStartDate}
+                        </div>
+                        <div>
+                          Check Out  : {booking?.rentDate?.bookEndDate}
+                        </div>
                       </div>
                     </div>
                   </div>
@@ -132,148 +135,80 @@ const VillaInvoice = () => {
                 {/* Booking Table */}
 
                 <div className="relative ">
-                  <div className="bg-[#35B0A7] booking-table mt-3 text-white grid grid-cols-4 py-2 mx-10  justify-items-center">
-                    <p>Villa Number</p>
-                    <p>Villa Name</p>
-                    <p>Total Duration</p>
-                    <p>Amount</p>
+                  <div className="bg-[#35B0A7] booking-table mt-3 text-white grid grid-cols-5 py-2 mx-10  justify-items-center text-[18px] ">
+                    <span>Villa Number</span>
+                    <span>Villa Name</span>
+                    <span>Per Night</span>
+                    <span>Total Duration</span>
+                    <span>Amount</span>
                   </div>
-                  <div className="absolute left-[45%] top-[12%] opacity-20 ">
-                    <img src={logo} className="w-120 h-40 " />
+                  <div className="absolute left-[45%] top-[20%] opacity-10 ">
+                    <img src={logo} className="w-120 h-40  " />
                   </div>
                   <div
                     style={{
                       backgroundColor: "rgba(53, 176, 167, 0.10)",
                     }}
-                    className="booking-table grid grid-cols-4 py-2  justify-items-center mx-10"
+                    className="booking-table grid grid-cols-5 py-8 h-[276px] text-[18px] justify-items-center mx-10"
                   >
-                    <p>{booking?.villa?.villaNumber}</p>
-                    <p>{booking?.villa?.title}</p>
-                    <p>
+                    <span>{booking?.villa?.villaNumber}</span>
+                    <span>{booking?.villa?.title}</span>
+                    <span>{booking?.perNight}</span>
+                    <span>
                       {booking?.rentDate?.daysDifference}{" "}
                       {booking?.rentDate?.daysDifference === 1
                         ? "Night"
                         : "Nights"}
-                    </p>
-                    <p>BDT {booking?.totalAmount}</p>
-                  </div>
-
-                  <div
-                    className=" booking-table bg-white "
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table mx-10 "
-                    style={{
-                      backgroundColor: "rgba(53, 176, 167, 0.10)",
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white mx-10"
-                    style={{
-                      backgroundColor: "rgba(53, 176, 167, 0.10)",
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white"
-                    style={{
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
-                  </div>
-                  <div
-                    className=" booking-table bg-white mx-10"
-                    style={{
-                      backgroundColor: "rgba(53, 176, 167, 0.10)",
-                      height: "30px",
-                    }}
-                  >
-                    <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 py-1.5 px-3">
-                      <div className="flex col-span-1 items-center font-medium"></div>
-                      <div className="flex items-center justify-between"></div>
-                    </div>
+                    </span>
+                    <span>BDT {booking?.totalAmount}</span>
                   </div>
 
                   {/*  Payment History */}
 
                   <div className="flex justify-between my-10 text-left px-10">
                     <div className="total-amount-left">
-                      <p className=" font-bold mb-2 ">
+                      <div className=" font-bold mb-2 ">
                         <span className="text-[#35B0A7]  rounded-sm">
                           Payment History
                         </span>
-                      </p>
-                      <p>
+                      </div>
+                      <div>
                         <span className="font-bold mr-3">
                           Payment Method :{" "}
                         </span>{" "}
                         {booking?.paymentPlatform}
-                      </p>
-                      <p>
+                      </div>
+                      <div>
                         <span className="font-bold mr-3">Account Number :</span>{" "}
                         {booking?.senderAccountNumber}
-                      </p>
+                      </div>
                     </div>
                     <div>
                       <div className="text-right total-amount-right font-[600] ">
-                        <div className="flex justify-between w-32">
-                          <p className="font-bold">Total </p>
-                          <p>:</p>
-                          <p className="">
+                        <div className="flex justify-between gap-6">
+                          <div className="font-bold">Total </div>
+                          <div>:</div>
+                          <div className="">
                             BDT {booking?.totalAmount?.toLocaleString()}
-                          </p>
+                          </div>
                         </div>
-                        <div className="flex justify-between w-32">
-                          <p className="font-bold ">Paid</p>
-                          <p className="-ml-2">:</p>
-                          <p>BDT {booking?.sendAmount}</p>
+                        <div className="flex justify-between gap-6 my-2">
+                          <div className="font-bold ">Paid</div>
+                          <div className="-ml-2">:</div>
+                          <div>BDT {booking?.sendAmount}</div>
                         </div>
-                        <hr className="mt-1" />
-                        <div className="paid-amount flex justify-between w-32">
-                          <p
-                            className="font-bold"
+                        <hr className="mt-2" />
+                        <div className=" flex justify-between gap-6 my-2 text-[18px]">
+                          <div
+                            className="font-bold "
                             style={{
                               color: dueAmount > 0 ? "red" : "",
                             }}
                           >
                             Due
-                          </p>
-                          <p>:</p>
-                          <p>BDT {dueAmount}</p>
+                          </div>
+                          <div>:</div>
+                          <div>BDT {dueAmount}</div>
                         </div>
                       </div>
                     </div>
@@ -292,16 +227,39 @@ const VillaInvoice = () => {
                       ></textarea>
                     </div>
                     <div className=" signature  font-[500] ">
-                      <p>Authorized Signature</p>
+                      <div>Authorized Signature</div>
                       <hr className="my-6" style={{ width: "200px" }} />
                     </div>
                   </div>
                 </div>
+                <ul className="w-full  px-10 py-2 invoice-footer mt-6 list-disc">
+                  <li>
+                    Please bring a hard/soft copy of the Invoice and one hard
+                    copy of your NID Card / Passport / Birth Certificate /
+                    Driving License at the time of check-in.
+                  </li>
+                  <li>
+                    For any further questions, kindly reach out to{" "}
+                    <span className="font-bold">
+                      {booking?.villa?.resortId?.name} -{" "}
+                      {booking?.villa?.resortId?.contactNumbers?.map(
+                        (contact, ind) => (
+                          <span key={ind} className="ms-1">
+                            {contact?.number}
+                            {ind + 1 <
+                              booking?.villa?.resortId?.contactNumbers
+                                ?.length && <span> ,</span>}
+                          </span>
+                        )
+                      )}
+                    </span>{" "}
+                  </li>
+                </ul>
                 <div className="flex w-full items-end">
                   <div className="w-full flex justify-between bg-[#35B0A7] px-10 py-2 text-white invoice-footer mt-6 ">
-                    <p>Head Office : House-23, Road-03, Dhanmondi, Dhaka</p>
-                    <p>Mobile: +8801647647404</p>
-                    <p>www.psh.com.bd</p>
+                    <div>Head Office : House-23, Road-03, Dhanmondi, Dhaka</div>
+                    <div>Mobile: +8801647647404</div>
+                    <div>www.psh.com.bd</div>
                   </div>
                 </div>
               </div>
