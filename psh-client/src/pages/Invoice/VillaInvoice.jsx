@@ -8,6 +8,8 @@ import logo from "../../assets/img/logo.png";
 import ReactToPrint from "react-to-print";
 import { usePDF } from "react-to-pdf";
 import "./invoice.css";
+import DownloadInvoiceOfVilla from "./DownloadInvoiceOfVilla";
+import { BlobProvider, View } from "@react-pdf/renderer";
 
 const VillaInvoice = () => {
   const ref = useRef();
@@ -15,7 +17,6 @@ const VillaInvoice = () => {
   const { id } = useParams();
   const [booking, setBooking] = useState({});
   const [dueAmount, setDueAmount] = useState(0);
-  const { toPDF, targetRef } = usePDF({ filename: "invoice.pdf" });
 
   useEffect(() => {
     const fetchBooking = async () => {
@@ -32,8 +33,8 @@ const VillaInvoice = () => {
     <div className=" md:flex md:justify-center">
       <div className=" ">
         <div className=" ">
-          <div className="flex items-center mt-[50px] mb-10">
-            <div className="flex bg-[#A5F8F2] p-[20px] ">
+          <div className="flex items-center mt-[50px] mb-4 ">
+            <div className="flex bg-[#A5F8F2] p-[20px] w-full">
               <div>
                 <img loading="lazy" src={right} alt="" />
               </div>
@@ -49,7 +50,7 @@ const VillaInvoice = () => {
             id="invoice "
             // className="md:overflow-hidden sm:overflow-scroll "
           >
-            <div ref={targetRef} className="">
+            <div ref={pdfRef} className="">
               <div className=" pt-6  payment-info  md:w-auto sm:w-[952px] border  flex flex-col">
                 <div className=" px-10 flex justify-between  gap-x-0">
                   <div>
@@ -122,12 +123,8 @@ const VillaInvoice = () => {
                       </div>
 
                       <div className="mt-2.5">
-                        <div>
-                          Check In  : {booking?.rentDate?.bookStartDate}
-                        </div>
-                        <div>
-                          Check Out  : {booking?.rentDate?.bookEndDate}
-                        </div>
+                        <div>Check In : {booking?.rentDate?.bookStartDate}</div>
+                        <div>Check Out : {booking?.rentDate?.bookEndDate}</div>
                       </div>
                     </div>
                   </div>
@@ -216,7 +213,9 @@ const VillaInvoice = () => {
                   {/* Note */}
                   <div className="flex  justify-between items-end px-10 ">
                     <div className="note-area w-1/2">
-                      <label className="text-left text-[#35b0a7]">Note:</label>
+                      <label className="text-left text-[#35b0a7] text-xl mb-2">
+                        Note:
+                      </label>
                       <textarea
                         name=""
                         id=""
@@ -277,17 +276,26 @@ const VillaInvoice = () => {
                   Print
                 </button>
               )}
-              content={() => targetRef.current}
+              content={() => ref.current}
             />
           </div>
           {/* download */}
           <div>
-            <button
-              onClick={() => toPDF()}
-              className="bg-[#399] px-5 py-2 rounded text-white font-medium text-xl hover:text-white "
-            >
-              Download PDF
-            </button>
+            <View>
+              <BlobProvider
+                document={<DownloadInvoiceOfVilla booking={booking} />}
+              >
+                {({ url }) => (
+                  <a
+                    href={url}
+                    download="invoice.pdf"
+                    className="bg-[#399] px-5 py-2 rounded text-white font-medium text-xl hover:text-white "
+                  >
+                    Download
+                  </a>
+                )}
+              </BlobProvider>
+            </View>
           </div>
         </div>
       </div>
