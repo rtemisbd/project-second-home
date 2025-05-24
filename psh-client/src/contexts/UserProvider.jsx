@@ -28,7 +28,6 @@ export const UserProvider = ({ children }) => {
         password,
       });
 
-      console.log(data);
 
       setUser(data?.data?.user);
       setToken(data?.data?.token);
