@@ -6,7 +6,6 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { format, parseISO } from "date-fns";
 import logo from "../../assets/img/logo.png";
 import ReactToPrint from "react-to-print";
-import { usePDF } from "react-to-pdf";
 import "./invoice.css";
 import DownloadInvoiceOfVilla from "./DownloadInvoiceOfVilla";
 import { BlobProvider, View } from "@react-pdf/renderer";
@@ -26,8 +25,6 @@ const VillaInvoice = () => {
     };
     fetchBooking();
   }, [id]);
-
-  console.log(booking);
 
   return (
     <div className=" md:flex md:justify-center">

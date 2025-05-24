@@ -107,6 +107,9 @@ const UserSchema = new mongoose.Schema(
         "partner",
         "subAdmin1",
         "subAdmin2",
+        "resortAdmin",
+        "resortAccount",
+        "resortReception"
       ],
       default: "user",
     },

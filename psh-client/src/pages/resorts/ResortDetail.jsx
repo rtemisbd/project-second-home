@@ -97,7 +97,7 @@ const ResortDetail = () => {
             <h1 className="text-xl font-bold text-gray-900 px-1 ">
               {resort?.name} - {resort?.district} , {resort?.division}
             </h1>
-
+ 
             <div className="flex text-[#9A9A9A] items-center mt-2">
               <img
                 src="/public/images/icon/marker-02.png"

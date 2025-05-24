@@ -187,8 +187,8 @@ const CreateUser = () => {
           `${baseUrl}/api/users?${queryParams.toString()}`
         );
 
-        setAllUser(data?.users);
-        setTotalDataCount(data?.totalCount);
+        setAllUser(data?.data?.users);
+        setTotalDataCount(data?.data?.totalCount);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -329,7 +329,7 @@ const CreateUser = () => {
                       </thead>
                       <tbody>
                         {allUser?.map((user, index) => (
-                          <tr className="bookings_data">
+                          <tr className="bookings_data" key={index}>
                             <td>{(page - 1) * size + index + 1}</td>
 
                             <td>
