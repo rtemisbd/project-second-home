@@ -12,74 +12,84 @@ import { userServices } from "../services/user.service.js";
 import responseSend from "../utils/responseSend.js";
 import mongoose from "mongoose";
 
+export const createUser = catchAsync(async(req, res, next)=>{
+  const result = await userServices.createUserIntoDB(req.body);
 
-export const createUser = async (req, res) => {
-  try {
-    const {
-      firstName,
-      address,
-      email,
-      phone,
-      role,
-      refferCode,
-      photos,
-      branch: branchId,
-    } = req.body;
+  responseSend(res, 
+    {statusCode : 200,
+    success : true,
+    message : "User has been created successfully!",
+    data : result
+})
+})
+
+// export const createUser = async (req, res) => {
+//   try {
+//     const {
+//       firstName,
+//       address,
+//       email,
+//       phone,
+//       role,
+//       refferCode,
+//       photos,
+//       branch: branchId,
+//     } = req.body;
 
 
-    const existingMobile = await User.findOne({ phone });
+//     const existingMobile = await User.findOne({ phone });
 
-    if (existingMobile) {
-      return res.status(400).json({ message: "User already exists" });
-    }
+//     if (existingMobile) {
+//       return res.status(400).json({ message: "User already exists" });
+//     }
 
-    const hashedPassword = await bcrypt.hash(
-      req.body.password || config.user_default_password,
-      10
-    );
+//     const hashedPassword = await bcrypt.hash(
+//       req.body.password || config.user_default_password,
+//       10
+//     );
     
-    const user = new User({
-      firstName,
-      address,
-      email,
-      phone,
-      role,
-      refferCode,
-      photos,
-      password: hashedPassword,
-      branch: branchId,
-    });
+//     const user = new User({
+//       firstName,
+//       address,
+//       email,
+//       phone,
+//       role,
+//       refferCode,
+//       photos,
+//       password: hashedPassword,
+//       branch: branchId,
+//     });
     
 
-    await user.save();
+//     await user.save();
 
-    let branch;
-    if (branchId) {
-      branch = await Branch.findById(branchId);
+//     let branch;
+//     if (branchId) {
+//       branch = await Branch.findById(branchId);
 
-      if (!branch) {
-        await user.remove(); // Remove the created user if branch is not found
-        return res.status(404).json({ message: "Branch not found" });
-      }
+//       if (!branch) {
+//         await user.remove(); // Remove the created user if branch is not found
+//         return res.status(404).json({ message: "Branch not found" });
+//       }
 
-      branch.user.push(user._id);
-      await branch.save();
-    }
+//       branch.user.push(user._id);
+//       await branch.save();
+//     }
 
-    const token = jwt.sign(
-      {
-        name: user.firstName + " " + user.lastName,
-        id: user._id,
-      },
-      config.jwt.secret,
-      { expiresIn: config.jwt.expires_in }
-    );
+//     const token = jwt.sign(
+//       {
+//         name: user.firstName + " " + user.lastName,
+//         id: user._id,
+//       },
+//       config.jwt.secret,
+//       { expiresIn: config.jwt.expires_in }
+//     );
 
-    res.status(200).json({ user, token, message: "Registration successful" });
-  } catch (error) {
-    res.status(500).json(error);
-  }
-};
+//     res.status(200).json({ user, token, message: "Registration successful" });
+//   } catch (error) {
+//     res.status(500).json(error);
+//   }
+// };
 
 export const sendOtp = async (req, res, next) => {
   try {
@@ -480,64 +490,6 @@ export const getAdmin = async (req, res, next) => {
     next(err);
   }
 };
-
-// export const getUsers = async (req, res, next) => {
-//   try {
-//     const { phone, usedPromo, role } = req.query;
-//     const page = parseInt(req.query?.page, 10) || 1;
-//     const size = parseInt(req.query?.size, 10) || 10;
-
-//     const matchStage = {};
-//     if (phone && phone.trim() !== "")
-//       matchStage.phone = { $regex: `^${phone}` };
-//     // Add filter for usedPromo length > 1 if usedPromo is true
-//     if (usedPromo) {
-//       matchStage.$expr = {
-//         $gt: [{ $size: { $ifNull: ["$usedPromo", []] } }, 1],
-//       };
-//     }
-//     if (role && role !== "") matchStage.role = role;
-
-//     const pipeline = [
-//       { $match: matchStage },
-//       {
-//         $facet: {
-//           totalCount: [{ $count: "count" }],
-//           paginatedResults: [
-//             { $sort: { createdAt: -1 } },
-//             { $skip: (page - 1) * size },
-//             { $limit: size },
-//             {
-//               $lookup: {
-//                 from: "branches",
-//                 localField: "branch",
-//                 foreignField: "_id",
-//                 as: "branch",
-//               },
-//             },
-//             // { $project: { password: 0 } },
-//           ],
-//         },
-//       },
-//     ];
-
-//     const results = await User.aggregate(pipeline);
-
-//     // Extract total count and paginated results
-//     const totalCount = results[0]?.totalCount[0]?.count || 0;
-//     const users = results[0]?.paginatedResults || [];
-
-//     return res.status(200).json({
-//       success: true,
-//       totalCount,
-//       currentPage: page,
-//       pageSize: size,
-//       users,
-//     });
-//   } catch (err) {
-//     next(err);
-//   }
-// };
 
 
 export const getUsers = catchAsync(async(req, res, next)=>{

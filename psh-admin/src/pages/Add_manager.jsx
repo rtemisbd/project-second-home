@@ -58,6 +58,7 @@ const Add_Manager = () => {
         role,
         branch: branchId,
       });
+      console.log(response);
 
       if (response.status === 200) {
         // Registration successful
@@ -86,8 +87,8 @@ const Add_Manager = () => {
       // Show error message using SweetAlert2
       MySwal.fire({
         icon: "error",
-        title: "Registration Failed",
-        text: "Failed to add manager. Please try again.",
+        title: "Registration Failed!",
+        text: `${error?.response?.data?.message}` || "Failed to add manager. Please try again.",
       });
     }
   };
@@ -100,6 +101,9 @@ const Add_Manager = () => {
     "partner",
     "subAdmin1",
     "subAdmin2",
+    "resortAdmin",
+    "resortAccount",
+    "resortReception",
   ];
   return (
     <div className="wrapper">
@@ -246,7 +250,7 @@ const Add_Manager = () => {
                   className="main_form w-100"
                   {...register("branch")}
                 >
-                  <option>Select Branch</option>
+                  <option value={""}>Select Branch</option>
                   {branches.map((branch) => (
                     <option key={branch._id} value={branch._id}>
                       {branch.name}

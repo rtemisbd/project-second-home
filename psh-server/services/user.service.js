@@ -1,4 +1,79 @@
+import AppError from "../helpers/errorHandler/AppError.js";
+import Branch from "../models/Branch.js";
 import User from "../models/User.js"
+import bcrypt from "bcryptjs";
+
+const createUserIntoDB = async(payload)=>{
+ const {
+      firstName,
+      address,
+      email,
+      phone,
+      role,
+      refferCode,
+      photos,
+      branch: branchId,
+    } = payload;
+
+
+    const existingMobile = await User.findOne({ phone });
+
+    if (existingMobile) {
+      throw new AppError(
+        500,
+        "User already exists"
+      );
+    }
+    const hashedPassword = await bcrypt.hash(
+      req.body.password || config.user_default_password,
+      10
+    );
+    
+    const user = new User({
+      firstName,
+      address,
+      email,
+      phone,
+      role,
+      refferCode,
+      photos,
+      password: hashedPassword,
+      branch: branchId,
+    });
+    
+
+    await user.save();
+
+    let branch;
+    if (branchId) {
+      branch = await Branch.findById(branchId);
+
+      if (!branch) {
+        await user.remove(); // Remove the created user if branch is not found
+        throw new AppError(
+        404,
+        "Branch not found" 
+      );
+        // return res.status(404).json({ message: "Branch not found" });
+      }
+
+      branch.user.push(user._id);
+      await branch.save();
+    }
+
+    const token = jwt.sign(
+      {
+        name: user.firstName + " " + user.lastName,
+        id: user._id,
+      },
+      config.jwt.secret,
+      { expiresIn: config.jwt.expires_in }
+    );
+
+    // res.status(200).json({ user, token, message: "Registration successful" });
+    return { user, token}
+
+}
 
 
 const getAllUsersFromDB =  async(payload) => {
@@ -59,6 +134,7 @@ const getUserById = async (id)=>{
 
 
 export const userServices = {
+  createUserIntoDB,
     getAllUsersFromDB,
     getUserById
 }
