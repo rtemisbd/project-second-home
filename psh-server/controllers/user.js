@@ -15,12 +15,10 @@ import mongoose from "mongoose";
 export const createUser = catchAsync(async(req, res, next)=>{
   const result = await userServices.createUserIntoDB(req.body);
 
-  responseSend(res, 
-    {statusCode : 200,
+  responseSend(res, {statusCode : 200,
     success : true,
     message : "User has been created successfully!",
-    data : result
-})
+    data : result })
 })
 
 // export const createUser = async (req, res) => {

@@ -103,13 +103,13 @@ const UserSchema = new mongoose.Schema(
         "SuperAdmin",
         "admin",
         "user",
-        "manager",
+        "manager",  
         "partner",
         "subAdmin1",
         "subAdmin2",
         "resortAdmin",
-        "resortAccount",
-        "resortReception"
+        "resortAccountant",
+        "resortReceptionist"
       ],
       default: "user",
     },

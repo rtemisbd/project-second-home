@@ -1,7 +1,9 @@
+import config from "../config/index.js";
 import AppError from "../helpers/errorHandler/AppError.js";
 import Branch from "../models/Branch.js";
 import User from "../models/User.js"
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
 
 const createUserIntoDB = async(payload)=>{
  const {
@@ -25,41 +27,47 @@ const createUserIntoDB = async(payload)=>{
       );
     }
     const hashedPassword = await bcrypt.hash(
-      req.body.password || config.user_default_password,
+      payload.password || config.user_default_password,
       10
     );
+    payload.password = hashedPassword;
+
     
-    const user = new User({
-      firstName,
-      address,
-      email,
-      phone,
-      role,
-      refferCode,
-      photos,
-      password: hashedPassword,
-      branch: branchId,
-    });
+    // const user = new User({
+    //   firstName,
+    //   address,
+    //   email,
+    //   phone,
+    //   role,
+    //   refferCode,
+    //   photos,
+    //   password: hashedPassword,
+    //   branch: branchId,
+    // });
+
+    // await user.save();
+
+
+    const user = await User.create(payload);
     
 
-    await user.save();
 
-    let branch;
-    if (branchId) {
-      branch = await Branch.findById(branchId);
+    // let branch;
+    // if (branchId) {
+    //   branch = await Branch.findById(branchId);
 
-      if (!branch) {
-        await user.remove(); // Remove the created user if branch is not found
-        throw new AppError(
-        404,
-        "Branch not found" 
-      );
-        // return res.status(404).json({ message: "Branch not found" });
-      }
+    //   if (!branch) {
+    //     await user.remove(); // Remove the created user if branch is not found
+    //     throw new AppError(
+    //     404,
+    //     "Branch not found" 
+    //   );
+    //     // return res.status(404).json({ message: "Branch not found" });
+    //   }
 
-      branch.user.push(user._id);
-      await branch.save();
-    }
+    //   branch.user.push(user._id);
+    //   await branch.save();
+    // }
 
     const token = jwt.sign(
       {
