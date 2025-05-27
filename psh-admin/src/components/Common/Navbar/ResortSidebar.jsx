@@ -1,17 +1,14 @@
 import { useState } from "react";
 import { Link, useLocation, useNavigate } from "react-router-dom";
-
 import { useContext } from "react";
-
 import { AuthContext } from "../../../contexts/UserProvider";
 import "./Navbar.css";
 import { RiUserAddLine } from "react-icons/ri";
-import { RiBuilding2Line } from "react-icons/ri";
 import { IoCalendarOutline } from "react-icons/io5";
-import { MdDashboard, MdOutlineLocalOffer } from "react-icons/md";
+import { MdDashboard } from "react-icons/md";
 import { CiDiscount1 } from "react-icons/ci";
 import { AiOutlineDollarCircle } from "react-icons/ai";
-import { FaList, FaRegHandPointRight } from "react-icons/fa";
+import { FaList } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import villaIcon from "../../../img/home/villa.png";
 
@@ -28,22 +25,15 @@ const ResortSidebar = () => {
     logoutUser();
     navigate("/login");
   };
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+
   if (location.pathname === "/login") {
     return null;
   }
 
   const handleDropdown = (id) => {
     setDropdownId(id);
-    // setActive(!active);
-    setActive(true);
+    setActive(!active);
+    // setActive(true);
   };
 
   return (
