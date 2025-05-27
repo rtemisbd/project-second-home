@@ -4,6 +4,7 @@ import Branch from "../models/Branch.js";
 import User from "../models/User.js"
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import Resort from "../models/Resort.js";
 
 const createUserIntoDB = async(payload)=>{
  const {
@@ -47,10 +48,7 @@ const createUserIntoDB = async(payload)=>{
 
     // await user.save();
 
-
     const user = await User.create(payload);
-    
-
 
     // let branch;
     // if (branchId) {
