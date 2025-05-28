@@ -60,6 +60,13 @@ const createVillaOrderIntoDB = async(payload)=>{
   return order;
 }
 
+const getAllVillaOrdersFromDB = async (query) =>{
+  const result = await VillaOrders.find();
+
+  return result;
+}
+
+
 const getVillaOrderByIdFromDB = async (id) => {
   const result = await VillaOrders.findById({ _id: id })
     .populate({
@@ -84,5 +91,6 @@ const getVillaOrderByIdFromDB = async (id) => {
 
 export const villaOrderServices = {
     createVillaOrderIntoDB,
+    getAllVillaOrdersFromDB,
     getVillaOrderByIdFromDB
 }

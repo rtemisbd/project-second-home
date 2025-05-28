@@ -14,6 +14,17 @@ const createVilaOrderIntoDB = catchAsync(async(req, res, next)=>{
       });
 })
 
+const getAllVillaOrders = catchAsync(async(req, res, next)=>{
+    const result =  await villaOrderServices.getAllVillaOrdersFromDB(req.query);
+
+    responseSend(res, {
+        statusCode : 200,
+        success : true,
+        data : result,
+        message : "Bookings retrieved successfully!"
+    })
+})
+
 const getVillaOrderById = catchAsync(async(req, res, next)=>{
     const result = await villaOrderServices.getVillaOrderByIdFromDB(req.params.id);
 
@@ -29,5 +40,6 @@ const getVillaOrderById = catchAsync(async(req, res, next)=>{
 
 export const villaOrdersControllers = {
     createVilaOrderIntoDB,
+    getAllVillaOrders,
     getVillaOrderById
 }

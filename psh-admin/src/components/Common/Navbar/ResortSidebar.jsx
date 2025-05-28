@@ -80,7 +80,7 @@ const ResortSidebar = () => {
         {/* Booking List */}
         <li className="main_nav-link" onClick={() => setActive(false)}>
           <Link
-            to={"/booking-list"}
+            to={"/dashboard/resort/booking-list"}
             className=" nav-link text-black  d-flex align-items-center"
           >
             <FaList
