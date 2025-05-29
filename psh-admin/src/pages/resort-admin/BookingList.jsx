@@ -10,6 +10,10 @@ import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
 import { useQuery } from "react-query";
 import axios from "axios";
+import { formatDate } from "../../utils/dateConvert";
+import { BiSolidEdit } from "react-icons/bi";
+import { FaWhatsapp } from "react-icons/fa";
+import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 
 const BookingList = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -32,6 +36,12 @@ const BookingList = () => {
 
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
+
+  const handleShowDetails = (detailsData) => {
+    // setShowDurationModal(true);
+    // setShowDetails(true);
+    // setBookingDetails(detailsData);
+  };
 
   // Get all Bookings
   const { refetch } = useQuery(
@@ -77,7 +87,7 @@ const BookingList = () => {
 
         // setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
-        // console.error("Error fetching data:", error);
+        console.error("Error fetching data:", error);
       }
     },
     {
@@ -362,29 +372,268 @@ const BookingList = () => {
                         <th>Total Tk</th>
                         <th>Discount</th>
                         <th>Payable Tk</th>
-                        <th>Payment Status</th>
+                        {/* <th>Payment Status</th> */}
                         <th>Total Receive</th>
                         <th>Due Amount</th>
                         <th>Status</th>
-                        <th>Contact</th>
+                        {/* <th>Contact</th> */}
                         <th>Details</th>
                         <th>Update Duration</th>
                         <th>Action</th>
                       </tr>
                     </thead>
                     <tbody>
-                      {/* {data?.map((booking, index) => (
-                        <BookingData
-                          booking={booking}
-                          key={booking._id}
-                          index={index}
-                          refetch={refetch}
-                          page={page}
-                          extraCharge={extraCharge}
-                          isLoading={isLoading}
-                          size={size}
-                        />
-                      ))} */}
+                      {data?.map((booking, index) => (
+                        <tr key={index} className="bookings_data">
+                          <td>{(page - 1) * size + index + 1}</td>
+                          <td
+                            style={{
+                              width: "140px",
+                            }}
+                          >
+                            {" "}
+                            <p>{formatDate(booking?.createdAt)}</p>
+                            <p>
+                              {
+                                new Date(booking?.createdAt)
+                                  ?.toLocaleString()
+                                  ?.split(",")[1]
+                              }
+                            </p>
+                          </td>
+                          <td>
+                            <p>#{booking?.bookingId} </p>
+                          </td>
+                          <td>
+                            <p>{booking?.user?.phone}</p>
+                            <p>{booking?.user?.firstName}</p>
+                          </td>
+                          <td> {booking?.villa?.title}</td>
+                          <td
+                            style={{
+                              width: "100px",
+                            }}
+                          >
+                            {" "}
+                            <p className="fw-bold">
+                              Tk {booking?.totalAmount?.toLocaleString()}
+                            </p>
+                          </td>
+                          <td>
+                            {" "}
+                            {/* <p className="fw-bold">Tk {discount}</p> */}
+                          </td>
+                          <td>
+                            {" "}
+                            <p className="fw-bold">
+                              Tk {booking?.payableAmount?.toLocaleString()}
+                           
+                            </p>
+                          </td>
+                          {/* <td>
+                            <span
+                              className=" fw-bold "
+                              style={{
+                                color:
+                                  booking?.paymentStatus === "Paid"
+                                    ? "green"
+                                    : "red",
+                              }}
+                            >
+                              {" "}
+                              {booking?.paymentStatus}
+                            </span>
+                          </td> */}
+
+                          <td>
+                            <p className="fw-bold">Tk {booking?.sendAmount}</p>
+                          </td>
+                          <td>
+                            {" "}
+                            <span
+                              className=" fw-bold"
+                              style={{
+                                color:
+                                  booking?.payableAmount - booking?.sendAmount === 0
+                                    ? "green"
+                                    : "red",
+                              }}
+                            >
+                              {" "}
+                              TK {booking?.payableAmount - booking?.sendAmount}
+                            </span>
+                          </td>
+                          <td>
+                            <div className=" d-flex ">
+                              <div>
+                                <p
+                                  className="fw-bold"
+                                  style={{
+                                    color:
+                                      booking?.status === "Approved"
+                                        ? "#27b3b1"
+                                        : "red",
+                                  }}
+                                >
+                                  {booking?.status}
+                                </p>
+                              </div>
+                              <button
+                                type="button"
+                                className="d-flex p-0 "
+                                style={{
+                                  backgroundColor: "transparent",
+                                }}
+                                // onClick={() => handleStatusShow(booking)}
+                              >
+                                <BiSolidEdit
+                                  style={{
+                                    width: "24px",
+                                    height: "24px",
+                                    color: "black",
+                                  }}
+                                />
+                              </button>
+                              {/* Modal Order Status Update */}
+                            </div>
+                            <div>
+                              {/* {statusModalData && (
+                                <OrderStatusUpdate
+                                  data={statusModalData}
+                                  refetch={refetch}
+                                  isLoading={isLoading}
+                                  showStatusModal={showStatusModal}
+                                  setShowStatusModal={setShowStatusModal}
+                                />
+                              )} */}
+                            </div>
+                          </td>
+                          {/* whats app contact */}
+                          {/* <td>
+                            <a
+                              href={`https://api.whatsapp.com/send?phone=88${booking?.user?.phone}`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              <button class="btn position-relative">
+                                <FaWhatsapp
+                                  style={{
+                                    width: "32px",
+                                    height: "32px",
+                                    cursor: "pointer",
+                                    color: "#25D366",
+                                  }}
+                                />
+                                <span
+                                  class="spinner-grow spinner-grow-sm text-success "
+                                  aria-hidden="true"
+                                  style={{
+                                    position: "absolute",
+                                    top: "-5px",
+                                    left: "70%",
+                                  }}
+                                ></span>
+                              </button>
+                            </a>
+                          </td> */}
+                          <td>
+                            <div>
+                              <span onClick={() => handleShowDetails(booking)}>
+                                <AiOutlineEye
+                                  style={{
+                                    width: "24px",
+                                    height: "24px",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              </span>
+                            </div>
+                          </td>
+                          <td>
+                            <div className="d-flex justify-content-center">
+                              <button
+                                title={`${
+                                  booking?.status === "Approved"
+                                    ? "Sorry ! Your Booking Already Approved"
+                                    : ""
+                                }`}
+                                type="button"
+                                className={`rounded ${
+                                  booking?.status === "Approved"
+                                    ? "bg-white"
+                                    : "#35b0a7"
+                                }`}
+                                disabled={
+                                  booking?.status === "Approved" ? true : false
+                                }
+                                // onClick={() => {
+                                //   booking?.bookingInfo?.roomType ===
+                                //   "Shared Room"
+                                //     ? handleSeatShow(booking)
+                                //     : handleDurationShow(booking);
+                                // }}
+                              >
+                                <AiOutlineFieldTime
+                                  style={{ width: "24px", height: "24px" }}
+                                />
+                              </button>
+                            </div>
+                            {/* Modal order Date Update */}
+                            {/* {booking?.bookingInfo?.roomType === "Shared Room" &&
+                            durationUpdateDataSeat ? (
+                              <div>
+                                <BookingSeatDateExtend
+                                  data={booking}
+                                  refetch={refetch}
+                                  extraCharge={extraCharge}
+                                  showDurationModal={showDurationModal}
+                                  setShowDurationModal={setShowDurationModal}
+                                />
+                              </div>
+                            ) : (
+                              ""
+                            )} */}
+                            {/* {durationUpdatePrivateRoom && (
+                              <div>
+                                <BookingDatesExtend
+                                  data={booking}
+                                  refetch={refetch}
+                                  extraCharge={extraCharge}
+                                  showDurationModal={showDurationModal}
+                                  setShowDurationModal={setShowDurationModal}
+                                />
+                              </div>
+                            )} */}
+                          </td>
+                          <td>
+                            <div className="d-flex gap-2 fw-bold">
+                              <button
+                                type="button"
+                                style={{ backgroundColor: "#00BBB4" }}
+                                // onClick={() => handlePaymentShow(booking)}
+                              >
+                                Payment
+                              </button>
+                              {/* 
+              <button className="bg-danger">End</button> */}
+                            </div>
+                            {/* {paymentModalData && (
+                              <Payment
+                                data={paymentModalData}
+                                refetch={refetch}
+                                isLoading={isLoading}
+                                showPaymentModal={showPaymentModal}
+                                setShowPaymentModal={setShowPaymentModal}
+                              />
+                            )} */}
+                          </td>
+                          {/* <td>
+                            <p className=" fw-bold">
+                              {booking?.specialRequest}
+                            </p>
+                          </td> */}
+                        </tr>
+                      ))}
                     </tbody>
                   </Table>
                 </div>
