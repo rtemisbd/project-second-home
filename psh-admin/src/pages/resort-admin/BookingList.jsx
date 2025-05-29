@@ -37,6 +37,8 @@ const BookingList = () => {
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
+  const allBookingStatus = ["Pending", "Processing", "Approved", "Canceled"];
+
   const handleShowDetails = (detailsData) => {
     // setShowDurationModal(true);
     // setShowDetails(true);
@@ -297,11 +299,11 @@ const BookingList = () => {
                   // value={bookingStatus}
                 >
                   <option value="All">All</option>
-
-                  <option value="Pending">Pending</option>
-                  <option value="Approved">Approved</option>
-                  <option value="Canceled">Canceled</option>
-                  <option value="Processing">Processing</option>
+                  {allBookingStatus?.map((status, ind) => (
+                    <option key={ind} value={status}>
+                      {status}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div>
@@ -427,7 +429,6 @@ const BookingList = () => {
                             {" "}
                             <p className="fw-bold">
                               Tk {booking?.payableAmount?.toLocaleString()}
-                           
                             </p>
                           </td>
                           {/* <td>
@@ -454,7 +455,9 @@ const BookingList = () => {
                               className=" fw-bold"
                               style={{
                                 color:
-                                  booking?.payableAmount - booking?.sendAmount === 0
+                                  booking?.payableAmount -
+                                    booking?.sendAmount ===
+                                  0
                                     ? "green"
                                     : "red",
                               }}
