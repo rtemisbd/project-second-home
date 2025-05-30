@@ -61,7 +61,6 @@ const createVillaOrderIntoDB = async(payload)=>{
 }
 
 
-
 const getAllVillaOrdersFromDB = async (queries) => {
   const {user, villa} = queries
   const page = parseInt(queries?.page) || 1;

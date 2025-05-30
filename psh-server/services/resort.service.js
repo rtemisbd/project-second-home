@@ -1,5 +1,5 @@
 
-import Resort from "../models/Resort.js"
+
 import { districtServices } from "./district.service.js";
 
 const createResortIntoDB = async(payload) =>{
