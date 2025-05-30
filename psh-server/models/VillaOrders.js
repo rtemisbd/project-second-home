@@ -10,6 +10,7 @@ const rentDateSchema = new mongoose.Schema({
 const villaOrderSchema = new mongoose.Schema({
     bookingId: { type: String},
     villa: { type: mongoose.Schema.Types.ObjectId, ref: "Villa", required: true },
+    resort: { type: mongoose.Schema.Types.ObjectId, ref: "Resort", required: true },
     user: {type : mongoose.Schema.Types.ObjectId, ref : "User", required : true},
     paymentPlatform : {type : String, required : true},
     minimumAmount : {type : Number },

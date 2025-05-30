@@ -60,12 +60,27 @@ const createVillaOrderIntoDB = async(payload)=>{
   return order;
 }
 
+
+
 const getAllVillaOrdersFromDB = async (queries) => {
   const {user, villa} = queries
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
 
-  let matchStage = {}; // optionally filter by userId, villaId, status, etc.
+  let matchStage = {}; 
+  
+  const totalCountsPipeline = [
+    { $match: matchStage },
+    {
+      $group: {
+        _id: null,
+        totalCount: { $sum: 1 },
+      },
+    },
+  ];
+
+  const totalCountsResult = await VillaOrders.aggregate(totalCountsPipeline);
+  const totalCount = totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
 
   const pipeline = [
     { $match: matchStage },
@@ -158,10 +173,8 @@ const getAllVillaOrdersFromDB = async (queries) => {
   const aggregatedResult = await VillaOrders.aggregate(pipeline);
   const orders =  aggregatedResult?.[0]?.paginatedResult || [];
 
-  return orders;
+  return {orders, totalCount};
 };
-
-
 
 const getVillaOrderByIdFromDB = async (id) => {
   const result = await VillaOrders.findById({ _id: id })

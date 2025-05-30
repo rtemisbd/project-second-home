@@ -1,7 +1,6 @@
 import { MdRefresh } from "react-icons/md";
 import img from "../../img/new/style.png";
 import { Spinner, Table } from "react-bootstrap";
-import { Pagination } from "bootstrap-4-react/lib/components";
 import { useEffect, useState } from "react";
 import BookingsTable from "../../components/Orders/BookingsTable";
 import { useSelector } from "react-redux";
@@ -14,6 +13,7 @@ import { formatDate } from "../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
+import Pagination from "../../components/Pagination/Pagination";
 
 const BookingList = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -82,10 +82,13 @@ const BookingList = () => {
           "Content-Type": "application/json",
         };
 
-        const { data } = await axios.get(`${baseUrl}/api/villa-order`);
+        const { data } = await axios.get(
+          `${baseUrl}/api/villa-order?${queryParams.toString()}`
+        );
         console.log(data);
 
-        setData(data.data);
+        setData(data?.data?.orders);
+        setTotalDataCount(data?.data?.totalCount);
 
         // setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
