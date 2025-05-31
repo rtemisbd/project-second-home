@@ -10,7 +10,7 @@ import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
 import TextEditor from "../../components/TextEditor/TextEditor";
 import { uploadSingleImage } from "../../utils/uploadSingleImage";
 
-const AddResort = () => {
+const AddResort2 = () => {
   const MySwal = withReactContent(Swal);
   const [files, setFiles] = useState("");
   const [facilities, setFacilities] = useState([{ id: Date.now(), title: "" }]);
@@ -869,4 +869,4 @@ const AddResort = () => {
   );
 };
 
-export default AddResort;
+export default AddResort2;

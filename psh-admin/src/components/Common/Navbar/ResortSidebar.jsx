@@ -31,9 +31,13 @@ const ResortSidebar = () => {
   }
 
   const handleDropdown = (id) => {
-    setDropdownId(id);
-    setActive(!active);
-    // setActive(true);
+    if (dropdownId === id) {
+      setDropdownId("");
+      setActive(false);
+    } else {
+      setDropdownId(id);
+      setActive(true);
+    }
   };
 
   return (
@@ -390,9 +394,9 @@ const ResortSidebar = () => {
               <li className="main_nav-link">
                 <span className="nav-link">
                   <div className="menu_flex">
-                    <span className="span_text"> Resort</span>
+                    <span className="span_text"> Add Resort</span>
                     <span className="span_text_mobile" data-widget="pushmenu">
-                      Resort
+                      Add Resort
                     </span>
                   </div>
                 </span>

@@ -1,18 +1,18 @@
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-import "./style/imageUploader.css";
-import { baseUrl } from "../../utils/getBaseURL";
+import "../style/imageUploader.css";
+import { baseUrl } from "../../../utils/getBaseURL";
 import { toast, ToastContainer } from "react-toastify";
 import withReactContent from "sweetalert2-react-content";
 import Swal from "sweetalert2";
 import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
 
-import { multipleImageUpload } from "../../utils/multipleImageUpload";
-import { uploadSingleImage } from "../../utils/uploadSingleImage";
-import TextEditor from "../../components/TextEditor/TextEditor";
-import { AuthContext } from "../../contexts/UserProvider";
+import { multipleImageUpload } from "../../../utils/multipleImageUpload";
+import { uploadSingleImage } from "../../../utils/uploadSingleImage";
+import TextEditor from "../../../components/TextEditor/TextEditor";
+import { AuthContext } from "../../../contexts/UserProvider";
 
-const MyResort = () => {
+const AddResort = () => {
   const { user } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
   const [files, setFiles] = useState("");
@@ -875,4 +875,4 @@ const MyResort = () => {
   );
 };
 
-export default MyResort;
+export default AddResort;
