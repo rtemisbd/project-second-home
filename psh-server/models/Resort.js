@@ -47,6 +47,10 @@ const resortSchema = new mongoose.Schema({
     video: { type: String },
     facilities: [facilitiesSchema],
     villaTypes: [villaTypeSchema],
+    totalVilla : {
+      published : {type : Number, default : 0}  ,
+      unpublished : {type : Number, default : 0}  
+    },
     policies: {
         bookingPolicy: { type: String, required: true },
         cancellationPolicy: { type: String, required: true }
