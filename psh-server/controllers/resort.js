@@ -39,9 +39,24 @@ const getSingleResortById = catchAsync(async(req, res, next)=>{
   });
 })
 
+const getResortByName = catchAsync(async(req, res, next)=>{
+  console.log(13236544)
+  const name = req.params.name;
+  console.log(name);
+  
+  const data = await resortServices.getResortByNameFromDB(name);
+
+  responseSend(res, {
+    statusCode : 200,
+    success : true,
+    data, 
+    message : "Resort has been retrieved successfully!"
+  })
+})
 
 export const resortControllers = {
     createResort,
     getAllResorts,
-    getSingleResortById
+    getSingleResortById,
+    getResortByName
 }

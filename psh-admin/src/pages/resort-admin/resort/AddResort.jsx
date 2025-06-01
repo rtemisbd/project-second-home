@@ -11,9 +11,10 @@ import { multipleImageUpload } from "../../../utils/multipleImageUpload";
 import { uploadSingleImage } from "../../../utils/uploadSingleImage";
 import TextEditor from "../../../components/TextEditor/TextEditor";
 import { AuthContext } from "../../../contexts/UserProvider";
+import { Link } from "react-router-dom";
 
 const AddResort = () => {
-  const { user } = useContext(AuthContext);
+  const { user, resort } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
   const [files, setFiles] = useState("");
   const [facilities, setFacilities] = useState([{ id: Date.now(), title: "" }]);
@@ -98,8 +99,6 @@ const AddResort = () => {
     ]);
   };
 
-  console.log(user);
-
   const removeVillaType = (id) => {
     setVillaTypes(villaTypes.filter((villa) => villa.id !== id));
   };
@@ -118,7 +117,7 @@ const AddResort = () => {
 
     // Build the main data object
     const data = {
-      name: formData.get("name"),
+      name: user?.firstName,
       address: formData.get("resortAddress"),
       division: selectedDivision,
       district: selectedDistrict,
@@ -214,7 +213,31 @@ const AddResort = () => {
   const handleDistrictChange = (event) => {
     setSelectedDistrict(event.target.value);
   };
-
+  if (resort?._id) {
+    return (
+      <div className="wrapper">
+        <div className="content-wrapper">
+          <section className="content customize_list">
+            <div className="container-fluid">
+              <div className="row" style={{ height: "84vh" , textAlign : "center"}}>
+                <div>
+                  <h2>
+                    You Already Have Uploaded A Resort - [{resort?.name}].
+                  </h2>
+                  <h4 style={{ padding: "30px 0" }}>
+                    If any edition or update need -{" "}
+                    <Link to="/dashboard/resort/overview">
+                      Please Visit Here
+                    </Link>
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </section>
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>

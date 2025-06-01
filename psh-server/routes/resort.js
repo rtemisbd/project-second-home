@@ -5,6 +5,7 @@ const resortRoute = Router();
 
 resortRoute.post('/', resortControllers.createResort);
 resortRoute.get('/', resortControllers.getAllResorts);
+resortRoute.get('/name/:name', resortControllers.getResortByName);
 resortRoute.get('/:id', resortControllers.getSingleResortById);
 
 

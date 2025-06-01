@@ -390,13 +390,25 @@ const ResortSidebar = () => {
               active && dropdownId === "resort" ? "custom-drop-show" : ""
             }`}
           >
-            <Link to={"/dashboard/resort/my-resort"}>
+            <Link to={"/dashboard/resort/add-resort"}>
               <li className="main_nav-link">
                 <span className="nav-link">
                   <div className="menu_flex">
                     <span className="span_text"> Add Resort</span>
                     <span className="span_text_mobile" data-widget="pushmenu">
                       Add Resort
+                    </span>
+                  </div>
+                </span>
+              </li>
+            </Link>
+            <Link to={"/dashboard/resort/overview"}>
+              <li className="main_nav-link">
+                <span className="nav-link">
+                  <div className="menu_flex">
+                    <span className="span_text"> Resort Overview</span>
+                    <span className="span_text_mobile" data-widget="pushmenu">
+                      Resort Overview
                     </span>
                   </div>
                 </span>
