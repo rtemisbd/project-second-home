@@ -1,35 +1,13 @@
-import { useContext, useEffect, useState } from "react";
+import { useContext } from "react";
 import { Table } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
-import img from "../../../img/college/Icon material-delete.png";
-import img3 from "../../../img/college/Icon feather-edit.png";
 import { AuthContext } from "../../../contexts/UserProvider";
-import axios from "axios";
-import { baseUrl } from "../../../utils/getBaseURL";
 import { AiOutlineEye } from "react-icons/ai";
 import { BiSolidEdit } from "react-icons/bi";
 import { RiDeleteBin6Line } from "react-icons/ri";
+
 const ResortOverview = () => {
-  const { user } = useContext(AuthContext);
-
-  const [resort, setResort] = useState([]);
-  const [photos, setPhotos] = useState([]);
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const { data } = await axios.get(
-          `${baseUrl}/api/resort/name/${user?.firstName}`
-        );
-        setResort(data?.data);
-        setPhotos(data?.data?.photos);
-      } catch (error) {
-        console.error("Failed to fetch resort by name:", error);
-      }
-    };
-    fetchData();
-  }, [user?.firstName]);
+  const { resort } = useContext(AuthContext);
 
   console.log(resort);
 
@@ -80,7 +58,7 @@ const ResortOverview = () => {
                         <p> Published : </p>
                         <p> Unpublished : </p>
                       </td>
-                      <td className="d-flex justify-content-center">
+                      <td className="d-flex align-items-center">
                         {/* detail */}
                         <button
                           type="button"
@@ -93,34 +71,32 @@ const ResortOverview = () => {
                         >
                           <AiOutlineEye
                             style={{
-                              width: "30px",
-                              height: "30px",
+                              width: "32px",
+                              height: "32px",
                               color: "green",
                             }}
                           />
                         </button>
                         {/* edit */}
-                        <button
-                          type="button"
-                          className="bg-white"
-                          onClick={() => {
-                            // setId(room?._id);
-                            // setSelectedCategory(room?.categoryDetails?.name);
-                            // setShowDetailModal(!showDetailModal);
-                          }}
-                        >
-                          <BiSolidEdit
-                            style={{
-                              width: "30px",
-                              height: "30px",
-                              color: "blue",
-                            }}
-                          />
-                        </button>
+                        <div>
+                          <Link to="/dashboard/resort/edit-resort">
+                            <BiSolidEdit
+                              style={{
+                                width: "32px",
+                                height: "32px",
+                                color: "blue",
+                              }}
+                            />
+                          </Link>
+                        </div>
                         {/* delete */}
                         <button
                           type="button"
-                          className="bg-white "
+                          className="bg-white"
+                          style={{
+                            cursor: "not-allowed",
+                          }}
+                          disabled
                           onClick={() => {
                             // setId(room?._id);
                             // setSelectedCategory(room?.categoryDetails?.name);
@@ -129,38 +105,12 @@ const ResortOverview = () => {
                         >
                           <RiDeleteBin6Line
                             style={{
-                              width: "30px",
-                              height: "30px",
+                              width: "32px",
+                              height: "32px",
                               color: "red",
                             }}
                           />
                         </button>
-                        {/* <div className="d-flex justify-content-center"> */}
-                        {/* <img
-                          src={img3}
-                          alt=""
-                          data-toggle="modal"
-                          data-target={`#loginModal${resort._id}`}
-                        />
-                        <img src={img} alt="" className="ms-3" /> */}
-                        {/* </div> */}
-                        {/* <div
-                          className="modal fade"
-                          id={`loginModal${resort._id}`}
-                          tabIndex="{-1}"
-                          role="dialog"
-                          aria-labelledby="loginModal"
-                          aria-hidden="true"
-                        >
-                          <div className="modal-dialog modal-dialog-centered">
-                            <div
-                              className="modal-content"
-                              style={{ width: 700 }}
-                            >
-                              <div className="modal-body"></div>
-                            </div>
-                          </div>
-                        </div> */}
                       </td>
                     </tr>
                   </tbody>

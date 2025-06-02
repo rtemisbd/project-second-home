@@ -81,6 +81,7 @@ import AddResort2 from "./pages/Resorts/AddResort2";
 import AddResort from "./pages/resort-admin/resort/AddResort";
 import ResortTransaction from "./pages/resort-admin/ResortTransaction";
 import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
+import EditResort from "./pages/resort-admin/resort/EditResort";
 
 
 function App() {
@@ -183,6 +184,7 @@ function App() {
         <Route path="resort/transaction" element={<ResortTransaction/>} />
         <Route path="resort/add-resort" element={<AddResort/>} />
         <Route path="resort/overview" element={<ResortOverview/>} />
+        <Route path="resort/edit-resort" element={<EditResort/>} />
 
       </Route>
 
