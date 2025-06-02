@@ -1,7 +1,6 @@
 import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
 import axios from "axios";
 import { useContext, useEffect, useRef, useState } from "react";
-
 import { toast, ToastContainer } from "react-toastify";
 import { baseUrl } from "../../../utils/getBaseURL";
 import { uploadSingleImage } from "../../../utils/uploadSingleImage";
@@ -14,7 +13,6 @@ const EditResort = () => {
   console.log(resort);
 
   const [showLogo, setShowLogo] = useState(true);
-  const [files, setFiles] = useState("");
   const [facilities, setFacilities] = useState(resort?.facilities || []);
   const [villaTypes, setVillaTypes] = useState(resort?.villaTypes || []);
   const [phoneNumber, setPhoneNumber] = useState(resort?.contactNumbers || []);
@@ -46,17 +44,17 @@ const EditResort = () => {
   const [selectedDistrict, setSelectedDistrict] = useState(resort?.district);
 
   // images
-  const [selectedFiles, setSelectedFiles] = useState([]);
+
+  const [existingPhotos, setExistingPhotos] = useState(resort?.photos || []);
+  const [newPhotos, setNewPhotos] = useState([]);
   const [imagePreviews, setImagePreviews] = useState(resort?.photos || []);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
 
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-
-    // Generate image previews
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...previews]);
+    setNewPhotos((prev) => [...prev, ...files]);
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
   };
 
   // remove images
@@ -64,7 +62,8 @@ const EditResort = () => {
     setImagePreviews((prevPreviews) =>
       prevPreviews.filter((_, i) => i !== index)
     );
-    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setExistingPhotos((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setNewPhotos((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   const formRef = useRef(null);
@@ -162,9 +161,10 @@ const EditResort = () => {
         logo = await uploadSingleImage(logoFile);
       }
 
-      const photoUrls = await multipleImageUpload(selectedFiles);
+      const photoUrls = await multipleImageUpload(newPhotos);
+      
+      data.photos = [...existingPhotos, ...photoUrls];
       data.logo = logo;
-      data.photos = photoUrls;
       toast("Saving resort details...", "success");
 
       // Send data to the backend
@@ -742,7 +742,6 @@ const EditResort = () => {
                   accept="image/*"
                   name="photo"
                   className="main_form w-100"
-                  required
                 />
                 <div className="d-flex flex-wrap my-6">
                   {imagePreviews.map((preview, index) => (
