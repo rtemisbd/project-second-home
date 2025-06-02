@@ -17,14 +17,11 @@ const AddResort = () => {
   const { user, resort } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
   const [files, setFiles] = useState("");
-  const [facilities, setFacilities] = useState([{ id: Date.now(), title: "" }]);
-  const [villaTypes, setVillaTypes] = useState([{ id: Date.now(), name: "" }]);
-  const [phoneNumber, setPhoneNumber] = useState([
-    { id: Date.now(), number: "" },
-  ]);
+  const [facilities, setFacilities] = useState([""]);
+  const [villaTypes, setVillaTypes] = useState([""]);
+  const [phoneNumber, setPhoneNumber] = useState([""]);
   const [bankDetails, setBankDetails] = useState([
     {
-      id: Date.now(),
       bankName: "",
       accountHolder: "",
       accountNumber: "",
@@ -69,26 +66,25 @@ const AddResort = () => {
 
   // Function to add a new facility
   const addFacility = () => {
-    setFacilities([...facilities, { id: Date.now(), title: "" }]);
+    setFacilities([...facilities, ""]);
   };
 
   // Function to remove a facility by ID
-  const removeFacility = (id) => {
-    setFacilities(facilities.filter((facility) => facility.id !== id));
+  const removeFacility = (ind) => {
+    setFacilities(facilities.filter((facility, index) => index !== ind));
   };
 
   // villa types
   const addVillaType = () => {
-    setVillaTypes([...villaTypes, { id: Date.now(), name: "" }]);
+    setVillaTypes([...villaTypes, ""]);
   };
   const addPhoneNumber = () => {
-    setPhoneNumber([...phoneNumber, { id: Date.now(), number: "" }]);
+    setPhoneNumber([...phoneNumber, ""]);
   };
   const addBankAccount = () => {
     setBankDetails([
       ...bankDetails,
       {
-        id: Date.now(),
         bankName: "",
         accountHolder: "",
         accountNumber: "",
@@ -99,14 +95,14 @@ const AddResort = () => {
     ]);
   };
 
-  const removeVillaType = (id) => {
-    setVillaTypes(villaTypes.filter((villa) => villa.id !== id));
+  const removeVillaType = (index) => {
+    setVillaTypes(villaTypes.filter((villa, ind) => index !== ind));
   };
-  const removePhoneNumber = (id) => {
-    setPhoneNumber(phoneNumber.filter((phone) => phone.id !== id));
+  const removePhoneNumber = (index) => {
+    setPhoneNumber(phoneNumber.filter((phone, ind) => ind !== index));
   };
-  const removeBankDetail = (id) => {
-    setBankDetails(bankDetails.filter((bank) => bank.id !== id));
+  const removeBankDetail = (index) => {
+    setBankDetails(bankDetails.filter((bank, ind) => index !== ind));
   };
 
   const handleResortSubmit = async (event) => {
@@ -123,9 +119,7 @@ const AddResort = () => {
       district: selectedDistrict,
       locationLink: formData.get("locationLink"),
       resortEmail: formData.get("resortEmail"),
-      contactNumbers: phoneNumber.map((phone) => ({
-        number: phone.number,
-      })),
+      contactNumbers: phoneNumber.map((phone) => phone),
       mobileBanking: {
         resortBkashNumber: formData.get("resortBkashNumber"),
         bkashAccountType: formData.get("bkashAccountType"),
@@ -136,12 +130,8 @@ const AddResort = () => {
       },
       video: formData.get("video"),
       welcomeNote: formData.get("welcomeNote"),
-      villaTypes: villaTypes.map((villa) => ({
-        name: villa.name.trim(),
-      })),
-      facilities: facilities.map((facility) => ({
-        title: facility.title.trim(),
-      })),
+      villaTypes: villaTypes.map((villa) => villa.trim()),
+      facilities: facilities.map((facility) => facility.trim()),
       bankDetails: bankDetails.map((bank) => ({
         bankName: bank.bankName.trim(),
         accountNumber: bank.accountNumber.trim(),
@@ -219,7 +209,10 @@ const AddResort = () => {
         <div className="content-wrapper">
           <section className="content customize_list">
             <div className="container-fluid">
-              <div className="row" style={{ height: "84vh" , textAlign : "center"}}>
+              <div
+                className="row"
+                style={{ height: "84vh", textAlign: "center" }}
+              >
                 <div>
                   <h2>
                     You Already Have Uploaded A Resort - [{resort?.name}].
@@ -380,17 +373,17 @@ const AddResort = () => {
               </div>
 
               {phoneNumber.map((phone, index) => (
-                <div key={phone.id} className="col-md-6 form_sub_stream ">
+                <div key={index} className="col-md-6 form_sub_stream ">
                   <label className="form-label profile_label3">
                     Contact Number
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={phone.number}
+                    value={phone}
                     onChange={(e) => {
                       const updatedPhones = [...phoneNumber];
-                      updatedPhones[index].number = e.target.value;
+                      updatedPhones[index] = e.target.value;
                       setPhoneNumber(updatedPhones);
                     }}
                     placeholder="Contact Number"
@@ -409,7 +402,7 @@ const AddResort = () => {
 
                           fontWeight: "bold",
                         }}
-                        onClick={() => removePhoneNumber(phone.id)}
+                        onClick={() => removePhoneNumber(index)}
                       >
                         [ Remove ]
                       </button>
@@ -638,7 +631,7 @@ const AddResort = () => {
                           color: "red",
                           fontWeight: "bold",
                         }}
-                        onClick={() => removeBankDetail(bank.id)}
+                        onClick={() => removeBankDetail(ind)}
                       >
                         [ Remove ]
                       </button>
@@ -679,17 +672,17 @@ const AddResort = () => {
                 Our Villa Types
               </h2>
               {villaTypes.map((villa, index) => (
-                <div key={villa.id} className="col-md-4 form_sub_stream mb-4">
+                <div key={index} className="col-md-4 form_sub_stream mb-4">
                   <label className="form-label profile_label3">
                     Villa Type Name
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={villa.name}
+                    value={villa}
                     onChange={(e) => {
                       const updatedVillas = [...villaTypes];
-                      updatedVillas[index].name = e.target.value;
+                      updatedVillas[index] = e.target.value;
                       setVillaTypes(updatedVillas);
                     }}
                     placeholder="Villa Type Name"
@@ -708,7 +701,7 @@ const AddResort = () => {
 
                           fontWeight: "bold",
                         }}
-                        onClick={() => removeVillaType(villa.id)}
+                        onClick={() => removeVillaType(index)}
                       >
                         [ Remove ]
                       </button>
@@ -797,17 +790,17 @@ const AddResort = () => {
                 Common Facilities
               </h2>
               {facilities.map((facility, index) => (
-                <div key={facility.id} className="col-md-4 form_sub_stream">
+                <div key={index} className="col-md-4 form_sub_stream">
                   <label className="form-label profile_label3">
                     Facility Title
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={facility.title}
+                    value={facility}
                     onChange={(e) => {
                       const updatedFacilities = [...facilities];
-                      updatedFacilities[index].title = e.target.value;
+                      updatedFacilities[index] = e.target.value;
                       setFacilities(updatedFacilities);
                     }}
                     placeholder="Facility Title"
@@ -825,7 +818,7 @@ const AddResort = () => {
 
                         fontWeight: "bold",
                       }}
-                      onClick={() => removeFacility(facility.id)}
+                      onClick={() => removeFacility(index)}
                     >
                       [ Remove ]
                     </button>

@@ -13,20 +13,14 @@ const EditResort = () => {
   const { user, resort } = useContext(AuthContext);
   console.log(resort);
 
+  const [showLogo, setShowLogo] = useState(true);
   const [files, setFiles] = useState("");
-  const [facilities, setFacilities] = useState(
-    resort?.facilities || [{ id: Date.now(), title: "" }]
-  );
-  const [villaTypes, setVillaTypes] = useState(
-    resort?.villaTypes || [{ id: Date.now(), name: "" }]
-  );
-  const [phoneNumber, setPhoneNumber] = useState(
-    resort?.contactNumbers || [{ id: Date.now(), number: "" }]
-  );
+  const [facilities, setFacilities] = useState(resort?.facilities || []);
+  const [villaTypes, setVillaTypes] = useState(resort?.villaTypes || []);
+  const [phoneNumber, setPhoneNumber] = useState(resort?.contactNumbers || []);
   const [bankDetails, setBankDetails] = useState(
     resort?.bankDetails || [
       {
-        id: Date.now(),
         bankName: "",
         accountHolder: "",
         accountNumber: "",
@@ -52,7 +46,7 @@ const EditResort = () => {
   const [selectedDistrict, setSelectedDistrict] = useState(resort?.district);
 
   // images
-  const [selectedFiles, setSelectedFiles] = useState(resort?.photos || []);
+  const [selectedFiles, setSelectedFiles] = useState([]);
   const [imagePreviews, setImagePreviews] = useState(resort?.photos || []);
 
   const handleFileChange = (e) => {
@@ -77,26 +71,25 @@ const EditResort = () => {
 
   // Function to add a new facility
   const addFacility = () => {
-    setFacilities([...facilities, { id: Date.now(), title: "" }]);
+    setFacilities([...facilities, ""]);
   };
 
   // Function to remove a facility by ID
-  const removeFacility = (id) => {
-    setFacilities(facilities.filter((facility) => facility.id !== id));
+  const removeFacility = (ind) => {
+    setFacilities(facilities.filter((facility, index) => index !== ind));
   };
 
   // villa types
   const addVillaType = () => {
-    setVillaTypes([...villaTypes, { id: Date.now(), name: "" }]);
+    setVillaTypes([...villaTypes, ""]);
   };
   const addPhoneNumber = () => {
-    setPhoneNumber([...phoneNumber, { id: Date.now(), number: "" }]);
+    setPhoneNumber([...phoneNumber, ""]);
   };
   const addBankAccount = () => {
     setBankDetails([
       ...bankDetails,
       {
-        id: Date.now(),
         bankName: "",
         accountHolder: "",
         accountNumber: "",
@@ -107,14 +100,14 @@ const EditResort = () => {
     ]);
   };
 
-  const removeVillaType = (id) => {
-    setVillaTypes(villaTypes.filter((villa) => villa.id !== id));
+  const removeVillaType = (index) => {
+    setVillaTypes(villaTypes.filter((villa, ind) => index !== ind));
   };
-  const removePhoneNumber = (id) => {
-    setPhoneNumber(phoneNumber.filter((phone) => phone.id !== id));
+  const removePhoneNumber = (index) => {
+    setPhoneNumber(phoneNumber.filter((phone, ind) => ind !== index));
   };
-  const removeBankDetail = (id) => {
-    setBankDetails(bankDetails.filter((bank) => bank.id !== id));
+  const removeBankDetail = (index) => {
+    setBankDetails(bankDetails.filter((bank, ind) => index !== ind));
   };
 
   const handleResortSubmit = async (event) => {
@@ -131,9 +124,7 @@ const EditResort = () => {
       district: selectedDistrict,
       locationLink: formData.get("locationLink"),
       resortEmail: formData.get("resortEmail"),
-      contactNumbers: phoneNumber.map((phone) => ({
-        number: phone.number,
-      })),
+      contactNumbers: phoneNumber.map((phone) => phone),
       mobileBanking: {
         resortBkashNumber: formData.get("resortBkashNumber"),
         bkashAccountType: formData.get("bkashAccountType"),
@@ -144,12 +135,9 @@ const EditResort = () => {
       },
       video: formData.get("video"),
       welcomeNote: formData.get("welcomeNote"),
-      villaTypes: villaTypes.map((villa) => ({
-        name: villa.name.trim(),
-      })),
-      facilities: facilities.map((facility) => ({
-        title: facility.title.trim(),
-      })),
+      villaTypes: villaTypes.map((villa) => villa.trim()),
+      facilities: facilities.map((facility) => facility.trim()),
+
       bankDetails: bankDetails.map((bank) => ({
         bankName: bank.bankName.trim(),
         accountNumber: bank.accountNumber.trim(),
@@ -166,7 +154,14 @@ const EditResort = () => {
 
     try {
       // Upload images
-      const logo = await uploadSingleImage(formData.get("logo"));
+
+      const logoFile = formData.get("logo");
+      let logo = resort?.logo;
+
+      if (logoFile && logoFile.size > 0) {
+        logo = await uploadSingleImage(logoFile);
+      }
+
       const photoUrls = await multipleImageUpload(selectedFiles);
       data.logo = logo;
       data.photos = photoUrls;
@@ -180,29 +175,6 @@ const EditResort = () => {
       console.log(response);
 
       toast.success("Resort details updated successfully!");
-
-      // Reset form and states
-      // event.target.reset();
-      // setPhoneNumber([{ id: Date.now(), number: "" }]);
-      // setVillaTypes([{ id: Date.now(), name: "" }]);
-      // setFacilities([{ id: Date.now(), title: "" }]);
-      // setBankDetails([
-      //   {
-      //     id: Date.now(),
-      //     bankName: "",
-      //     accountNumber: "",
-      //     accountHolder: "",
-      //     accountType: "",
-      //     branchName: "",
-      //     routingNumber: "",
-      //   },
-      // ]);
-      // setSelectedFiles([]);
-      // setImagePreviews([]);
-      // setSelectedDistrict(null);
-      // setSelectedDivision(null);
-      // setBookingPolicy("");
-      // setCancellationPolicy("");
     } catch (error) {
       console.error("Submission error:", error);
       toast("Something went wrong! Please try again.", "error");
@@ -362,22 +334,33 @@ const EditResort = () => {
                   accept="image/*"
                   name="logo"
                   className="main_form w-100 p-0"
-                  required
+                  onChange={() => setShowLogo(false)}
                 />
+                {showLogo && (
+                  <img
+                    src={resort?.logo}
+                    alt="logo"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      margin: " 10px 0px",
+                    }}
+                  />
+                )}
               </div>
 
               {phoneNumber.map((phone, index) => (
-                <div key={phone.id} className="col-md-6 form_sub_stream ">
+                <div key={index} className="col-md-6 form_sub_stream ">
                   <label className="form-label profile_label3">
                     Contact Number
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={phone.number}
+                    value={phone}
                     onChange={(e) => {
                       const updatedPhones = [...phoneNumber];
-                      updatedPhones[index].number = e.target.value;
+                      updatedPhones[index] = e.target.value;
                       setPhoneNumber(updatedPhones);
                     }}
                     placeholder="Contact Number"
@@ -396,7 +379,7 @@ const EditResort = () => {
 
                           fontWeight: "bold",
                         }}
-                        onClick={() => removePhoneNumber(phone.id)}
+                        onClick={() => removePhoneNumber(index)}
                       >
                         [ Remove ]
                       </button>
@@ -653,7 +636,7 @@ const EditResort = () => {
                           color: "red",
                           fontWeight: "bold",
                         }}
-                        onClick={() => removeBankDetail(bank.id)}
+                        onClick={() => removeBankDetail(ind)}
                       >
                         [ Remove ]
                       </button>
@@ -695,17 +678,17 @@ const EditResort = () => {
                 Our Villa Types
               </h2>
               {villaTypes.map((villa, index) => (
-                <div key={villa.id} className="col-md-4 form_sub_stream mb-4">
+                <div key={index} className="col-md-4 form_sub_stream mb-4">
                   <label className="form-label profile_label3">
                     Villa Type Name
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={villa.name}
+                    value={villa}
                     onChange={(e) => {
                       const updatedVillas = [...villaTypes];
-                      updatedVillas[index].name = e.target.value;
+                      updatedVillas[index] = e.target.value;
                       setVillaTypes(updatedVillas);
                     }}
                     placeholder="Villa Type Name"
@@ -724,7 +707,7 @@ const EditResort = () => {
 
                           fontWeight: "bold",
                         }}
-                        onClick={() => removeVillaType(villa.id)}
+                        onClick={() => removeVillaType(index)}
                       >
                         [ Remove ]
                       </button>
@@ -812,17 +795,17 @@ const EditResort = () => {
                 Common Facilities
               </h2>
               {facilities.map((facility, index) => (
-                <div key={facility.id} className="col-md-4 form_sub_stream">
+                <div key={index} className="col-md-4 form_sub_stream">
                   <label className="form-label profile_label3">
                     Facility Title
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={facility.title}
+                    value={facility}
                     onChange={(e) => {
                       const updatedFacilities = [...facilities];
-                      updatedFacilities[index].title = e.target.value;
+                      updatedFacilities[index] = e.target.value;
                       setFacilities(updatedFacilities);
                     }}
                     placeholder="Facility Title"
@@ -840,7 +823,7 @@ const EditResort = () => {
 
                         fontWeight: "bold",
                       }}
-                      onClick={() => removeFacility(facility.id)}
+                      onClick={() => removeFacility(index)}
                     >
                       [ Remove ]
                     </button>

@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
-const facilitiesSchema = new mongoose.Schema({
-    title: { type: String, required: true },
+// const facilitiesSchema = new mongoose.Schema({
+//     title: { type: String, required: true },
     
-});
+// });
 
-const villaTypeSchema = new mongoose.Schema({
-    name: { type: String, required: true }
-});
-const contactNumberSchema = new mongoose.Schema({
-    number: { type: String }
-});
+// const villaTypeSchema = new mongoose.Schema({
+//     name: { type: String, required: true }
+// });
+// const contactNumberSchema = new mongoose.Schema({
+//     number: { type: String }
+// });
 
 const mobileBankingSchema = new mongoose.Schema({
     resortBkashNumber : {type : String},
@@ -38,15 +38,15 @@ const resortSchema = new mongoose.Schema({
     locationLink: { type: String, required: true },
     logo : {type : String},
    
-    contactNumbers : [contactNumberSchema],
+    contactNumbers : [{type: String}],
     resortEmail: { type: String, required: true },
     mobileBanking : mobileBankingSchema,
     bankDetails : [bankDetailsSchema],
     welcomeNote : {type : String},
     photos: [{ type: String }],
     video: { type: String },
-    facilities: [facilitiesSchema],
-    villaTypes: [villaTypeSchema],
+    facilities: [{type: String}],
+    villaTypes: [{type: String}],
     totalVilla : {
       published : {type : Number, default : 0}  ,
       unpublished : {type : Number, default : 0}  

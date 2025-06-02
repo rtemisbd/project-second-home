@@ -46,12 +46,12 @@ const ResortOverview = () => {
                       <td>{resort?.district}</td>
                       <td>
                         {resort?.contactNumbers?.map((contact, ind) => (
-                          <p key={ind}>{contact?.number}</p>
+                          <p key={ind}>{contact}</p>
                         ))}
                       </td>
                       <td>
                         {resort?.villaTypes?.map((type, ind) => (
-                          <p key={ind}>{type?.name}</p>
+                          <p key={ind}>{type}</p>
                         ))}
                       </td>
                       <td>
