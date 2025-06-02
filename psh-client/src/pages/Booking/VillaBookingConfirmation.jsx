@@ -1,8 +1,28 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link, useLocation } from "react-router-dom";
+import useUser from "../../hooks/userUser";
+import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
 
 const VillaBookingConfirmation = () => {
-  const {} = useState()
+  const location = useLocation();
+  const orderId = location.state || {};
+  const [singleUser] = useUser();
+  const [booking, setBooking] = useState({});
 
+  // const getInvoice = () => {
+  //   navigate(`/invoice/${orderId}`);
+  // };
+
+  useEffect(() => {
+    const fetchBooking = async () => {
+      const { data } = await axios.get(
+        `${serverBaseUrl}/villa-order/${orderId}`
+      );
+      setBooking(data?.data);
+    };
+    fetchBooking();
+  }, [orderId]);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-gray-900">
@@ -19,136 +39,120 @@ const VillaBookingConfirmation = () => {
           Your Information :
         </h2>
 
-        {/* <div className=" md:text-xl sm:text-sm">
+        <div className=" md:text-xl sm:text-sm">
           <div className="flex justify-between ">
-            <p className="flex">
-              <span>Name</span> <span className="md:ml-32 sm:ml-2">:</span>
+            <p className="flex justify-between gap-2 md:w-1/6">
+              <span>Name</span> <span>:</span>
             </p>
-            <p>{endOrder?.fullName}</p>
+            <p>{singleUser?.firstName}</p>
           </div>
-       
+
           <hr className="mt-2" />
           <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Phone Number</span>{" "}
-              <span className="md:ml-[45px] sm:ml-2">:</span>
+            <p className="flex justify-between gap-2  md:w-1/6">
+              <span>Phone Number</span> <span>:</span>
             </p>
-            <p>{endOrder?.phone}</p>
-          </div>
-          <hr className="mt-2" />
-          <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Address</span>{" "}
-              <span className="ml-[32px] sm:mr-5 md:mr-0">:</span>
-            </p>
-            <p>{endOrder?.address}</p>
+            <p>{singleUser?.phone}</p>
           </div>
           <hr className="mt-2" />
           <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Coupon</span>{" "}
-              <span className="md:ml-[110px] sm:ml-2">:</span>
+            <p className="flex justify-between gap-2 md:w-1/6">
+              <span>Address</span> <span>:</span>
             </p>
-            <p>None</p>
-          </div>
-          <hr className="mt-2" />
-          <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Arrival Time</span>{" "}
-              <span className="ml-[75px] sm:ml-2">:</span>
-            </p>
-            <p>{endOrder?.arrivalTime}</p>
+            <p>{singleUser?.userAddress}</p>
           </div>
         </div>
-         */}
+
         {/* Booking Information */}
 
         <h2 className="flex justify-left font-bold mb-5 text-2xl mt-10">
           Booking Information :
         </h2>
-        {/* <div className="md:text-xl sm:text-sm">
-          <div className="flex justify-between">
-            <p className="flex">
-              <span>Room Type</span> <span className="md:ml-20 sm:ml-2">:</span>
-            </p>
-            <p>{endOrder?.bookingInfo?.roomType}</p>
-          </div>
-          <hr className="mt-2" />
-          {endOrder?.bookingInfo?.roomType === "Shared Room" ? (
-            <div className="flex justify-between mt-4">
-              <p className="flex ">
-                <span>Seat Number</span>{" "}
-                <span className="md:ml-[64px] sm:ml-2">:</span>
-              </p>
-              <p>{endOrder?.bookingInfo?.seatBooking?.seatNumber}</p>
-            </div>
-          ) : (
-            <div className="flex justify-between mt-4">
-              <p className="flex ">
-                <span>Room Number</span>{" "}
-                <span className="md:ml-[64px] sm:ml-2 ">:</span>
-              </p>
-              <p>{endOrder?.bookingInfo?.roomNumber}</p>
-            </div>
-          )}
-
-          <hr className="mt-2" />
-          <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Check-In</span>{" "}
-              <span className="md:ml-[102px] sm:ml-2">:</span>
-            </p>
-            <p>{endOrder?.bookingInfo?.rentDate?.bookStartDate}</p>
-          </div>
-          <hr className="mt-2" />
-          <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Check-Out</span>{" "}
-              <span className="md:ml-[85px] sm:ml-2">:</span>
-            </p>
-            <p>{endOrder?.bookingInfo?.rentDate?.bookEndDate}</p>
-          </div>
-          <hr className="mt-2" />
-          <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Total Duration</span>{" "}
-              <span className="md:ml-[58px] sm:ml-2">:</span>
-            </p>
-            <p>
-              {endOrder?.bookingInfo?.customerRent?.daysDifference >= 0
-                ? `${endOrder?.bookingInfo?.customerRent?.daysDifference} days`
-                : "" ||
-                  (endOrder?.bookingInfo?.customerRent?.months &&
-                    endOrder?.bookingInfo?.customerRent?.days >= 0 &&
-                    !endOrder?.bookingInfo?.customerRent?.years)
-                ? `${endOrder?.bookingInfo?.customerRent?.months} months, ${endOrder?.bookingInfo?.customerRent?.days} days`
-                : "" ||
-                  (endOrder?.bookingInfo?.customerRent?.years &&
-                    endOrder?.bookingInfo?.customerRent?.months >= 0 &&
-                    endOrder?.bookingInfo?.customerRent?.days >= 0)
-                ? `${endOrder?.bookingInfo?.customerRent?.years} year`
-                : ""}
+        <div className="md:text-xl sm:text-sm">
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Booking Id</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.bookingId}
             </p>
           </div>
           <hr className="mt-2" />
-          <div className="flex justify-between mt-4">
-            <p className="flex ">
-              <span>Total Amount</span>{" "}
-              <span className="md:ml-[64px] sm:ml-2">:</span>
+          <div className="grid grid-cols-6 mt-4">
+            <p>Resort</p>
+            <p className=" justify-self-end md:justify-self-start">:</p>
+            <p className="col-span-4 justify-self-end">
+              {booking?.villa?.resortId?.name}
             </p>
-            <p>Tk {endOrder?.bookingInfo?.totalAmount}</p>
           </div>
-        </div> */}
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Villa Name</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.villa?.title}
+            </p>
+          </div>
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Villa Number</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.villa?.villaNumber}
+            </p>
+          </div>
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Villa Type</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.villa?.type}
+            </p>
+          </div>
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Check In</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.rentDate?.bookStartDate}
+            </p>
+          </div>
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Check Out</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.rentDate?.bookEndDate}
+            </p>
+          </div>
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Total Duration</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              {booking?.rentDate?.daysDifference}{" "}
+              {booking?.rentDate?.daysDifference === 1 ? "Night" : "Nights"}
+            </p>
+          </div>
+          <hr className="mt-2" />
+          <div className="grid grid-cols-6 mt-4">
+            <p className="col-span-2 md:col-span-1">Total Amount</p>
+            <p className=" justify-self-start">:</p>
+            <p className="col-span-3 md:col-span-4 justify-self-end">
+              BDT {booking?.totalAmount}
+            </p>
+          </div>
+          <hr className="mt-2" />
+        </div>
 
         <div className="flex justify-center  mt-20">
-          <div
-            // onClick={getInvoice}
+          <Link
+            to={`/invoice/${orderId}`}
             className="bg-[#35B0A7] md:px-[120px] sm:px-[60px] py-[8px] rounded"
           >
             <button className="text-xl text-white text-center">
               Get Invoice
             </button>
-          </div>
+          </Link>
         </div>
       </div>
     </div>

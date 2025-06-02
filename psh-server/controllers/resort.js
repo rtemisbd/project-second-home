@@ -39,9 +39,38 @@ const getSingleResortById = catchAsync(async(req, res, next)=>{
   });
 })
 
+const getResortByName = catchAsync(async(req, res, next)=>{
+
+  const name = req.params.name;
+
+  const data = await resortServices.getResortByNameFromDB(name);
+
+  responseSend(res, {
+    statusCode : 200,
+    success : true,
+    data, 
+    message : "Resort has been retrieved successfully!"
+  })
+})
+
+export const updateResort = catchAsync(async (req, res, next) => {
+  const result = await resortServices.updateResortById(
+    req.params.id,
+    req.body
+  );
+
+  responseSend(res, {
+    statusCode: 200,
+    success: true,
+    message: "Resort has been updated successfully",
+    data: result,
+  });
+});
 
 export const resortControllers = {
     createResort,
     getAllResorts,
-    getSingleResortById
+    getSingleResortById,
+    getResortByName,
+    updateResort
 }

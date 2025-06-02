@@ -55,15 +55,15 @@ const UserManage = () => {
       });
 
       // Pass the query parameters in the URL
-      const response = await axios.get(
+      const { data } = await axios.get(
         `${baseUrl}/api/users?${queryParams.toString()}`
       );
-      console.log("Response Data:", response);
+      console.log("Response Data:", data);
 
       // Check if data exists
-      if (response?.data?.users) {
-        setUsers(response.data.users);
-        setTotalDataCount(response.data.totalCount);
+      if (data?.data?.users) {
+        setUsers(data.data.users);
+        setTotalDataCount(data.data.totalCount);
       } else {
         console.log("No users found");
         setUsers([]);

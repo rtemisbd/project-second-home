@@ -12,7 +12,7 @@ import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import { uploadImageToImgBB } from "../../utilities/singleImageUploader";
-import { useDispatch } from "react-redux";   
+import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 
 const VillaBookingForm = () => {
@@ -72,7 +72,7 @@ const VillaBookingForm = () => {
   };
 
   const handleBookingConfirmation = async () => {
-    if (!senderAccountNumber?.trim()) {
+    if (!senderAccountNumber) {
       toast.error("Please enter your sender account number");
       return;
     }
@@ -108,18 +108,19 @@ const VillaBookingForm = () => {
         `${serverBaseUrl}/villa-order`,
         dataForBooking
       );
+      console.log(data);
 
       if (data?.success) {
-        toast.success("Your booking hash been placed.");
-        navigate("/booking-confirmation", { state: data?.data });
+        toast.success("Your booking has been placed.");
+        navigate("/booking-confirmation", { state: data?.data?._id });
       }
       setShowPayment(false);
       setIsBlur(false);
       dispatch(placeLoadingShow(false));
-      // localStorage.removeItem("bookingItem");
+      localStorage.removeItem("bookingItem");
     } catch (error) {
-      // console.log(error);
-      toast.error("Something is wrong");
+      console.log(error);
+      toast.error(error?.response?.data?.message || "Something is wrong");
       dispatch(placeLoadingShow(false));
     }
   };
@@ -321,7 +322,7 @@ const VillaBookingForm = () => {
                   <textarea
                     placeholder="Special Request Optional"
                     className="personal-info rounded pl-3 lg:w-[750px] md:w-[300px] sm:w-full"
-                    name="request"
+                    name="specialRequest"
                     cols="30"
                     rows="3"
                     onChange={handleInputChange}
@@ -399,7 +400,7 @@ const VillaBookingForm = () => {
                         className="ps-7 w-36"
                         type="text"
                         defaultValue={formatToInputDate(
-                          bookingItem?.rentDate?.bookingStartDate
+                          bookingItem?.rentDate?.bookStartDate
                         )}
                         disabled
                       />
@@ -420,7 +421,7 @@ const VillaBookingForm = () => {
                         className="ps-7 w-36"
                         type="text"
                         defaultValue={formatToInputDate(
-                          bookingItem?.rentDate?.bookingEndDate
+                          bookingItem?.rentDate?.bookEndDate
                         )}
                         disabled
                       />
@@ -772,7 +773,7 @@ const VillaBookingForm = () => {
 
               {/* Payment instructions */}
               {(selectPlatform === "bKash" || selectPlatform === "Nagad") && (
-                <form className="mx-4">
+                <div className="mx-4">
                   <p className="font-bold mb-2">
                     {selectPlatform} ( {platformAccountType}) :
                   </p>
@@ -848,13 +849,13 @@ const VillaBookingForm = () => {
                   >
                     Place Booking Now
                   </button>
-                </form>
+                </div>
               )}
 
               {selectPlatform !== "bKash" &&
                 selectPlatform !== "Nagad" &&
                 selectPlatform !== "" && (
-                  <form className="mx-4">
+                  <div className="mx-4">
                     <p className="font-bold mb-2">{selectPlatform} :</p>
 
                     {selectedBank && (
@@ -919,7 +920,7 @@ const VillaBookingForm = () => {
                     >
                       Place Booking Now
                     </button>
-                  </form>
+                  </div>
                 )}
             </div>
           ) : (

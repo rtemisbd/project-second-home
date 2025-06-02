@@ -4,6 +4,7 @@ import withReactContent from "sweetalert2-react-content";
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { Modal } from "react-bootstrap";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const UserStatusUpdate = ({ data, refetch }) => {
   const { _id, status } = data;
@@ -24,7 +25,7 @@ const UserStatusUpdate = ({ data, refetch }) => {
 
     try {
       await axios.patch(
-        `https://api.psh.com.bd/api/users/${_id}`,
+        `${baseUrl}/api/users/${_id}`,
 
         updatedStatus
       );

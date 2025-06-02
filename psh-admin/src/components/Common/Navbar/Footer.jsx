@@ -1,10 +1,9 @@
-import React from "react";
-
 const Footer = () => {
+  const year = new Date().getFullYear();
   return (
     <footer className="main-footer text-center">
       <strong>
-        Copyright © 2024 <a href="https://adminps.psh.com.bd/">PSH Admin</a>.
+        Copyright © {year} <a href="https://adminps.psh.com.bd/">PSH Admin</a>.
       </strong>
       <span> All rights reserved.</span>
     </footer>

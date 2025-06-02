@@ -3,6 +3,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 
 import axios from "axios";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Managers = ({ data }) => {
   const { _id, name, role } = data;
@@ -47,7 +48,7 @@ const Managers = ({ data }) => {
       };
 
       await axios.patch(
-        `https://api.psh.com.bd/api/users/admin/${_id}`,
+        `${baseUrl}/api/users/admin/${_id}`,
         product
       );
       MySwal.fire("Good job!", "successfully edited", "success");

@@ -18,6 +18,7 @@ const Add_Manager = () => {
   const [branches, setBranches] = useState([]);
   const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
+  const [selectedRole, setSelectedRole] = useState(null);
 
   const toggleShowPassword = () => {
     setShowPassword(!showPassword);
@@ -38,26 +39,28 @@ const Add_Manager = () => {
     fetchBranches();
   }, []);
   const onSubmitRegister = async (data) => {
-    const {
+    const { firstName, address, email, phone, password, role, branch } = data;
+
+    const payload = {
       firstName,
       address,
       email,
       phone,
       password,
       role,
-      branch: branchId,
-    } = data;
+    };
+
+    // Add branch only for roles that require it
+    if (
+      role !== "resortAdmin" &&
+      role !== "resortAccountant" &&
+      role !== "resortReceptionist"
+    ) {
+      payload.branch = branch;
+    }
 
     try {
-      const response = await axios.post(`${baseUrl}/api/users`, {
-        firstName,
-        address,
-        email,
-        phone,
-        password,
-        role,
-        branch: branchId,
-      });
+      const response = await axios.post(`${baseUrl}/api/users`, payload);
 
       if (response.status === 200) {
         // Registration successful
@@ -67,7 +70,7 @@ const Add_Manager = () => {
         MySwal.fire({
           icon: "success",
           title: "Registration Successful",
-          text: "Manager added successfully.",
+          text: "User added successfully.",
         });
         reset();
       } else {
@@ -78,7 +81,7 @@ const Add_Manager = () => {
         MySwal.fire({
           icon: "error",
           title: "Registration Failed",
-          text: "Failed to add manager. Please try again.",
+          text: "Failed to add user. Please try again.",
         });
       }
     } catch (error) {
@@ -86,8 +89,10 @@ const Add_Manager = () => {
       // Show error message using SweetAlert2
       MySwal.fire({
         icon: "error",
-        title: "Registration Failed",
-        text: "Failed to add manager. Please try again.",
+        title: "Registration Failed!",
+        text:
+          `${error?.response?.data?.message}` ||
+          "Failed to add manager. Please try again.",
       });
     }
   };
@@ -100,6 +105,9 @@ const Add_Manager = () => {
     "partner",
     "subAdmin1",
     "subAdmin2",
+    "resortAdmin",
+    "resortAccountant",
+    "resortReceptionist",
   ];
   return (
     <div className="wrapper">
@@ -228,6 +236,7 @@ const Add_Manager = () => {
                   id="inputState"
                   className="main_form w-100"
                   {...register("role")}
+                  onChange={(e) => setSelectedRole(e.target.value)}
                 >
                   <option>Select Role</option>
                   {roles.map((role) => (
@@ -237,23 +246,29 @@ const Add_Manager = () => {
                   ))}
                 </select>
               </div>
-              <div className="col-md-12 form_sub_stream">
-                <label htmlFor="inputState" className="profile_label3">
-                  Branch
-                </label>
-                <select
-                  id="inputState"
-                  className="main_form w-100"
-                  {...register("branch")}
-                >
-                  <option>Select Branch</option>
-                  {branches.map((branch) => (
-                    <option key={branch._id} value={branch._id}>
-                      {branch.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {selectedRole !== "resortAdmin" &&
+              selectedRole !== "resortAccountant" &&
+              selectedRole !== "resortReceptionist" ? (
+                <div className="col-md-12 form_sub_stream">
+                  <label htmlFor="inputState" className="profile_label3">
+                    Branch
+                  </label>
+                  <select
+                    id="inputState"
+                    className="main_form w-100"
+                    {...register("branch")}
+                  >
+                    <option>Select Branch</option>
+                    {branches.map((branch) => (
+                      <option key={branch._id} value={branch._id}>
+                        {branch.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              ) : (
+                <></>
+              )}
             </div>
 
             <div className="d-flex justify-content-center my-5">

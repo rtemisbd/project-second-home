@@ -1,5 +1,4 @@
-
-import Resort from "../models/Resort.js"
+import Resort from "../models/Resort.js";
 import { districtServices } from "./district.service.js";
 
 const createResortIntoDB = async(payload) =>{
@@ -21,8 +20,26 @@ const getResortByIdFromDB  = async(id)=>{
     return result;
 }
 
+const getResortByNameFromDB = async(name)=> {
+    const result = await Resort.findOne({name});
+    return result ;
+}
+
+
+
+const updateResortById =  async(id, payload)=>{
+  const result = await Resort.updateOne(
+    { _id: id },
+    { $set: payload },
+    { runValidators: true }
+  );
+  return result;
+}
+
 export const resortServices  = {
     createResortIntoDB,
     getAllResortsFromDB,
-    getResortByIdFromDB
+    getResortByIdFromDB,
+    getResortByNameFromDB, 
+    updateResortById
 }

@@ -30,8 +30,8 @@ const createVillaOrderIntoDB = async(payload)=>{
     payload.bookingId = await generateBookingId();
 
     //step 3 : create booking
-    const order = await VillaOrders.create(payload);
-
+      const order = await VillaOrders.create(payload);
+   
     // step 4 : create transaction
     const newTransaction ={
       userId : payload.user,
@@ -43,27 +43,160 @@ const createVillaOrderIntoDB = async(payload)=>{
       paymentMethod : payload.paymentMethod,
       paymentPlatform : payload.paymentPlatform,
     };
-    await TransactionForVilla.create(newTransaction);
-
+   await TransactionForVilla.create(newTransaction);
+  
     // step 5 : create rentDate
     const newRentDate = {
-      bookingStartDate:payload.rentDate.bookingStartDate,
-      bookingEndDate:payload.rentDate.bookingEndDate,
+      bookStartDate:payload.rentDate.bookStartDate,
+      bookEndDate:payload.rentDate.bookEndDate,
       daysDifference:payload.rentDate.daysDifference,
       orderId : order?._id,
       bookingId:payload.bookingId,
       villaId:payload.villa,
       userId:payload.user,
     }
-
     await VillaRentDates.create(newRentDate);
-    
- 
-    return order;
+  
+  return order;
 }
+
+
+const getAllVillaOrdersFromDB = async (queries) => {
+  const {user, villa} = queries
+  const page = parseInt(queries?.page) || 1;
+  const size = parseInt(queries?.size) || 10;
+
+  let matchStage = {}; 
+  
+  const totalCountsPipeline = [
+    { $match: matchStage },
+    {
+      $group: {
+        _id: null,
+        totalCount: { $sum: 1 },
+      },
+    },
+  ];
+
+  const totalCountsResult = await VillaOrders.aggregate(totalCountsPipeline);
+  const totalCount = totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
+
+  const pipeline = [
+    { $match: matchStage },
+    {
+      $facet: {
+        paginatedResult: [
+          { $sort: { createdAt: -1 } },
+          { $skip: (page - 1) * size },
+          { $limit: size },
+
+          //USER
+
+          {
+            $lookup: {
+              from: "users",
+              let: { userId: "$user" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$userId"] },
+                  },
+                },
+                {
+                  $project: { firstName: 1, phone: 1 },
+                },
+              ],
+              as: "user",
+            },
+          },
+
+          
+          { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+
+          // VILLA  
+          
+          {
+            $lookup: {
+              from: "villas",
+              let : {villaId : "$villa"},
+             pipeline : [
+              {
+                $match : {
+                  $expr : {$eq : ["$_id", "$$villaId"]}
+                }
+              }
+             ],
+              as: "villa",
+            },
+          },
+          { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
+
+          // transaction
+          // {
+          //   $lookup: {
+          //     from: "transactionforvillas",
+          //     let: { orderId: "$_id" },
+          //     pipeline: [
+          //       {
+          //         $match: {
+          //           $expr: {
+          //             $and: [
+          //               { $eq: ["$orderId", "$$orderId"] },
+          //               { $eq: ["$paymentStatus", "Processing"] }, 
+          //             ],
+          //           },
+          //         },
+          //       },
+          //       {
+          //         $group: {
+          //           totalReceiveTk: { $sum: "$receivedAmount" },
+          //           allTransactions: { $push: "$$ROOT" },
+          //         },
+          //       },
+          //     ],
+          //     as: "transactions",
+          //   },
+          // },
+          // { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
+
+        ],
+      },
+    },
+    {
+      $project: {
+        paginatedResult: 1,
+      },
+    },
+  ];
+
+  const aggregatedResult = await VillaOrders.aggregate(pipeline);
+  const orders =  aggregatedResult?.[0]?.paginatedResult || [];
+
+  return {orders, totalCount};
+};
+
+const getVillaOrderByIdFromDB = async (id) => {
+  const result = await VillaOrders.findById({ _id: id })
+    .populate({
+      path: "villa",
+      select: "title type villaNumber resortId",
+      populate: {
+        path: "resortId",
+        select: "name logo address contactNumbers resortEmail",
+      },
+    })
+    .populate({
+      path: "user",
+      select: "firstName phone userAddress",
+    });
+
+  return result;
+};
 
 
 
 export const villaOrderServices = {
-    createVillaOrderIntoDB
+    createVillaOrderIntoDB,
+    getAllVillaOrdersFromDB,
+    getVillaOrderByIdFromDB
 }

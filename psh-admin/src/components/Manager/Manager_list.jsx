@@ -34,8 +34,10 @@ const Manager_list = () => {
         const { data } = await axios.get(
           `${baseUrl}/api/users?${queryParams.toString()}`
         );
-        setData(data?.users);
-        setTotalDataCount(data?.totalCount);
+        console.log(data);
+
+        setData(data?.data?.users);
+        setTotalDataCount(data?.data?.totalCount);
       } catch (error) {
         console.log(error);
       }

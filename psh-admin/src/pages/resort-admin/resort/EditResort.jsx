@@ -1,55 +1,60 @@
-import axios from "axios";
-import { useEffect, useRef, useState } from "react";
-import "./style/imageUploader.css";
-import { multipleImageUpload } from "../../utils/multipleImageUpload";
-import { baseUrl } from "../../utils/getBaseURL";
-import { toast, ToastContainer } from "react-toastify";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
 import { allDivision, districtsOf } from "@bangladeshi/bangladesh-address";
-import TextEditor from "../../components/TextEditor/TextEditor";
+import axios from "axios";
+import { useContext, useEffect, useRef, useState } from "react";
+import { toast, ToastContainer } from "react-toastify";
+import { baseUrl } from "../../../utils/getBaseURL";
+import { uploadSingleImage } from "../../../utils/uploadSingleImage";
+import { multipleImageUpload } from "../../../utils/multipleImageUpload";
+import { AuthContext } from "../../../contexts/UserProvider";
+import TextEditor from "../../../components/TextEditor/TextEditor";
 
-const AddResort = () => {
-  const MySwal = withReactContent(Swal);
-  const [files, setFiles] = useState("");
-  const [facilities, setFacilities] = useState([{ id: Date.now(), title: "" }]);
-  const [villaTypes, setVillaTypes] = useState([{ id: Date.now(), name: "" }]);
-  const [phoneNumber, setPhoneNumber] = useState([
-    { id: Date.now(), number: "" },
-  ]);
-  const [bankDetails, setBankDetails] = useState([
-    {
-      id: Date.now(),
-      bankName: "",
-      accountHolder: "",
-      accountNumber: "",
-      accountType: "",
-      branchName: "",
-      routingNumber: "",
-    },
-  ]);
+const EditResort = () => {
+  const { user, resort } = useContext(AuthContext);
+  console.log(resort);
 
-  const [bookingPolicy, setBookingPolicy] = useState("");
-  const [cancellationPolicy, setCancellationPolicy] = useState("");
+  const [showLogo, setShowLogo] = useState(true);
+  const [facilities, setFacilities] = useState(resort?.facilities || []);
+  const [villaTypes, setVillaTypes] = useState(resort?.villaTypes || []);
+  const [phoneNumber, setPhoneNumber] = useState(resort?.contactNumbers || []);
+  const [bankDetails, setBankDetails] = useState(
+    resort?.bankDetails || [
+      {
+        bankName: "",
+        accountHolder: "",
+        accountNumber: "",
+        accountType: "",
+        branchName: "",
+        routingNumber: "",
+      },
+    ]
+  );
+
+  const [bookingPolicy, setBookingPolicy] = useState(
+    resort?.policies?.bookingPolicy
+  );
+
+  const [cancellationPolicy, setCancellationPolicy] = useState(
+    resort?.policies?.cancellationPolicy
+  );
 
   // location
   const allDivisions = allDivision();
-  const [selectedDivision, setSelectedDivision] = useState(null);
+  const [selectedDivision, setSelectedDivision] = useState(resort?.division);
   const [allDistricts, setAllDistricts] = useState([]);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(resort?.district);
 
   // images
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+
+  const [existingPhotos, setExistingPhotos] = useState(resort?.photos || []);
+  const [newPhotos, setNewPhotos] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState(resort?.photos || []);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
 
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-
-    // Generate image previews
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...previews]);
+    setNewPhotos((prev) => [...prev, ...files]);
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
   };
 
   // remove images
@@ -57,33 +62,33 @@ const AddResort = () => {
     setImagePreviews((prevPreviews) =>
       prevPreviews.filter((_, i) => i !== index)
     );
-    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setExistingPhotos((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setNewPhotos((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   const formRef = useRef(null);
 
   // Function to add a new facility
   const addFacility = () => {
-    setFacilities([...facilities, { id: Date.now(), title: "" }]);
+    setFacilities([...facilities, ""]);
   };
 
   // Function to remove a facility by ID
-  const removeFacility = (id) => {
-    setFacilities(facilities.filter((facility) => facility.id !== id));
+  const removeFacility = (ind) => {
+    setFacilities(facilities.filter((facility, index) => index !== ind));
   };
 
   // villa types
   const addVillaType = () => {
-    setVillaTypes([...villaTypes, { id: Date.now(), name: "" }]);
+    setVillaTypes([...villaTypes, ""]);
   };
   const addPhoneNumber = () => {
-    setPhoneNumber([...phoneNumber, { id: Date.now(), number: "" }]);
+    setPhoneNumber([...phoneNumber, ""]);
   };
   const addBankAccount = () => {
     setBankDetails([
       ...bankDetails,
       {
-        id: Date.now(),
         bankName: "",
         accountHolder: "",
         accountNumber: "",
@@ -94,14 +99,14 @@ const AddResort = () => {
     ]);
   };
 
-  const removeVillaType = (id) => {
-    setVillaTypes(villaTypes.filter((villa) => villa.id !== id));
+  const removeVillaType = (index) => {
+    setVillaTypes(villaTypes.filter((villa, ind) => index !== ind));
   };
-  const removePhoneNumber = (id) => {
-    setPhoneNumber(phoneNumber.filter((phone) => phone.id !== id));
+  const removePhoneNumber = (index) => {
+    setPhoneNumber(phoneNumber.filter((phone, ind) => ind !== index));
   };
-  const removeBankDetail = (id) => {
-    setBankDetails(bankDetails.filter((bank) => bank.id !== id));
+  const removeBankDetail = (index) => {
+    setBankDetails(bankDetails.filter((bank, ind) => index !== ind));
   };
 
   const handleResortSubmit = async (event) => {
@@ -112,15 +117,13 @@ const AddResort = () => {
 
     // Build the main data object
     const data = {
-      name: formData.get("name"),
+      name: user?.firstName,
       address: formData.get("resortAddress"),
       division: selectedDivision,
       district: selectedDistrict,
       locationLink: formData.get("locationLink"),
       resortEmail: formData.get("resortEmail"),
-      contactNumbers: phoneNumber.map((phone) => ({
-        number: phone.number,
-      })),
+      contactNumbers: phoneNumber.map((phone) => phone),
       mobileBanking: {
         resortBkashNumber: formData.get("resortBkashNumber"),
         bkashAccountType: formData.get("bkashAccountType"),
@@ -131,12 +134,9 @@ const AddResort = () => {
       },
       video: formData.get("video"),
       welcomeNote: formData.get("welcomeNote"),
-      villaTypes: villaTypes.map((villa) => ({
-        name: villa.name.trim(),
-      })),
-      facilities: facilities.map((facility) => ({
-        title: facility.title.trim(),
-      })),
+      villaTypes: villaTypes.map((villa) => villa.trim()),
+      facilities: facilities.map((facility) => facility.trim()),
+
       bankDetails: bankDetails.map((bank) => ({
         bankName: bank.bankName.trim(),
         accountNumber: bank.accountNumber.trim(),
@@ -153,41 +153,28 @@ const AddResort = () => {
 
     try {
       // Upload images
-      const photoUrls = await multipleImageUpload(selectedFiles);
-      data.photos = photoUrls;
+
+      const logoFile = formData.get("logo");
+      let logo = resort?.logo;
+
+      if (logoFile && logoFile.size > 0) {
+        logo = await uploadSingleImage(logoFile);
+      }
+
+      const photoUrls = await multipleImageUpload(newPhotos);
+      
+      data.photos = [...existingPhotos, ...photoUrls];
+      data.logo = logo;
       toast("Saving resort details...", "success");
 
       // Send data to the backend
-      const response = await axios.post(`${baseUrl}/api/resort`, data);
-
-      MySwal.fire(
-        "Uploaded",
-        "Resort details submitted successfully!",
-        "success"
+      const response = await axios.patch(
+        `${baseUrl}/api/resort/${resort?._id}`,
+        data
       );
+      console.log(response);
 
-      // Reset form and states
-      event.target.reset();
-      setPhoneNumber([{ id: Date.now(), number: "" }]);
-      setVillaTypes([{ id: Date.now(), name: "" }]);
-      setFacilities([{ id: Date.now(), title: "" }]);
-      setBankDetails([
-        {
-          id: Date.now(),
-          bankName: "",
-          accountNumber: "",
-          accountHolder: "",
-          accountType: "",
-          branchName: "",
-          routingNumber: "",
-        },
-      ]);
-      setSelectedFiles([]);
-      setImagePreviews([]);
-      setSelectedDistrict(null);
-      setSelectedDivision(null);
-      setBookingPolicy("");
-      setCancellationPolicy("");
+      toast.success("Resort details updated successfully!");
     } catch (error) {
       console.error("Submission error:", error);
       toast("Something went wrong! Please try again.", "error");
@@ -225,7 +212,8 @@ const AddResort = () => {
                   type="text"
                   className="main_form w-100"
                   name="name"
-                  placeholder="Resort Name"
+                  defaultValue={user?.firstName}
+                  disabled
                   required
                 />
               </div>
@@ -242,6 +230,7 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="resortAddress"
                   placeholder="Details Address"
+                  defaultValue={resort?.address}
                   required
                 />
               </div>
@@ -311,6 +300,7 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="locationLink"
                   placeholder="Google Location Link"
+                  defaultValue={resort?.locationLink}
                   required
                 />
               </div>
@@ -327,22 +317,50 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="resortEmail"
                   placeholder="Resort Support Email"
+                  defaultValue={resort?.resortEmail}
                   required
                 />
               </div>
+              <div className="col-md-6 form_sub_stream ">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Logo
+                </label>
+
+                <input
+                  type="file"
+                  accept="image/*"
+                  name="logo"
+                  className="main_form w-100 p-0"
+                  onChange={() => setShowLogo(false)}
+                />
+                {showLogo && (
+                  <img
+                    src={resort?.logo}
+                    alt="logo"
+                    style={{
+                      width: "120px",
+                      height: "120px",
+                      margin: " 10px 0px",
+                    }}
+                  />
+                )}
+              </div>
 
               {phoneNumber.map((phone, index) => (
-                <div key={phone.id} className="col-md-6 form_sub_stream ">
+                <div key={index} className="col-md-6 form_sub_stream ">
                   <label className="form-label profile_label3">
                     Contact Number
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={phone.number}
+                    value={phone}
                     onChange={(e) => {
                       const updatedPhones = [...phoneNumber];
-                      updatedPhones[index].number = e.target.value;
+                      updatedPhones[index] = e.target.value;
                       setPhoneNumber(updatedPhones);
                     }}
                     placeholder="Contact Number"
@@ -361,7 +379,7 @@ const AddResort = () => {
 
                           fontWeight: "bold",
                         }}
-                        onClick={() => removePhoneNumber(phone.id)}
+                        onClick={() => removePhoneNumber(index)}
                       >
                         [ Remove ]
                       </button>
@@ -395,6 +413,7 @@ const AddResort = () => {
                   type="text"
                   className="main_form w-100"
                   name="resortBkashNumber"
+                  defaultValue={resort?.mobileBanking?.resortBkashNumber}
                   placeholder="Resort bKash Number"
                 />
               </div>
@@ -406,10 +425,22 @@ const AddResort = () => {
                   bKash Account Type
                 </label>
                 <select className="main_form w-100" name="bkashAccountType">
-                  <option value="Merchant" selected>
+                  <option
+                    value="Merchant"
+                    selected={
+                      resort?.mobileBanking?.bkashAccountType === "Merchant"
+                    }
+                  >
                     Merchant Account
                   </option>
-                  <option value="Personal">Personal Account</option>
+                  <option
+                    value="Personal"
+                    selected={
+                      resort?.mobileBanking?.bkashAccountType === "Personal"
+                    }
+                  >
+                    Personal Account
+                  </option>
                 </select>
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -425,6 +456,7 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="bkashAccountHolder"
                   placeholder=" bKash Account Holder Name"
+                  defaultValue={resort?.mobileBanking?.bkashAccountHolder}
                 />
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -440,6 +472,7 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="resortNagadNumber"
                   placeholder="Resort Nagad Number"
+                  defaultValue={resort?.mobileBanking?.resortNagadNumber}
                 />
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -450,10 +483,22 @@ const AddResort = () => {
                   Nagad Account Type
                 </label>
                 <select className="main_form w-100" name="nagadAccountType">
-                  <option value="Merchant" selected>
+                  <option
+                    value="Merchant"
+                    selected={
+                      resort?.mobileBanking?.nagadAccountType === "Merchant"
+                    }
+                  >
                     Merchant Account
                   </option>
-                  <option value="Personal">Personal Account</option>
+                  <option
+                    value="Personal"
+                    selected={
+                      resort?.mobileBanking?.nagadAccountType === "Personal"
+                    }
+                  >
+                    Personal Account
+                  </option>
                 </select>
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -469,6 +514,7 @@ const AddResort = () => {
                   className="main_form w-100"
                   name="nagadAccountHolder"
                   placeholder=" Nagad Account Holder Name"
+                  defaultValue={resort?.mobileBanking?.nagadAccountHolder}
                 />
               </div>
 
@@ -590,7 +636,7 @@ const AddResort = () => {
                           color: "red",
                           fontWeight: "bold",
                         }}
-                        onClick={() => removeBankDetail(bank.id)}
+                        onClick={() => removeBankDetail(ind)}
                       >
                         [ Remove ]
                       </button>
@@ -623,6 +669,7 @@ const AddResort = () => {
                   rows="5"
                   cols="50"
                   placeholder=" Write your note in detail"
+                  defaultValue={resort?.welcomeNote}
                   required
                 />
               </div>
@@ -631,17 +678,17 @@ const AddResort = () => {
                 Our Villa Types
               </h2>
               {villaTypes.map((villa, index) => (
-                <div key={villa.id} className="col-md-4 form_sub_stream mb-4">
+                <div key={index} className="col-md-4 form_sub_stream mb-4">
                   <label className="form-label profile_label3">
                     Villa Type Name
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={villa.name}
+                    value={villa}
                     onChange={(e) => {
                       const updatedVillas = [...villaTypes];
-                      updatedVillas[index].name = e.target.value;
+                      updatedVillas[index] = e.target.value;
                       setVillaTypes(updatedVillas);
                     }}
                     placeholder="Villa Type Name"
@@ -660,7 +707,7 @@ const AddResort = () => {
 
                           fontWeight: "bold",
                         }}
-                        onClick={() => removeVillaType(villa.id)}
+                        onClick={() => removeVillaType(index)}
                       >
                         [ Remove ]
                       </button>
@@ -695,7 +742,6 @@ const AddResort = () => {
                   accept="image/*"
                   name="photo"
                   className="main_form w-100"
-                  required
                 />
                 <div className="d-flex flex-wrap my-6">
                   {imagePreviews.map((preview, index) => (
@@ -732,15 +778,14 @@ const AddResort = () => {
                       fontSize: "12px",
                       fontWeight: "400",
                     }}
-                  >
-                    [optional]
-                  </span>
+                  ></span>
                 </label>
 
                 <input
                   type="text"
                   className="main_form w-100"
                   name="video"
+                  defaultValue={resort?.video}
                   placeholder="Youtube Video Link"
                   required
                 />
@@ -749,17 +794,17 @@ const AddResort = () => {
                 Common Facilities
               </h2>
               {facilities.map((facility, index) => (
-                <div key={facility.id} className="col-md-4 form_sub_stream">
+                <div key={index} className="col-md-4 form_sub_stream">
                   <label className="form-label profile_label3">
                     Facility Title
                   </label>
                   <input
                     type="text"
                     className="main_form w-100"
-                    value={facility.title}
+                    value={facility}
                     onChange={(e) => {
                       const updatedFacilities = [...facilities];
-                      updatedFacilities[index].title = e.target.value;
+                      updatedFacilities[index] = e.target.value;
                       setFacilities(updatedFacilities);
                     }}
                     placeholder="Facility Title"
@@ -777,7 +822,7 @@ const AddResort = () => {
 
                         fontWeight: "bold",
                       }}
-                      onClick={() => removeFacility(facility.id)}
+                      onClick={() => removeFacility(index)}
                     >
                       [ Remove ]
                     </button>
@@ -850,4 +895,4 @@ const AddResort = () => {
   );
 };
 
-export default AddResort;
+export default EditResort;

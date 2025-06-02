@@ -39,7 +39,7 @@ const UserManage = () => {
       })
         .then((res) => res.json())
         .then((data) => {
-          setData(data?.users);
+          setData(data?.data?.users);
         })
   );
 

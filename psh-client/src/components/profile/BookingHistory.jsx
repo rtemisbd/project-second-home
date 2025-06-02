@@ -11,8 +11,6 @@ import { MdRefresh } from "react-icons/md";
 import BookingCard from "./BookingCard";
 import getHeader from "../../helpers/utils/getHeaders";
 
-
-
 const BookingHistory = () => {
   const { user } = useContext(AuthContext);
   const [userOrder, setUserOrder] = useState(null);

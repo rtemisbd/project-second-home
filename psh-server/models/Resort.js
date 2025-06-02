@@ -1,16 +1,16 @@
 import mongoose from "mongoose";
 
-const facilitiesSchema = new mongoose.Schema({
-    title: { type: String, required: true },
+// const facilitiesSchema = new mongoose.Schema({
+//     title: { type: String, required: true },
     
-});
+// });
 
-const villaTypeSchema = new mongoose.Schema({
-    name: { type: String, required: true }
-});
-const contactNumberSchema = new mongoose.Schema({
-    number: { type: String }
-});
+// const villaTypeSchema = new mongoose.Schema({
+//     name: { type: String, required: true }
+// });
+// const contactNumberSchema = new mongoose.Schema({
+//     number: { type: String }
+// });
 
 const mobileBankingSchema = new mongoose.Schema({
     resortBkashNumber : {type : String},
@@ -30,23 +30,27 @@ const bankDetailsSchema = new mongoose.Schema({
     routingNumber : {type : String},
 })
 
-
 const resortSchema = new mongoose.Schema({
     name: { type: String, required: true },
     address: { type: String, required: true },
     division: { type: String, required: true },
     district: { type: String, required: true },
     locationLink: { type: String, required: true },
+    logo : {type : String},
    
-    contactNumbers : [contactNumberSchema],
+    contactNumbers : [{type: String}],
     resortEmail: { type: String, required: true },
     mobileBanking : mobileBankingSchema,
     bankDetails : [bankDetailsSchema],
     welcomeNote : {type : String},
     photos: [{ type: String }],
     video: { type: String },
-    facilities: [facilitiesSchema],
-    villaTypes: [villaTypeSchema],
+    facilities: [{type: String}],
+    villaTypes: [{type: String}],
+    totalVilla : {
+      published : {type : Number, default : 0}  ,
+      unpublished : {type : Number, default : 0}  
+    },
     policies: {
         bookingPolicy: { type: String, required: true },
         cancellationPolicy: { type: String, required: true }

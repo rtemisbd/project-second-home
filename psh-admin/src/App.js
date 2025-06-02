@@ -71,11 +71,17 @@ import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
 import EditProperty from "./pages/edit/EditProperty";
 import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
 import EditSeat from "./pages/edit/EditSeat";
-import AddResort from "./pages/Resorts/AddResort";
 import ResortList from "./pages/Resorts/ResortList";
 import AddVilla from "./pages/Villa/AddVilla";
 import VillaList from "./pages/Villa/VillaList";
 import EditVilla from "./pages/Villa/EditVilla";
+import BookingList from "./pages/resort-admin/BookingList";
+
+import AddResort2 from "./pages/Resorts/AddResort2";
+import AddResort from "./pages/resort-admin/resort/AddResort";
+import ResortTransaction from "./pages/resort-admin/ResortTransaction";
+import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
+import EditResort from "./pages/resort-admin/resort/EditResort";
 
 
 function App() {
@@ -101,12 +107,6 @@ function App() {
         <Route path="add_category" element={<Add_Category />} />
         <Route path="category_list" element={<Category />} />
         <Route path="add_branch" element={<Add_Branch />} />
-
-        <Route path="add-resort" element={<AddResort />} />
-        <Route path="resort-list" element={<ResortList/>} />
-        <Route path="add-villa" element={<AddVilla />} />
-        <Route path="villa-list" element={<VillaList />} />
-        <Route path="edit/villa/:id" element={<EditVilla />} />
 
         <Route path="branch_list" element={<Branch />} />
         <Route path="add_dynamic" element={<Add_Dynamic />} />
@@ -171,12 +171,25 @@ function App() {
         <Route path="terms_list" element={<Terms_list />} />
         <Route path="update_terms/:id" element={<Update_Terms />} />
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
-        {/* testing new overview */}
+        {/*  new overview */}
         <Route path="booking-overview" element={<RoomOverview />} />
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />
+        {/* resort related */}
+        <Route path="add-resort" element={<AddResort2 />} />
+        <Route path="resort-list" element={<ResortList/>} />
+        <Route path="add-villa" element={<AddVilla />} />
+        <Route path="villa-list" element={<VillaList />} />
+        <Route path="edit/villa/:id" element={<EditVilla />} />
+        <Route path="resort/booking-list" element={<BookingList/>} />
+        <Route path="resort/transaction" element={<ResortTransaction/>} />
+        <Route path="resort/add-resort" element={<AddResort/>} />
+        <Route path="resort/overview" element={<ResortOverview/>} />
+        <Route path="resort/edit-resort" element={<EditResort/>} />
+
       </Route>
 
-      <Route path="*" element={<NotFound />}></Route>
+      <Route path="*" element={<NotFound />}></Route> 
+
     </Routes>
   );
 }

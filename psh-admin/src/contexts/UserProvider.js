@@ -11,15 +11,34 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null
   );
+  const [resort, setResort] = useState(localStorage.getItem("resort") ||null);
 
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState( JSON.parse(localStorage.getItem("resort")) || null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
     // Store the user and token in localStorage
     localStorage.setItem("user", JSON.stringify(user));
     localStorage.setItem("token", token);
-  }, [user, token]);
+    localStorage.setItem("resort", JSON.stringify(resort));
+  }, [user, token, resort]);
+
+  useEffect(()=>{
+    const fetchResort = async()=>{
+       try {
+        const { data } = await axios.get(
+          `${baseUrl}/api/resort/name/${user?.firstName}`
+        );
+        setResort(data?.data);
+      } catch (error) {
+        console.error("Failed to fetch resort by name:", error);
+      }
+    };
+     if (user?.firstName) {
+    fetchResort();
+  }
+ 
+  }, [user?.firstName])
 
   const loginUser = async (email, password) => {
     try {
@@ -29,7 +48,6 @@ export const UserProvider = ({ children }) => {
         password,
       });
 
-      console.log(response);
       if (response.status === 200) {
         const { data } = response;
         
@@ -87,20 +105,26 @@ export const UserProvider = ({ children }) => {
       // console.error(error);
     }
   };
-  const logoutUser = () => {
-    // Clear user and token from state and localStorage
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("user");
-    localStorage.removeItem("token");
-  };
+  
+const logoutUser = () => {
+  setUser(null);
+  setToken(null);
+  setResort(null); // clear resort
+  localStorage.removeItem("user");
+  localStorage.removeItem("token");
+  localStorage.removeItem("resort");
+};
+
+
+
+
   // const isAuthenticated = () => {
   //   return token !== null && user !== null;
   // };
   // Provide the user and token to the components
   return (
     <AuthContext.Provider
-      value={{ user, token, loginUser, logoutUser, loading, registerUser }}
+      value={{ user, token, loginUser, logoutUser, loading, registerUser, resort }}
     >
       {children}
     </AuthContext.Provider>
