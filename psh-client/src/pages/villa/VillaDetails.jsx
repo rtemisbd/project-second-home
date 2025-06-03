@@ -32,7 +32,6 @@ const VillaDetails = () => {
   const [features, setFeatures] = useState([]);
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
-  console.log(villa);
 
   const navItems = [
     { name: "Key Details", id: "keyDetails" },

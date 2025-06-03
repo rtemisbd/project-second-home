@@ -4,6 +4,7 @@ import VillaOrders from "../models/VillaOrders.js"
 import { generateBookingId } from "../utils/generateBookingId.js";
 import TransactionForVilla from "../models/TransactionForVilla.js";
 import VillaRentDates from "../models/VillaRentDates.js";
+import mongoose from "mongoose";
 
 const createVillaOrderIntoDB = async(payload)=>{
     await setValue("userId", payload?.user);
@@ -66,23 +67,26 @@ const getAllVillaOrdersFromDB = async (queries) => {
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
 
-  let matchStage = {}; 
-  
-  const totalCountsPipeline = [
-    { $match: matchStage },
-    {
-      $group: {
-        _id: null,
-        totalCount: { $sum: 1 },
-      },
-    },
-  ];
 
-  const totalCountsResult = await VillaOrders.aggregate(totalCountsPipeline);
-  const totalCount = totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
+
+  let matchStage = {}; 
+  if(resort && resort !== "undefined" && resort !== "null" && resort !== "") {
+    matchStage.resort = new mongoose.Types.ObjectId(resort);
+  }
+  
+  const totalCountResult = await VillaOrders.aggregate([
+    { $match: matchStage },
+    { $count: "totalCount" },
+  ]);
+  const totalCount = totalCountResult[0]?.totalCount || 0;
 
   const pipeline = [
     { $match: matchStage },
+     {
+      $sort: { createdAt: -1 }
+    },
+    { $skip: (page - 1) * size },
+    { $limit: size },
     {
       $facet: {
         paginatedResult: [

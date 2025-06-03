@@ -1,7 +1,7 @@
 import { MdRefresh } from "react-icons/md";
 import img from "../../img/new/style.png";
 import { Spinner, Table } from "react-bootstrap";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import BookingsTable from "../../components/Orders/BookingsTable";
 import { useSelector } from "react-redux";
 import { baseUrl } from "../../utils/getBaseURL";
@@ -14,8 +14,10 @@ import { BiSolidEdit } from "react-icons/bi";
 import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import Pagination from "../../components/Pagination/Pagination";
+import { AuthContext } from "../../contexts/UserProvider";
 
 const BookingList = () => {
+  const { resort } = useContext(AuthContext);
   const { page, size } = useSelector((state) => state.pagination);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -58,6 +60,7 @@ const BookingList = () => {
       guestType,
       filteredName,
       filteredPhone,
+      resort._id,
     ],
     async () => {
       try {
@@ -72,6 +75,7 @@ const BookingList = () => {
           status: bookingStatus,
           filteredName,
           filteredPhone,
+          resort: resort._id,
         });
 
         // Get the access token
@@ -104,8 +108,6 @@ const BookingList = () => {
   useEffect(() => {
     refetch();
   }, [size, refetch]);
-
-  console.log(data);
 
   return (
     <div className="wrapper">
