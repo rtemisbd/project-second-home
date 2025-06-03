@@ -23,6 +23,8 @@ const VillaBookingConfirmation = () => {
     };
     fetchBooking();
   }, [orderId]);
+  console.log(booking);
+  
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-gray-900">
@@ -81,7 +83,7 @@ const VillaBookingConfirmation = () => {
             <p>Resort</p>
             <p className=" justify-self-end md:justify-self-start">:</p>
             <p className="col-span-4 justify-self-end">
-              {booking?.villa?.resortId?.name}
+              {booking?.resort?.name}
             </p>
           </div>
           <hr className="mt-2" />

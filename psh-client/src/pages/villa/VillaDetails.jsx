@@ -32,6 +32,7 @@ const VillaDetails = () => {
   const [features, setFeatures] = useState([]);
   const playerContainerRef = useRef(null);
   const playerRef = useRef(null);
+  console.log(villa);
 
   const navItems = [
     { name: "Key Details", id: "keyDetails" },
@@ -213,7 +214,7 @@ const VillaDetails = () => {
                           {villa?.resortId?.contactNumbers?.map(
                             (contact, ind) => (
                               <span key={ind}>
-                                <span className="mx-1">{contact?.number}</span>
+                                <span className="mx-1">{contact}</span>
                                 {ind + 1 <
                                   villa?.resortId?.contactNumbers?.length && (
                                   <span className="text-2xl">,</span>

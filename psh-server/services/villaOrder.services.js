@@ -62,7 +62,7 @@ const createVillaOrderIntoDB = async(payload)=>{
 
 
 const getAllVillaOrdersFromDB = async (queries) => {
-  const {user, villa} = queries
+  const {user, villa, resort} = queries
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
 
@@ -180,15 +180,15 @@ const getVillaOrderByIdFromDB = async (id) => {
     .populate({
       path: "villa",
       select: "title type villaNumber resortId",
-      populate: {
-        path: "resortId",
-        select: "name logo address contactNumbers resortEmail",
-      },
+      
     })
     .populate({
       path: "user",
       select: "firstName phone userAddress",
-    });
+    }).populate( {
+        path: "resort",
+        select: "name logo address contactNumbers resortEmail",
+      });
 
   return result;
 };

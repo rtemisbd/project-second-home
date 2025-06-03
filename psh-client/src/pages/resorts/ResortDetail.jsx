@@ -97,7 +97,7 @@ const ResortDetail = () => {
             <h1 className="text-xl font-bold text-gray-900 px-1 ">
               {resort?.name} - {resort?.district} , {resort?.division}
             </h1>
- 
+
             <div className="flex text-[#9A9A9A] items-center mt-2">
               <img
                 src="/public/images/icon/marker-02.png"
@@ -111,7 +111,7 @@ const ResortDetail = () => {
               <IoCallOutline className="md:w-[25px] h-[25px] sm:w-[35px]" />
               {resort?.contactNumbers?.map((contact, ind) => (
                 <span key={ind} className="ms-1">
-                  {contact?.number}
+                  {contact}
                   {ind + 1 < resort?.contactNumbers?.length && (
                     <span className="text-2xl"> ,</span>
                   )}
@@ -156,7 +156,7 @@ const ResortDetail = () => {
           <>
             {facilities?.map((facility, ind) => (
               <li key={ind} className="list-disc">
-                {facility?.title}
+                {facility}
               </li>
             ))}
           </>

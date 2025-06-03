@@ -108,7 +108,6 @@ const VillaBookingForm = () => {
         `${serverBaseUrl}/villa-order`,
         dataForBooking
       );
-      console.log(data);
 
       if (data?.success) {
         toast.success("Your booking has been placed.");
