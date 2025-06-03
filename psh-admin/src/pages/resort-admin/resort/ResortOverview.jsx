@@ -9,8 +9,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 const ResortOverview = () => {
   const { resort } = useContext(AuthContext);
 
-  console.log(resort);
-
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
@@ -55,8 +53,10 @@ const ResortOverview = () => {
                         ))}
                       </td>
                       <td>
-                        <p> Published : </p>
-                        <p> Unpublished : </p>
+                        <p> Published : {resort?.totalVilla?.published}</p>
+                        <p style={{ color: "red" }}>
+                          Unpublished : {resort?.totalVilla?.unpublished}
+                        </p>
                       </td>
                       <td className="d-flex align-items-center">
                         {/* detail */}

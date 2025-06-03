@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import Category from "../models/Category.js";
 import Villa from "../models/Villa.js"
 import VillaRentDates from "../models/VillaRentDates.js";
+import Resort from "../models/Resort.js";
 
 const createVillaIntoDB = async(payload)=>{
 
@@ -10,7 +11,12 @@ const createVillaIntoDB = async(payload)=>{
     payload.category = category._id
 
     const result = await Villa.create(payload);
-    return result;
+
+    // Increment the published count in the associated resort
+    await Resort.findByIdAndUpdate(payload.resortId, {
+        $inc: { "totalVilla.published": 1 },
+    });
+    return result; 
 }
 
 const getAllVillaFromDB = async(queries)=>{
@@ -19,7 +25,7 @@ const getAllVillaFromDB = async(queries)=>{
 
     let query = {};
 
-    if (resortId && mongoose.Types.ObjectId.isValid(resortId)) {
+    if (resortId && resortId !== "") {
         query.resortId = new mongoose.Types.ObjectId(resortId);
       }
 
@@ -42,13 +48,17 @@ const getAllVillaFromDB = async(queries)=>{
         { 
             $unwind: { 
                 path: "$resort", 
-                preserveNullAndEmptyArrays: true // Keeps villas even if no matching resort
+                preserveNullAndEmptyArrays: true 
             } 
         }
     ];
     const result =  await Villa.aggregate(pipeline);
+    
     return result ;
 }
+
+
+
 
 
 const getVillaByIdFromDB = async (id) => {
@@ -61,8 +71,53 @@ const getVillaByIdFromDB = async (id) => {
     return {villa, bookedDates};
 };
 
+
+const updateVillaById = async (payload, id) => {
+  // Step 1: Find the villa
+  const villa = await Villa.findById(id);
+  if (!villa) {
+    return { error: "Villa not found" };
+  }
+
+  const resortId = villa.resortId;
+  const oldStatus = villa.isPublished; // "Published" or "Unpublished"
+  const newStatus = payload.isPublished;
+
+  // Step 2: Update resort villa counts if status changed
+  if (newStatus && newStatus !== oldStatus) {
+    if (newStatus === "Published" && oldStatus === "Unpublished") {
+      await Resort.findByIdAndUpdate(resortId, {
+        $inc: {
+          "totalVilla.published": 1,
+          "totalVilla.unpublished": -1,
+        },
+      });
+    } else if (newStatus === "Unpublished" && oldStatus === "Published") {
+      await Resort.findByIdAndUpdate(resortId, {
+        $inc: {
+          "totalVilla.published": -1,
+          "totalVilla.unpublished": 1,
+        },
+      });
+    }
+  }
+
+  // Step 3: Update the villa document
+  const result = await Villa.findByIdAndUpdate(
+    id,
+    { $set: payload },
+    { new: true, runValidators: true }
+  );
+
+  return result;
+};
+
+
+
+
 export const villaServices = {
     createVillaIntoDB,
     getAllVillaFromDB,
-    getVillaByIdFromDB
+    getVillaByIdFromDB,
+    updateVillaById
 }  

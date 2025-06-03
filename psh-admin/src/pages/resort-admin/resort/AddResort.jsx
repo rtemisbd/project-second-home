@@ -186,7 +186,7 @@ const AddResort = () => {
       setBookingPolicy("");
       setCancellationPolicy("");
     } catch (error) {
-      console.error("Submission error:", error);
+      // console.error("Submission error:", error);
       toast("Something went wrong! Please try again.", "error");
     }
   };

@@ -10,7 +10,6 @@ import TextEditor from "../../../components/TextEditor/TextEditor";
 
 const EditResort = () => {
   const { user, resort } = useContext(AuthContext);
-  console.log(resort);
 
   const [showLogo, setShowLogo] = useState(true);
   const [facilities, setFacilities] = useState(resort?.facilities || []);
@@ -162,7 +161,7 @@ const EditResort = () => {
       }
 
       const photoUrls = await multipleImageUpload(newPhotos);
-      
+
       data.photos = [...existingPhotos, ...photoUrls];
       data.logo = logo;
       toast("Saving resort details...", "success");
@@ -172,11 +171,10 @@ const EditResort = () => {
         `${baseUrl}/api/resort/${resort?._id}`,
         data
       );
-      console.log(response);
 
       toast.success("Resort details updated successfully!");
     } catch (error) {
-      console.error("Submission error:", error);
+      // console.error("Submission error:", error);
       toast("Something went wrong! Please try again.", "error");
     }
   };

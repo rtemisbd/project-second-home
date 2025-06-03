@@ -1,17 +1,17 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { baseUrl } from "../../utils/getBaseURL";
-import { multipleImageUpload } from "../../utils/multipleImageUpload";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import TextEditor from "../../components/TextEditor/TextEditor";
+import { baseUrl } from "../../../utils/getBaseURL";
+import { multipleImageUpload } from "../../../utils/multipleImageUpload";
+import TextEditor from "../../../components/TextEditor/TextEditor";
+import { AuthContext } from "../../../contexts/UserProvider";
 
 const AddVilla = () => {
+  const { resort } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
-  const [allResorts, setAllResorts] = useState([]);
-  const [selectedResort, setSelectedResort] = useState(null);
-  const [allTypes, setAllTypes] = useState([]);
+  const [allTypes, setAllTypes] = useState(resort?.villaTypes || []);
   const [selectedType, setSelectedType] = useState(null);
   const [occupancyPolicy, setOccupancyPolicy] = useState("");
   const [houseRules, setHouseRules] = useState("");
@@ -72,25 +72,9 @@ const AddVilla = () => {
   };
 
   useEffect(() => {
-    const getData = async () => {
-      try {
-        const { data } = await axios.get(`${baseUrl}/api/resort`);
-        setAllResorts(data.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getData();
-  }, []);
-
-  useEffect(() => {
-    const resort = allResorts.find((res) => res._id === selectedResort);
     setAllTypes(resort?.villaTypes);
-  }, [selectedResort, allResorts]);
+  }, [resort]);
 
-  const handleResortChange = (event) => {
-    setSelectedResort(event.target.value);
-  };
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
   };
@@ -120,7 +104,7 @@ const AddVilla = () => {
     // const checkOutTime = convertToAMPM(checkOutTime24);
 
     const villaData = {
-      resortId: selectedResort,
+      resortId: resort?._id,
       title: formData.get("villaTitle"),
       type: selectedType,
       // markedLocation: formData.get("markedLocation"),
@@ -144,8 +128,6 @@ const AddVilla = () => {
         advancePayment: formData.get("advancePayment"),
         adultAddition: formData.get("adultAddition"),
         kidAddition: formData.get("kidAddition"),
-        // checkIn: checkInTime,
-        // checkOut: checkOutTime,
         checkIn: formData.get("checkInTime"),
         checkOut: formData.get("checkOutTime"),
       },
@@ -170,6 +152,7 @@ const AddVilla = () => {
       setImagePreviews([]);
       setOccupancyPolicy("");
       setHouseRules("");
+      setSelectedType(null);
     } catch (error) {
       toast.error("Error adding villa. Try again!");
       console.error(error);
@@ -187,6 +170,7 @@ const AddVilla = () => {
       );
     }
   }, [perNight, afterDiscountPerNight]);
+  console.log(resort);
 
   return (
     <div className="wrapper">
@@ -201,38 +185,16 @@ const AddVilla = () => {
                 >
                   Resort
                 </label>
-                <select
-                  className="main_form w-100"
-                  name="resort"
-                  required
-                  onChange={handleResortChange}
-                >
-                  <option selected disabled>
-                    {" "}
-                    Choose your resort
-                  </option>
-                  {allResorts?.map((data, index) => (
-                    <option key={index} value={data?._id}>
-                      {data?.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              {/* <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Location (Google Location Link)
-                </label>
                 <input
                   type="text"
                   className="main_form w-100"
-                  name="markedLocation"
-                  placeholder="Enter Villa Location"
+                  name="resort"
+                  defaultValue={resort?.name}
+                  disabled
                   required
                 />
-              </div> */}
+              </div>
+
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -267,8 +229,8 @@ const AddVilla = () => {
                     Select Your Villa Type
                   </option>
                   {allTypes?.map((data, index) => (
-                    <option key={index} value={data?.name}>
-                      {data?.name}
+                    <option key={index} value={data}>
+                      {data}
                     </option>
                   ))}
                 </select>
