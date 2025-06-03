@@ -113,7 +113,7 @@ const VillaList = () => {
                         <td>{villa?.type}</td>
                         <td>{villa?.view}</td>
                         <td>
-                          <p>Bedrooms : {villa?.totalRoom}</p>
+                          <p>Bedroom : {villa?.totalRoom}</p>
                           <p>Balcony : {villa?.totalBalcony}</p>
                           <p>Bathroom : {villa?.totalBathroom}</p>
                         </td>
