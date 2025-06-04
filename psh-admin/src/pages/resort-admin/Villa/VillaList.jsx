@@ -1,29 +1,60 @@
 import axios from "axios";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import { baseUrl } from "../../utils/getBaseURL";
+import { baseUrl } from "../../../utils/getBaseURL";
 import { Link } from "react-router-dom";
 import { Table } from "bootstrap-4-react/lib/components";
-import img from "../../img/college/Icon material-delete.png";
-import img3 from "../../img/college/Icon feather-edit.png";
+import img from "../../../img/college/Icon material-delete.png";
+import img3 from "../../../img/college/Icon feather-edit.png";
 import { BiSolidEdit } from "react-icons/bi";
+import { AuthContext } from "../../../contexts/UserProvider";
+import toast, { Toaster } from "react-hot-toast";
+import { Modal } from "react-bootstrap";
 
 const VillaList = () => {
   const MySwal = withReactContent(Swal);
+  const { resort } = useContext(AuthContext);
   const [data, setData] = useState([]);
+  const [showStatusUpdate, setShowStatusUpdate] = useState(false);
+  const [id, setId] = useState(null);
+  const [status, setStatus] = useState("Unpublished");
+
+  const handleUpdateStatus = async (e) => {
+    e.preventDefault();
+
+    try {
+      await axios.patch(`${baseUrl}/api/villa/${id}`, {
+        isPublished: status,
+      });
+
+      toast.success("Updated");
+
+      const { data } = await axios.get(
+        `${baseUrl}/api/villa/?resortId=${resort._id}`
+      );
+      setData(data.data);
+    } catch (err) {
+      toast.error("Something Error Found.");
+      console.log(err);
+    }
+  };
 
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(`${baseUrl}/api/villa`);
+        const { data } = await axios.get(
+          `${baseUrl}/api/villa/?resortId=${resort._id}`
+        );
         setData(data.data);
       } catch (error) {
         console.log(error);
       }
     };
-    getData();
-  }, []);
+    if (resort?._id || status) {
+      getData();
+    }
+  }, [resort?._id, status]);
 
   return (
     <div className="wrapper">
@@ -38,7 +69,7 @@ const VillaList = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/dashboard/add-villa"}>
+                      <Link to={"/dashboard/resort/add-villa"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New villa
                         </button>
@@ -109,13 +140,11 @@ const VillaList = () => {
                             <button
                               type="button"
                               className="d-flex  bg-white p-0"
-                              // onClick={() => {
-                              //   setId(room?._id);
-                              //   setSelectedCategory(
-                              //     room?.categoryDetails?.name
-                              //   );
-                              //   setShowStatusUpdate(!showStatusUpdate);
-                              // }}
+                              onClick={() => {
+                                setId(villa?._id);
+
+                                setShowStatusUpdate(!showStatusUpdate);
+                              }}
                             >
                               <BiSolidEdit
                                 style={{ width: "24px", height: "24px" }}
@@ -156,6 +185,70 @@ const VillaList = () => {
                 </Table>
               </div>
             </div>
+
+            {showStatusUpdate && (
+              <Modal
+                show={() => setShowStatusUpdate(true)}
+                onHide={() => setShowStatusUpdate(false)}
+              >
+                <Modal.Header closeButton>
+                  <Modal.Title>
+                    <h1 className="modal-title fs-5" id="staticBackdropLabel">
+                      Status Update
+                    </h1>
+                  </Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                  <div
+                    style={{
+                      // width: "100%",
+                      borderRadius: "3px",
+                      backgroundColor: "white",
+                    }}
+                  >
+                    <div>
+                      <form onSubmit={handleUpdateStatus}>
+                        <div className="row">
+                          <div>
+                            <div className="">
+                              <div className="col-md-12 mb-3">
+                                <label htmlFor="inputState" className="">
+                                  Status
+                                </label>
+                                <br />
+                                <select
+                                  name="status"
+                                  id="inputState"
+                                  className="main_form"
+                                  style={{ width: "450px" }}
+                                  onBlur={(e) => setStatus(e.target.value)}
+                                  defaultValue={status}
+                                >
+                                  <option value="Published">Published</option>
+                                  <option value="Unpublished">
+                                    Unpublished
+                                  </option>
+                                </select>
+                              </div>
+
+                              <div className="d-flex justify-content-end ml-5">
+                                <button type="submit" style={{ width: 220 }}>
+                                  Update Status
+                                </button>
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                        <Toaster
+                          containerStyle={{ top: 300 }}
+                          toastOptions={{ position: "top-center" }}
+                        ></Toaster>
+                      </form>
+                    </div>
+                  </div>
+                </Modal.Body>
+              </Modal>
+            )}
           </div>
         </section>
       </div>

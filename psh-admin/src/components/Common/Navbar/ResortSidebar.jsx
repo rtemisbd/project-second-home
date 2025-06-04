@@ -322,7 +322,7 @@ const ResortSidebar = () => {
               active && dropdownId === "villa" ? "custom-drop-show" : ""
             }`}
           >
-            <Link to={"/dashboard/add-villa"}>
+            <Link to={"/dashboard/resort/add-villa"}>
               <li className="main_nav-link">
                 <span className="nav-link">
                   <div className="menu_flex">
@@ -334,7 +334,7 @@ const ResortSidebar = () => {
                 </span>
               </li>
             </Link>
-            <Link to={"/dashboard/villa-list"}>
+            <Link to={"/dashboard/resort/villa-list"}>
               <li className="main_nav-link">
                 <span className="nav-link">
                   <div className="menu_flex">

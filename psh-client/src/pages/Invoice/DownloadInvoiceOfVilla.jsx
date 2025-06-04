@@ -65,7 +65,7 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
         >
           {/* Logo */}
           <View>
-            <Image src={booking?.villa?.resortId?.logo} style={styles.logo} />
+            <Image src={booking?.resort?.logo} style={styles.logo} />
           </View>
 
           <View>
@@ -94,9 +94,7 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
           }}
         >
           <View>
-            <Text style={styles.subtitle}>
-              {booking?.villa?.resortId?.name}
-            </Text>
+            <Text style={styles.subtitle}>{booking?.resort?.name}</Text>
             <Text
               style={{
                 fontSize: 12,
@@ -106,16 +104,16 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
                 width: "150px",
               }}
             >
-              Address: {booking?.villa?.resortId?.address}
+              Address: {booking?.resort?.address}
             </Text>
             <Text style={styles.text}>
               Contact :{" "}
-              {(booking?.villa?.resortId?.contactNumbers || [])
-                .map((contact) => contact?.number)
+              {(booking?.resort?.contactNumbers || [])
+                .map((contact) => contact)
                 .join(", ")}
             </Text>
             <Text style={styles.text}>
-              Email: {booking?.villa?.resortId?.resortEmail}
+              Email: {booking?.resort?.resortEmail}
             </Text>
           </View>
           <View>
@@ -366,9 +364,9 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
           <Text>
             • For any further questions, kindly reach out to{" "}
             <Text style={{ fontWeight: "bold" }}>
-              {booking?.villa?.resortId?.name} -{" "}
-              {(booking?.villa?.resortId?.contactNumbers || [])
-                .map((contact) => contact?.number)
+              {booking?.resort?.name} -{" "}
+              {(booking?.resort?.contactNumbers || [])
+                .map((contact) => contact)
                 .join(", ")}
             </Text>
           </Text>

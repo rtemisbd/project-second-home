@@ -72,9 +72,9 @@ import EditProperty from "./pages/edit/EditProperty";
 import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
 import EditSeat from "./pages/edit/EditSeat";
 import ResortList from "./pages/Resorts/ResortList";
-import AddVilla from "./pages/Villa/AddVilla";
-import VillaList from "./pages/Villa/VillaList";
-import EditVilla from "./pages/Villa/EditVilla";
+import AddVilla from "./pages/resort-admin/Villa/AddVilla";
+import VillaList from "./pages/resort-admin/Villa/VillaList";
+import EditVilla from "./pages/resort-admin/Villa/EditVilla";
 import BookingList from "./pages/resort-admin/BookingList";
 
 import AddResort2 from "./pages/Resorts/AddResort2";
@@ -177,14 +177,15 @@ function App() {
         {/* resort related */}
         <Route path="add-resort" element={<AddResort2 />} />
         <Route path="resort-list" element={<ResortList/>} />
-        <Route path="add-villa" element={<AddVilla />} />
-        <Route path="villa-list" element={<VillaList />} />
-        <Route path="edit/villa/:id" element={<EditVilla />} />
+        
         <Route path="resort/booking-list" element={<BookingList/>} />
         <Route path="resort/transaction" element={<ResortTransaction/>} />
         <Route path="resort/add-resort" element={<AddResort/>} />
         <Route path="resort/overview" element={<ResortOverview/>} />
         <Route path="resort/edit-resort" element={<EditResort/>} />
+        <Route path="resort/add-villa" element={<AddVilla />} />
+        <Route path="resort/villa-list" element={<VillaList />} />
+        <Route path="resort/edit/villa/:id" element={<EditVilla />} />
 
       </Route>
 

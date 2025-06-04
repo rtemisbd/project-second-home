@@ -1,13 +1,12 @@
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
-import { baseUrl } from "../../utils/getBaseURL";
-import { multipleImageUpload } from "../../utils/multipleImageUpload";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
-import TextEditor from "../../components/TextEditor/TextEditor";
 import { useParams } from "react-router-dom";
-import ImageManagement from "../../components/PreviewImages/ImageManagement";
+import { baseUrl } from "../../../utils/getBaseURL";
+import { multipleImageUpload } from "../../../utils/multipleImageUpload";
+import TextEditor from "../../../components/TextEditor/TextEditor";
 
 const EditVilla = () => {
   const { id } = useParams();
@@ -596,11 +595,11 @@ const EditVilla = () => {
 
             <div className="row p-3">
               <h2 className="profile_label3 profile_bg mt-3">Villa Gallery</h2>
-              <ImageManagement
+              {/* <ImageManagement
                 label={"Photos"}
                 uploadedImages={uploadedImages}
                 setUploadedImages={setUploadedImages}
-              />
+              /> */}
 
               <div className="col-md-12 form_sub_stream">
                 <label

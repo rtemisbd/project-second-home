@@ -53,8 +53,8 @@ const VillaInvoice = () => {
                   <div>
                     <img
                       loading="lazy"
-                      src={booking?.villa?.resortId?.logo}
-                      alt={booking?.villa?.resortId?.name}
+                      src={booking?.resort?.logo}
+                      alt={booking?.resort?.name}
                       className="h-24 w-24 "
                     />{" "}
                   </div>
@@ -79,20 +79,20 @@ const VillaInvoice = () => {
                 <div className=" px-10 flex justify-between my-12 text-left">
                   <div>
                     <div className="text-[#35B0A7] font-bold">
-                      {booking?.villa?.resortId?.name}
+                      {booking?.resort?.name}
                     </div>
                     <div>
                       <span className="font-bold">Address :</span>{" "}
-                      {booking?.villa?.resortId?.address}
+                      {booking?.resort?.address}
                     </div>
                     <div>
                       <span className="font-bold">Contact :</span>{" "}
-                      {booking?.villa?.resortId?.contactNumbers?.map(
+                      {booking?.resort?.contactNumbers?.map(
                         (contact, ind) => (
                           <span key={ind} className="ms-1">
-                            {contact?.number}
+                            {contact}
                             {ind + 1 <
-                              booking?.villa?.resortId?.contactNumbers
+                              booking?.resort?.contactNumbers
                                 ?.length && <span> ,</span>}
                           </span>
                         )
@@ -100,7 +100,7 @@ const VillaInvoice = () => {
                     </div>
                     <div>
                       <span className="font-bold">Email :</span>{" "}
-                      {booking?.villa?.resortId?.resortEmail}
+                      {booking?.resort?.resortEmail}
                     </div>
                   </div>
                   <div className="">
@@ -237,13 +237,13 @@ const VillaInvoice = () => {
                   <li>
                     For any further questions, kindly reach out to{" "}
                     <span className="font-bold">
-                      {booking?.villa?.resortId?.name} -{" "}
-                      {booking?.villa?.resortId?.contactNumbers?.map(
+                      {booking?.resort?.name} -{" "}
+                      {booking?.resort?.contactNumbers?.map(
                         (contact, ind) => (
                           <span key={ind} className="ms-1">
-                            {contact?.number}
+                            {contact}
                             {ind + 1 <
-                              booking?.villa?.resortId?.contactNumbers
+                              booking?.resort?.contactNumbers
                                 ?.length && <span> ,</span>}
                           </span>
                         )

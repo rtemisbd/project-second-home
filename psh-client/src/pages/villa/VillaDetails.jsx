@@ -213,7 +213,7 @@ const VillaDetails = () => {
                           {villa?.resortId?.contactNumbers?.map(
                             (contact, ind) => (
                               <span key={ind}>
-                                <span className="mx-1">{contact?.number}</span>
+                                <span className="mx-1">{contact}</span>
                                 {ind + 1 <
                                   villa?.resortId?.contactNumbers?.length && (
                                   <span className="text-2xl">,</span>

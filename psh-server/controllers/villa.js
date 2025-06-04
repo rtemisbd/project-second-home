@@ -33,8 +33,17 @@ const getVillaById = catchAsync(async(req, res, next)=>{
     })
 })
 
+const updateVilla = catchAsync(async(req, res, next)=>{ 
+    const result = await villaServices.updateVillaById(  req.body, req.params.id);
+    responseSend(res, {
+        statusCode : 200,
+        success : true,
+        data : result, message : "Villa updated successfully!"
+    })
+})
+
 
 
 export const villaControllers = {
-    createVilla, getAllVilla, getVillaById
+    createVilla, getAllVilla, getVillaById, updateVilla
 }
