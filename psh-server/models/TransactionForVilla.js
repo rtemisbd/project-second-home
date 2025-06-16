@@ -7,6 +7,9 @@ const TransactionForVillaSchema = new mongoose.Schema(
     paymentProof : { type : String, required : true },
     receivedAmount : {type : Number, required : true},
     orderId : { type: ObjectId,  ref: "VillaOrder" },
+    villaId : { type: ObjectId,  ref: "Villa" },
+    resortId : { type: ObjectId,  ref: "Resort" },
+    
     senderNumber : {type : String, required : true},
     paymentMethod : {type : String, required : true, enum : ["online", "cash"], default : "online"},
     paymentPlatform : {type : String, required : true},

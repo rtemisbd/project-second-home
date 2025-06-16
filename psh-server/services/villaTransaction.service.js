@@ -1,3 +1,4 @@
+import mongoose from "mongoose";
 import TransactionForVilla from "../models/TransactionForVilla.js"
 
 const createTransactionIntoDB = async(payload)=>{
@@ -7,11 +8,15 @@ const createTransactionIntoDB = async(payload)=>{
 
 
 const getAllTransactionForVilla = async(queries)=>{
-  const {user, villa, resort} = queries
+  const {user, villa, resortId} = queries
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
 
   let matchStage = {}; 
+    if(resortId && resortId !== "undefined" && resortId !== "null" && resortId !== "") {
+      matchStage.resortId = new mongoose.Types.ObjectId(resortId);
+    }
+    
   
   const totalCountsPipeline = [
     { $match: matchStage },
@@ -40,7 +45,7 @@ const getAllTransactionForVilla = async(queries)=>{
           {
             $lookup: {
               from: "users",
-              let: { userId: "$user" },
+              let: { userId: "$userId" },
               pipeline: [
                 {
                   $match: {
@@ -54,12 +59,7 @@ const getAllTransactionForVilla = async(queries)=>{
               as: "user",
             },
           },
-
-          
           { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-
-
-
         ],
       },
     },
@@ -70,10 +70,11 @@ const getAllTransactionForVilla = async(queries)=>{
     },
   ];
 
-  const aggregatedResult = await VillaOrders.aggregate(pipeline);
-  const data =  aggregatedResult?.[0]?.paginatedResult || [];
+  const aggregatedResult = await TransactionForVilla.aggregate(pipeline);
+  const transactions =  aggregatedResult?.[0]?.paginatedResult || [];
 
-  return {data, totalCount};
+  return {transactions, totalCount};
+ 
 }
 
 

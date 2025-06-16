@@ -27,7 +27,8 @@ const generateRefreshToken = (user) => {
   return token;
 };
 
-const verifyToken = (token, secret) => {
+const verifyToken = (token, secret) => {       
+  
   return jwt.verify(token, secret);
 };
 

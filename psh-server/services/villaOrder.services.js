@@ -1,10 +1,10 @@
 import { setValue } from "node-global-storage";
 import User from "../models/User.js";
 import VillaOrders from "../models/VillaOrders.js"
-import { generateBookingId } from "../utils/generateBookingId.js";
 import TransactionForVilla from "../models/TransactionForVilla.js";
 import VillaRentDates from "../models/VillaRentDates.js";
 import mongoose from "mongoose";
+import { generatedResortBookingId } from "../utils/generatedResortBookingId.js";
 
 const createVillaOrderIntoDB = async(payload)=>{
     await setValue("userId", payload?.user);
@@ -27,8 +27,8 @@ const createVillaOrderIntoDB = async(payload)=>{
       // { runValidators: true, session }
     );
 
-    // step 2 : generate booking ID
-    payload.bookingId = await generateBookingId();
+    // step 2 : generate booking ID 
+    payload.bookingId = await generatedResortBookingId();
 
     //step 3 : create booking
       const order = await VillaOrders.create(payload);
@@ -40,6 +40,8 @@ const createVillaOrderIntoDB = async(payload)=>{
       paymentProof : payload.paymentProof,
       receivedAmount : payload.sendAmount,
       orderId : order?._id,
+      villaId : order?.villa,
+      resortId : order?.resort,
       senderNumber : payload.senderAccountNumber,
       paymentMethod : payload.paymentMethod,
       paymentPlatform : payload.paymentPlatform,

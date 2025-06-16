@@ -45,6 +45,7 @@ import districtRoute from "./routes/district.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import notFound from "./middleware/notFound.js";
 import villaOrderRoute from "./routes/villaOrder.js";
+import villaTransactionRoute from "./routes/villaTransaction.js";
 
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
@@ -149,6 +150,7 @@ app.use("/api/resort", resortRoute);
 app.use("/api/villa", villaRoute);
 app.use("/api/villa-order", villaOrderRoute);
 app.use("/api/district", districtRoute);
+app.use("/api/villaTransaction", villaTransactionRoute);
 
 // globally handle error
 app.use(globalErrorHandler);

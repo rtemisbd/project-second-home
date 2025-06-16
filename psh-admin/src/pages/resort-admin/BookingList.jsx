@@ -86,8 +86,11 @@ const BookingList = () => {
           "Content-Type": "application/json",
         };
 
+        console.log(accessToken);
+
         const { data } = await axios.get(
-          `${baseUrl}/api/villa-order?${queryParams.toString()}`
+          `${baseUrl}/api/villa-order?${queryParams.toString()}`,
+          { headers }
         );
         console.log(data);
 
