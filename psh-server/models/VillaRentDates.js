@@ -25,6 +25,10 @@ const villaRentDateSchema = new mongoose.Schema(
       type: ObjectId,
       ref: "Villa",
     },
+    resortId: {
+      type: ObjectId,
+      ref: "Resort",
+    },
     userId: {
       type: ObjectId,
       ref: "User",

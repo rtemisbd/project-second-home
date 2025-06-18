@@ -194,7 +194,7 @@ const ResortSidebar = () => {
         {/* booking overview */}
         <li className="main_nav-link" onClick={() => setActive(false)}>
           <Link
-            to={"/dashboard/booking-overview"}
+            to={"/dashboard/resort/booking-overview"}
             className=" nav-link text-black  d-flex align-items-center"
           >
             <IoCalendarOutline

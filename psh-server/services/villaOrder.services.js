@@ -56,6 +56,7 @@ const createVillaOrderIntoDB = async(payload)=>{
       orderId : order?._id,
       bookingId:payload.bookingId,
       villaId:payload.villa,
+      resortId : payload?.resort,
       userId:payload.user,
     }
     await VillaRentDates.create(newRentDate);
@@ -68,9 +69,7 @@ const getAllVillaOrdersFromDB = async (queries) => {
   const {user, villa, resort} = queries
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
-
-
-
+  
   let matchStage = {}; 
   if(resort && resort !== "undefined" && resort !== "null" && resort !== "") {
     matchStage.resort = new mongoose.Types.ObjectId(resort);

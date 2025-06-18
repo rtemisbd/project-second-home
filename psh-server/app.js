@@ -46,6 +46,7 @@ import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import notFound from "./middleware/notFound.js";
 import villaOrderRoute from "./routes/villaOrder.js";
 import villaTransactionRoute from "./routes/villaTransaction.js";
+import villaRentDateRoute from "./routes/villaRentDates.js";
 
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
@@ -146,11 +147,14 @@ app.use("/api/subscription", subscription);
 app.use("/api/subscriptionOrder", subscriptionOrder);
 app.use("/api/rent-rooms", rentRoomRoute);
 app.use("/api/bkash/payment", paymentRoute);
+
+
 app.use("/api/resort", resortRoute);
 app.use("/api/villa", villaRoute);
 app.use("/api/villa-order", villaOrderRoute);
 app.use("/api/district", districtRoute);
 app.use("/api/villaTransaction", villaTransactionRoute);
+app.use("/api/villaRentDates", villaRentDateRoute);
 
 // globally handle error
 app.use(globalErrorHandler);

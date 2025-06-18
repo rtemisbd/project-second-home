@@ -477,12 +477,12 @@ const VillaDetails = () => {
               </div>
               {/* Total Box */}
 
-              <div className="flex flex-col  items-start  sm:col-span-12 lg:col-span-4 ">
+              <div className="flex flex-col  items-start  sm:col-span-12 lg:col-span-4  ">
                 <VillaBookingBox villa={villa} bookedDates={bookedDates} />
 
                 <div
                   ref={playerContainerRef}
-                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden sm:mt-3 md:mt-0 lg:mt-3 bg-gray-100"
+                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden sm:mt-3 md:mt-0 lg:mt-3 bg-gray-100 -z-10"
                   onClick={openVideoInYouTube}
                 >
                   {videoId ? (

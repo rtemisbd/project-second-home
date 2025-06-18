@@ -82,6 +82,7 @@ import AddResort from "./pages/resort-admin/resort/AddResort";
 import ResortTransaction from "./pages/resort-admin/ResortTransaction";
 import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
 import EditResort from "./pages/resort-admin/resort/EditResort";
+import VillaBookingOverview from "./pages/resort-admin/booking-overview/VillaBookingOverview";
 
 
 function App() {
@@ -180,6 +181,7 @@ function App() {
         
         <Route path="resort/booking-list" element={<BookingList/>} />
         <Route path="resort/transaction" element={<ResortTransaction/>} />
+        <Route path="resort/booking-overview" element={<VillaBookingOverview/>} />
         <Route path="resort/add-resort" element={<AddResort/>} />
         <Route path="resort/overview" element={<ResortOverview/>} />
         <Route path="resort/edit-resort" element={<EditResort/>} />
