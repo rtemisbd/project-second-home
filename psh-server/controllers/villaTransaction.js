@@ -14,6 +14,21 @@ const getVillaAllTransactions = catchAsync(async (req, res, next) => {
 
 });
 
+
+const updateSingleVillaTransaction = catchAsync(async(req, res, next)=>{
+    const transaction = await transactionForVillaServices.updateVillaTransactionByID(req.params.id, req.body);
+
+    responseSend(res, {
+        statusCode : 200,
+        success : true,
+        data : transaction,
+        message : "Transactions updated successfully"
+    })
+})
+
+
+
 export const villaTransactionControllers = {
-    getVillaAllTransactions
+    getVillaAllTransactions,
+    updateSingleVillaTransaction
 }

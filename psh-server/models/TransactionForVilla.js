@@ -13,7 +13,7 @@ const TransactionForVillaSchema = new mongoose.Schema(
     senderNumber : {type : String, required : true},
     paymentMethod : {type : String, required : true, enum : ["online", "cash"], default : "online"},
     paymentPlatform : {type : String, required : true},
-    paymentStatus : {type : String , required : true, enum: ["Accepted", "Pending", "Processing", "Rejected"], default: "Processing"}
+    paymentStatus : {type : String , required : true, enum: ["Approved", "Pending", "Processing", "Rejected"], default: "Processing"}
   }, 
   {
     timestamps: true,

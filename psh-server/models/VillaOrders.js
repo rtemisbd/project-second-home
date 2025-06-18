@@ -25,7 +25,7 @@ const villaOrderSchema = new mongoose.Schema({
     payableAmount : {type : Number, required : true},
     status: {
         type: String,
-        enum: ["Pending", "Processing", "Approved", "Canceled"],
+        enum: ["Pending", "Processing", "Approved", "Rejected"],
         default: "Processing",
       },
     specialRequest : {type : String},

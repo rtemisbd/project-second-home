@@ -1,5 +1,6 @@
 import mongoose from "mongoose";
 import TransactionForVilla from "../models/TransactionForVilla.js"
+import VillaOrders from "../models/VillaOrders.js";
 
 const createTransactionIntoDB = async(payload)=>{
     const result =  await TransactionForVilla.create(payload);
@@ -78,7 +79,39 @@ const getAllTransactionForVilla = async(queries)=>{
 }
 
 
+const updateVillaTransactionByID = async(id, payload)=>{
+   const transaction = await TransactionForVilla.findById({ _id: id });
+
+   if(!transaction) {
+    return {error : "Transaction not found!"};
+   }
+
+   const orderId = transaction.orderId;
+   const oldStatus = transaction.paymentStatus;
+   const newStatus = payload.paymentStatus;
+
+ // Step 2: Update the transaction status
+  const result = await TransactionForVilla.findByIdAndUpdate(
+    id,
+    { $set: payload },
+    { new: true, runValidators: true }
+  );
+
+  // Step 3 : Update order status
+  
+  const updatedOrder = await VillaOrders.findByIdAndUpdate(
+    orderId,
+    {$set : {status : payload.paymentStatus }},
+    { new: true, runValidators: true }
+  )
+
+  return result;
+
+}
+
+
 export const transactionForVillaServices = {
     createTransactionIntoDB,
-    getAllTransactionForVilla
+    getAllTransactionForVilla,
+    updateVillaTransactionByID
 }

@@ -15,16 +15,15 @@ import { MdRefresh } from "react-icons/md";
 import ExportToExcel from "../Transaction/ExportToExcel";
 import { Spinner, Table } from "react-bootstrap";
 import img from "../../img/new/style.png";
-import TransactionPrint from "../Transaction/TransactionPrint";
 
 import axios from "axios";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
 import ViewTransactionModal from "../Transaction/ViewTransactionModal";
 import { formatDate } from "../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
-import TransactionStatusUpdate from "../Transaction/TransactionStatusUpdate";
 import Pagination from "../../components/Pagination/Pagination";
 import { Toaster } from "react-hot-toast";
+import ResortTransactionStatusUpdate from "../../components/resort-admin/payment/ResortTransactionStatusUpdate";
 
 const ResortTransaction = () => {
   const ref = useRef();
@@ -58,8 +57,6 @@ const ResortTransaction = () => {
 
   // Get All Branch
   const { allBranch, refetch: refetchBranches } = useBranch();
-
-  const paymentStatusArray = ["Accepted", "Pending", "Processing", "Rejected"];
 
   // Get All Transactions
   const { refetch } = useQuery(
@@ -428,7 +425,7 @@ const ResortTransaction = () => {
                             className="d-flex justify-content-center align-items-center gap-2 fw-bold"
                             style={{
                               color:
-                                transaction?.paymentStatus === "Accepted"
+                                transaction?.paymentStatus === "Approved"
                                   ? "#35b0a7"
                                   : "#FF0000",
                             }}
@@ -440,93 +437,20 @@ const ResortTransaction = () => {
                               data-bs-toggle="modal"
                               data-bs-target={`#transactionStatus${transaction._id}`}
                               className="d-flex btn   "
-                              disabled={
-                                transaction?.paymentStatus === "Accepted" &&
-                                user?.role === "resortAdmin"
-                              }
+                              // disabled={
+                              //   transaction?.paymentStatus === "Approved" &&
+                              //   user?.role === "resortAdmin"
+                              // }
                               style={{ border: "none" }}
                             >
                               <BiSolidEdit size={26} />
                             </button>
-                            <div className="container">
-                              <div
-                                className="modal fade"
-                                id={`transactionStatus${transaction?._id}`}
-                                data-bs-backdrop="static"
-                                data-bs-keyboard="false"
-                                tabIndex="-1"
-                                aria-labelledby="staticBackdropLabel"
-                                aria-hidden="true"
-                              >
-                                <div className="modal-dialog">
-                                  <div className="modal-content">
-                                    <div className="modal-header">
-                                      <h1
-                                        className="modal-title fs-5"
-                                        id="staticBackdropLabel"
-                                      >
-                                        Status Update
-                                      </h1>
-                                      <button
-                                        type="button"
-                                        className="btn-close"
-                                        data-bs-dismiss="modal"
-                                        aria-label="Close"
-                                      ></button>
-                                    </div>
-                                    <div className="modal-body">
-                                      <div>
-                                        <form>
-                                          <div className="row">
-                                            <div>
-                                              <div className="">
-                                                <div className="col-md-12 mb-3">
-                                                  <label
-                                                    htmlFor="inputState"
-                                                    className=""
-                                                  >
-                                                    Status (
-                                                    {transaction?.paymentStatus}
-                                                    )
-                                                  </label>
-                                                  <br />
-                                                  <select
-                                                    name="acceptableStatus"
-                                                    id="inputState"
-                                                    className="main_form"
-                                                    style={{ width: "450px" }}
-                                                    // onBlur={handleOnBlur}
-                                                    defaultValue={
-                                                      user.acceptableStatus
-                                                    }
-                                                  >
-                                                    {paymentStatusArray.map(
-                                                      (status) => (
-                                                        <option value={status}>
-                                                          {status}
-                                                        </option>
-                                                      )
-                                                    )}
-                                                  </select>
-                                                </div>
 
-                                                <div className="d-flex justify-content-center ml-5">
-                                                  <button
-                                                    type="submit"
-                                                    style={{ width: 220 }}
-                                                  >
-                                                    Update Status
-                                                  </button>
-                                                </div>
-                                              </div>
-                                            </div>
-                                          </div>
-                                        </form>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                              </div>
+                            <div>
+                              <ResortTransactionStatusUpdate
+                                data={transaction}
+                                refetch={refetch}
+                              />
                             </div>
                           </td>
                           <td>

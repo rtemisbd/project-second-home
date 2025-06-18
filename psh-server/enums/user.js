@@ -11,3 +11,4 @@ export const ENUM_USER_ROLE = {
   RESORT_RECEPTIONIST : "resortReceptionist"
 };
 
+      
