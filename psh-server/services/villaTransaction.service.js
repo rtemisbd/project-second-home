@@ -62,6 +62,42 @@ const getAllTransactionForVilla = async(queries)=>{
             },
           },
           { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+          {
+            $lookup: {
+              from: "villas",
+              let: { villaId: "$villaId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$villaId"] },
+                  },
+                },
+                {
+                  $project: { title: 1, villaNumber: 1  },
+                },
+              ],
+              as: "villa",
+            },
+          },
+          { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
+           {
+            $lookup: {
+              from: "villaorders",
+              let: { orderId: "$orderId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$orderId"] },
+                  },
+                },
+                {
+                  $project: { payableAmount: 1, phone: 1 , perNight : 1, rentDate : 1 },
+                },
+              ],
+              as: "order",
+            },
+          },
+          { $unwind: { path: "$order", preserveNullAndEmptyArrays: true } },
         ],
       },
     },

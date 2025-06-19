@@ -77,7 +77,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
       villa: villa,
       resort: villa?.resortId?._id,
       user: user?._id,
-      perNight: villa?.pricing?.perNight,
+      perNight: villa?.pricing?.afterDiscountPerNight,
       subTotal,
       totalAmount,
       payableAmount: totalAmount,

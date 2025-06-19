@@ -455,21 +455,6 @@ const ResortTransaction = () => {
                           </td>
                           <td>
                             <div className="d-flex justify-content-center gap-3">
-                              {user?.role === "SuperAdmin" ? (
-                                <button
-                                  type="button"
-                                  data-bs-toggle="modal"
-                                  data-bs-target={`#transaction${transaction._id}`}
-                                  className="d-flex btn mt-2"
-                                >
-                                  <BiSolidEdit
-                                    style={{ width: "30px", height: "30px" }}
-                                  />
-                                </button>
-                              ) : (
-                                ""
-                              )}
-
                               <button
                                 type="button"
                                 className="btn"
@@ -482,30 +467,171 @@ const ResortTransaction = () => {
                                   />
                                 </span>
                               </button>
-
-                              {user?.role === "SuperAdmin" ? (
-                                <div>
-                                  <AiOutlineDelete
-                                    // onClick={() => handleDelete(transaction._id)}
-                                    style={{
-                                      width: "30px",
-                                      height: "30px",
-                                      marginTop: "10px",
-                                      cursor: "pointer",
-                                    }}
-                                  />
-                                </div>
-                              ) : (
-                                ""
-                              )}
+                              <div>
+                                <AiOutlineDelete
+                                  // onClick={() => handleDelete(transaction._id)}
+                                  style={{
+                                    width: "30px",
+                                    height: "30px",
+                                    marginTop: "10px",
+                                    cursor: "pointer",
+                                  }}
+                                />
+                              </div>
                             </div>
 
                             {/* Modal Transaction Details */}
-                            <ViewTransactionModal
-                              data={transaction}
-                              // bookings={bookings}
-                              // userAllBooking={userAllBooking}
-                            />
+
+                            <div
+                              className="modal fade "
+                              id={`details${transaction._id}`}
+                              data-bs-backdrop="static"
+                              data-bs-keyboard="false"
+                              tabIndex="-1"
+                              aria-labelledby="staticBackdropLabel"
+                              aria-hidden="true"
+                            >
+                              <div
+                                className="modal-dialog"
+                                style={{ maxWidth: "1000px" }}
+                              >
+                                <div className="modal-content">
+                                  <div className="modal-header">
+                                    <h3>Transaction Details</h3>
+                                    <button
+                                      type="button"
+                                      className="btn-close"
+                                      data-bs-dismiss="modal"
+                                      aria-label="Close"
+                                    ></button>
+                                  </div>
+                                  <div className="modal-body w-100 ">
+                                    <h3
+                                      className=" fs-4 mt-3 ps-3 rounded"
+                                      style={{
+                                        backgroundColor: "#00bbb4",
+                                        color: "White",
+                                      }}
+                                    >
+                                      Booking Details
+                                    </h3>
+
+                                    <div className="row px-5">
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Customer Name
+                                        </label>
+                                        <p>{transaction?.user?.firstName}</p>
+                                      </div>
+
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Phone Number
+                                        </label>
+                                        <p>{transaction?.user?.phone}</p>
+                                      </div>
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Villa Name
+                                        </label>
+                                        <p>{transaction?.villa?.title}</p>
+                                      </div>
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Villa Number
+                                        </label>
+                                        <p>{transaction?.villa?.villaNumber}</p>
+                                      </div>
+
+                                      <div className="col-lg-12">
+                                        <label htmlFor="" className="fw-medium">
+                                          Booking Date
+                                        </label>
+                                        <p>
+                                          {
+                                            transaction?.order?.rentDate
+                                              ?.bookStartDate
+                                          }{" "}
+                                          to{" "}
+                                          {
+                                            transaction?.order?.rentDate
+                                              ?.bookEndDate
+                                          }{" "}
+                                          (
+                                          {
+                                            transaction?.order?.rentDate
+                                              ?.daysDifference
+                                          }{" "}
+                                          Nights)
+                                        </p>
+                                      </div>
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Per Night
+                                        </label>
+                                        <p>TK {transaction?.order?.perNight}</p>
+                                      </div>
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Total Payable Amount
+                                        </label>
+                                        <p>
+                                          TK {transaction?.order?.payableAmount}
+                                        </p>
+                                      </div>
+                                    </div>
+                                    {/* Payment Details */}
+
+                                    <h3
+                                      className=" fs-4 mt-3 ps-3 rounded"
+                                      style={{
+                                        backgroundColor: "#00bbb4",
+                                        color: "White",
+                                      }}
+                                    >
+                                      Payment Details
+                                    </h3>
+
+                                    <div className="row px-5">
+                                      <div className="col-lg-3">
+                                        <label htmlFor="" className="fw-medium">
+                                          Payment Date & Time
+                                        </label>
+                                        <p>
+                                          {new Date(
+                                            transaction?.createdAt
+                                          ).toLocaleString()}
+                                        </p>
+                                      </div>
+
+                                      <div className="col-lg-3">
+                                        {" "}
+                                        <label htmlFor="" className="fw-medium">
+                                          Received Amount
+                                        </label>
+                                        <p>
+                                          Tk{" "}
+                                          {transaction?.receivedAmount.toLocaleString()}
+                                        </p>
+                                      </div>
+
+                                      <div className="col-lg-3">
+                                        {" "}
+                                        <label htmlFor="" className="fw-medium">
+                                          Payment info
+                                        </label>
+                                        <div>
+                                          <span className="fw-bold">
+                                            {transaction?.paymentPlatform},{" "}
+                                            {transaction?.senderNumber}
+                                          </span>
+                                        </div>
+                                      </div>
+                                    </div>
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
                           </td>
                         </tr>
                       ))
