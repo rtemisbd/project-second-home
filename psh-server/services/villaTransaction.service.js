@@ -34,84 +34,89 @@ const getAllTransactionForVilla = async(queries)=>{
   const totalCount = totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
 
   const pipeline = [
-    { $match: matchStage },
-    {
-      $facet: {
-        paginatedResult: [
-          { $sort: { createdAt: -1 } },
-          { $skip: (page - 1) * size },
-          { $limit: size },
+  { $match: matchStage },
+  {
+    $facet: {
+      paginatedResult: [
+        { $sort: { createdAt: -1 } },
+        { $skip: (page - 1) * size },
+        { $limit: size },
 
-          //USER
+        // USER
+        {
+          $lookup: {
+            from: "users",
+            let: { userId: "$userId" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_id", "$$userId"] } } },
+              { $project: { firstName: 1, phone: 1 } },
+            ],
+            as: "user",
+          },
+        },
+        { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
 
-          {
-            $lookup: {
-              from: "users",
-              let: { userId: "$userId" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: { $eq: ["$_id", "$$userId"] },
-                  },
+        // VILLA
+        {
+          $lookup: {
+            from: "villas",
+            let: { villaId: "$villaId" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_id", "$$villaId"] } } },
+              { $project: { title: 1, villaNumber: 1 } },
+            ],
+            as: "villa",
+          },
+        },
+        { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
+
+        // ORDER
+        {
+          $lookup: {
+            from: "villaorders",
+            let: { orderId: "$orderId" },
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_id", "$$orderId"] } } },
+              {
+                $project: {
+                  payableAmount: 1,
+                  phone: 1,
+                  perNight: 1,
+                  rentDate: 1,
                 },
-                {
-                  $project: { firstName: 1, phone: 1 },
-                },
-              ],
-              as: "user",
+              },
+            ],
+            as: "order",
+          },
+        },
+        { $unwind: { path: "$order", preserveNullAndEmptyArrays: true } },
+      ],
+      summary: [
+        {
+          $group: {
+            _id: null,
+            totalReceivedAmount: {
+              $sum: {
+                $cond: [
+                  { $eq: ["$paymentStatus", "Approved"] },
+                  "$receivedAmount",
+                  0,
+                ],
+              },
             },
           },
-          { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-          {
-            $lookup: {
-              from: "villas",
-              let: { villaId: "$villaId" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: { $eq: ["$_id", "$$villaId"] },
-                  },
-                },
-                {
-                  $project: { title: 1, villaNumber: 1  },
-                },
-              ],
-              as: "villa",
-            },
-          },
-          { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
-           {
-            $lookup: {
-              from: "villaorders",
-              let: { orderId: "$orderId" },
-              pipeline: [
-                {
-                  $match: {
-                    $expr: { $eq: ["$_id", "$$orderId"] },
-                  },
-                },
-                {
-                  $project: { payableAmount: 1, phone: 1 , perNight : 1, rentDate : 1 },
-                },
-              ],
-              as: "order",
-            },
-          },
-          { $unwind: { path: "$order", preserveNullAndEmptyArrays: true } },
-        ],
-      },
+        },
+      ],
     },
-    {
-      $project: {
-        paginatedResult: 1,
-      },
-    },
-  ];
+  },
+];
+
 
   const aggregatedResult = await TransactionForVilla.aggregate(pipeline);
   const transactions =  aggregatedResult?.[0]?.paginatedResult || [];
+  const totalReceivedAmount = aggregatedResult?.[0]?.summary?.[0]?.totalReceivedAmount || 0;
 
-  return {transactions, totalCount};
+  return {transactions, totalCount, totalReceivedAmount};
  
 }
 

@@ -45,7 +45,7 @@ const ResortTransaction = () => {
   const [bookingId, setBookingId] = useState("");
 
   const [data, setData] = useState([]);
-  const [totalReceviedAmount, setTotalReceivedAmount] = useState(0);
+  const [totalReceivedAmount, setTotalReceivedAmount] = useState(0);
 
   const [totalDataCount, setTotalDataCount] = useState(0);
 
@@ -104,7 +104,7 @@ const ResortTransaction = () => {
 
         setData(data?.data?.transactions);
         setTotalDataCount(data?.data?.totalCount);
-        // setTotalReceivedAmount(data?.data?.totalReceivedAmount);
+        setTotalReceivedAmount(data?.data?.totalReceivedAmount);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -198,7 +198,7 @@ const ResortTransaction = () => {
                     <p className="fw-bold">
                       Tk{" "}
                       {data?.length > 0
-                        ? totalReceviedAmount?.toLocaleString()
+                        ? totalReceivedAmount?.toLocaleString()
                         : 0}
                     </p>
                   </div>

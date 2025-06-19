@@ -133,7 +133,7 @@ const getAllTransactionFromDB = async (queries) => {
           { $limit: size },
         ],
         totalCounts: [
-          {
+          { 
             $group: {
               _id: null,
               totalCount: { $sum: 1 },
