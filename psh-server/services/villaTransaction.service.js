@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import TransactionForVilla from "../models/TransactionForVilla.js"
 import VillaOrders from "../models/VillaOrders.js";
+import { villaOrderServices } from "./villaOrder.services.js";
 
 const createTransactionIntoDB = async(payload)=>{
     const result =  await TransactionForVilla.create(payload);
@@ -99,11 +100,13 @@ const updateVillaTransactionByID = async(id, payload)=>{
 
   // Step 3 : Update order status
   
-  const updatedOrder = await VillaOrders.findByIdAndUpdate(
-    orderId,
-    {$set : {status : payload.paymentStatus }},
-    { new: true, runValidators: true }
-  )
+  // const updatedOrder = await VillaOrders.findByIdAndUpdate(
+  //   orderId,
+  //   {$set : {status : payload.paymentStatus }},
+  //   { new: true, runValidators: true }
+  // )
+
+  const updatedOrder = await villaOrderServices.updateVillaOrderById(orderId, {status : payload.paymentStatus });
 
   return result;
 

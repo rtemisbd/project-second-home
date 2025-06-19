@@ -4,9 +4,6 @@ import responseSend from "../utils/responseSend.js";
 
 const getVillaRentDates = catchAsync(async(req, res, next)=>{
  const result  = await villaRentDatesServices.getAllVillaRentDates(req?.query);
-
- 
-
  responseSend(res, {
     statusCode: 200,
     success: true,

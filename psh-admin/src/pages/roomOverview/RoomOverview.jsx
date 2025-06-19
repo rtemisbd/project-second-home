@@ -6,10 +6,14 @@ import useBranch from "../../hooks/useBranch";
 import useCategory from "../../hooks/useCategory";
 import { useSelector } from "react-redux";
 import DetailOverview from "../../components/BookOverview/DetailOverview";
+import { dateFormatter } from "../../utils/dateFormatter";
 // import Pagination from "../../components/Pagination/Pagination";
 
 const RoomOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
+  
+  const { months, formatDate, generateDateArray } = dateFormatter;
+
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -28,7 +32,7 @@ const RoomOverview = () => {
   const [endMonth, setEndMonth] = useState("");
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
-  const [monthIndex, setMonthIndex] = useState(null);
+  const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
 
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -38,37 +42,6 @@ const RoomOverview = () => {
   const { allBranch } = useBranch();
   const { categories } = useCategory();
 
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  // Helper to format a date into YYYY-MM-DD
-  // const formatDate = (date) => date.toLocaleString();
-  const formatDate = (date) => date.toLocaleDateString("en-CA");
-
-  // Generate array of dates between two dates
-  const generateDateArray = (start, end) => {
-    let startDate = new Date(start);
-    let endDate = new Date(end);
-
-    let dates = [];
-    while (startDate <= endDate) {
-      dates.push(formatDate(new Date(startDate)));
-      startDate.setDate(startDate.getDate() + 1);
-    }
-    return dates;
-  };
 
   const handleFromDate = (e) => {
     setFromDate(e.target.value);
@@ -488,13 +461,3 @@ const RoomOverview = () => {
 };
 
 export default RoomOverview;
-
-
-
-
-
-
-
-
-
- 

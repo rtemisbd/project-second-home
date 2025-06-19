@@ -5,6 +5,7 @@ import TransactionForVilla from "../models/TransactionForVilla.js";
 import VillaRentDates from "../models/VillaRentDates.js";
 import mongoose from "mongoose";
 import { generatedResortBookingId } from "../utils/generatedResortBookingId.js";
+import { villaRentDatesServices } from "./villaRentDates.service.js";
 
 const createVillaOrderIntoDB = async(payload)=>{
     await setValue("userId", payload?.user);
@@ -59,7 +60,7 @@ const createVillaOrderIntoDB = async(payload)=>{
       resortId : payload?.resort,
       userId:payload.user,
     }
-    await VillaRentDates.create(newRentDate);
+    await villaRentDatesServices.createRentDatesIntoDB(newRentDate);
   
   return order;
 }
@@ -199,9 +200,43 @@ const getVillaOrderByIdFromDB = async (id) => {
 };
 
 
+const updateVillaOrderById = async(id, payload)=>{
+  // step 1 : check the order existence
+   const order = await VillaOrders.findById({ _id: id });
+
+   if(!order) {
+    return {error : "Order not found!"};
+   }
+
+
+   const oldStatus = order.status;
+   const newStatus = payload.status;
+
+ // Step 2: Update the order status
+  const result = await VillaOrders.findByIdAndUpdate(
+    id,
+    { $set: payload },
+    { new: true, runValidators: true }
+  );
+  // step 3 : update rent-date
+  let bookingStatus = ""
+  if(payload.status === "Approved" || payload.status === "Processing"){
+    bookingStatus = "Booked";
+  }
+  if(payload.status === "Pending" || payload.status === "Rejected"){
+    bookingStatus = "Cancelled";
+  }
+  const updateRentDate = await VillaRentDates.findOneAndUpdate({orderId :id },
+    { $set: {bookingStatus} },
+    { new: true, runValidators: true }) 
+
+  return result;
+}
+
 
 export const villaOrderServices = {
     createVillaOrderIntoDB,
     getAllVillaOrdersFromDB,
-    getVillaOrderByIdFromDB
+    getVillaOrderByIdFromDB,
+    updateVillaOrderById
 }

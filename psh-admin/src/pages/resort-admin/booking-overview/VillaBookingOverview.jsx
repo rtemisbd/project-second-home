@@ -8,10 +8,13 @@ import { Table } from "react-bootstrap";
 import DetailOverview from "../../../components/BookOverview/DetailOverview";
 import { AuthContext } from "../../../contexts/UserProvider";
 import axios from "axios";
+import { dateFormatter } from "../../../utils/dateFormatter";
 
 const VillaBookingOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
   const { resort } = useContext(AuthContext);
+  const { months, formatDate, generateDateArray, convertToISODate } =
+    dateFormatter;
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -22,15 +25,12 @@ const VillaBookingOverview = () => {
 
   const [data, setData] = useState([]);
   const [bookedDates, setBookedDates] = useState([]);
-  const [bookedRooms, setBookedRooms] = useState([]);
-  const [bookedSeats, setBookedSeats] = useState([]);
-  const [reserved, setReserved] = useState([]);
 
   const [startMonth, setStartMonth] = useState("");
   const [endMonth, setEndMonth] = useState("");
   const [startYear, setStartYear] = useState("");
   const [endYear, setEndYear] = useState("");
-  const [monthIndex, setMonthIndex] = useState(null);
+  const [monthIndex, setMonthIndex] = useState(new Date().getMonth());
 
   const [showDetailModal, setShowDetailModal] = useState(false);
   const [detail, setDetail] = useState(null);
@@ -39,43 +39,6 @@ const VillaBookingOverview = () => {
 
   const { allBranch } = useBranch();
   const { categories } = useCategory();
-
-  const months = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  // Helper to format a date into YYYY-MM-DD
-  // const formatDate = (date) => date.toLocaleString();
-  const formatDate = (date) => date.toLocaleDateString("en-CA");
-
-  // Generate array of dates between two dates
-  const generateDateArray = (start, end) => {
-    let startDate = new Date(start);
-    let endDate = new Date(end);
-
-    let dates = [];
-    while (startDate <= endDate) {
-      dates.push(formatDate(new Date(startDate)));
-      startDate.setDate(startDate.getDate() + 1);
-    }
-    return dates;
-  };
-
-  const convertToISODate = (dmy) => {
-    const [day, month, year] = dmy.split("-");
-    return `${year}-${month}-${day}`;
-  };
 
   const handleFromDate = (e) => {
     setFromDate(e.target.value);
@@ -99,7 +62,8 @@ const VillaBookingOverview = () => {
       (item) =>
         item.villaId === villa._id &&
         new Date(convertToISODate(item.bookStartDate)) <= new Date(date) &&
-        new Date(convertToISODate(item.bookEndDate)) >= new Date(date)
+        new Date(convertToISODate(item.bookEndDate)) >= new Date(date) &&
+        item?.bookingStatus === "Booked"
     );
 
     return booking?.bookingStatus;
@@ -112,14 +76,14 @@ const VillaBookingOverview = () => {
     setDetail(room);
 
     if (getBookingStatus(room, date)) {
-      setBookingInfo(
-        bookedSeats.filter(
-          (bs) =>
-            bs.seatId === room._id &&
-            new Date(bs.bookStartDate) <= new Date(date) &&
-            new Date(bs.bookEndDate) >= new Date(date)
-        )
-      );
+      // setBookingInfo(
+      //   bookedSeats.filter(
+      //     (bs) =>
+      //       bs.seatId === room._id &&
+      //       new Date(bs.bookStartDate) <= new Date(date) &&
+      //       new Date(bs.bookEndDate) >= new Date(date)
+      //   )
+      // );
     }
   };
 

@@ -24,7 +24,10 @@ const getAllVillaRentDates = async(queries)=>{
 }
 
 
+// const deleteVillaRents
+
 export const villaRentDatesServices = {
     createRentDatesIntoDB,
-    getAllVillaRentDates
+    getAllVillaRentDates,
+    
 }
