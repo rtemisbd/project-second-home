@@ -1,7 +1,5 @@
 import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import useBranch from "../../../hooks/useBranch";
-import useCategory from "../../../hooks/useCategory";
 import { useQuery } from "react-query";
 import { baseUrl } from "../../../utils/getBaseURL";
 import { Table } from "react-bootstrap";
@@ -18,10 +16,9 @@ const VillaBookingOverview = () => {
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [branch, setBranch] = useState("");
-  const [category, setCategory] = useState("All");
-  const [roomId, setRoomId] = useState("");
-  const [seatId, setSeatId] = useState("");
+
+  const [villaNumber, setVillaNumber] = useState("");
+  const [villaName, setVillaName] = useState("");
 
   const [data, setData] = useState([]);
   const [bookedDates, setBookedDates] = useState([]);
@@ -36,9 +33,6 @@ const VillaBookingOverview = () => {
   const [detail, setDetail] = useState(null);
   const [bookingInfo, setBookingInfo] = useState(null);
   const [selectedDate, setSelectedDate] = useState(null);
-
-  const { allBranch } = useBranch();
-  const { categories } = useCategory();
 
   const handleFromDate = (e) => {
     setFromDate(e.target.value);
@@ -106,10 +100,14 @@ const VillaBookingOverview = () => {
 
   // Fetch villa
   const { refetch: refetchVilla } = useQuery(
-    ["fetchVilla", page, size, resort],
+    ["fetchVilla", page, size, resort, villaName, villaNumber],
     async () => {
       try {
-        const queryParams = new URLSearchParams({ resortId: resort?._id });
+        const queryParams = new URLSearchParams({
+          resortId: resort?._id,
+          villaName,
+          villaNumber,
+        });
         const { data } = await axios.get(
           `${baseUrl}/api/villa?${queryParams.toString()}`
         );
@@ -189,54 +187,23 @@ const VillaBookingOverview = () => {
                   onChange={handleToDate}
                 />
               </div>
+
               <div>
-                <label htmlFor="branch">Branch</label> <br />
-                <select
-                  id="branch"
-                  className="rounded py-1 "
-                  value={branch}
-                  onChange={(e) => setBranch(e.target.value)}
-                >
-                  <option value="">All</option>
-                  {allBranch?.map((branch) => (
-                    <option key={branch.name} value={branch.name}>
-                      {branch.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="category">Room Type</label> <br />
-                <select
-                  id="category"
-                  className="rounded py-1 "
-                  value={category}
-                  onChange={(e) => setCategory(e.target.value)}
-                >
-                  <option value="All">All</option>
-                  {categories?.map((category) => (
-                    <option key={category.name} value={category.name}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-              <div>
-                <label htmlFor="roomId">Room Number </label> <br />
+                <label htmlFor="villaNumber">Villa Number </label> <br />
                 <input
                   type="text"
                   className="rounded  "
-                  value={roomId}
-                  onChange={(e) => setRoomId(e.target.value)}
+                  value={villaNumber}
+                  onChange={(e) => setVillaNumber(e.target.value)}
                 />
               </div>
               <div>
-                <label htmlFor="seatId">Seat Number </label> <br />
+                <label htmlFor="villaName">Villa Name </label> <br />
                 <input
                   type="text"
                   className="rounded  "
-                  value={seatId}
-                  onChange={(e) => setSeatId(e.target.value)}
+                  value={villaName}
+                  onChange={(e) => setVillaName(e.target.value)}
                 />
               </div>
             </div>

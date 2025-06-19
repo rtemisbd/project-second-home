@@ -14,6 +14,8 @@ const getAllVillaRentDates = async(queries)=>{
   if(resort && resort !== "undefined" && resort !== "null" && resort !== "") {
     matchStage.resortId = new mongoose.Types.ObjectId(resort);
   }
+
+
     const pipeline = [
         { $match: matchStage },
       ];

@@ -21,13 +21,20 @@ const createVillaIntoDB = async(payload)=>{
 
 const getAllVillaFromDB = async(queries)=>{
 
-    const {resortId} = queries;
+    const {resortId, villaName, villaNumber} = queries;
 
     let query = {};
 
     if (resortId && resortId !== "") {
         query.resortId = new mongoose.Types.ObjectId(resortId);
       }
+
+        if (villaName && villaName !== "") {
+    query.title = { $regex: `^${villaName}`, $options: "i" };
+  }
+  if (villaNumber && villaNumber !== "") {
+    query.villaNumber = { $regex: `^${villaNumber}`, $options: "i" };
+  }
 
 
     const pipeline = [
