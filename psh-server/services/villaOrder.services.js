@@ -67,14 +67,37 @@ const createVillaOrderIntoDB = async(payload)=>{
 
 
 const getAllVillaOrdersFromDB = async (queries) => {
-  const {user, villa, resort} = queries
+  const {user, villa, resort, phone, fromDate, toDate, status, runningStatus, paymentStatus} = queries
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
+
+  const today = new Date();
+  const formattedDate = today.toISOString().split("T")[0];
   
   let matchStage = {}; 
   if(resort && resort !== "undefined" && resort !== "null" && resort !== "") {
     matchStage.resort = new mongoose.Types.ObjectId(resort);
   }
+
+    if (fromDate && toDate) {
+    matchStage.createdAt = {
+      $gte: new Date(fromDate),
+      $lte: new Date(toDate),
+    };
+  }
+  if(status && status !=="All" ){
+    matchStage.status = status
+  }
+  
+    if (runningStatus === "Running") {
+    matchStage["rentDate.bookStartDate"] = { $lte: formattedDate };
+    matchStage["rentDate.bookEndDate"] = { $gte: formattedDate };
+  }
+  if (runningStatus === "Closed") {
+    matchStage["rentDate.bookEndDate"] = { $lt: formattedDate };
+  }
+
+   if (paymentStatus && paymentStatus !== "All") matchStage.paymentStatus = paymentStatus;
   
   const totalCountResult = await VillaOrders.aggregate([
     { $match: matchStage },
@@ -118,6 +141,17 @@ const getAllVillaOrdersFromDB = async (queries) => {
 
           
           { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+           // ADD USER PHONE FILTER HERE
+      ...(phone && phone !== ""
+        ? [
+            {
+              $match: {
+                "user.phone": { $regex: phone, $options: "i" },
+              },
+            },
+          ]
+        : []),
+
 
           // VILLA  
           
@@ -138,32 +172,33 @@ const getAllVillaOrdersFromDB = async (queries) => {
           { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
 
           // transaction
-          // {
-          //   $lookup: {
-          //     from: "transactionforvillas",
-          //     let: { orderId: "$_id" },
-          //     pipeline: [
-          //       {
-          //         $match: {
-          //           $expr: {
-          //             $and: [
-          //               { $eq: ["$orderId", "$$orderId"] },
-          //               { $eq: ["$paymentStatus", "Processing"] }, 
-          //             ],
-          //           },
-          //         },
-          //       },
-          //       {
-          //         $group: {
-          //           totalReceiveTk: { $sum: "$receivedAmount" },
-          //           allTransactions: { $push: "$$ROOT" },
-          //         },
-          //       },
-          //     ],
-          //     as: "transactions",
-          //   },
-          // },
-          // { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
+          {
+            $lookup: {
+              from: "transactionforvillas",
+              let: { orderId: "$_id" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: {
+                      $and: [
+                        { $eq: ["$orderId", "$$orderId"] },
+                        { $eq: ["$paymentStatus", "Approved"] }, 
+                      ],
+                    },
+                  },
+                },
+                {
+                  $group: {
+                    _id : null,
+                    totalReceiveTk: { $sum: "$receivedAmount" },
+                    allTransactions: { $push: "$$ROOT" },
+                  },
+                },
+              ],
+              as: "transactions",
+            },
+          },
+          { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
 
         ],
       },
@@ -177,6 +212,23 @@ const getAllVillaOrdersFromDB = async (queries) => {
 
   const aggregatedResult = await VillaOrders.aggregate(pipeline);
   const orders =  aggregatedResult?.[0]?.paginatedResult || [];
+    // 🔁 Update paymentStatus based on payableAmount vs receivedTk
+  for (const order of orders) {
+    const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
+    const payableAmount = order?.payableAmount || 0;
+
+    const newPaymentStatus = receivedTk === payableAmount ? "Paid" : "Unpaid";
+
+    if (order.paymentStatus !== newPaymentStatus) {
+      await VillaOrders.updateOne(
+        { _id: order._id },
+        { $set: { paymentStatus: newPaymentStatus } }
+      );
+    }
+
+    // Optional: Attach payment status to result directly if needed
+    order.paymentStatus = newPaymentStatus;
+  }
 
   return {orders, totalCount};
 };

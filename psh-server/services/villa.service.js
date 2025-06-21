@@ -36,7 +36,6 @@ const getAllVillaFromDB = async(queries)=>{
     query.villaNumber = { $regex: `^${villaNumber}`, $options: "i" };
   }
 
-
     const pipeline = [
         { $match: query },
         {

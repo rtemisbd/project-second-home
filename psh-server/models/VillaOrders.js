@@ -23,6 +23,7 @@ const villaOrderSchema = new mongoose.Schema({
     totalAmount : {type : Number, required : true},
     rentDate : rentDateSchema,
     payableAmount : {type : Number, required : true},
+    paymentStatus : {type : String, enum : ["Paid", "Unpaid"], default : "Unpaid"},
     status: {
         type: String,
         enum: ["Pending", "Processing", "Approved", "Rejected"],

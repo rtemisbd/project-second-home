@@ -23,15 +23,13 @@ const BookingList = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [toDate, setToDate] = useState(new Date());
 
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
   const [runningStatus, setRunningStatus] = useState("All");
-  const [guestType, setGuestType] = useState("All");
-  const [unknownQuery, setUnknownQuery] = useState("");
-  const [filteredName, setFilteredName] = useState("");
-  const [filteredPhone, setFilteredPhone] = useState("");
+
+  const [phone, setPhone] = useState("");
 
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
@@ -57,9 +55,7 @@ const BookingList = () => {
       fromDate,
       toDate,
       runningStatus,
-      guestType,
-      filteredName,
-      filteredPhone,
+      phone,
       resort._id,
     ],
     async () => {
@@ -71,10 +67,8 @@ const BookingList = () => {
           page,
           size,
           runningStatus,
-          guestType,
           status: bookingStatus,
-          filteredName,
-          filteredPhone,
+          phone: phone,
           resort: resort._id,
         });
 
@@ -86,13 +80,10 @@ const BookingList = () => {
           "Content-Type": "application/json",
         };
 
-        console.log(accessToken);
-
         const { data } = await axios.get(
           `${baseUrl}/api/villa-order?${queryParams.toString()}`,
           { headers }
         );
-        console.log(data);
 
         setData(data?.data?.orders);
         setTotalDataCount(data?.data?.totalCount);
@@ -111,6 +102,8 @@ const BookingList = () => {
   useEffect(() => {
     refetch();
   }, [size, refetch]);
+
+  console.log(data);
 
   return (
     <div className="wrapper">
@@ -230,10 +223,9 @@ const BookingList = () => {
                     type="number"
                     name="unknownQuery"
                     id="unknownQueryId"
-                    // onChange={handleUnknownQuery}
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter phone number"
-                    // value={unknownQuery}
-                    // disabled={unknownQuery.length >= 11}
                     className="rounded"
                   />
                 </div>
@@ -244,10 +236,10 @@ const BookingList = () => {
                 <div>
                   <input
                     type="date"
-                    // onChange={(e) => setFromDate(e.target.value)}
+                    onChange={(e) => setFromDate(e.target.value)}
                     name=""
                     id="fromDateId"
-                    // value={fromDate}
+                    value={fromDate}
                     className="rounded"
                   />
                 </div>
@@ -259,29 +251,13 @@ const BookingList = () => {
                     type="date"
                     name=""
                     id="toDateId"
-                    // onChange={(e) => setToDate(e.target.value)}
-                    // value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    value={toDate}
                     className="rounded"
                   />
                 </div>
               </div>
-              {/* {user?.role !== "manager" && (
-                <div>
-                  <label htmlFor="">Branch </label> <br />
-                  <select
-                    className="rounded"
-                    style={{ height: "30px" }}
-                    onChange={(e) => setBranch(e.target.value)}
-                    id="branchId"
-                    value={branch}
-                  >
-                    <option value="All">All</option>
-                    {allBranch?.map((branch) => (
-                      <option value={branch?._id}>{branch?.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )} */}
+
               <div>
                 <label htmlFor="">Payment Status </label> <br />
                 <select
@@ -302,9 +278,9 @@ const BookingList = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setBookingStatus(e.target.value)}
+                  onChange={(e) => setBookingStatus(e.target.value)}
                   id="bookingStatusId"
-                  // value={bookingStatus}
+                  value={bookingStatus}
                 >
                   <option value="All">All</option>
                   {allBookingStatus?.map((status, ind) => (
@@ -319,27 +295,13 @@ const BookingList = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setRunningStatus(e.target.value)}
+                  onChange={(e) => setRunningStatus(e.target.value)}
                   id="runningStatusId"
-                  //   value={runningStatus}
+                  value={runningStatus}
                 >
                   <option>All</option>
                   <option>Running</option>
                   <option>Closed</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="">Guest Type </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setGuestType(e.target.value)}
-                  id="guestTypeId"
-                  //   value={guestType}
-                >
-                  <option>All</option>
-                  <option>Walk-in Guest</option>
-                  <option>Monthly</option>
                 </select>
               </div>
 
@@ -382,7 +344,7 @@ const BookingList = () => {
                         <th>Total Tk</th>
                         <th>Discount</th>
                         <th>Payable Tk</th>
-                        {/* <th>Payment Status</th> */}
+                        <th>Payment Status</th>
                         <th>Total Receive</th>
                         <th>Due Amount</th>
                         <th>Status</th>
@@ -439,7 +401,7 @@ const BookingList = () => {
                               Tk {booking?.payableAmount?.toLocaleString()}
                             </p>
                           </td>
-                          {/* <td>
+                          <td>
                             <span
                               className=" fw-bold "
                               style={{
@@ -452,7 +414,7 @@ const BookingList = () => {
                               {" "}
                               {booking?.paymentStatus}
                             </span>
-                          </td> */}
+                          </td>
 
                           <td>
                             <p className="fw-bold">Tk {booking?.sendAmount}</p>
