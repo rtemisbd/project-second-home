@@ -2,10 +2,7 @@ import { useContext, useEffect, useRef, useState } from "react";
 import { AuthContext } from "../../contexts/UserProvider";
 import { useDispatch, useSelector } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
-import withReactContent from "sweetalert2-react-content";
-import useBranch from "../../hooks/useBranch";
 import { useQuery } from "react-query";
-import Swal from "sweetalert2";
 import { getFromLocalStorage } from "../../utils/local-storage";
 import { authKey } from "../../utils/storageKey";
 import { baseUrl } from "../../utils/getBaseURL";
@@ -18,7 +15,6 @@ import img from "../../img/new/style.png";
 
 import axios from "axios";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
-import ViewTransactionModal from "../Transaction/ViewTransactionModal";
 import { formatDate } from "../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
 import Pagination from "../../components/Pagination/Pagination";
@@ -27,20 +23,17 @@ import ResortTransactionStatusUpdate from "../../components/resort-admin/payment
 
 const ResortTransaction = () => {
   const ref = useRef();
-  const { user, resort } = useContext(AuthContext);
+  const { resort } = useContext(AuthContext);
 
   const dispatch = useDispatch();
   const handleClose = () => dispatch(placeLoadingShow(false));
   const { page, size } = useSelector((state) => state.pagination);
 
-  const MySwal = withReactContent(Swal);
   const [isFilter, setIsFilter] = useState(false);
   // filter fields
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
-  const [branch, setBranch] = useState("All");
   const [status, setStatus] = useState("All");
-  const [paymentPlatform, setPaymentPlatform] = useState("All");
   const [phone, setPhone] = useState("");
   const [bookingId, setBookingId] = useState("");
 
@@ -52,38 +45,19 @@ const ResortTransaction = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [findingStatement, setFindingStatement] = useState(true);
 
-  const [showStatusUpdateModal, setShowStatusUpdateModal] = useState(false);
-  const [selectedId, setSelectedId] = useState(null);
-
-  // Get All Branch
-  const { allBranch, refetch: refetchBranches } = useBranch();
-
   // Get All Transactions
   const { refetch } = useQuery(
-    [
-      // data,
-      page,
-      // fromDate,
-      // toDate,
-      // branch,
-      // paymentPlatform,
-      // phone,
-      // bookingId,
-      // status,
-      resort?._id,
-    ],
+    [page, fromDate, toDate, phone, bookingId, status, resort?._id],
     async () => {
       try {
         const queryParams = new URLSearchParams({
           page,
           size,
-          // fromDate,
-          // toDate,
-          // branch,
-          // paymentPlatform,
-          // phone,
-          // bookingId,
-          // status,
+          fromDate,
+          toDate,
+          phone,
+          bookingId,
+          status,
           resortId: resort._id,
         });
         // Get the access token
@@ -100,11 +74,10 @@ const ResortTransaction = () => {
           { headers }
         );
 
-        console.log(data);
-
         setData(data?.data?.transactions);
         setTotalDataCount(data?.data?.totalCount);
         setTotalReceivedAmount(data?.data?.totalReceivedAmount);
+        setFindingStatement(false);
       } catch (error) {
         // console.error("Error fetching data:", error);
       }
@@ -114,71 +87,22 @@ const ResortTransaction = () => {
     }
   );
 
-  const handleBranch = (e) => {
-    setBranch(e.target.value);
-  };
-  const handlepaymentPlatform = (e) => {
-    setPaymentPlatform(e.target.value);
-  };
-  const handleStatus = (e) => {
-    setStatus(e.target.value);
-  };
-  const handlePhone = (e) => {
-    const value = e.target.value;
-    setPhone(value);
-  };
-
   // Re-fetch data whenever size changes
   useEffect(() => {
     refetch();
-  }, [size, refetch, branch]);
-
-  // useEffect(() => {
-  //   const fetchTransaction = async () => {
-  //     const { data } = await axios.get(`${baseUrl}/api/villaTransaction`);
-  //     // console.log(data);
-  //     setData(data?.data);
-  //   };
-
-  //   fetchTransaction();
-  // }, []);
+  }, [size, refetch, status]);
 
   const handleRefreshQuery = () => {
+    setStatus("All");
     setFromDate("");
     document.getElementById("fromDateId").value = "";
     setToDate("");
     document.getElementById("toDateId").value = "";
-    setBranch("All");
-    document.getElementById("branchId").value = "All";
-    setPaymentPlatform("");
-    document.getElementById("paymentPlatformId").value = "";
     setBookingId("");
     document.getElementById("bookingId").value = "";
     setPhone("");
     document.getElementById("phoneId").value = "";
   };
-
-  //delete
-  const [products, setProducts] = useState(data);
-  const handleDelete = async (id) => {
-    const confirmation = window.confirm("Are you Sure?");
-    if (confirmation) {
-      const url = `${baseUrl}/api/transaction/${id}`;
-      fetch(url, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          MySwal.fire("Good job!", "successfully deleted", "success");
-          // refetch();
-          if (data.deletedCount === 1) {
-            const remainItem = products.filter((item) => item._id !== id);
-            setProducts(remainItem);
-          }
-        });
-    }
-  };
-  console.log(data);
 
   return (
     <div className="wrapper">
@@ -240,51 +164,23 @@ const ResortTransaction = () => {
                   />
                 </div>
               </div>
-              <div>
-                <label htmlFor="">Branch </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px" }}
-                  onChange={handleBranch}
-                  id="branchId"
-                  value={branch}
-                >
-                  <option value="All">All</option>
-                  {allBranch?.map((branch) => (
-                    <option value={branch?._id}>{branch?.name}</option>
-                  ))}
-                </select>
-              </div>
+
               <div>
                 <label htmlFor="">Status </label> <br />
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "100px" }}
-                  onChange={handleStatus}
+                  onChange={(e) => {
+                    setStatus(e.target.value);
+                  }}
                   id="statusId"
                   value={status}
                 >
                   <option value="All">All</option>
                   <option value="Pending">Pending</option>
-                  <option value="Accepted">Accepted</option>
+                  <option value="Approved">Approved</option>
+                  <option value="Processing">Processing</option>
                   <option value="Rejected">Rejected</option>
-                </select>
-              </div>
-              <div>
-                <label htmlFor="">Payment Type </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px", width: "100px" }}
-                  onChange={handlepaymentPlatform}
-                  id="paymentPlatformId"
-                  value={paymentPlatform}
-                >
-                  <option value="All">All</option>
-                  <option value="bkash">Bkash</option>
-                  <option value="nagad">Nagad</option>
-                  <option value="dutch">dutch-bangla</option>
-                  <option value="cash">Cash</option>
-                  <option value="bank">Bank</option>
                 </select>
               </div>
 
@@ -295,7 +191,9 @@ const ResortTransaction = () => {
                   type="number"
                   name="phone"
                   id="phoneId"
-                  onChange={handlePhone}
+                  onChange={(e) => {
+                    setPhone(e.target.value);
+                  }}
                   placeholder="Enter phone number"
                   className="rounded"
                   value={phone}

@@ -10,14 +10,27 @@ const createTransactionIntoDB = async(payload)=>{
 
 
 const getAllTransactionForVilla = async(queries)=>{
-  const {user, villa, resortId} = queries
+  const { villa, resortId, phone,toDate, fromDate, status, bookingId } = queries
   const page = parseInt(queries?.page) || 1;
   const size = parseInt(queries?.size) || 10;
 
   let matchStage = {}; 
-    if(resortId && resortId !== "undefined" && resortId !== "null" && resortId !== "") {
-      matchStage.resortId = new mongoose.Types.ObjectId(resortId);
-    }
+  if(resortId && resortId !== "undefined" && resortId !== "null" && resortId !== "") {
+    matchStage.resortId = new mongoose.Types.ObjectId(resortId);
+  }
+  if(bookingId && bookingId !== "") {
+    matchStage.bookingId = { $regex: `^${bookingId}` };
+  }
+  if(status && status !== "All") {
+    matchStage.paymentStatus = status;
+  }
+  if (fromDate && toDate) {
+    matchStage.createdAt = {
+      $gte: new Date(fromDate),
+      $lte: new Date(toDate),
+    };
+  }
+  
     
   
   const totalCountsPipeline = [
@@ -55,6 +68,16 @@ const getAllTransactionForVilla = async(queries)=>{
           },
         },
         { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
+        // 🔍 ADD USER PHONE FILTER HERE
+      ...(phone && phone !== ""
+        ? [
+            {
+              $match: {
+                "user.phone": { $regex: phone, $options: "i" },
+              },
+            },
+          ]
+        : []),
 
         // VILLA
         {
