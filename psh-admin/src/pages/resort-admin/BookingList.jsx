@@ -2,7 +2,6 @@ import { MdRefresh } from "react-icons/md";
 import img from "../../img/new/style.png";
 import { Spinner, Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
-import BookingsTable from "../../components/Orders/BookingsTable";
 import { useSelector } from "react-redux";
 import { baseUrl } from "../../utils/getBaseURL";
 import { getFromLocalStorage } from "../../utils/local-storage";
@@ -11,7 +10,6 @@ import { useQuery } from "react-query";
 import axios from "axios";
 import { formatDate } from "../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
-import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import Pagination from "../../components/Pagination/Pagination";
 import { AuthContext } from "../../contexts/UserProvider";
@@ -43,6 +41,21 @@ const BookingList = () => {
     // setShowDurationModal(true);
     // setShowDetails(true);
     // setBookingDetails(detailsData);
+  };
+
+  const handleRefreshQuery = () => {
+    setPhone("");
+    document.getElementById("phone").value = "";
+    setFromDate("");
+    document.getElementById("fromDateId").value = "";
+    setToDate("");
+    document.getElementById("toDateId").value = "";
+    setPaymentStatus("All");
+    document.getElementById("paymentStatusId").value = "All";
+    setBookingStatus("All");
+    document.getElementById("bookingStatusId").value = "All";
+    setRunningStatus("All");
+    document.getElementById("runningStatusId").value = "All";
   };
 
   // Get all Bookings
@@ -87,8 +100,6 @@ const BookingList = () => {
 
         setData(data?.data?.orders);
         setTotalDataCount(data?.data?.totalCount);
-
-        // setTotalDataCount(data?.data?.bookingsTotalCount);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -221,8 +232,8 @@ const BookingList = () => {
                 <div>
                   <input
                     type="number"
-                    name="unknownQuery"
-                    id="unknownQueryId"
+                    name="phone"
+                    id="phoneId"
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter phone number"
@@ -263,14 +274,14 @@ const BookingList = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setPaymentStatus(e.target.value)}
+                  onChange={(e) => setPaymentStatus(e.target.value)}
                   id="paymentStatusId"
-                  //   value={paymentStatus}
+                  value={paymentStatus}
                 >
-                  <option>All</option>
+                  <option value="All">All</option>
 
-                  <option>Paid</option>
-                  <option>Unpaid</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Unpaid">Unpaid</option>
                 </select>
               </div>
               <div>
@@ -308,7 +319,7 @@ const BookingList = () => {
               {/* refresh */}
               <button
                 type="button"
-                // onClick={handleRefreshQuery}
+                onClick={handleRefreshQuery}
                 style={{ marginTop: "18px" }}
                 aria-label="Refresh"
                 className="btn btn-sm"
@@ -348,7 +359,6 @@ const BookingList = () => {
                         <th>Total Receive</th>
                         <th>Due Amount</th>
                         <th>Status</th>
-                        {/* <th>Contact</th> */}
                         <th>Details</th>
                         <th>Update Duration</th>
                         <th>Action</th>
@@ -393,7 +403,7 @@ const BookingList = () => {
                           </td>
                           <td>
                             {" "}
-                            {/* <p className="fw-bold">Tk {discount}</p> */}
+                            <p className="fw-bold">Tk {booking?.discount}</p>
                           </td>
                           <td>
                             {" "}
@@ -481,34 +491,7 @@ const BookingList = () => {
                               )} */}
                             </div>
                           </td>
-                          {/* whats app contact */}
-                          {/* <td>
-                            <a
-                              href={`https://api.whatsapp.com/send?phone=88${booking?.user?.phone}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <button class="btn position-relative">
-                                <FaWhatsapp
-                                  style={{
-                                    width: "32px",
-                                    height: "32px",
-                                    cursor: "pointer",
-                                    color: "#25D366",
-                                  }}
-                                />
-                                <span
-                                  class="spinner-grow spinner-grow-sm text-success "
-                                  aria-hidden="true"
-                                  style={{
-                                    position: "absolute",
-                                    top: "-5px",
-                                    left: "70%",
-                                  }}
-                                ></span>
-                              </button>
-                            </a>
-                          </td> */}
+
                           <td>
                             <div>
                               <span onClick={() => handleShowDetails(booking)}>

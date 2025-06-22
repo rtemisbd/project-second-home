@@ -78,7 +78,6 @@ const NewOrders = () => {
 
         // Get the access token
         const accessToken = getFromLocalStorage(authKey);
-        console.log(accessToken);
 
         // Set the headers
         const headers = {
@@ -154,6 +153,7 @@ const NewOrders = () => {
       return () => clearTimeout(timeoutId);
     }
   }, [data?.orders?.length, findingStatement, hasTimeoutRun, refetch]);
+
 
   return (
     <div className="wrapper">

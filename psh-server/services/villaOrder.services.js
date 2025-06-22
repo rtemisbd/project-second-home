@@ -32,6 +32,9 @@ const createVillaOrderIntoDB = async(payload)=>{
     payload.bookingId = await generatedResortBookingId();
 
     //step 3 : create booking
+    if(payload?.payableAmount == payload.sendAmount){
+      payload.paymentStatus = "Paid";
+    }
       const order = await VillaOrders.create(payload);
    
     // step 4 : create transaction
@@ -198,7 +201,7 @@ const getAllVillaOrdersFromDB = async (queries) => {
               as: "transactions",
             },
           },
-          { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
+          // { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
 
         ],
       },
