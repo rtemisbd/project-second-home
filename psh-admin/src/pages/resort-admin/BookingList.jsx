@@ -13,6 +13,7 @@ import { BiSolidEdit } from "react-icons/bi";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import Pagination from "../../components/Pagination/Pagination";
 import { AuthContext } from "../../contexts/UserProvider";
+import VillaBookingStatusUpdate from "../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);
@@ -37,11 +38,11 @@ const BookingList = () => {
 
   const allBookingStatus = ["Pending", "Processing", "Approved", "Canceled"];
 
-  const handleShowDetails = (detailsData) => {
-    // setShowDurationModal(true);
-    // setShowDetails(true);
-    // setBookingDetails(detailsData);
-  };
+  // const handleShowDetails = (detailsData) => {
+  //   setShowDurationModal(true);
+  //   setShowDetails(true);
+  //   setBookingDetails(detailsData);
+  // };
 
   const handleRefreshQuery = () => {
     setPhone("");
@@ -115,6 +116,16 @@ const BookingList = () => {
   }, [size, refetch]);
 
   console.log(data);
+
+  useEffect(() => {
+    if (data?.length === 0 && !hasTimeoutRun) {
+      const timeoutId = setTimeout(() => {
+        setFindingStatement(!findingStatement);
+        setHasTimeoutRun(true);
+      }, 5000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [data?.length, findingStatement, hasTimeoutRun, refetch]);
 
   return (
     <div className="wrapper">
@@ -467,7 +478,8 @@ const BookingList = () => {
                                 style={{
                                   backgroundColor: "transparent",
                                 }}
-                                // onClick={() => handleStatusShow(booking)}
+                                data-bs-toggle="modal"
+                                data-bs-target={`#bookingStatus${booking._id}`}
                               >
                                 <BiSolidEdit
                                   style={{
@@ -480,21 +492,18 @@ const BookingList = () => {
                               {/* Modal Order Status Update */}
                             </div>
                             <div>
-                              {/* {statusModalData && (
-                                <OrderStatusUpdate
-                                  data={statusModalData}
-                                  refetch={refetch}
-                                  isLoading={isLoading}
-                                  showStatusModal={showStatusModal}
-                                  setShowStatusModal={setShowStatusModal}
-                                />
-                              )} */}
+                              <VillaBookingStatusUpdate
+                                data={booking}
+                                refetch={refetch}
+                              />
                             </div>
                           </td>
 
                           <td>
                             <div>
-                              <span onClick={() => handleShowDetails(booking)}>
+                              <span
+                              //  onClick={() => handleShowDetails(booking)}
+                              >
                                 <AiOutlineEye
                                   style={{
                                     width: "24px",
@@ -583,11 +592,6 @@ const BookingList = () => {
                               />
                             )} */}
                           </td>
-                          {/* <td>
-                            <p className=" fw-bold">
-                              {booking?.specialRequest}
-                            </p>
-                          </td> */}
                         </tr>
                       ))}
                     </tbody>
