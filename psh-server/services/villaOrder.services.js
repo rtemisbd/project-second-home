@@ -134,9 +134,9 @@ const getAllVillaOrdersFromDB = async (queries) => {
                     $expr: { $eq: ["$_id", "$$userId"] },
                   },
                 },
-                {
-                  $project: { firstName: 1, phone: 1 },
-                },
+                // {
+                //   $project: { firstName: 1, phone: 1 },
+                // },
               ],
               as: "user",
             },
@@ -167,7 +167,10 @@ const getAllVillaOrdersFromDB = async (queries) => {
                 $match : {
                   $expr : {$eq : ["$_id", "$$villaId"]}
                 }
-              }
+              },
+              {
+                  $project: { title: 1, pricing: 1, villaNumber: 1 },
+                },
              ],
               as: "villa",
             },

@@ -15,6 +15,7 @@ import Pagination from "../../components/Pagination/Pagination";
 import { AuthContext } from "../../contexts/UserProvider";
 import VillaBookingStatusUpdate from "../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
 import { Toaster } from "react-hot-toast";
+import VillaBookingDetail from "../../components/resort-admin/booking-list/VillaBookingDetail";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);
@@ -34,16 +35,18 @@ const BookingList = () => {
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
 
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
   const allBookingStatus = ["Pending", "Processing", "Approved", "Canceled"];
 
-  // const handleShowDetails = (detailsData) => {
-  //   setShowDurationModal(true);
-  //   setShowDetails(true);
-  //   setBookingDetails(detailsData);
-  // };
+  const handleShowDetails = (payload) => {
+    setShowDetail(true);
+    setSelectedData(payload);
+  };
 
   const handleRefreshQuery = () => {
     setPhone("");
@@ -115,8 +118,6 @@ const BookingList = () => {
   useEffect(() => {
     refetch();
   }, [size, refetch]);
-
-  console.log(data);
 
   useEffect(() => {
     if (data?.length === 0 && !hasTimeoutRun) {
@@ -502,9 +503,7 @@ const BookingList = () => {
 
                           <td>
                             <div>
-                              <span
-                              //  onClick={() => handleShowDetails(booking)}
-                              >
+                              <span onClick={() => handleShowDetails(booking)}>
                                 <AiOutlineEye
                                   style={{
                                     width: "24px",
@@ -593,6 +592,13 @@ const BookingList = () => {
                               />
                             )} */}
                           </td>
+                          {showDetail && (
+                            <VillaBookingDetail
+                              data={selectedData}
+                              showDetail={showDetail}
+                              setShowDetail={setShowDetail}
+                            />
+                          )}
                         </tr>
                       ))}
                     </tbody>
