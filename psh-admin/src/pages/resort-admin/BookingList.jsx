@@ -14,6 +14,7 @@ import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
 import Pagination from "../../components/Pagination/Pagination";
 import { AuthContext } from "../../contexts/UserProvider";
 import VillaBookingStatusUpdate from "../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
+import { Toaster } from "react-hot-toast";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);
@@ -608,6 +609,10 @@ const BookingList = () => {
           </div>
         </section>
         <Pagination totalDataCount={totalDataCount} />
+        <Toaster
+          containerStyle={{ top: 300 }}
+          toastOptions={{ position: "top-center" }}
+        />
       </div>
     </div>
   );

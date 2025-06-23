@@ -256,7 +256,7 @@ const getVillaOrderByIdFromDB = async (id) => {
 
 
 const updateVillaOrderById = async(id, payload)=>{
-  // step 1 : check the order existence
+  // step 1 : check the order exist          ence
    const order = await VillaOrders.findById({ _id: id });
 
    if(!order) {
