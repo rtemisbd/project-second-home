@@ -592,13 +592,6 @@ const BookingList = () => {
                               />
                             )} */}
                           </td>
-                          {showDetail && (
-                            <VillaBookingDetail
-                              data={selectedData}
-                              showDetail={showDetail}
-                              setShowDetail={setShowDetail}
-                            />
-                          )}
                         </tr>
                       ))}
                     </tbody>
@@ -614,6 +607,13 @@ const BookingList = () => {
             )}
           </div>
         </section>
+        {showDetail && (
+          <VillaBookingDetail
+            data={selectedData}
+            showDetail={showDetail}
+            setShowDetail={setShowDetail}
+          />
+        )}
         <Pagination totalDataCount={totalDataCount} />
         <Toaster
           containerStyle={{ top: 300 }}
