@@ -11,9 +11,8 @@ import { dateFormatter } from "../../utils/dateFormatter";
 
 const RoomOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
-  
-  const { months, formatDate, generateDateArray } = dateFormatter;
 
+  const { months, formatDate, generateDateArray } = dateFormatter;
 
   const [fromDate, setFromDate] = useState("");
   const [toDate, setToDate] = useState("");
@@ -41,7 +40,6 @@ const RoomOverview = () => {
 
   const { allBranch } = useBranch();
   const { categories } = useCategory();
-
 
   const handleFromDate = (e) => {
     setFromDate(e.target.value);

@@ -3,10 +3,10 @@ import { useSelector } from "react-redux";
 import { useQuery } from "react-query";
 import { baseUrl } from "../../../utils/getBaseURL";
 import { Table } from "react-bootstrap";
-import DetailOverview from "../../../components/BookOverview/DetailOverview";
 import { AuthContext } from "../../../contexts/UserProvider";
 import axios from "axios";
 import { dateFormatter } from "../../../utils/dateFormatter";
+import VillaBookingOverviewModal from "../../../components/resort-admin/booking-overview/VillaBookingOverviewModal";
 
 const VillaBookingOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -62,22 +62,24 @@ const VillaBookingOverview = () => {
 
     return booking?.bookingStatus;
   };
+  console.log({ bookedDates });
 
-  const handleShowDetails = (room, date) => {
+  const handleShowDetails = (villa, date) => {
     setSelectedDate(date);
-
     setShowDetailModal(true);
-    setDetail(room);
+    setDetail(villa);
 
-    if (getBookingStatus(room, date)) {
-      // setBookingInfo(
-      //   bookedSeats.filter(
-      //     (bs) =>
-      //       bs.seatId === room._id &&
-      //       new Date(bs.bookStartDate) <= new Date(date) &&
-      //       new Date(bs.bookEndDate) >= new Date(date)
-      //   )
-      // );
+    if (getBookingStatus(villa, date)) {
+      // console.log(new Date(bs.bookStartDate));
+      console.log(new Date(date));
+      setBookingInfo(
+        bookedDates.filter(
+          (item) =>
+            item.villaId === villa._id && item?.bookingStatus === "Booked"
+          // && new Date(convertToISODate(item.bookStartDate)) <= new Date(date) &&
+          // new Date(convertToISODate(item.bookEndDate)) >= new Date(date)
+        )
+      );
     }
   };
 
@@ -300,7 +302,7 @@ const VillaBookingOverview = () => {
           </div>
         </section>
         {showDetailModal && (
-          <DetailOverview
+          <VillaBookingOverviewModal
             detail={detail}
             bookingInfo={bookingInfo}
             date={selectedDate}

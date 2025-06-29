@@ -17,9 +17,29 @@ const getAllVillaRentDates = async(queries)=>{
 
 
     const pipeline = [
-        { $match: matchStage },
-      ];
-    
+    { $match: matchStage },
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$userId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$userId"] },
+            },
+          },
+          {
+            $project: { firstName: 1, phone: 1 },
+          },
+        ],
+        as: "user",
+      },
+    },
+    {
+      $unwind: { path: "$user", preserveNullAndEmptyArrays: true },
+    },
+  ];
+
     const result = await VillaRentDates.aggregate(pipeline);
 
     return result;
