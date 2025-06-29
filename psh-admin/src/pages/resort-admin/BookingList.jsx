@@ -16,6 +16,7 @@ import { AuthContext } from "../../contexts/UserProvider";
 import VillaBookingStatusUpdate from "../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
 import { Toaster } from "react-hot-toast";
 import VillaBookingDetail from "../../components/resort-admin/booking-list/VillaBookingDetail";
+import VillaBookingDateExtend from "../../components/resort-admin/booking-list/VillaBookingDateExtend";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);
@@ -37,6 +38,7 @@ const BookingList = () => {
 
   const [showDetail, setShowDetail] = useState(false);
   const [selectedData, setSelectedData] = useState(null);
+  const [showExtendModal, setShowExtendModal] = useState(false);
 
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
@@ -46,6 +48,10 @@ const BookingList = () => {
   const handleShowDetails = (payload) => {
     setShowDetail(true);
     setSelectedData(payload);
+  };
+  const handleShowExtend = (payload) => {
+    setSelectedData(payload);
+    setShowExtendModal(true);
   };
 
   const handleRefreshQuery = () => {
@@ -416,7 +422,9 @@ const BookingList = () => {
                           </td>
                           <td>
                             {" "}
-                            <p className="fw-bold">Tk {booking?.discount}</p>
+                            <p className="fw-bold">
+                              Tk {booking?.discount || 0}
+                            </p>
                           </td>
                           <td>
                             {" "}
@@ -440,7 +448,7 @@ const BookingList = () => {
                           </td>
 
                           <td>
-                            <p className="fw-bold">Tk {booking?.sendAmount}</p>
+                            <p className="fw-bold">Tk {booking?.transactions[0]?.totalReceiveTk}</p>
                           </td>
                           <td>
                             {" "}
@@ -448,15 +456,14 @@ const BookingList = () => {
                               className=" fw-bold"
                               style={{
                                 color:
-                                  booking?.payableAmount -
-                                    booking?.sendAmount ===
+                                  booking?.transactions[0]?.totalReceiveTk ===
                                   0
                                     ? "green"
                                     : "red",
                               }}
                             >
                               {" "}
-                              TK {booking?.payableAmount - booking?.sendAmount}
+                              TK {booking?.payableAmount - booking?.transactions[0]?.totalReceiveTk}
                             </span>
                           </td>
                           <td>
@@ -518,57 +525,31 @@ const BookingList = () => {
                             <div className="d-flex justify-content-center">
                               <button
                                 title={`${
-                                  booking?.status === "Approved"
+                                  booking?.status === "Approved" ||
+                                  booking?.status === "Processing"
                                     ? "Sorry ! Your Booking Already Approved"
                                     : ""
                                 }`}
                                 type="button"
                                 className={`rounded ${
-                                  booking?.status === "Approved"
+                                  booking?.status === "Approved" ||
+                                  booking?.status === "Processing"
                                     ? "bg-white"
                                     : "#35b0a7"
                                 }`}
                                 disabled={
-                                  booking?.status === "Approved" ? true : false
+                                  booking?.status === "Approved" ||
+                                  booking?.status === "Processing"
+                                    ? true
+                                    : false
                                 }
-                                // onClick={() => {
-                                //   booking?.bookingInfo?.roomType ===
-                                //   "Shared Room"
-                                //     ? handleSeatShow(booking)
-                                //     : handleDurationShow(booking);
-                                // }}
+                                onClick={() => handleShowExtend(booking)}
                               >
                                 <AiOutlineFieldTime
                                   style={{ width: "24px", height: "24px" }}
                                 />
                               </button>
                             </div>
-                            {/* Modal order Date Update */}
-                            {/* {booking?.bookingInfo?.roomType === "Shared Room" &&
-                            durationUpdateDataSeat ? (
-                              <div>
-                                <BookingSeatDateExtend
-                                  data={booking}
-                                  refetch={refetch}
-                                  extraCharge={extraCharge}
-                                  showDurationModal={showDurationModal}
-                                  setShowDurationModal={setShowDurationModal}
-                                />
-                              </div>
-                            ) : (
-                              ""
-                            )} */}
-                            {/* {durationUpdatePrivateRoom && (
-                              <div>
-                                <BookingDatesExtend
-                                  data={booking}
-                                  refetch={refetch}
-                                  extraCharge={extraCharge}
-                                  showDurationModal={showDurationModal}
-                                  setShowDurationModal={setShowDurationModal}
-                                />
-                              </div>
-                            )} */}
                           </td>
                           <td>
                             <div className="d-flex gap-2 fw-bold">
@@ -612,6 +593,13 @@ const BookingList = () => {
             data={selectedData}
             showDetail={showDetail}
             setShowDetail={setShowDetail}
+          />
+        )}
+        {showExtendModal && (
+          <VillaBookingDateExtend
+            data={selectedData}
+            showExtendModal={showExtendModal}
+            setShowExtendModal={setShowExtendModal}
           />
         )}
         <Pagination totalDataCount={totalDataCount} />

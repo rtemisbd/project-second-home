@@ -26,7 +26,7 @@ const VillaDetails = () => {
   const [addedWishList, setAddedWishlist] = useState(false);
   const videoId = getYouTubeVideoId(villa?.resortId.video);
   const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);   
   const [keyValue, setKeyValue] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [features, setFeatures] = useState([]);

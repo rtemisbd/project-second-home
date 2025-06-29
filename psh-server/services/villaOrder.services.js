@@ -278,15 +278,30 @@ const updateVillaOrderById = async(id, payload)=>{
   );
   // step 3 : update rent-date
   let bookingStatus = ""
-  if(payload.status === "Approved" || payload.status === "Processing"){
-    bookingStatus = "Booked";
-  }
-  if(payload.status === "Pending" || payload.status === "Rejected"){
-    bookingStatus = "Cancelled";
-  }
-  const updateRentDate = await VillaRentDates.findOneAndUpdate({orderId :id },
+  if(payload.status){
+    if( payload.status === "Approved" || payload.status === "Processing"){
+      bookingStatus = "Booked";
+    }
+    if(payload.status === "Pending" || payload.status === "Rejected"){
+      bookingStatus = "Cancelled";
+    }
+    const updateRentDate = await VillaRentDates.findOneAndUpdate({orderId :id },
     { $set: {bookingStatus} },
     { new: true, runValidators: true }) 
+  }
+  if(payload?.rentDate){
+    const newRentDate = {
+      bookStartDate:  payload?.rentDate?.bookStartDate,
+      bookEndDate: payload?.rentDate?.bookEndDate,
+      daysDifference : payload?.rentDate?.daysDifference
+
+    }
+    const updateRentDate = await VillaRentDates.findOneAndUpdate({orderId :id },
+    { $set: newRentDate },
+    { new: true, runValidators: true }) 
+  }
+  
+
 
   return result;
 }
