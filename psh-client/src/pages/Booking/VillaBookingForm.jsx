@@ -26,7 +26,7 @@ const VillaBookingForm = () => {
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [dataForBooking, setDataForBooking] = useState({});
-  const [bookingItem, setBookingItem] = useState({});
+  const [bookingItem, setBookingItem] = useState({fullName : singleUser?.firstName, phone : singleUser?.phone});
   const [villa, setVilla] = useState({});
 
   const [selectMethod, setSelectMethod] = useState("online");
@@ -103,6 +103,7 @@ const VillaBookingForm = () => {
       dataForBooking.senderAccountNumber = senderAccountNumber;
       dataForBooking.sendAmount = sendAmount;
       dataForBooking.paymentProof = paymentProofImg;
+      console.log(dataForBooking);
 
       const { data } = await axios.post(
         `${serverBaseUrl}/villa-order`,
@@ -206,7 +207,7 @@ const VillaBookingForm = () => {
                     placeholder="Your Full Name *"
                     type="text"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
-                    name="firstName"
+                    name="fullName"
                     defaultValue={singleUser ? singleUser?.firstName : ""}
                     required
                     disabled={singleUser?.firstName ? true : false}
@@ -226,7 +227,7 @@ const VillaBookingForm = () => {
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="phone"
                     required
-                    disabled
+                    disabled={singleUser?.phone ? true : false}
                     defaultValue={singleUser ? singleUser?.phone : ""}
                     style={{
                       height: "45px",

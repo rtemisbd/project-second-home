@@ -188,6 +188,7 @@ function App() {
         <Route path="resort/add-villa" element={<AddVilla />} />
         <Route path="resort/villa-list" element={<VillaList />} />
         <Route path="resort/edit/villa/:id" element={<EditVilla />} />
+        <Route path="resort/create-order/:category/:roomId" element={<CreateUser />} />
 
       </Route>
 

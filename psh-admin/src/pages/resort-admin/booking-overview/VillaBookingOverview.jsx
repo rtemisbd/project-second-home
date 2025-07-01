@@ -62,7 +62,6 @@ const VillaBookingOverview = () => {
 
     return booking?.bookingStatus;
   };
-  console.log({ bookedDates });
 
   const handleShowDetails = (villa, date) => {
     setSelectedDate(date);
@@ -70,8 +69,6 @@ const VillaBookingOverview = () => {
     setDetail(villa);
 
     if (getBookingStatus(villa, date)) {
-      // console.log(new Date(bs.bookStartDate));
-      console.log(new Date(date));
       setBookingInfo(
         bookedDates.filter(
           (item) =>

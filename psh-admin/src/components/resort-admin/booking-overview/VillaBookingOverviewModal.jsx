@@ -9,13 +9,7 @@ const VillaBookingOverviewModal = ({
   setShowDetailModal,
   handleShowDetails,
 }) => {
-  console.log({
-    detail,
-    bookingInfo,
-    date,
-    setShowDetailModal,
-    handleShowDetails,
-  });
+
   const formatDate = (dateString) => {
     const [day, month, year] = dateString.split("-").map(Number);
     const date = new Date(year, month - 1, day); // month is 0-indexed
@@ -123,7 +117,7 @@ const VillaBookingOverviewModal = ({
             }}
           >
             <Link
-              to={`/dashboard/create-order/${detail?.category}/${detail?._id}`}
+              to={`/dashboard/resort/create-order/${detail?.category}/${detail?._id}`}
             >
               Book Now
             </Link>

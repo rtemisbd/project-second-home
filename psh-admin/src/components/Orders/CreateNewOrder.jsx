@@ -9,6 +9,7 @@ import useExtraCharge from "../../hooks/useExtraCharge";
 
 import toast, { Toaster } from "react-hot-toast";
 import useCategory from "../../hooks/useCategory";
+import CreateNewOrderForVilla from "../../pages/resort-admin/booking-overview/CreateNewOrderForVilla";
 
 const CreateNewOrder = ({ category, id, user }) => {
   const [extraCharge] = useExtraCharge();
@@ -63,6 +64,7 @@ const CreateNewOrder = ({ category, id, user }) => {
     const select = categories.find((item) => item._id === category);
     setSelectedCategory(select);
   }, [category, categories]);
+
 
   useEffect(() => {
     const fetchData = async () => {
@@ -218,6 +220,9 @@ const CreateNewOrder = ({ category, id, user }) => {
     }
   };
 
+  if (selectedCategory?.name === "Villa") {
+    return <CreateNewOrderForVilla id={id} user={user} />;
+  }
   return (
     <div className="content customize_list">
       <h2>Create new order</h2>
