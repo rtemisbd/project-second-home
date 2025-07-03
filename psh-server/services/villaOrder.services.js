@@ -20,8 +20,8 @@ const createVillaOrderIntoDB = async(payload)=>{
         relation: payload?.emergencyRelationC,
         contactNumber: payload?.emergencyContact,
       },
-    };
-    await User.updateOne(
+    };  
+    await User.updateOne(  
       { phone: payload?.phone },
       { $set: userUpdate },
       { runValidators: true}

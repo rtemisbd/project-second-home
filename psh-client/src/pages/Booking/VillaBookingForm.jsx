@@ -20,13 +20,15 @@ const VillaBookingForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  console.log(singleUser);
+
   const [isBlur, setIsBlur] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [requiredMessage, setRequiredMessage] = useState(false);
   const [agreeTerms, setAgreeTerms] = useState(false);
   const [showPayment, setShowPayment] = useState(false);
   const [dataForBooking, setDataForBooking] = useState({});
-  const [bookingItem, setBookingItem] = useState({fullName : singleUser?.firstName, phone : singleUser?.phone});
+  const [bookingItem, setBookingItem] = useState({});
   const [villa, setVilla] = useState({});
 
   const [selectMethod, setSelectMethod] = useState("online");
@@ -47,7 +49,8 @@ const VillaBookingForm = () => {
     }));
   };
 
-  // handle Scrooled
+
+  // handle Scrolled
   const handleScroll = () => {
     setScrollY(window.scrollY);
   };
@@ -103,7 +106,7 @@ const VillaBookingForm = () => {
       dataForBooking.senderAccountNumber = senderAccountNumber;
       dataForBooking.sendAmount = sendAmount;
       dataForBooking.paymentProof = paymentProofImg;
-      console.log(dataForBooking);
+ 
 
       const { data } = await axios.post(
         `${serverBaseUrl}/villa-order`,
@@ -119,7 +122,7 @@ const VillaBookingForm = () => {
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message || "Something is wrong");
       dispatch(placeLoadingShow(false));
     }
@@ -166,6 +169,22 @@ const VillaBookingForm = () => {
       setSelectedBank(bank);
     }
   }, [villa, selectPlatform, selectMethod]);
+
+  useEffect(() => {
+    if (singleUser) {
+      setDataForBooking((prevData) => ({
+        ...prevData,
+        userId: singleUser?._id || "",
+        fullName: singleUser?.firstName || "",
+        phone: singleUser?.phone || "",
+        address: singleUser?.userAddress || "",
+        validityType: singleUser?.validityType || "",
+        emergencyContactName: singleUser?.emergencyContact?.contactName || "",
+        emergencyRelationC: singleUser?.emergencyContact?.relation || "",
+        emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
+      }));
+    }
+  }, [singleUser]);
 
   return (
     <div>
@@ -302,7 +321,7 @@ const VillaBookingForm = () => {
                     type="text"
                     placeholder="Guardian Contact Number *"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
-                    name="contactNumber"
+                    name="emergencyContact"
                     required
                     defaultValue={singleUser?.emergencyContact?.contactNumber}
                     style={{
