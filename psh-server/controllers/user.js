@@ -12,14 +12,16 @@ import { userServices } from "../services/user.service.js";
 import responseSend from "../utils/responseSend.js";
 import mongoose from "mongoose";
 
-export const createUser = catchAsync(async(req, res, next)=>{
+export const createUser = catchAsync(async (req, res, next) => {
   const result = await userServices.createUserIntoDB(req.body);
 
-  responseSend(res, {statusCode : 200,
-    success : true,
-    message : "User has been created successfully!",
-    data : result })
-})
+  responseSend(res, {
+    statusCode: 200,
+    success: true,
+    message: "User has been created successfully!",
+    data: result,
+  });
+});
 
 // export const createUser = async (req, res) => {
 //   try {
@@ -34,7 +36,6 @@ export const createUser = catchAsync(async(req, res, next)=>{
 //       branch: branchId,
 //     } = req.body;
 
-
 //     const existingMobile = await User.findOne({ phone });
 
 //     if (existingMobile) {
@@ -45,7 +46,7 @@ export const createUser = catchAsync(async(req, res, next)=>{
 //       req.body.password || config.user_default_password,
 //       10
 //     );
-    
+
 //     const user = new User({
 //       firstName,
 //       address,
@@ -57,7 +58,6 @@ export const createUser = catchAsync(async(req, res, next)=>{
 //       password: hashedPassword,
 //       branch: branchId,
 //     });
-    
 
 //     await user.save();
 
@@ -111,7 +111,7 @@ export const sendOtp = async (req, res, next) => {
           // Handle response data as needed
         })
         .catch((error) => {
-          // console.error("Error while sending SMS:", error);
+          console.error("Error while sending SMS:", error);
           // Handle error
         });
 
@@ -182,7 +182,6 @@ export const loginAdminUser = async (req, res) => {
     // Find the user by email and populate the branch field
 
     const user = await User.findOne({ email });
-
 
     // If the user does not exist, return an error message
     if (user.role === "user") {
@@ -461,17 +460,16 @@ export const deleteUser = async (req, res, next) => {
   }
 };
 
-export const getUser = catchAsync(async(req, res, next)=>{
-
+export const getUser = catchAsync(async (req, res, next) => {
   const result = await userServices.getUserById(req.params.id);
 
   responseSend(res, {
-    statusCode : 200,
-    success : true,
-    message : "User has been retrieved successfully!",
-    data : result
-  })
-})
+    statusCode: 200,
+    success: true,
+    message: "User has been retrieved successfully!",
+    data: result,
+  });
+});
 
 export const getAdmin = async (req, res, next) => {
   try {
@@ -489,17 +487,16 @@ export const getAdmin = async (req, res, next) => {
   }
 };
 
-
-export const getUsers = catchAsync(async(req, res, next)=>{
+export const getUsers = catchAsync(async (req, res, next) => {
   const result = await userServices.getAllUsersFromDB(req.query);
 
   responseSend(res, {
-    statusCode : 200,
-    success : true,
-    message : "Users retrieved successfully!",
-    data : result
-  })
-})
+    statusCode: 200,
+    success: true,
+    message: "Users retrieved successfully!",
+    data: result,
+  });
+});
 
 export const getJWT = async (req, res, next) => {
   try {

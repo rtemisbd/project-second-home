@@ -24,7 +24,7 @@ const CreateNewOrderForVilla = ({ id, user }) => {
   const [customerRent, setCustomerRent] = useState(1);
 
   const [dataForBooking, setDataForBooking] = useState({
-    userId: user?._id || "",
+    user: user?._id || "",
     fullName: user?.firstName || "",
     phone: user?.phone || "",
     address: user?.userAddress || "",
@@ -34,13 +34,22 @@ const CreateNewOrderForVilla = ({ id, user }) => {
     emergencyContact: user?.emergencyContact?.contactNumber || "",
   });
 
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setDataForBooking((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
+  };
+
   // handle booking
   const handleBooking = async () => {
     try {
       const bookingData = {
+        ...dataForBooking,
         villa: villa,
         resort: villa?.resortId?._id,
-        user: user?._id,
+
         perNight: villa?.pricing?.afterDiscountPerNight,
         subTotal,
         totalAmount,
@@ -49,20 +58,26 @@ const CreateNewOrderForVilla = ({ id, user }) => {
         rentDate: {
           bookStartDate: format(new Date(startDate), "dd-MM-yyyy"),
           bookEndDate: format(new Date(endDate), "dd-MM-yyyy"),
-          daysDifference: customerRent?.daysDifference,
+          daysDifference: customerRent,
         },
       };
 
-      // const { data } = await axios.post(
-      //   `${baseUrl}/api/bkash/payment/create`,
-      //   { amount: null, dataForBooking, selectMethod: "cash" },
-      //   { withCredentials: true }
-      // );
+      const { data } = await axios.post(
+        `${baseUrl}/api/villa-order`,
+        bookingData
+      );
+      // console.log(data);
 
-      // if (data?.data?.status === true) {
-      //   toast.success("Booking Added!");
-      // }
+      if (data?.success) {
+        toast.success("Your booking has been placed.");
+      }
+
+      if (data?.data?.status === true) {
+        toast.success("Booking Added!");
+      }
     } catch (error) {
+      // console.log(error);
+
       toast.error("Something is wrong");
     }
   };
@@ -76,14 +91,6 @@ const CreateNewOrderForVilla = ({ id, user }) => {
     } else {
       return new Date(); // fallback
     }
-  };
-
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setDataForBooking((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
   };
 
   useEffect(() => {
@@ -236,8 +243,6 @@ const CreateNewOrderForVilla = ({ id, user }) => {
                       name="validityType"
                       onChange={handleInputChange}
                       defaultValue={user?.validityType}
-                      // disabled={user?.validityType ? true : false}
-                      // required={validityType === "Select One"}
                       required
                     >
                       <option selected>Select One</option>

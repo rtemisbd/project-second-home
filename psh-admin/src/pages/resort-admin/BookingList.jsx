@@ -448,7 +448,12 @@ const BookingList = () => {
                           </td>
 
                           <td>
-                            <p className="fw-bold">Tk {booking?.transactions[0]?.totalReceiveTk}</p>
+                            <p className="fw-bold">
+                              Tk{" "}
+                              {booking?.transactions[0]?.totalReceiveTk
+                                ? booking?.transactions[0]?.totalReceiveTk
+                                : 0}
+                            </p>
                           </td>
                           <td>
                             {" "}
@@ -456,14 +461,17 @@ const BookingList = () => {
                               className=" fw-bold"
                               style={{
                                 color:
-                                  booking?.transactions[0]?.totalReceiveTk ===
-                                  0
+                                  booking?.transactions[0]?.totalReceiveTk === 0
                                     ? "green"
                                     : "red",
                               }}
                             >
                               {" "}
-                              TK {booking?.payableAmount - booking?.transactions[0]?.totalReceiveTk}
+                              TK{" "}
+                              {booking?.transactions[0]?.totalReceiveTk
+                                ? booking?.payableAmount -
+                                  booking?.transactions[0]?.totalReceiveTk
+                                : booking?.payableAmount}
                             </span>
                           </td>
                           <td>

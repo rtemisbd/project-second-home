@@ -6,7 +6,7 @@ dotenv.config({ path: path.join(process.cwd(), ".env") });
 export default {
   env: process.env.NODE_ENV,
   port: process.env.PORT,
-  encryption_secret_key : process.env.ENCRYPTION_SECRET_KEY,
+  encryption_secret_key: process.env.ENCRYPTION_SECRET_KEY,
   database_url: process.env.MONGO_URL,
   server_url: process.env.server_site_url,
   client_url: process.env.client_site_url,
