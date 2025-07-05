@@ -97,6 +97,10 @@ const UserSchema = new mongoose.Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "Branch",
     },
+    resort: {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Resort",
+    },
     role: {
       type: String,
       enum: [

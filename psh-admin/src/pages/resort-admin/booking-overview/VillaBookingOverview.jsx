@@ -132,7 +132,6 @@ const VillaBookingOverview = () => {
           `${baseUrl}/api/villaRentDates?${queryParams.toString()}`
         );
 
-        console.log(data);
         setBookedDates(data?.data);
       } catch (error) {
         throw new Error(error);

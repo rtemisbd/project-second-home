@@ -97,7 +97,7 @@ const CreateNewOrderForVilla = ({ id, user }) => {
     const fetchData = async () => {
       try {
         const { data } = await axios.get(`${baseUrl}/api/villa/${id}`);
-        console.log(data);
+
         setVilla(data?.data?.villa);
         setPerNight(data?.data?.villa?.pricing?.perNight);
         setRentDate(data?.data?.bookedDates);
@@ -107,7 +107,6 @@ const CreateNewOrderForVilla = ({ id, user }) => {
     };
     fetchData();
   }, [id]);
-  console.log(villa);
   // durations
   useEffect(() => {
     if (startDate && endDate) {
