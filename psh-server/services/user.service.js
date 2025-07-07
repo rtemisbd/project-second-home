@@ -90,7 +90,8 @@ const getAllUsersFromDB = async (payload) => {
     };
   }
   if (role && role !== "") matchStage.role = role;
-  if (resort) matchStage.resort = new mongoose.Types.ObjectId(resort);
+  if (resort && resort !== "undefined" && resort !== "null" && resort !== "")
+    matchStage.resort = new mongoose.Types.ObjectId(resort);
 
   const pipeline = [
     { $match: matchStage },

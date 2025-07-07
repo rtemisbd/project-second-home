@@ -27,11 +27,11 @@ const Manager_list = () => {
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [resortId, setResortId] = useState(resort?._id || "");
 
-  // useEffect(() => {
-  //   if (resort._id) {
-  //     setResortId(resortId);
-  //   }
-  // }, [resort]);
+  useEffect(() => {
+    if (resort._id) {
+      setResortId(resort._id);
+    }
+  }, [resort]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -39,16 +39,13 @@ const Manager_list = () => {
         const queryParams = new URLSearchParams({
           page,
           size,
-          role: resortId !== "" ? "manager" : "",
+          role: resortId !== "" ? "" : "manager",
           resort: resortId,
         });
-        // if (resort._id) {
-        //   queryParams.append("resort", resort._id);
-        // }
+
         const { data } = await axios.get(
           `${baseUrl}/api/users?${queryParams.toString()}`
         );
-        console.log(data);
 
         setData(data?.data?.users);
         setTotalDataCount(data?.data?.totalCount);
@@ -58,7 +55,7 @@ const Manager_list = () => {
     };
 
     fetchData();
-  }, [page, size]);
+  }, [page, size, resortId]);
 
   //delete
   const [products, setProducts] = useState(data);
@@ -116,7 +113,7 @@ const Manager_list = () => {
                     >
                       <th>No.</th>
                       <th>Name</th>
-                      <th>Branch</th>
+                      {!resortId ? <th>Branch</th> : ""}
                       <th>Role</th>
                       <th>Phone</th>
                       <th>Email</th>
@@ -132,9 +129,13 @@ const Manager_list = () => {
                         <td>
                           <p>{user?.firstName}</p>
                         </td>
-                        <td>
-                          <p>{user?.branch[0]?.name}</p>
-                        </td>
+                        {!resortId ? (
+                          <td>
+                            <p>{user?.branch[0]?.name}</p>
+                          </td>
+                        ) : (
+                          ""
+                        )}
                         <td>
                           <p>{user?.role}</p>
                         </td>
