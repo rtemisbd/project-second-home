@@ -15,6 +15,7 @@ import { useSelector } from "react-redux";
 import Pagination from "../Pagination/Pagination";
 import { Table } from "react-bootstrap";
 import { AuthContext } from "../../contexts/UserProvider";
+import { useQuery } from "react-query";
 
 const Manager_list = () => {
   const MySwal = withReactContent(Swal);
@@ -33,8 +34,9 @@ const Manager_list = () => {
     }
   }, [resort]);
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const { refetch } = useQuery(
+    ["fetchUser", page],
+    async () => {
       try {
         const queryParams = new URLSearchParams({
           page,
@@ -52,29 +54,37 @@ const Manager_list = () => {
       } catch (error) {
         console.log(error);
       }
-    };
-
-    fetchData();
-  }, [page, size, resortId]);
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  useEffect(() => {
+    refetch();
+  }, [size, resort, refetch]);
 
   //delete
-  const [products, setProducts] = useState(data);
-  const handleCategory = async (id) => {
-    const confirmation = window.confirm("Are you Sure?");
-    if (confirmation) {
-      const url = `${baseUrl}/api/users/${id}`;
-      fetch(url, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          MySwal.fire("Good job!", "successfully deleted", "success");
-          if (data.deletedCount === 1) {
-            const remainItem = products.filter((item) => item._id !== id);
-            setProducts(remainItem);
-          }
-        });
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const data = await axios.delete(`${baseUrl}/api/users/${id}`);
+
+        refetch();
+        Swal.fire("Deleted!", "User has been deleted.", "success");
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      }
     }
   };
 
@@ -91,7 +101,7 @@ const Manager_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/dashboard/add_manager"}>
+                      <Link to={"/dashboard/resort/add_manager"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add Manager
                         </button>
@@ -175,7 +185,7 @@ const Manager_list = () => {
                               src={img}
                               alt=""
                               className="ms-3"
-                              onClick={() => handleCategory(user._id)}
+                              onClick={() => handleDelete(user._id)}
                             />
                           </div>
                           <div
