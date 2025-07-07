@@ -28,7 +28,7 @@ const Manager_list = () => {
   const [resortId, setResortId] = useState(resort?._id || "");
 
   useEffect(() => {
-    if (resort._id) {
+    if (resort) {
       setResortId(resort._id);
     }
   }, [resort]);

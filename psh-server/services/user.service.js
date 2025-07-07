@@ -78,6 +78,7 @@ const createUserIntoDB = async (payload) => {
 
 const getAllUsersFromDB = async (payload) => {
   const { phone, usedPromo, role, resort } = payload;
+
   const page = parseInt(payload?.page, 10) || 1;
   const size = parseInt(payload?.size, 10) || 10;
 

@@ -518,12 +518,12 @@ export const getJWT = async (req, res, next) => {
 //update admin user
 export const updateUserAdmin = async (req, res, next) => {
   try {
-    const banner = await User.findByIdAndUpdate(
+    const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
       { new: true }
     );
-    res.status(200).json(banner);
+    res.status(200).json(updatedUser);
   } catch (err) {
     next(err);
   }

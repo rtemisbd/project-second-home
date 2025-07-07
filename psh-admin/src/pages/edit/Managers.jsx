@@ -6,15 +6,29 @@ import axios from "axios";
 import { baseUrl } from "../../utils/getBaseURL";
 
 const Managers = ({ data }) => {
-  const { _id, name, role } = data;
+  const { _id, name, role, resort } = data;
+
   const [user, setUser] = useState(data);
-  const [categories, setCategories] = useState([]);
+  const [branches, setBranches] = useState(null);
+
+  const roles = resort
+    ? ["resortAdmin", "resortAccountant", "resortReceptionist"]
+    : [
+        "admin",
+        "SuperAdmin",
+        "user",
+        "manager",
+        "partner",
+        "subAdmin1",
+        "subAdmin2",
+        "resortAdmin",
+      ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
-        setCategories(response.data);
+        const response = await axios.get(`${baseUrl}/api/branch`);
+        setBranches(response.data);
       } catch (error) {
         console.log(error);
       }
@@ -25,15 +39,21 @@ const Managers = ({ data }) => {
 
   const MySwal = withReactContent(Swal);
 
+  // const handleOnBlur = (e) => {
+  //   const field = e.target.name;
+  //   const value = e.target.value;
+  //   const newInfo = { ...user };
+  //   // if (field === "status") {
+  //   //   newInfo[field] = value;
+  //   // }
+  //   newInfo[field] = value;
+  //   setUser(newInfo);
+  // };
+
   const handleOnBlur = (e) => {
     const field = e.target.name;
     const value = e.target.value;
-    const newInfo = { ...user };
-    if (field === "status") {
-      newInfo[field] = value;
-    }
-    newInfo[field] = value;
-    setUser(newInfo);
+    setUser((prev) => ({ ...prev, [field]: value }));
   };
 
   const handleSubmit = async (e) => {
@@ -43,17 +63,20 @@ const Managers = ({ data }) => {
       ...user,
     };
     try {
-      const product = {
+      const payload = {
         ...newPost,
+        branch:
+          typeof user.branch === "object" && user.branch !== null
+            ? user.branch._id
+            : user.branch,
       };
 
-      await axios.patch(
-        `${baseUrl}/api/users/admin/${_id}`,
-        product
-      );
+      await axios.patch(`${baseUrl}/api/users/admin/${_id}`, payload);
       MySwal.fire("Good job!", "successfully edited", "success");
     } catch (err) {
-      MySwal.fire("Something Error Found.", "warning");
+      console.log(err);
+
+      MySwal.fire("Something Went Wrong!.", "warning");
     }
   };
   return (
@@ -77,25 +100,29 @@ const Managers = ({ data }) => {
                   defaultValue={user.firstName || ""}
                 />
               </div>
-              <div className="col-md-6 form_sub_stream ">
-                <label htmlFor="inputState" className="profile_label3">
-                  Branch
-                </label>
-                <select
-                  name="branch"
-                  id="inputState"
-                  className="main_form w-100"
-                  onBlur={handleOnBlur}
-                  defaultValue={user.branch || ""}
-                >
-                  <option disabled>Select Branch</option>
-                  {categories.map((category) => (
-                    <option key={category._id} value={category._id}>
-                      {category.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
+              {resort ? (
+                <></>
+              ) : (
+                <div className="col-md-6 form_sub_stream ">
+                  <label htmlFor="inputState" className="profile_label3">
+                    Branch
+                  </label>
+                  <select
+                    name="branch"
+                    id="inputState"
+                    className="main_form w-100"
+                    onChange={handleOnBlur}
+                    defaultValue={user?.branch || ""}
+                  >
+                    <option disabled>Select Branch</option>
+                    {branches?.map((branch) => (
+                      <option key={branch?._id} value={branch?._id}>
+                        {branch?.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
               <div className="col-md-12 mb-3">
                 <label
                   htmlFor="inputState"
@@ -110,8 +137,15 @@ const Managers = ({ data }) => {
                   onBlur={handleOnBlur}
                   defaultValue={user.role}
                 >
-                  <option value="manager">Manager</option>
-                  <option value="partner">Partner</option>
+                  {roles.map((role, ind) => (
+                    <option
+                      key={ind}
+                      value={role}
+                      selected={role === user?.role}
+                    >
+                      {role}
+                    </option>
+                  ))}
                 </select>
               </div>
               <div className="col-md-12 mb-3">
