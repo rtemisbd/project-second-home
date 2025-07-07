@@ -83,8 +83,6 @@ import ResortTransaction from "./pages/resort-admin/ResortTransaction";
 import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
 import EditResort from "./pages/resort-admin/resort/EditResort";
 import VillaBookingOverview from "./pages/resort-admin/booking-overview/VillaBookingOverview";
-import AllAdminList from "./pages/resort-admin/administrations/AllAdminList";
-import AddNewManager from "./pages/resort-admin/administrations/AddNewManager";
 
 function App() {
   return (
@@ -197,7 +195,6 @@ function App() {
           element={<CreateUser />}
         />
         <Route path="resort/administration" element={<Manager />} />
-        {/* <Route path="resort/add_manager" element={<AddNewManager />} /> */}
         <Route
           path="resort/add_manager"
           element={<Add_Manager comeFrom={"resort"} />}
