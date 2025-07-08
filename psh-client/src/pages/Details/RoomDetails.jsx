@@ -63,7 +63,7 @@ const RoomDetails = () => {
   }, [categoryId]);
 
   useEffect(() => {
-    if (roomType === "Private Room") {
+    if (roomType !== "Shared Room") {
       const fetchData = async () => {
         try {
           const response = await fetch(`${serverBaseUrl}/property/${id}`);

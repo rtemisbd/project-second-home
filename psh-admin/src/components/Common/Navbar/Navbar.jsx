@@ -49,11 +49,9 @@ const Navbar = () => {
   const [isActive11, setIsActive11] = useState(false);
   const [branch, setBranch] = useState(null);
 
-
   useEffect(() => {
     const fetchBranch = async () => {
       const { data } = await axios.get(`${baseUrl}/api/branch/${user?.branch}`);
-      console.log(data);
       setBranch(data);
     };
 

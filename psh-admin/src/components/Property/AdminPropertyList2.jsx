@@ -98,7 +98,7 @@ const AdminPropertyList2 = () => {
   };
 
   const handleEdit = (room) => {
-    if (room?.categoryDetails?.name === "Private Room") {
+    if (room?.categoryDetails?.name !== "Shared Room") {
       navigate(`/dashboard/edit/private-room/${room?._id}`);
     } else {
       navigate(`/dashboard/edit/share-room/${room?._id}`);

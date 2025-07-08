@@ -17,6 +17,8 @@ export default function HomePage({
   villas,
   showVilla,
 }) {
+  console.log(data);
+
   return (
     <div className="category-item">
       <div className="text-left mt-3">
