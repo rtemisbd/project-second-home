@@ -49,12 +49,17 @@ const Navbar = () => {
   const [isActive11, setIsActive11] = useState(false);
   const [branch, setBranch] = useState(null);
 
+
   useEffect(() => {
     const fetchBranch = async () => {
       const { data } = await axios.get(`${baseUrl}/api/branch/${user?.branch}`);
+      console.log(data);
       setBranch(data);
     };
-    fetchBranch();
+
+    if (user?.branch) {
+      fetchBranch();
+    }
   }, [user?.branch]);
 
   const handleLogOut = () => {
@@ -120,8 +125,7 @@ const Navbar = () => {
           }}
         >
           {/* Sidebar */}
-          <div className="sidebar">      
-            
+          <div className="sidebar">
             {/* Sidebar user panel (optional) */}
             <div className="mt-2 d-flex gap-3 mt-4">
               <CgProfile

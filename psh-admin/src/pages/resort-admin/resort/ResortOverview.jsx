@@ -8,6 +8,8 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 const ResortOverview = () => {
   const { resort } = useContext(AuthContext);
+  console.log(resort);
+  
 
   return (
     <div className="wrapper">

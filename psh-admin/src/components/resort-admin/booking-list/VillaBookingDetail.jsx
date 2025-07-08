@@ -151,8 +151,12 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
             </div>
             {data?.specialRequest && (
               <div className="col-lg-12">
-                <label htmlFor="" className="fw-medium">
-                  Special Request
+                <label
+                  htmlFor=""
+                  className="fw-medium"
+                  style={{ color: "red" }}
+                >
+                  ** Special Request
                 </label>
                 <p>#{data?.specialRequest}</p>
               </div>
