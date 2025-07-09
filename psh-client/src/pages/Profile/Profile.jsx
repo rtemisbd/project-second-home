@@ -139,7 +139,7 @@ export default function Profile() {
         marginTop: !isProfileMenu ? "0px" : "-50px",
       }}
     >
-      <div className="mx-auto max-w-2xl lg:py-5 md:py-5 sm:py-0 lg:max-w-none lg:py-12 ">
+      <div className="mx-auto max-w-2xl md:py-5 sm:py-0 lg:max-w-none lg:py-12 ">
         <div className=" ">
           {/* <div className="md:hidden sm:block">
             <MenuList />

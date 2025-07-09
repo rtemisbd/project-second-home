@@ -141,7 +141,9 @@ const RoomDetails = () => {
 
   const recomended = useRecommended();
   const publishedRecomended = recomended?.filter(
-    (property) => property?.categoryDetails?.name === data?.category?.name
+    (property) =>
+      property?.categoryDetails?.name === data?.category?.name ||
+      property?.categoryDetails?.name === "Private Room"
   );
 
   // modal
@@ -452,19 +454,21 @@ const RoomDetails = () => {
                               </p>
                             </>
                           )}
-                          <div className="mt-2">
-                            <div className="flex items-center text-black">
-                              <p
-                                className={`ms-1  ${
-                                  seat
-                                    ? "text-[16px] text-[#9A9A9A] font-[700]"
-                                    : "md:text-xl sm:text-[1rem]"
-                                }`}
-                              >
-                                Room Number : {data?.roomNumber}
-                              </p>
+                          {data?.roomNumber && (
+                            <div className="mt-2">
+                              <div className="flex items-center text-black">
+                                <p
+                                  className={`ms-1  ${
+                                    seat
+                                      ? "text-[16px] text-[#9A9A9A] font-[700]"
+                                      : "md:text-xl sm:text-[1rem]"
+                                  }`}
+                                >
+                                  Room Number : {data?.roomNumber}
+                                </p>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                       <div className="col-span-2 flex md:ml-[50px] md:justify-between sm:mt-3 md:mt-0">
