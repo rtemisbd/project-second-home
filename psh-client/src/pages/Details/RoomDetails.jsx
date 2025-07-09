@@ -130,7 +130,7 @@ const RoomDetails = () => {
       fetchData();
     }
   }, [roomType, id]);
-  console.log(bookedDates);
+  // console.log(bookedDates);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");
@@ -640,6 +640,23 @@ const RoomDetails = () => {
                       )}
                     </div>
                     <Facilities allFacilities={allFacilities} />
+                    {data?.category?.name === "Home-Stay" && (
+                      <div className="w-full">
+                        <h2
+                          id="apartmentDetails"
+                          className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5"
+                        >
+                          Highlight Features
+                        </h2>
+                        <div className="leading-8 text-sm ">
+                          {data?.highlights?.map((highlight, ind) => (
+                            <p key={ind}>
+                              {ind + 1}. {highlight}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {data?.category?.name !== "Apartment" ? (
                       <div className="w-full">

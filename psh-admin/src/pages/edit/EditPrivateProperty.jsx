@@ -37,6 +37,18 @@ const EditPrivateProperty = () => {
   const [selectedCommonFacilities, setSelectedCommonFacilities] = useState([]);
   const [selectedAllFacilities, setSelectedAllFacilities] = useState([]);
 
+  const [highlights, setHighlights] = useState([""]);
+
+  // Function to add a new highlight
+  const addHighlight = () => {
+    setHighlights([...highlights, ""]);
+  };
+
+  // Function to remove a Highlight by ID
+  const removeHighlight = (ind) => {
+    setHighlights(highlights.filter((highlight, index) => index !== ind));
+  };
+
   const handleCheckboxChange = (facilityId) => {
     setSelectedCommonFacilities((prevSelected) => {
       if (prevSelected.includes(facilityId)) {
@@ -104,6 +116,8 @@ const EditPrivateProperty = () => {
       try {
         const response = await fetch(`${baseUrl}/api/property/${id}`);
         const { property } = await response.json();
+        console.log(property);
+
         setData(property);
         setRoomPhotos(property?.photos);
         setPerDay(property?.perDay);
@@ -115,6 +129,10 @@ const EditPrivateProperty = () => {
         setSelectedCommonFacilities(property?.commonfacility);
         setSelectedAllFacilities(
           (property?.facility || []).map((item) => item._id || item) // Normalize to only _id
+        );
+
+        setHighlights(
+          property?.highlights.length ? property?.highlights : [""]
         );
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -189,14 +207,17 @@ const EditPrivateProperty = () => {
       if (property?.photos?.length < 5) {
         return toast("Sorry ! Minimum 5 Photo Required.", "warning");
       }
+      if (data?.category?.name === "Home-Stay") {
+        property.highlights = highlights.map((highlight) => highlight.trim());
+      }
 
       toast("Uploading...", "success");
-      const { data } = await axios.patch(
+      const { data: updatedData } = await axios.patch(
         `${baseUrl}/api/property/${id}`,
         property
       );
 
-      if (data?.data?.modifiedCount > 0) {
+      if (updatedData?.data?.modifiedCount > 0) {
         setIsLoading(false);
         toast("Your property has been updated!", "success");
       }
@@ -229,7 +250,9 @@ const EditPrivateProperty = () => {
                 />
               </div>
               {/* branch */}
-              {(user && user.role === "SuperAdmin") || user.role === "admin" || user.role === "subAdmin1" ? (
+              {(user && user.role === "SuperAdmin") ||
+              user.role === "admin" ||
+              user.role === "subAdmin1" ? (
                 <div className="col-md-6 form_sub_stream ">
                   <label htmlFor="inputState" className="profile_label3">
                     Branch
@@ -571,6 +594,59 @@ const EditPrivateProperty = () => {
                   </div>
                 </div>
               </div>
+
+              {/* highlights for home stay */}
+
+              {data?.category?.name === "Home-Stay" && (
+                <div className="row">
+                  <h2 className="profile_label3 profile_bg">
+                    Highlights Features
+                  </h2>
+                  {highlights?.map((highlight, index) => (
+                    <div key={index} className="col-md-4 form_sub_stream">
+                      <input
+                        type="text"
+                        className="main_form w-100"
+                        value={highlight}
+                        onChange={(e) => {
+                          const updatedHighlights = [...highlights];
+                          updatedHighlights[index] = e.target.value;
+                          setHighlights(updatedHighlights);
+                        }}
+                        placeholder="Write the highlighted feature"
+                        required
+                      />
+
+                      {highlights.length > 1 && (
+                        <button
+                          type="button"
+                          className=""
+                          style={{
+                            background: "none",
+                            color: "red",
+                            marginTop: "-12px",
+
+                            fontWeight: "bold",
+                          }}
+                          onClick={() => removeHighlight(index)}
+                        >
+                          [ Remove ]
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="col-md-12 d-flex gap-2 justify-content-end">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={addHighlight}
+                    >
+                      New highlight
+                    </button>
+                  </div>
+                </div>
+              )}
 
               <h2 className="profile_label3 profile_bg mt-5 mb-4">
                 Rent Details

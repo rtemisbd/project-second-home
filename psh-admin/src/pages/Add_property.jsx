@@ -23,6 +23,8 @@ const Add_property = () => {
   const [categoryName, setCategoryName] = useState("");
   const [seatOptions, setSeatOptions] = useState([]);
 
+  const [highlights, setHighlights] = useState([""]);
+
   const [perDay, setPerDay] = useState(0);
   const [discountForDay, setDiscountForDay] = useState(null);
   const [dAmountForDay, setDAmountForDay] = useState(0);
@@ -121,6 +123,16 @@ const Add_property = () => {
       (category) => category._id === selectedCategoryId
     );
     setCategoryName(selectedCategory?.name || "");
+  };
+
+  // Function to add a new highlight
+  const addHighlight = () => {
+    setHighlights([...highlights, ""]);
+  };
+
+  // Function to remove a Highlight by ID
+  const removeHighlight = (ind) => {
+    setHighlights(highlights.filter((highlight, index) => index !== ind));
   };
 
   useEffect(() => {
@@ -291,6 +303,7 @@ const Add_property = () => {
       occupanct: formData.get("occupanct"),
       facility: selectedFacilities,
       commonfacility: selectedCommonFacilities,
+      highlights: highlights.map((highlight) => highlight.trim()),
       seats: selectedSeatOptions,
     };
 
@@ -638,8 +651,7 @@ const Add_property = () => {
                     </div>
                   </div>
 
-                  {categoryName === "Private Room" ||
-                  categoryName === "Shared Room" ? (
+                  {categoryName !== "Apartment" ? (
                     <>
                       <div className="row">
                         {facilities.map((facility, index) => (
@@ -725,6 +737,57 @@ const Add_property = () => {
                   </div>
                 </div>
               </div>
+              {/* highlights of home-stay */}
+              {categoryName === "Home-Stay" && (
+                <div className="row">
+                  <h2 className="profile_label3 profile_bg mt-4">
+                    Highlight Features
+                  </h2>
+                  {highlights.map((highlight, index) => (
+                    <div key={index} className="col-md-4 form_sub_stream">
+                      <input
+                        type="text"
+                        className="main_form w-100"
+                        value={highlight}
+                        onChange={(e) => {
+                          const updatedHighlights = [...highlights];
+                          updatedHighlights[index] = e.target.value;
+                          setHighlights(updatedHighlights);
+                        }}
+                        placeholder="Write the highlighted feature"
+                        required
+                      />
+
+                      {highlights.length > 1 && (
+                        <button
+                          type="button"
+                          className=""
+                          style={{
+                            background: "none",
+                            color: "red",
+                            marginTop: "-12px",
+
+                            fontWeight: "bold",
+                          }}
+                          onClick={() => removeHighlight(index)}
+                        >
+                          [ Remove ]
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="col-md-12 d-flex gap-2 justify-content-end">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={addHighlight}
+                    >
+                      New Highlight
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {categoryName !== "Shared Room" && (
                 <>
