@@ -256,7 +256,7 @@ const Add_property = () => {
 
     const data2 = {
       name: formData.get("name"),
-      type: formData.get("type"),
+      type: formData.get("type") || "both",
       city: formData.get("city"),
       floor: formData.get("floor"),
       roomNumber: formData.get("roomNumber"),
@@ -426,38 +426,39 @@ const Add_property = () => {
                   required
                 />
               </div>
-              {categoryName !== "Private Room" &&
-                categoryName !== "Shared Room" && (
-                  <div className="col-md-3 form_sub_stream">
-                    <label
-                      htmlFor="inputState"
-                      className="form-label profile_label3 "
-                    >
-                      Total Room
-                    </label>
-                    <input
-                      type="text"
-                      className="main_form w-100"
-                      name="totalRoom"
-                      placeholder="  Total Room"
-                      // required
-                    />
-                  </div>
-                )}
-              <div className="col-md-3 form_sub_stream mb-5">
-                <label htmlFor="inputState" className="profile_label3">
-                  Gender Type
-                </label>
-                <select
-                  name="type"
-                  className="main_form w-100"
-                  defaultValue={"female"}
-                  required
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
+              {categoryName === "Apartment" && (
+                <div className="col-md-3 form_sub_stream">
+                  <label
+                    htmlFor="inputState"
+                    className="form-label profile_label3 "
+                  >
+                    Total Room
+                  </label>
+                  <input
+                    type="text"
+                    className="main_form w-100"
+                    name="totalRoom"
+                    placeholder="  Total Room"
+                    // required
+                  />
+                </div>
+              )}
+              {categoryName !== "Home-Stay" && (
+                <div className="col-md-3 form_sub_stream mb-5">
+                  <label htmlFor="inputState" className="profile_label3">
+                    Gender Type
+                  </label>
+                  <select
+                    name="type"
+                    className="main_form w-100"
+                    defaultValue={"female"}
+                    required
+                  >
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+              )}
               <h2 className="profile_label3 profile_bg">Sort Details</h2>
               <div className="col-md-6 form_sub_stream ">
                 <label
@@ -868,7 +869,7 @@ const Add_property = () => {
                           name="perMonth"
                           placeholder="Per Month"
                           onChange={(e) => setPerMonth(e.target.value)}
-                          required
+                          // required
                           onWheel={(e) => e.target.blur()}
                         />
                       </div>
@@ -926,7 +927,7 @@ const Add_property = () => {
                           className="main_form w-100"
                           name="perYear"
                           placeholder="Per Year"
-                          required
+                          // required
                           onChange={(e) => setPerYear(e.target.value)}
                           onWheel={(e) => e.target.blur()}
                         />
@@ -975,22 +976,22 @@ const Add_property = () => {
                   </div>
                 </>
               )}
-              {(categoryName === "Private Room" ||
-                categoryName === "Shared Room") && (
-                <>
-                  <div className="col-md-12 form_sub_stream mb-5">
-                    <label htmlFor="inputState" className="profile_label3">
-                      Room Number
-                    </label>
-                    <input
-                      type="text"
-                      className="main_form w-100"
-                      name="roomNumber"
-                      placeholder="Room Number"
-                    />
-                  </div>
-                </>
-              )}
+              {/* {(categoryName === "Private Room" ||
+                categoryName === "Shared Room") && ( */}
+              <>
+                <div className="col-md-12 form_sub_stream mb-5">
+                  <label htmlFor="inputState" className="profile_label3">
+                    Room Number
+                  </label>
+                  <input
+                    type="text"
+                    className="main_form w-100"
+                    name="roomNumber"
+                    placeholder="Room Number"
+                  />
+                </div>
+              </>
+              {/* )} */}
 
               {categoryName === "Shared Room" && (
                 <>

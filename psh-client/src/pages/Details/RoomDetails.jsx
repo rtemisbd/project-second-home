@@ -464,7 +464,10 @@ const RoomDetails = () => {
                                       : "md:text-xl sm:text-[1rem]"
                                   }`}
                                 >
-                                  Room Number : {data?.roomNumber}
+                                  {data?.category?.name === "Home-Stay"
+                                    ? "Home Stay"
+                                    : "Room Number"}{" "}
+                                  : {data?.roomNumber}
                                 </p>
                               </div>
                             </div>
@@ -551,15 +554,22 @@ const RoomDetails = () => {
                           <p className="font-bold">Type</p>
                           <p>{data?.category?.name}</p>
                         </div>
-                        <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
-                          <p className="font-bold">People</p>
-                          <p>
-                            {data?.totalSeats
-                              ? data?.totalSeats
-                              : data?.bedroom}{" "}
-                            People{" "}
-                          </p>
-                        </div>
+                        {data?.category?.name !== "Home-Stay" ? (
+                          <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                            <p className="font-bold">People</p>
+                            <p>
+                              {data?.totalSeats
+                                ? data?.totalSeats
+                                : data?.bedroom}{" "}
+                              People{" "}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                            <p className="font-bold">Bedroom</p>
+                            <p>{data?.bedroom} Bedroom</p>
+                          </div>
+                        )}
                         <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                           <p className="font-bold">Bed Type</p>
                           <p>{data?.bedType} </p>
