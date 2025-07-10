@@ -174,7 +174,7 @@ const RoomOverview = () => {
     fromDate && toDate ? generateDateArray(fromDate, toDate) : [];
 
   const getBookingStatus = (room, date) => {
-    const isPrivateRoom = room?.categoryDetails?.name === "Private Room";
+    const isPrivateRoom = room?.categoryDetails?.name !== "Shared Room";
 
     const booking = isPrivateRoom
       ? bookedRooms.find(
@@ -193,7 +193,7 @@ const RoomOverview = () => {
     return booking?.bookingStatus;
   };
   const getReservedStatus = (room, date) => {
-    const isPrivateRoom = room?.categoryDetails?.name === "Private Room";
+    const isPrivateRoom = room?.categoryDetails?.name !== "Shared Room";
 
     const booking = isPrivateRoom
       ? reserved.find(
@@ -382,7 +382,9 @@ const RoomOverview = () => {
                   {data.map((room, index) => (
                     <tr key={index}>
                       <td>
-                        {room?.categoryDetails?.name === "Private Room"
+                        {room?.categoryDetails?.name === "Home-Stay"
+                          ? `${room.name}: ${room.roomNumber}`
+                          : room?.categoryDetails?.name !== "Shared Room"
                           ? `Room: ${room.roomNumber}`
                           : `Seat: ${room.seatNumber}`}
                       </td>

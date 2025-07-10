@@ -690,9 +690,8 @@ const RoomDetails = () => {
                             Request)
                           </p>
                           <p>4. Meeting Room Facilities (On Request)</p>
-                          <p>5. Tuition Facilities (Students)</p>
-                          <p>6. Mental Healthcare</p>
-                          <p>7. Proper Guideline for new comes in Dhaka.</p>
+                          <p>5. Mental Healthcare</p>
+                          <p>6. Proper Guideline for new comes in Dhaka.</p>
                         </div>
                       </div>
                     ) : (

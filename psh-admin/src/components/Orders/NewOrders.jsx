@@ -14,6 +14,7 @@ import Pagination from "../Pagination/Pagination";
 import { useSelector } from "react-redux";
 import useBranch from "../../hooks/useBranch";
 import { AuthContext } from "../../contexts/UserProvider";
+import useCategory from "../../hooks/useCategory";
 
 const NewOrders = () => {
   const { page, size } = useSelector((state) => state.pagination);
@@ -28,6 +29,7 @@ const NewOrders = () => {
   const [branch, setBranch] = useState(
     user?.role === "manager" ? user?.branch : "All"
   );
+  const [selectedCategory, setSelectedCategory] = useState("All");
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
   const [runningStatus, setRunningStatus] = useState("All");
@@ -44,6 +46,8 @@ const NewOrders = () => {
 
   // get all branches
   const { allBranch } = useBranch();
+  const { categories } = useCategory();
+
   // Get all Bookings
   const { refetch } = useQuery(
     [
@@ -59,6 +63,7 @@ const NewOrders = () => {
       guestType,
       filteredName,
       filteredPhone,
+      selectedCategory,
     ],
     async () => {
       try {
@@ -74,6 +79,7 @@ const NewOrders = () => {
           status: bookingStatus,
           filteredName,
           filteredPhone,
+          category: selectedCategory,
         });
 
         // Get the access token
@@ -109,6 +115,7 @@ const NewOrders = () => {
       refetchOnWindowFocus: false,
     }
   );
+ 
 
   // Re-fetch data whenever size changes
   useEffect(() => {
@@ -142,6 +149,8 @@ const NewOrders = () => {
     document.getElementById("runningStatusId").value = "All";
     setGuestType("All");
     document.getElementById("guestTypeId").value = "All";
+    setSelectedCategory("All");
+    document.getElementById("categoryId").value = "All";
   };
 
   useEffect(() => {
@@ -153,7 +162,6 @@ const NewOrders = () => {
       return () => clearTimeout(timeoutId);
     }
   }, [data?.orders?.length, findingStatement, hasTimeoutRun, refetch]);
-
 
   return (
     <div className="wrapper">
@@ -321,6 +329,23 @@ const NewOrders = () => {
                     <option value="All">All</option>
                     {allBranch?.map((branch) => (
                       <option value={branch?._id}>{branch?.name}</option>
+                    ))}
+                  </select>
+                </div>
+              )}
+              {user?.role !== "manager" && (
+                <div>
+                  <label htmlFor="">Category </label> <br />
+                  <select
+                    className="rounded"
+                    style={{ height: "30px" }}
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                    id="categoryId"
+                    value={selectedCategory}
+                  >
+                    <option value="All">All</option>
+                    {categories?.map((category) => (
+                      <option value={category?.name}>{category?.name}</option>
                     ))}
                   </select>
                 </div>

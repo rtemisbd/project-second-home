@@ -552,7 +552,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                 excludeDateIntervals={bookedDates?.map((rent) => {
                   return {
                     start: subDays(new Date(rent?.bookStartDate), 1),
-                    end: addDays(new Date(rent?.bookEndDate), -1),
+                    end: addDays(new Date(rent?.bookEndDate), 0),
                   };
                 })}
                 // minDate={subDays(new Date(), 0)}
@@ -602,12 +602,12 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             <p className="text-center font-bold mb-2 mt-[-5px]">Duration</p>
             <p className=" duraion-count font-normal ps-1 text-sm ">
               {customerRent?.daysDifference >= 0
-                ? `${customerRent?.daysDifference} days`
+                ? `${customerRent?.daysDifference} night`
                 : "" ||
                   (customerRent?.months &&
                     customerRent?.days >= 0 &&
                     !customerRent?.years)
-                ? `${customerRent?.months} months, ${customerRent?.days} days`
+                ? `${customerRent?.months} months, ${customerRent?.days} night`
                 : "" ||
                   (customerRent?.years &&
                     customerRent?.months >= 0 &&
@@ -625,12 +625,12 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                 type="text"
                 value={`${
                   customerRent?.daysDifference >= 0
-                    ? `${customerRent?.daysDifference} days`
+                    ? `${customerRent?.daysDifference} night`
                     : "" ||
                       (customerRent?.months &&
                         customerRent?.days >= 0 &&
                         !customerRent?.years)
-                    ? `${customerRent?.months} months, ${customerRent?.days} days`
+                    ? `${customerRent?.months} months, ${customerRent?.days} night`
                     : "" ||
                       (customerRent?.years &&
                         customerRent?.months >= 0 &&
@@ -1154,7 +1154,8 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             ""
           )}
 
-          {data?.branch?.foodAmount === 0 ? (
+          {data?.category?.name === "Home-Stay" ||
+          data?.branch?.foodAmount === 0 ? (
             ""
           ) : (
             <>

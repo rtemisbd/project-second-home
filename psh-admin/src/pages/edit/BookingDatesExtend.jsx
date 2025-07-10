@@ -573,7 +573,8 @@ const BookingDatesExtend = ({
                   <p> BDT {minimumPayment}</p>
                 </div>
               </div>
-              {data?.branchDetails?.foodAmount === 0 ? (
+              {data?.branchDetails?.foodAmount === 0 ||
+              room?.property?.category?.name === "Home-Stay" ? (
                 ""
               ) : (
                 <div className="d-flex gap-3 ms-3">
