@@ -126,11 +126,7 @@ const getAllVillaOrdersFromDB = async (queries) => {
 
   const pipeline = [
     { $match: matchStage },
-    {
-      $sort: { createdAt: -1 },
-    },
-    { $skip: (page - 1) * size },
-    { $limit: size },
+
     {
       $facet: {
         paginatedResult: [
