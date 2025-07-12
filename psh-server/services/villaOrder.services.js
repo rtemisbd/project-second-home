@@ -33,17 +33,12 @@ const createVillaOrderIntoDB = async (payload) => {
   payload.bookingId = await generatedResortBookingId();
 
   //step 3 : create booking
-  // console.log({ send: payload.sendAmount, total: payload.pricing.totalAmount });
-  // console.log(typeof payload.sendAmount, payload.sendAmount);
-
-  // if (
-  //   payload.sendAmount &&
-  //   Number(payload.sendAmount) === Number(payload.pricing.totalAmount)
-  // ) {
-  //   payload.paymentStatus = "Paid";
-  // } else {
-  //   payload.paymentStatus = "Unpaid";
-  // }
+  if (
+    payload.sendAmount &&
+    Number(payload.sendAmount) === Number(payload.pricing.totalAmount)
+  ) {
+    payload.paymentStatus = "Paid";
+  }
   const order = await VillaOrders.create(payload);
 
   // step 4 : create transaction
@@ -239,9 +234,9 @@ const getAllVillaOrdersFromDB = async (queries) => {
   // 🔁 Update paymentStatus based on payableAmount vs receivedTk
   for (const order of orders) {
     const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
-    const payableAmount = order?.payableAmount || 0;
+    const totalAmount = order?.pricing?.totalAmount || 0;
 
-    const newPaymentStatus = receivedTk === payableAmount ? "Paid" : "Unpaid";
+    const newPaymentStatus = receivedTk === totalAmount ? "Paid" : "Unpaid";
 
     if (order.paymentStatus !== newPaymentStatus) {
       await VillaOrders.updateOne(

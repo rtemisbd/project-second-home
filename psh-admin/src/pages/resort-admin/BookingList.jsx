@@ -56,7 +56,7 @@ const BookingList = () => {
 
   const handleRefreshQuery = () => {
     setPhone("");
-    document.getElementById("phone").value = "";
+    document.getElementById("phoneId").value = "";
     setFromDate("");
     document.getElementById("fromDateId").value = "";
     setToDate("");
@@ -81,6 +81,7 @@ const BookingList = () => {
       runningStatus,
       phone,
       resort._id,
+      size,
     ],
     async () => {
       try {
@@ -123,7 +124,7 @@ const BookingList = () => {
   // Re-fetch data whenever size changes
   useEffect(() => {
     refetch();
-  }, [size, refetch]);
+  }, [size, page, refetch]);
 
   useEffect(() => {
     if (data?.length === 0 && !hasTimeoutRun) {
