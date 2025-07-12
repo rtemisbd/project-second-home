@@ -44,10 +44,19 @@ const villaOrderSchema = new mongoose.Schema(
       type: String,
       //  required: true
     },
-    totalAmount: { type: Number, required: true },
-    discount: { type: Number, default: 0 },
-    subTotal: { type: Number, required: true },
-    payableAmount: { type: Number, required: true },
+
+    pricing: {
+      initialAmount: { type: Number, required: true },
+      totalAmount: { type: Number, required: true },
+      occupancyCharge: { type: Number, default: 0 },
+      foodCost: { type: Number, default: 0 },
+      discount: { type: Number, default: 0 },
+    },
+
+    // totalAmount: { type: Number, required: true },
+    // discount: { type: Number, default: 0 },
+    // subTotal: { type: Number, required: true },
+    // payableAmount: { type: Number, required: true },
     paymentStatus: {
       type: String,
       enum: ["Paid", "Unpaid"],

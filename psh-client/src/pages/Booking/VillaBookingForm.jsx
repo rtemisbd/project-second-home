@@ -521,13 +521,13 @@ const VillaBookingForm = () => {
                         </Tooltip>
                       </div>
                     </div>
-                    <p>BDT {bookingItem?.subTotal?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.pricing?.initialAmount?.toLocaleString()}</p>
                   </div>
 
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.totalAmount?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.pricing?.totalAmount?.toLocaleString()}</p>
                   </div>
 
                   <div className={`flex justify-between `}>

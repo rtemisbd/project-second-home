@@ -20,10 +20,9 @@ const VillaBookingDateExtend = ({
   const [perNight, setPerNight] = useState(
     data?.villa?.pricing?.afterDiscountPerNight
   );
-  const [totalAmount, setTotalAmount] = useState(data?.totalAmount || 0);
-  const [subTotal, setSubTotal] = useState(data?.subTotal);
-  const [payableAmount, setPayableAmount] = useState(data?.payableAmount);
-  const [discount, setDiscount] = useState(data?.discount || 0);
+  const [totalAmount, setTotalAmount] = useState(data?.pricing?.totalAmount || 0);
+  const [initialAmount, setInitialAmount] = useState(data?.pricing?.initialAmount);
+  const [discount, setDiscount] = useState(data?.pricing?.discount || 0);
   const [alreadyPaid, setAlreadyPaid] = useState(
     data?.transactions[0]?.totalReceiveTk || 0
   );
@@ -46,14 +45,17 @@ const VillaBookingDateExtend = ({
   const handleBookingDateExtend = async () => {
     try {
       const payload = {
-        payableAmount,
+        pricing: {
+          initialAmount,
+          totalAmount,
+        },
         rentDate: {
           bookStartDate: format(parseDate(startDate), "dd-MM-yyyy"),
           bookEndDate: format(parseDate(endDate), "dd-MM-yyyy"),
           daysDifference: customerRent,
         },
-        subTotal,
-        totalAmount,
+        // initialAmount,
+        // totalAmount,
       };
       // Get the access token
       const accessToken = getFromLocalStorage(authKey);
@@ -72,9 +74,8 @@ const VillaBookingDateExtend = ({
         toast.success(updatedData?.data?.message);
         setShowExtendModal(false);
       }
-
     } catch (error) {
-      // console.log(error);
+      console.log(error);
       toast.error("Something went wrong!!");
     }
   };
@@ -109,11 +110,11 @@ const VillaBookingDateExtend = ({
       const total = customerRent * perNight;
       setTotalAmount(total);
 
-      const subtotal = total - discount;
-      setSubTotal(subtotal);
+      const initialAmount = total - discount;
+      setInitialAmount(initialAmount);
 
-      const payable = subtotal;
-      setPayableAmount(payable);
+      const payable = initialAmount;
+      setTotalAmount(payable);
     }
   }, [customerRent, perNight, discount]);
 
@@ -240,7 +241,7 @@ const VillaBookingDateExtend = ({
               </div>
               <div className="d-flex justify-content-between mt-2">
                 <p className="ml-5">Sub Total</p>
-                <p>BDT {subTotal}</p>
+                <p>BDT {initialAmount}</p>
               </div>
 
               <div className="d-flex justify-content-between">
@@ -254,7 +255,7 @@ const VillaBookingDateExtend = ({
                 <div className="ml-5">
                   <p className="text-danger fw-bold">Due Amount</p>
                 </div>
-                <p> BDT {payableAmount - alreadyPaid}</p>
+                <p> BDT {totalAmount - alreadyPaid}</p>
               </div>
             </div>
 

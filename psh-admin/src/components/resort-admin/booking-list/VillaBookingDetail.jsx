@@ -189,21 +189,21 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
               <label htmlFor="" className="fw-medium">
                 Total Amount
               </label>
-              <p>Tk {data?.totalAmount?.toLocaleString()}</p>
+              <p>Tk {data?.pricing?.initialAmount?.toLocaleString()}</p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Discount
               </label>
-              <p>Tk {data?.discount || 0}</p>
+              <p>Tk {data?.pricing?.discount || 0}</p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Payable Amount
               </label>
-              <p>Tk {data?.payableAmount}</p>
+              <p>Tk {data?.pricing?.totalAmount?.toLocaleString()}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -222,7 +222,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
               </label>
               <p>
                 Tk{" "}
-                {data?.payableAmount -
+                {data?.pricing?.totalAmount -
                   (data?.transactions[0]?.totalReceiveTk || 0)}
               </p>
             </div>
@@ -305,7 +305,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
             <div className=" d-flex justify-content-end gap-5 ">
               <div className="d-flex">
                 <label htmlFor="">Total Payable Amount </label>
-                <p> = Tk {data?.payableAmount}</p>
+                <p> = Tk {data?.pricing?.totalAmount}</p>
               </div>
               <div className="d-flex">
                 <label htmlFor=""> Total Receive </label>
@@ -319,7 +319,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
                 <label htmlFor="">Due Amount </label>
                 <p className="text-danger fw-bold">
                   = Tk{" "}
-                  {data?.payableAmount -
+                  {data?.pricing?.totalAmount -
                     (data?.transactions[0]?.totalReceiveTk || 0)}
                 </p>
               </div>

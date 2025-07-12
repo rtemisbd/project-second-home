@@ -253,7 +253,7 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
               {booking?.rentDate?.daysDifference}{" "}
               {booking?.rentDate?.daysDifference === 1 ? "Night" : "Nights"}
             </Text>
-            <Text>BDT {booking?.totalAmount}</Text>
+            <Text>BDT{booking?.pricing?.totalAmount?.toLocaleString()}</Text>
           </View>
         </View>
 
@@ -284,14 +284,13 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
                 <Text style={styles.bold}>Total :</Text>
 
                 <Text style={{}}>
-                  BDT {booking?.totalAmount?.toLocaleString()}
+                  BDT {booking?.pricing?.totalAmount?.toLocaleString()}
                 </Text>
               </View>
 
               <View style={styles.flex}>
-                <Text style={styles.bold}>
-                  Paid : BDT {booking?.sendAmount}{" "}
-                </Text>
+                <Text style={styles.bold}> Paid :</Text>
+                <Text style={{}}>BDT {booking?.sendAmount} </Text>
               </View>
               <View
                 style={{
@@ -307,7 +306,7 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
                     styles.bold,
                     {
                       color:
-                        booking?.totalAmount - booking?.sendAmount > 0
+                        booking?.pricing?.totalAmount - booking?.sendAmount > 0
                           ? "red"
                           : "",
                     },
@@ -319,7 +318,7 @@ const DownloadInvoiceOfVilla = ({ booking }) => {
                 <Text style={{}}>
                   BDT{" "}
                   {(
-                    booking?.totalAmount - booking?.sendAmount
+                    booking?.pricing?.totalAmount - booking?.sendAmount
                   )?.toLocaleString()}
                 </Text>
               </View>

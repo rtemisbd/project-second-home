@@ -15,6 +15,7 @@ const createVillaOrderIntoDB = async (payload) => {
     firstName: payload?.fullName,
     phone: payload?.phone,
     userAddress: payload?.address,
+    // validityType: payload?.validityType,
     emergencyContact: {
       contactName: payload?.emergencyContactName,
       relation: payload?.emergencyRelationC,
@@ -32,13 +33,21 @@ const createVillaOrderIntoDB = async (payload) => {
   payload.bookingId = await generatedResortBookingId();
 
   //step 3 : create booking
-  if (payload?.payableAmount == payload.sendAmount) {
-    payload.paymentStatus = "Paid";
-  }
+  // console.log({ send: payload.sendAmount, total: payload.pricing.totalAmount });
+  // console.log(typeof payload.sendAmount, payload.sendAmount);
+
+  // if (
+  //   payload.sendAmount &&
+  //   Number(payload.sendAmount) === Number(payload.pricing.totalAmount)
+  // ) {
+  //   payload.paymentStatus = "Paid";
+  // } else {
+  //   payload.paymentStatus = "Unpaid";
+  // }
   const order = await VillaOrders.create(payload);
 
   // step 4 : create transaction
-  if (payload.sendAmount && payload.paymentProof &&  payload?.paymentPlatform) {
+  if (payload.sendAmount && payload.paymentProof && payload?.paymentPlatform) {
     const newTransaction = {
       userId: payload.user,
       bookingId: payload.bookingId,

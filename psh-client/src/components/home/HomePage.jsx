@@ -1,4 +1,3 @@
-import React from "react";
 import { Tabs, TabsHeader, Tab } from "@material-tailwind/react";
 import SingleCard from "./SingleCard";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
@@ -17,8 +16,6 @@ export default function HomePage({
   villas,
   showVilla,
 }) {
-  console.log(data);
-
   return (
     <div className="category-item">
       <div className="text-left mt-3">

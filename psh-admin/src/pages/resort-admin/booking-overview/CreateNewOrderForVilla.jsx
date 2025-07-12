@@ -18,8 +18,8 @@ const CreateNewOrderForVilla = ({ id, user }) => {
 
   const [perNight, setPerNight] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
-  const [subTotal, setSubTotal] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(0);
+  const [initialAmount, setInitialAmount] = useState(0);
+  // const [payableAmount, setPayableAmount] = useState(0);
   const [discount, setDiscount] = useState(0);
   const [customerRent, setCustomerRent] = useState(1);
 
@@ -51,9 +51,12 @@ const CreateNewOrderForVilla = ({ id, user }) => {
         resort: villa?.resortId?._id,
 
         perNight: villa?.pricing?.afterDiscountPerNight,
-        subTotal,
-        totalAmount,
-        payableAmount: totalAmount,
+        pricing: {
+          initialAmount,
+          totalAmount,
+          discount,
+        },
+        // payableAmount: totalAmount,
         minimumPayment: villa?.pricing?.advancePayment,
         rentDate: {
           bookStartDate: format(new Date(startDate), "dd-MM-yyyy"),
@@ -109,9 +112,12 @@ const CreateNewOrderForVilla = ({ id, user }) => {
   }, [id]);
   // durations
   useEffect(() => {
+    console.log({ startDate, endDate });
+
     if (startDate && endDate) {
       const start = parseDate(startDate);
       const end = parseDate(endDate);
+      console.log({ start, end });
 
       const diffTime = end.getTime() - start.getTime();
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
@@ -124,14 +130,14 @@ const CreateNewOrderForVilla = ({ id, user }) => {
 
   useEffect(() => {
     if (customerRent && perNight) {
-      const total = customerRent * perNight;
+      const initialAmount = customerRent * perNight;
+      setInitialAmount(initialAmount);
+
+      const total = initialAmount - discount;
       setTotalAmount(total);
 
-      const subtotal = total - discount;
-      setSubTotal(subtotal);
-
-      const payable = subtotal;
-      setPayableAmount(payable);
+      // const payable = initialAmount;
+      // setPayableAmount(payable);
     }
   }, [customerRent, perNight, discount]);
 
@@ -227,7 +233,7 @@ const CreateNewOrderForVilla = ({ id, user }) => {
                     />
                   </div>
 
-                  <div>
+                  {/* <div>
                     <label htmlFor="">Choose Your Identity Verification</label>{" "}
                     <br />
                     <select
@@ -270,7 +276,7 @@ const CreateNewOrderForVilla = ({ id, user }) => {
                         Birth Certificate
                       </option>
                     </select>
-                  </div>
+                  </div> */}
                 </div>
               </div>
             </div>
@@ -359,7 +365,7 @@ const CreateNewOrderForVilla = ({ id, user }) => {
           {/* about villa*/}
 
           <p
-            className=" d-flex justify-content-start "
+            className=" d-flex justify-content-start  "
             style={{
               backgroundColor: "#FCA22A",
               color: "white",
@@ -495,8 +501,8 @@ const CreateNewOrderForVilla = ({ id, user }) => {
 
               <hr className="mt-3 ml-5 text-black" />
               <div className="d-flex justify-content-between mt-2">
-                <p className="ml-5">Total Amount</p>
-                <p>BDT {totalAmount}</p>
+                <p className="ml-5">Sub Total</p>
+                <p>BDT {initialAmount}</p>
               </div>
 
               <div className="d-flex justify-content-between mt-2">
@@ -507,8 +513,8 @@ const CreateNewOrderForVilla = ({ id, user }) => {
                 <p>BDT {discount}</p>
               </div>
               <div className="d-flex justify-content-between mt-2">
-                <p className="ml-5">Sub Total</p>
-                <p>BDT {subTotal}</p>
+                <p className="ml-5"> Total Amount</p>
+                <p>BDT {totalAmount}</p>
               </div>
 
               <div className="d-flex justify-content-between text-danger">

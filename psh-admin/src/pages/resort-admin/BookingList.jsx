@@ -417,19 +417,21 @@ const BookingList = () => {
                           >
                             {" "}
                             <p className="fw-bold">
-                              Tk {booking?.totalAmount?.toLocaleString()}
+                              Tk{" "}
+                              {booking?.pricing?.initialAmount?.toLocaleString()}
                             </p>
                           </td>
                           <td>
                             {" "}
                             <p className="fw-bold">
-                              Tk {booking?.discount || 0}
+                              Tk {booking?.pricing?.discount || 0}
                             </p>
                           </td>
                           <td>
                             {" "}
                             <p className="fw-bold">
-                              Tk {booking?.payableAmount?.toLocaleString()}
+                              Tk{" "}
+                              {booking?.pricing?.totalAmount?.toLocaleString()}
                             </p>
                           </td>
                           <td>
@@ -461,7 +463,9 @@ const BookingList = () => {
                               className=" fw-bold"
                               style={{
                                 color:
-                                  booking?.transactions[0]?.totalReceiveTk === 0
+                                  booking?.pricing?.totalAmount -
+                                    booking?.transactions[0]?.totalReceiveTk ===
+                                  0
                                     ? "green"
                                     : "red",
                               }}
@@ -469,9 +473,9 @@ const BookingList = () => {
                               {" "}
                               TK{" "}
                               {booking?.transactions[0]?.totalReceiveTk
-                                ? booking?.payableAmount -
+                                ? booking?.pricing?.totalAmount -
                                   booking?.transactions[0]?.totalReceiveTk
-                                : booking?.payableAmount}
+                                : booking?.pricing?.totalAmount}
                             </span>
                           </td>
                           <td>
