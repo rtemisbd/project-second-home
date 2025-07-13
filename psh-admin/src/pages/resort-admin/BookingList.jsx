@@ -17,6 +17,7 @@ import VillaBookingStatusUpdate from "../../components/resort-admin/booking-list
 import { Toaster } from "react-hot-toast";
 import VillaBookingDetail from "../../components/resort-admin/booking-list/VillaBookingDetail";
 import VillaBookingDateExtend from "../../components/resort-admin/booking-list/VillaBookingDateExtend";
+import VillaBookingBills from "../../components/resort-admin/booking-list/VillaBookingBills";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);
@@ -43,6 +44,9 @@ const BookingList = () => {
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
+  const [paymentModalData, setPaymentModalData] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
   const allBookingStatus = ["Pending", "Processing", "Approved", "Canceled"];
 
   const handleShowDetails = (payload) => {
@@ -52,6 +56,11 @@ const BookingList = () => {
   const handleShowExtend = (payload) => {
     setSelectedData(payload);
     setShowExtendModal(true);
+  };
+
+  const handlePaymentShow = (paymentData) => {
+    setShowPaymentModal(true);
+    setPaymentModalData(paymentData);
   };
 
   const handleRefreshQuery = () => {
@@ -569,22 +578,11 @@ const BookingList = () => {
                               <button
                                 type="button"
                                 style={{ backgroundColor: "#00BBB4" }}
-                                // onClick={() => handlePaymentShow(booking)}
+                                onClick={() => handlePaymentShow(booking)}
                               >
                                 Payment
                               </button>
-                              {/* 
-              <button className="bg-danger">End</button> */}
                             </div>
-                            {/* {paymentModalData && (
-                              <Payment
-                                data={paymentModalData}
-                                refetch={refetch}
-                                isLoading={isLoading}
-                                showPaymentModal={showPaymentModal}
-                                setShowPaymentModal={setShowPaymentModal}
-                              />
-                            )} */}
                           </td>
                         </tr>
                       ))}
@@ -613,6 +611,15 @@ const BookingList = () => {
             data={selectedData}
             showExtendModal={showExtendModal}
             setShowExtendModal={setShowExtendModal}
+          />
+        )}
+        {paymentModalData && (
+          <VillaBookingBills
+            data={paymentModalData}
+            refetch={refetch}
+            isLoading={isLoading}
+            showPaymentModal={showPaymentModal}
+            setShowPaymentModal={setShowPaymentModal}
           />
         )}
         <Pagination totalDataCount={totalDataCount} />

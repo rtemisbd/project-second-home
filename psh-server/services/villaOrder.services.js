@@ -275,9 +275,9 @@ const updateVillaOrderById = async (id, payload) => {
   }
 
   const oldStatus = order.status;
-  const newStatus = payload.status;
+  const newStatus = payload?.status;
 
-  // Step 2: Update the order status
+  // Step 2: Update the order 
   const result = await VillaOrders.findByIdAndUpdate(
     id,
     { $set: payload },

@@ -45,6 +45,10 @@ const villaOrderSchema = new mongoose.Schema(
       //  required: true
     },
 
+    occupancy: {
+      child: { type: Number, default: 0 },
+      adult: { type: Number, default: 0 },
+    },
     pricing: {
       initialAmount: { type: Number, required: true },
       totalAmount: { type: Number, required: true },
