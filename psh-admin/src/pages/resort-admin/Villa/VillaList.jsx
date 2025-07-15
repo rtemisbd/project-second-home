@@ -156,7 +156,9 @@ const VillaList = () => {
                         {/* action */}
                         <td>
                           <div className="d-flex justify-content-center">
-                            <Link to={`/dashboard/edit/villa/${villa?._id}`}>
+                            <Link
+                              to={`/dashboard/resort/edit/villa/${villa?._id}`}
+                            >
                               <img src={img3} alt="" />
                             </Link>
                             <img src={img} alt="" className="ms-3" />

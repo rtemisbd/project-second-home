@@ -508,13 +508,13 @@ const AddVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Advance Payment
+                  Advance Payment(% of total amount)
                 </label>
                 <input
                   type="number"
                   className="main_form w-100"
                   name="advancePayment"
-                  placeholder=" Minimum Payment"
+                  placeholder=" Minimum Payment (% of total amount)"
                   required
                 />
               </div>

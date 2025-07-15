@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { toast, ToastContainer } from "react-toastify";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
@@ -7,19 +7,25 @@ import { useParams } from "react-router-dom";
 import { baseUrl } from "../../../utils/getBaseURL";
 import { multipleImageUpload } from "../../../utils/multipleImageUpload";
 import TextEditor from "../../../components/TextEditor/TextEditor";
+import { AuthContext } from "../../../contexts/UserProvider";
 
 const EditVilla = () => {
   const { id } = useParams();
+  const { resort } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
+  console.log({ resort });
 
   const [villa, setVilla] = useState(null);
-  const [allResorts, setAllResorts] = useState([]);
   const [selectedResort, setSelectedResort] = useState(null);
-  const [allTypes, setAllTypes] = useState([]);
+  // const [allTypes, setAllTypes] = useState(resort.villaTypes);
   const [selectedType, setSelectedType] = useState(null);
   const [occupancyPolicy, setOccupancyPolicy] = useState("");
   const [houseRules, setHouseRules] = useState("");
   const [uploadedImages, setUploadedImages] = useState([]);
+
+  const [perNight, setPerNight] = useState(0);
+  const [afterDiscountPerNight, setAfterDiscountPerNight] = useState(0);
+  const [discountPercent, setDiscountPercent] = useState(0);
 
   const [commonFeatures, setCommonFeatures] = useState([
     "24/7 Room Services",
@@ -36,9 +42,7 @@ const EditVilla = () => {
     "Study Table",
   ]);
 
-  const [newFeatures, setNewFeatures] = useState([
-    { id: Date.now(), name: "" },
-  ]);
+  const [newFeatures, setNewFeatures] = useState([]);
 
   // images
   const [selectedFiles, setSelectedFiles] = useState([]);
@@ -73,29 +77,40 @@ const EditVilla = () => {
   };
 
   useEffect(() => {
+    if (villa?.pricing?.perNight > 0) {
+      const discountAmountForNight = Number(
+        villa?.pricing?.perNight - villa?.pricing?.afterDiscountPerNight
+      );
+      const percentageDiscount =
+        (discountAmountForNight / Number(villa?.pricing?.perNight)) * 100;
+
+      setDiscountPercent(
+        percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
+      );
+    }
+  }, [villa?.pricing?.perNight, villa?.pricing?.afterDiscountPerNight]);
+
+  useEffect(() => {
     const getData = async () => {
       try {
         const { data } = await axios.get(`${baseUrl}/api/villa/${id}`);
-        setVilla(data.data);
-        const extraAddedFeature = data?.data?.features?.filter(
+        setVilla(data?.data?.villa);
+        const extraAddedFeature = data?.data?.villa?.features?.filter(
           (feature) => !commonFeatures.includes(feature)
         );
         setCommonFeatures([...commonFeatures, ...extraAddedFeature]);
-        setOccupancyPolicy(data?.data?.occupancy?.policy);
-        setHouseRules(data?.data?.houseRules);
-        setUploadedImages(data?.data?.media?.photos);
+        setOccupancyPolicy(data?.data?.villa?.occupancy?.policy);
+        setHouseRules(data?.data?.villa?.houseRules);
+        setUploadedImages(data?.data?.villa?.media?.photos);
+        setImagePreviews(data?.data?.villa?.media?.photos);
+        setSelectedType(data?.data?.villa?.type);
       } catch (error) {
         console.log(error);
       }
     };
     getData();
-  }, [id, commonFeatures]);
-  console.log({ villa, uploadedImages });
-
-  useEffect(() => {
-    const resort = allResorts.find((res) => res._id === selectedResort);
-    setAllTypes(resort?.villaTypes);
-  }, [selectedResort, allResorts]);
+  }, [id]);
+  console.log(villa);
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
@@ -111,7 +126,7 @@ const EditVilla = () => {
       .filter((name) => name !== "");
 
     const villaData = {
-      resortId: selectedResort,
+      resortId: resort?._id,
       title: formData.get("villaTitle"),
       type: selectedType,
       villaNumber: formData.get("villaNumber"),
@@ -146,7 +161,10 @@ const EditVilla = () => {
     };
 
     try {
-      const response = await axios.patch(`${baseUrl}/api/villa`, villaData);
+      const response = await axios.patch(
+        `${baseUrl}/api/villa/${id}`,
+        villaData
+      );
       MySwal.fire("Villa updated successfully!");
       event.target.reset();
     } catch (error) {
@@ -168,11 +186,12 @@ const EditVilla = () => {
                   Resort
                 </label>
                 <input
+                  type="text"
                   className="main_form w-100"
                   name="resort"
-                  required
-                  value={villa?.resortId?.name}
+                  defaultValue={resort?.name}
                   disabled
+                  required
                 />
               </div>
 
@@ -187,8 +206,8 @@ const EditVilla = () => {
                   type="text"
                   className="main_form w-100"
                   name="villaTitle"
-                  placeholder="Enter Villa Title"
                   defaultValue={villa?.title}
+                  placeholder="Enter Villa Title"
                   required
                 />
               </div>
@@ -204,15 +223,20 @@ const EditVilla = () => {
                   className="main_form w-100"
                   name="type"
                   required
+                  // selected={villa?.type}
                   onChange={handleTypeChange}
                 >
-                  {villa?.resortId?.villaTypes?.map((data, index) => (
+                  <option selected disabled>
+                    {" "}
+                    Select Your Villa Type
+                  </option>
+                  {resort.villaTypes?.map((data, index) => (
                     <option
                       key={index}
-                      value={data?.name}
-                      selected={data?.name === villa.type}
+                      value={data}
+                      selected={data === villa?.type}
                     >
-                      {data?.name}
+                      {data}
                     </option>
                   ))}
                 </select>
@@ -252,22 +276,7 @@ const EditVilla = () => {
             </div>
             <div className="row p-3">
               <h2 className="profile_label3 profile_bg mt-3">Short Details</h2>
-              <div className="col-md-6 form_sub_stream">
-                <label
-                  htmlFor="inputState"
-                  className="form-label profile_label3 "
-                >
-                  Villa Area
-                </label>
-                <input
-                  type="text"
-                  className="main_form w-100"
-                  name="area"
-                  placeholder="Please Type in Sqft"
-                  required
-                  defaultValue={villa?.area}
-                />
-              </div>
+
               <div className="col-md-6 form_sub_stream">
                 <label
                   htmlFor="inputState"
@@ -348,8 +357,8 @@ const EditVilla = () => {
                   type="number"
                   className="main_form w-100"
                   name="adult"
-                  placeholder="Adult Occupancy"
                   defaultValue={villa?.occupancy?.adults}
+                  placeholder="Adult Occupancy"
                   required
                 />
               </div>
@@ -400,9 +409,7 @@ const EditVilla = () => {
                       value={feature}
                       multiple
                       className="me-1"
-                      checked={villa?.features?.find(
-                        (item) => item === feature
-                      )}
+                      checked={villa?.features.find((feat) => feat === feature)}
                     />
                     <label className="ml-1 mr-3 mt-1" htmlFor={feature}>
                       {feature}
@@ -412,7 +419,7 @@ const EditVilla = () => {
               </div>
               <div className="p-3">
                 <div className="row">
-                  {newFeatures.map((feature, index) => (
+                  {newFeatures?.map((feature, index) => (
                     <div key={feature.id} className="col-md-4 form_sub_stream">
                       <input
                         type="text"
@@ -474,8 +481,10 @@ const EditVilla = () => {
                   className="main_form w-100"
                   name="perNight"
                   placeholder="Per Night BDT Cost"
-                  defaultValue={villa?.pricing?.perNight}
+                  onChange={(e) => setPerNight(e.target.value)}
                   required
+                  defaultValue={villa?.pricing?.perNight}
+                  onWheel={(e) => e.target.blur()}
                 />
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -488,10 +497,11 @@ const EditVilla = () => {
                 <input
                   type="number"
                   className="main_form w-100"
-                  name="perNight"
-                  placeholder="Per Night BDT Cost"
-                  defaultValue={villa?.pricing?.perNight}
-                  required
+                  name="afterDiscountPerNight"
+                  placeholder="After Discount - Per Night"
+                  defaultValue={villa?.pricing?.afterDiscountPerNight}
+                  onChange={(e) => setAfterDiscountPerNight(e.target.value)}
+                  onWheel={(e) => e.target.blur()}
                 />
               </div>
               <div className="col-md-4 form_sub_stream">
@@ -502,12 +512,12 @@ const EditVilla = () => {
                   Total Discount Count(%)
                 </label>
                 <input
-                  type="number"
+                  type="text"
                   className="main_form w-100"
-                  name="perNight"
-                  placeholder="Per Night BDT Cost"
-                  defaultValue={villa?.pricing?.perNight}
-                  required
+                  name="discountPercent"
+                  value={`${discountPercent} %`}
+                  placeholder="Discount Amount (%)"
+                  disabled
                 />
               </div>
               <div className="col-md-6 form_sub_stream">
@@ -515,14 +525,14 @@ const EditVilla = () => {
                   htmlFor="inputState"
                   className="form-label profile_label3 "
                 >
-                  Advance Payment
+                  Advance Payment (% of total amount)
                 </label>
                 <input
                   type="number"
                   className="main_form w-100"
                   name="advancePayment"
-                  placeholder=" Minimum Payment"
                   defaultValue={villa?.pricing?.advancePayment}
+                  placeholder=" Minimum Payment (% of total amount)"
                   required
                 />
               </div>
@@ -537,8 +547,8 @@ const EditVilla = () => {
                   type="number"
                   className="main_form w-100"
                   name="adultAddition"
-                  placeholder=" Extra For Additional Adult "
                   defaultValue={villa?.pricing?.adultAddition}
+                  placeholder=" Extra For Additional Adult "
                   // required
                 />
               </div>
@@ -553,8 +563,8 @@ const EditVilla = () => {
                   type="number"
                   className="main_form w-100"
                   name="kidAddition"
-                  placeholder=" Extra For Additional Kid "
                   defaultValue={villa?.pricing?.kidAddition}
+                  placeholder=" Extra For Additional Kid "
                   // required
                 />
               </div>
@@ -570,6 +580,7 @@ const EditVilla = () => {
                   type="time"
                   className="main_form w-100"
                   name="checkInTime"
+                  placeholder="Check-In Time (AM/PM)"
                   defaultValue={villa?.pricing?.checkIn}
                   required
                 />
@@ -588,6 +599,7 @@ const EditVilla = () => {
                   className="main_form w-100"
                   name="checkOutTime"
                   defaultValue={villa?.pricing?.checkOut}
+                  placeholder="Check-Out Time (AM/PM)"
                   required
                 />
               </div>
@@ -595,11 +607,43 @@ const EditVilla = () => {
 
             <div className="row p-3">
               <h2 className="profile_label3 profile_bg mt-3">Villa Gallery</h2>
-              {/* <ImageManagement
-                label={"Photos"}
-                uploadedImages={uploadedImages}
-                setUploadedImages={setUploadedImages}
-              /> */}
+              <div className="max-w-lg mx-auto mb-4">
+                <label
+                  htmlFor="inputState"
+                  className="form-label profile_label3 "
+                >
+                  Photos
+                </label>
+                <input
+                  type="file"
+                  multiple
+                  onChange={handleFileChange}
+                  accept="image/*"
+                  name="photo"
+                  className="main_form w-100"
+                  required
+                />
+                <div className="d-flex flex-wrap my-6">
+                  {imagePreviews.map((preview, index) => (
+                    <div key={index}>
+                      <div className="d-flex position-relative my-4">
+                        <img
+                          src={preview}
+                          alt={`Preview ${index}`}
+                          className="img-preview"
+                        />
+                        <button
+                          type="button"
+                          onClick={() => handleRemoveImage(index)}
+                          className="remove-btn"
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
 
               <div className="col-md-12 form_sub_stream">
                 <label
@@ -620,9 +664,9 @@ const EditVilla = () => {
                   type="text"
                   className="main_form w-100"
                   name="video"
+                  defaultValue={villa?.media?.video}
                   placeholder="Youtube Video Link"
                   required
-                  defaultValue={villa?.media?.video}
                 />
               </div>
             </div>
