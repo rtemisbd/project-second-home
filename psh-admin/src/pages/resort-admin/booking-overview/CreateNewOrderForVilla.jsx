@@ -54,6 +54,7 @@ const CreateNewOrderForVilla = ({ id, user }) => {
         pricing: {
           initialAmount,
           totalAmount,
+          payableAmount: totalAmount,
           discount,
         },
         // payableAmount: totalAmount,

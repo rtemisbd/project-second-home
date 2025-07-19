@@ -167,7 +167,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
             className=" fs-4 mt-3 ps-3 rounded"
             style={{ backgroundColor: "#00bbb4", color: "White" }}
           >
-            Payment Details
+            Price Details
           </h3>
 
           <div className="row px-5">
@@ -184,12 +184,33 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
                 {data.paymentStatus}
               </p>
             </div>
+            <div className="col-lg-4">
+              {" "}
+              <label htmlFor="" className="fw-medium">
+                Initial Booking Cost
+              </label>
+              <p>Tk {data?.pricing?.initialAmount?.toLocaleString()}</p>
+            </div>
+            <div className="col-lg-4">
+              {" "}
+              <label htmlFor="" className="fw-medium">
+                Extra Occupancy Cost
+              </label>
+              <p>Tk {data?.pricing?.occupancyCharge?.toLocaleString()}</p>
+            </div>
+            <div className="col-lg-3">
+              {" "}
+              <label htmlFor="" className="fw-medium">
+                Food Cost
+              </label>
+              <p>Tk {data?.pricing?.foodCost?.toLocaleString()}</p>
+            </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Total Amount
               </label>
-              <p>Tk {data?.pricing?.initialAmount?.toLocaleString()}</p>
+              <p>Tk {data?.pricing?.totalAmount?.toLocaleString()}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -203,7 +224,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
               <label htmlFor="" className="fw-medium">
                 Payable Amount
               </label>
-              <p>Tk {data?.pricing?.totalAmount?.toLocaleString()}</p>
+              <p>Tk {data?.pricing?.payableAmount?.toLocaleString()}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -222,7 +243,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
               </label>
               <p>
                 Tk{" "}
-                {data?.pricing?.totalAmount -
+                {data?.pricing?.payableAmount -
                   (data?.transactions[0]?.totalReceiveTk || 0)}
               </p>
             </div>

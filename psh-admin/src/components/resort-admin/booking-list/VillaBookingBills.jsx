@@ -25,6 +25,9 @@ const VillaBookingBills = ({
 
   const [totalAmount, setTotalAmount] = useState(data?.pricing?.totalAmount);
   const [subTotal, setSubTotal] = useState(data?.pricing?.totalAmount || 0);
+  const [payableAmount, setPayableAmount] = useState(
+    data?.pricing?.payableAmount || 0
+  );
   const [foodCost, setFoodCost] = useState(data?.pricing?.foodCost || 0);
   const [adultCount, setAdultCount] = useState(data?.occupancy?.adult || 0);
   const [adultCost, setAdultCost] = useState(0);
@@ -56,9 +59,10 @@ const VillaBookingBills = ({
     const initialSubTotal =
       data?.pricing?.initialAmount + foodCost + occupancyCost;
     setSubTotal(initialSubTotal);
+    setTotalAmount(initialSubTotal);
 
     const finalTotal = initialSubTotal - discount;
-    setTotalAmount(finalTotal);
+    setPayableAmount(finalTotal);
   }, [
     adultCost,
     childCost,
@@ -80,6 +84,7 @@ const VillaBookingBills = ({
         pricing: {
           initialAmount: data?.pricing?.initialAmount,
           totalAmount,
+          payableAmount,
           occupancyCharge: totalOccupancyCost,
           foodCost,
           discount,
@@ -276,7 +281,7 @@ const VillaBookingBills = ({
                   <div className="d-flex justify-content-between fs-5 ">
                     <p> Total Amount </p>
                     <p>:</p>
-                    <p>BDT {totalAmount} </p>
+                    <p>BDT {payableAmount} </p>
                   </div>
                   {discount > 0 && (
                     <div style={{ marginTop: "24px" }}>

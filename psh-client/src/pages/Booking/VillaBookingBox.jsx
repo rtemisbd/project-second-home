@@ -80,6 +80,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
       pricing: {
         initialAmount,
         totalAmount,
+        payableAmount: totalAmount,
       },
       // initialAmount,
       // totalAmount,

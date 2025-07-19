@@ -428,7 +428,9 @@ const BookingList = () => {
                             {" "}
                             <p className="fw-bold">
                               Tk{" "}
-                              {booking?.pricing?.initialAmount?.toLocaleString()}
+                              {booking?.pricing?.initialAmount +
+                                booking?.pricing?.foodCost +
+                                booking?.pricing?.occupancyCharge}
                             </p>
                           </td>
                           <td>
@@ -441,7 +443,7 @@ const BookingList = () => {
                             {" "}
                             <p className="fw-bold">
                               Tk{" "}
-                              {booking?.pricing?.totalAmount?.toLocaleString()}
+                              {booking?.pricing?.payableAmount?.toLocaleString()}
                             </p>
                           </td>
                           <td>
@@ -473,7 +475,7 @@ const BookingList = () => {
                               className=" fw-bold"
                               style={{
                                 color:
-                                  booking?.pricing?.totalAmount -
+                                  booking?.pricing?.payableAmount -
                                     booking?.transactions[0]?.totalReceiveTk ===
                                   0
                                     ? "green"
@@ -483,9 +485,9 @@ const BookingList = () => {
                               {" "}
                               TK{" "}
                               {booking?.transactions[0]?.totalReceiveTk
-                                ? booking?.pricing?.totalAmount -
+                                ? booking?.pricing?.payableAmount -
                                   booking?.transactions[0]?.totalReceiveTk
-                                : booking?.pricing?.totalAmount}
+                                : booking?.pricing?.payableAmount}
                             </span>
                           </td>
                           <td>

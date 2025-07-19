@@ -20,8 +20,12 @@ const VillaBookingDateExtend = ({
   const [perNight, setPerNight] = useState(
     data?.villa?.pricing?.afterDiscountPerNight
   );
-  const [totalAmount, setTotalAmount] = useState(data?.pricing?.totalAmount || 0);
-  const [initialAmount, setInitialAmount] = useState(data?.pricing?.initialAmount);
+  const [totalAmount, setTotalAmount] = useState(
+    data?.pricing?.totalAmount || 0
+  );
+  const [initialAmount, setInitialAmount] = useState(
+    data?.pricing?.initialAmount
+  );
   const [discount, setDiscount] = useState(data?.pricing?.discount || 0);
   const [alreadyPaid, setAlreadyPaid] = useState(
     data?.transactions[0]?.totalReceiveTk || 0
@@ -48,6 +52,9 @@ const VillaBookingDateExtend = ({
         pricing: {
           initialAmount,
           totalAmount,
+          payableAmount: totalAmount,
+          foodCost: data?.pricing?.foodCost || 0,
+          occupancyCharge: data?.pricing?.occupancyCharge || 0,
         },
         rentDate: {
           bookStartDate: format(parseDate(startDate), "dd-MM-yyyy"),
@@ -110,7 +117,7 @@ const VillaBookingDateExtend = ({
       const total = customerRent * perNight;
       setTotalAmount(total);
 
-      const initialAmount = total - discount;
+      const initialAmount = total;
       setInitialAmount(initialAmount);
 
       const payable = initialAmount;
