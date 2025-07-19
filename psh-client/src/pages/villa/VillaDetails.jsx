@@ -26,7 +26,7 @@ const VillaDetails = () => {
   const [addedWishList, setAddedWishlist] = useState(false);
   const videoId = getYouTubeVideoId(villa?.resortId.video);
   const [isMuted, setIsMuted] = useState(true);
-  const [isPlaying, setIsPlaying] = useState(false);   
+  const [isPlaying, setIsPlaying] = useState(false);
   const [keyValue, setKeyValue] = useState("");
   const [showAll, setShowAll] = useState(false);
   const [features, setFeatures] = useState([]);
@@ -325,10 +325,6 @@ const VillaDetails = () => {
                       Per Night
                     </p>
                     <p className="col-span-1">:</p>
-                    {/* <p className="col-span-6 md:col-span-8 text[18px]">
-                      {" "}
-                      {villa?.pricing?.perNight} BDT
-                    </p> */}
 
                     <div className="col-span-6 md:col-span-8 text[18px] flex gap-x-2">
                       {villa?.pricing?.perNight ===
@@ -346,7 +342,6 @@ const VillaDetails = () => {
                             <span className="card-price-sub">
                               BDT {villa?.pricing?.perNight?.toLocaleString()}
                             </span>
-                            {/* <span className="day">/Night</span> */}
                           </p>
                           <p>
                             <span className="card-price-sub">
@@ -358,6 +353,19 @@ const VillaDetails = () => {
                         </>
                       )}
                     </div>
+                    {villa?.pricing?.advancePayment && (
+                      <>
+                        {" "}
+                        <p className="col-span-5 md:col-span-3 font-[600]">
+                          Advance Payment
+                        </p>
+                        <p className="col-span-1">:</p>
+                        <p className="col-span-6 md:col-span-8 text[18px]">
+                          {" "}
+                          {villa?.pricing?.advancePayment} % of total amount
+                        </p>{" "}
+                      </>
+                    )}
 
                     {villa?.pricing?.adultAddition && (
                       <>

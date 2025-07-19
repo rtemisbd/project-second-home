@@ -35,13 +35,12 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
   };
 
   useEffect(() => {
-    setInitialAmount(
-      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference
-    );
-    setTotalAmount(
-      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference
-    );
-    setAdvance(villa?.pricing?.advancePayment);
+    const price =
+      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference;
+    setInitialAmount(price);
+    setTotalAmount(price);
+    const advanceAmount = price * (villa?.pricing?.advancePayment / 100);
+    setAdvance(advanceAmount);
   }, [customerRent, villa]);
 
   const isAlreadyVillaBookings = (startDate, endDate, bookings) => {
@@ -85,7 +84,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
       // initialAmount,
       // totalAmount,
       // payableAmount: totalAmount,
-      minimumPayment: villa?.pricing?.advancePayment,
+      minimumPayment: advance,
       rentDate: {
         bookStartDate: format(new Date(startDate), "dd-MM-yyyy"),
         bookEndDate: format(new Date(endDate), "dd-MM-yyyy"),
@@ -368,8 +367,9 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                         className="font-normal opacity-75 px-5 py-2 rounded"
                       >
                         <p>
-                          Non-refundable (It will be adjust in your Final
-                          Payment)
+                          {villa?.pricing?.advancePayment}% of total booking
+                          amount. Non-refundable (It will be adjust in your
+                          Final Payment)
                         </p>
                       </Typography>
                     </div>

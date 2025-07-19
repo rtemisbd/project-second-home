@@ -28,7 +28,7 @@ const VillaCard = ({ villa }) => {
             />
 
             <div className="absolute bottom-0 right-0 bg-[#27B3B1] text-white rounded-sm text-sm font-[600] px-1 py-1">
-              {villa?.type}
+              {villa?.title} - {villa?.type}
             </div>
           </CardHeader>
           <CardBody className="p-2">
