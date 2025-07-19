@@ -13,7 +13,7 @@ const EditVilla = () => {
   const { id } = useParams();
   const { resort } = useContext(AuthContext);
   const MySwal = withReactContent(Swal);
-  console.log({ resort });
+  const formRef = useRef(null);
 
   const [villa, setVilla] = useState(null);
   const [selectedResort, setSelectedResort] = useState(null);
@@ -45,19 +45,17 @@ const EditVilla = () => {
   const [newFeatures, setNewFeatures] = useState([]);
 
   // images
-  const [selectedFiles, setSelectedFiles] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
 
-  const formRef = useRef(null);
+  const [existingPhotos, setExistingPhotos] = useState([]);
+  const [newPhotos, setNewPhotos] = useState([]);
+  const [imagePreviews, setImagePreviews] = useState([]);
 
   const handleFileChange = (e) => {
     const files = Array.from(e.target.files);
+    const newPreviews = files.map((file) => URL.createObjectURL(file));
 
-    setSelectedFiles((prevFiles) => [...prevFiles, ...files]);
-
-    // Generate image previews
-    const previews = files.map((file) => URL.createObjectURL(file));
-    setImagePreviews((prevPreviews) => [...prevPreviews, ...previews]);
+    setNewPhotos((prev) => [...prev, ...files]);
+    setImagePreviews((prev) => [...prev, ...newPreviews]);
   };
 
   // remove images
@@ -65,7 +63,8 @@ const EditVilla = () => {
     setImagePreviews((prevPreviews) =>
       prevPreviews.filter((_, i) => i !== index)
     );
-    setSelectedFiles((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setExistingPhotos((prevFiles) => prevFiles.filter((_, i) => i !== index));
+    setNewPhotos((prevFiles) => prevFiles.filter((_, i) => i !== index));
   };
 
   const addFeature = () => {
@@ -77,18 +76,16 @@ const EditVilla = () => {
   };
 
   useEffect(() => {
-    if (villa?.pricing?.perNight > 0) {
-      const discountAmountForNight = Number(
-        villa?.pricing?.perNight - villa?.pricing?.afterDiscountPerNight
-      );
+    if (perNight > 0) {
+      const discountAmountForNight = Number(perNight - afterDiscountPerNight);
       const percentageDiscount =
-        (discountAmountForNight / Number(villa?.pricing?.perNight)) * 100;
+        (discountAmountForNight / Number(perNight)) * 100;
 
       setDiscountPercent(
         percentageDiscount === 100 ? "" : percentageDiscount.toFixed(2)
       );
     }
-  }, [villa?.pricing?.perNight, villa?.pricing?.afterDiscountPerNight]);
+  }, [perNight, afterDiscountPerNight]);
 
   useEffect(() => {
     const getData = async () => {
@@ -103,14 +100,19 @@ const EditVilla = () => {
         setHouseRules(data?.data?.villa?.houseRules);
         setUploadedImages(data?.data?.villa?.media?.photos);
         setImagePreviews(data?.data?.villa?.media?.photos);
+        setExistingPhotos(data?.data?.villa?.media?.photos);
         setSelectedType(data?.data?.villa?.type);
+        setPerNight(data?.data?.villa?.pricing?.perNight);
+        setAfterDiscountPerNight(
+          data?.data?.villa?.pricing?.afterDiscountPerNight
+        );
       } catch (error) {
         console.log(error);
       }
     };
     getData();
   }, [id]);
-  console.log(villa);
+
 
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
@@ -144,6 +146,8 @@ const EditVilla = () => {
       features: [...selectedRoomFeatures, ...addedFeatures],
       pricing: {
         perNight: formData.get("perNight"),
+        afterDiscountPerNight: formData.get("afterDiscountPerNight"),
+        discountPercent,
         advancePayment: formData.get("advancePayment"),
         adultAddition: formData.get("adultAddition"),
         kidAddition: formData.get("kidAddition"),
@@ -154,13 +158,13 @@ const EditVilla = () => {
     };
     const video = formData.get("video");
     toast("Uploading...", "success");
-    const photos = await multipleImageUpload(selectedFiles);
-    villaData.media = {
-      photos,
-      video,
-    };
 
     try {
+      const photoUrls = await multipleImageUpload(newPhotos);
+      villaData.media = {
+        photos: [...existingPhotos, ...photoUrls],
+        video,
+      };
       const response = await axios.patch(
         `${baseUrl}/api/villa/${id}`,
         villaData
@@ -621,7 +625,6 @@ const EditVilla = () => {
                   accept="image/*"
                   name="photo"
                   className="main_form w-100"
-                  required
                 />
                 <div className="d-flex flex-wrap my-6">
                   {imagePreviews.map((preview, index) => (
