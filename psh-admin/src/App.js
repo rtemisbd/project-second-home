@@ -75,14 +75,14 @@ import ResortList from "./pages/Resorts/ResortList";
 import AddVilla from "./pages/resort-admin/Villa/AddVilla";
 import VillaList from "./pages/resort-admin/Villa/VillaList";
 import EditVilla from "./pages/resort-admin/Villa/EditVilla";
-import BookingList from "./pages/resort-admin/BookingList";
 
 import AddResort2 from "./pages/Resorts/AddResort2";
 import AddResort from "./pages/resort-admin/resort/AddResort";
-import ResortTransaction from "./pages/resort-admin/ResortTransaction";
 import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
 import EditResort from "./pages/resort-admin/resort/EditResort";
 import VillaBookingOverview from "./pages/resort-admin/booking-overview/VillaBookingOverview";
+import BookingList from "./pages/resort-admin/all-bookings/BookingList";
+import ResortTransaction from "./pages/resort-admin/payment/ResortTransaction";
 
 function App() {
   return (

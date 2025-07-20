@@ -170,7 +170,7 @@ const AddVilla = () => {
       );
     }
   }, [perNight, afterDiscountPerNight]);
-  console.log(resort);
+
 
   return (
     <div className="wrapper">

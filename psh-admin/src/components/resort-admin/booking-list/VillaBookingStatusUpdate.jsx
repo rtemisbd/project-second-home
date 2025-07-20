@@ -35,13 +35,6 @@ const VillaBookingStatusUpdate = ({ data, refetch }) => {
       toast.success("Updated");
       refetch();
 
-      // ✅ Initialize and hide the modal safely
-      // const modalEl = document.getElementById(`bookingStatus${data._id}`);
-      // let modal = window.bootstrap.Modal.getInstance(modalEl);
-      // if (!modal) {
-      //   modal = new window.bootstrap.Modal(modalEl);
-      // }
-      // modal.hide();
     } catch (err) {
       console.log(err);
       toast.error("Something went wrong.");

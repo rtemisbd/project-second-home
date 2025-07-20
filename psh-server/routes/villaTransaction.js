@@ -19,7 +19,7 @@ villaTransactionRoute.get(
 
 villaTransactionRoute.patch(
   "/:id",
-  auth(ENUM_USER_ROLE.RESORT_ADMIN),
+  auth(ENUM_USER_ROLE.RESORT_ADMIN, ENUM_USER_ROLE.RESORT_ACCOUNTANT),
   villaTransactionControllers.updateSingleVillaTransaction
 );
 

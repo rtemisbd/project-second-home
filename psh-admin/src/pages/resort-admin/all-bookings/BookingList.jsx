@@ -1,23 +1,23 @@
 import { MdRefresh } from "react-icons/md";
-import img from "../../img/new/style.png";
+import img from "../../../img/new/style.png";
 import { Spinner, Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
 import { useSelector } from "react-redux";
-import { baseUrl } from "../../utils/getBaseURL";
-import { getFromLocalStorage } from "../../utils/local-storage";
-import { authKey } from "../../utils/storageKey";
+import { baseUrl } from "../../../utils/getBaseURL";
+import { getFromLocalStorage } from "../../../utils/local-storage";
+import { authKey } from "../../../utils/storageKey";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { formatDate } from "../../utils/dateConvert";
+import { formatDate } from "../../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
-import Pagination from "../../components/Pagination/Pagination";
-import { AuthContext } from "../../contexts/UserProvider";
-import VillaBookingStatusUpdate from "../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
+import Pagination from "../../../components/Pagination/Pagination";
+import { AuthContext } from "../../../contexts/UserProvider";
+import VillaBookingStatusUpdate from "../../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
 import { Toaster } from "react-hot-toast";
-import VillaBookingDetail from "../../components/resort-admin/booking-list/VillaBookingDetail";
-import VillaBookingDateExtend from "../../components/resort-admin/booking-list/VillaBookingDateExtend";
-import VillaBookingBills from "../../components/resort-admin/booking-list/VillaBookingBills";
+import VillaBookingDetail from "../../../components/resort-admin/booking-list/VillaBookingDetail";
+import VillaBookingDateExtend from "../../../components/resort-admin/booking-list/VillaBookingDateExtend";
+import VillaBookingBills from "../../../components/resort-admin/booking-list/VillaBookingBills";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);

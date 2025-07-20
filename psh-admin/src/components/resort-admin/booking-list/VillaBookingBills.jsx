@@ -149,7 +149,7 @@ const VillaBookingBills = ({
         paymentMethod: paymentType === "cash" ? "cash" : "online",
         paymentPlatform: paymentType,
         paymentProof: receiverName,
-        paymentStatus: "Approved",
+        // paymentStatus: "Approved",
       };
 
       // Get the access token

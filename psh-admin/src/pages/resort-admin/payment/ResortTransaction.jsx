@@ -1,25 +1,25 @@
 import { useContext, useEffect, useRef, useState } from "react";
-import { AuthContext } from "../../contexts/UserProvider";
+import { AuthContext } from "../../../contexts/UserProvider";
 import { useDispatch, useSelector } from "react-redux";
-import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import { placeLoadingShow } from "../../../redux/reducers/loadingStateSlice";
 import { useQuery } from "react-query";
-import { getFromLocalStorage } from "../../utils/local-storage";
-import { authKey } from "../../utils/storageKey";
-import { baseUrl } from "../../utils/getBaseURL";
-import LoadingState from "../LoadingState/LoadingState";
+import { getFromLocalStorage } from "../../../utils/local-storage";
+import { authKey } from "../../../utils/storageKey";
+import { baseUrl } from "../../../utils/getBaseURL";
+import LoadingState from "../../LoadingState/LoadingState";
 import ReactToPrint from "react-to-print";
 import { MdRefresh } from "react-icons/md";
-import ExportToExcel from "../Transaction/ExportToExcel";
+import ExportToExcel from "../../Transaction/ExportToExcel";
 import { Spinner, Table } from "react-bootstrap";
-import img from "../../img/new/style.png";
+import img from "../../../img/new/style.png";
 
 import axios from "axios";
 import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
-import { formatDate } from "../../utils/dateConvert";
+import { formatDate } from "../../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
-import Pagination from "../../components/Pagination/Pagination";
+import Pagination from "../../../components/Pagination/Pagination";
 import { Toaster } from "react-hot-toast";
-import ResortTransactionStatusUpdate from "../../components/resort-admin/payment/ResortTransactionStatusUpdate";
+import ResortTransactionStatusUpdate from "../../../components/resort-admin/payment/ResortTransactionStatusUpdate";
 
 const ResortTransaction = () => {
   const ref = useRef();
@@ -319,30 +319,35 @@ const ResortTransaction = () => {
                             </a>
                           </td>
 
-                          <td
-                            className="d-flex justify-content-center align-items-center gap-2 fw-bold"
-                            style={{
-                              color:
-                                transaction?.paymentStatus === "Approved"
-                                  ? "#35b0a7"
-                                  : "#FF0000",
-                            }}
-                          >
-                            <p>{transaction?.paymentStatus}</p>
-
-                            <button
-                              type="button"
-                              data-bs-toggle="modal"
-                              data-bs-target={`#transactionStatus${transaction._id}`}
-                              className="d-flex btn   "
-                              // disabled={
-                              //   transaction?.paymentStatus === "Approved" &&
-                              //   user?.role === "resortAdmin"
-                              // }
-                              style={{ border: "none" }}
+                          <td>
+                            <div
+                              className="d-flex justify-content-center align-items-center gap-2 fw-bold"
+                              style={{
+                                color:
+                                  transaction?.paymentStatus === "Approved"
+                                    ? "#35b0a7"
+                                    : "#FF0000",
+                              }}
                             >
-                              <BiSolidEdit size={26} />
-                            </button>
+                              <p>{transaction?.paymentStatus}</p>
+
+                              <button
+                                type="button"
+                                data-bs-toggle="modal"
+                                data-bs-target={`#transactionStatus${transaction._id}`}
+                                className="d-flex btn   "
+                                // disabled={
+                                //   transaction?.paymentStatus === "Approved" &&
+                                //   user?.role === "resortAdmin"
+                                // }
+                                style={{
+                                  border: "none",
+                                  backgroundColor: "transparent",
+                                }}
+                              >
+                                <BiSolidEdit size={26} />
+                              </button>
+                            </div>
 
                             <div>
                               <ResortTransactionStatusUpdate
@@ -393,7 +398,6 @@ const ResortTransaction = () => {
                                 className="modal-dialog"
                                 style={{ maxWidth: "1000px" }}
                               >
-                                {console.log(transaction)}
                                 <div className="modal-content">
                                   <div className="modal-header">
                                     <h3>Transaction Details</h3>

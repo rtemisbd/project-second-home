@@ -8,8 +8,6 @@ import { RiDeleteBin6Line } from "react-icons/ri";
 
 const ResortOverview = () => {
   const { resort } = useContext(AuthContext);
-  console.log(resort);
-  
 
   return (
     <div className="wrapper">
@@ -62,7 +60,7 @@ const ResortOverview = () => {
                       </td>
                       <td className="d-flex align-items-center">
                         {/* detail */}
-                        <button
+                        {/* <button
                           type="button"
                           className="bg-white"
                           onClick={() => {
@@ -78,7 +76,7 @@ const ResortOverview = () => {
                               color: "green",
                             }}
                           />
-                        </button>
+                        </button> */}
                         {/* edit */}
                         <div>
                           <Link to="/dashboard/resort/edit-resort">

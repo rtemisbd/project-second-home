@@ -104,19 +104,10 @@ const ResortSidebar = () => {
 
         {/* Payment */}
 
-        <li
-          className="nav-item"
-          style={{
-            backgroundColor:
-              active && dropdownId === "payment" ? "#2E3344" : "",
-            borderLeft:
-              active && dropdownId === "payment" ? "2px solid #35b0a7" : "",
-          }}
-        >
-          <span
-            className="nav-link"
-            id="payment"
-            onClick={() => handleDropdown("payment")}
+        <li className="main_nav-link" onClick={() => setActive(false)}>
+          <Link
+            to={"/dashboard/resort/transaction"}
+            className=" nav-link text-black  d-flex align-items-center"
           >
             <AiOutlineDollarCircle
               style={{
@@ -126,48 +117,11 @@ const ResortSidebar = () => {
                 marginRight: "10px",
               }}
             />
-
-            <p className="span_text" style={{ color: "white" }}>
-              Payment
-              <i
-                className={`fas fa-angle-left right`}
-                style={{
-                  rotate:
-                    active && dropdownId === "payment" ? "-90deg" : "180deg",
-                }}
-              />
-            </p>
-          </span>
-
-          <ul
-            className={` custom-drop ${
-              active && dropdownId === "payment" ? "custom-drop-show" : ""
-            }`}
-          >
-            <li className="main_nav-link">
-              <Link
-                to={"/dashboard/resort/transaction"}
-                className="nav-link menu_flex"
-              >
-                <span className="span_text">Transaction</span>
-                <span className="span_text_mobile" data-widget="pushmenu">
-                  Transaction
-                </span>
-              </Link>
-            </li>
-
-            <li className="main_nav-link">
-              <Link
-                to={"/dashboard/extra-charge"}
-                className="nav-link menu_flex"
-              >
-                <span className="span_text">Extra Charge</span>
-                <span className="span_text_mobile" data-widget="pushmenu">
-                  Extra Charge
-                </span>
-              </Link>
-            </li>
-          </ul>
+            <span className="span_text">Transaction</span>
+            <span className="span_text_mobile" data-widget="pushmenu">
+              Transaction
+            </span>
+          </Link>
         </li>
 
         {/* adjusment */}
@@ -361,18 +315,6 @@ const ResortSidebar = () => {
                     <span className="span_text"> Resort Overview</span>
                     <span className="span_text_mobile" data-widget="pushmenu">
                       Resort Overview
-                    </span>
-                  </div>
-                </span>
-              </li>
-            </Link>
-            <Link to={"/dashboard/resort-list"}>
-              <li className="main_nav-link">
-                <span className="nav-link">
-                  <div className="menu_flex">
-                    <span className="span_text">Resort Account</span>
-                    <span className="span_text_mobile" data-widget="pushmenu">
-                      Resort Account
                     </span>
                   </div>
                 </span>

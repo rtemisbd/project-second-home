@@ -13,14 +13,8 @@ const ResortTransactionStatusUpdate = ({ data, refetch }) => {
   const [selectedStatus, setSelectedStatus] = useState(
     data?.paymentStatus || ""
   );
-  const [showModal, setShowModal] = useState(true);
 
   const dispatch = useDispatch();
-
-  const handleClose = () => {
-    setShowModal(false);
-    dispatch(placeLoadingShow(false));
-  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -45,19 +39,18 @@ const ResortTransactionStatusUpdate = ({ data, refetch }) => {
         updatedStatus,
         { headers }
       );
-      handleClose();
       toast.success("Updated");
       refetch();
     } catch (err) {
       console.log(err);
-      handleClose();
+
       toast.warning("Something Error Found.");
+    } finally {
+      dispatch(placeLoadingShow(false));
     }
   };
 
-  if (!showModal) {
-    return <div></div>;
-  }
+
   return (
     <div className="container">
       <div
