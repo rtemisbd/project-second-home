@@ -102,7 +102,7 @@ const getAllTransactionForVilla = async(queries)=>{
               { $match: { $expr: { $eq: ["$_id", "$$orderId"] } } },
               {
                 $project: {
-                  payableAmount: 1,
+                  pricing: 1,
                   phone: 1,
                   perNight: 1,
                   rentDate: 1,

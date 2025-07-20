@@ -2,6 +2,18 @@ import { transactionForVillaServices } from "../services/villaTransaction.servic
 import catchAsync from "../utils/catchAsync.js";
 import responseSend from "../utils/responseSend.js";
 
+const createTransaction = catchAsync(async (req, res, next) => {
+  const transactions = await transactionForVillaServices.createTransactionIntoDB(req?.body);
+
+  responseSend(res, {
+        statusCode : 200,
+        success : true,
+        data : transactions,
+        message : "Your transaction has submitted successfully"
+    })
+
+});
+
 const getVillaAllTransactions = catchAsync(async (req, res, next) => {
   const transactions = await transactionForVillaServices.getAllTransactionForVilla(req?.query);
 
@@ -29,6 +41,7 @@ const updateSingleVillaTransaction = catchAsync(async(req, res, next)=>{
 
 
 export const villaTransactionControllers = {
+    createTransaction,
     getVillaAllTransactions,
     updateSingleVillaTransaction
 }

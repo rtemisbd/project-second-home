@@ -1,11 +1,12 @@
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { Modal } from "react-bootstrap";
-import { useDispatch } from "react-redux";
+
 import { getFromLocalStorage } from "../../../utils/local-storage";
 import { authKey } from "../../../utils/storageKey";
 import axios from "axios";
 import { baseUrl } from "../../../utils/getBaseURL";
 import toast, { Toaster } from "react-hot-toast";
+import { AuthContext } from "../../../contexts/UserProvider";
 
 const VillaBookingBills = ({
   data,
@@ -13,14 +14,11 @@ const VillaBookingBills = ({
   showPaymentModal,
   setShowPaymentModal,
 }) => {
-  const dispatch = useDispatch();
-  const dateInputRef = useRef(null);
+  const { resort } = useContext(AuthContext);
 
-  const [paymentType, setPaymentType] = useState("Cash");
-  const [customerType, setCustomerType] = useState("Customer Type");
+  const [paymentType, setPaymentType] = useState("cash");
   const paymentOption = ["Additional Bills", "Make Payment"];
   const [paymentOptionValue, setPaymentOptionValue] = useState(0);
-  const [receivedTk, setReciveTk] = useState(0);
   const [loading, setLoading] = useState(false);
 
   const [totalAmount, setTotalAmount] = useState(data?.pricing?.totalAmount);
@@ -41,7 +39,9 @@ const VillaBookingBills = ({
   const [providerName, setProviderName] = useState("");
   const [noteForAdjustment, setNoteForAdjustment] = useState("");
 
-  console.log(data);
+  const [senderNumber, setSenderNumber] = useState(data?.user?.phone);
+  const [receivedAmount, setReceivedAmount] = useState(0);
+  const [receiverName, setReceiverName] = useState("");
 
   useEffect(() => {
     const totalAdultCost =
@@ -131,9 +131,50 @@ const VillaBookingBills = ({
         console.log(newAdjustment);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
+      toast.error(error?.response?.data?.message);
     }
   };
+
+  const handlePayBill = async () => {
+    try {
+      const payload = {
+        userId: data?.user?._id,
+        bookingId: data?.bookingId,
+        orderId: data?._id,
+        villaId: data?.villa?._id,
+        resortId: resort?._id,
+        senderNumber,
+        receivedAmount,
+        paymentMethod: paymentType === "cash" ? "cash" : "online",
+        paymentPlatform: paymentType,
+        paymentProof: receiverName,
+        paymentStatus: "Approved",
+      };
+
+      // Get the access token
+      const accessToken = getFromLocalStorage(authKey);
+      // Set the headers
+      const headers = {
+        Authorization: `${accessToken}`,
+        "Content-Type": "application/json",
+      };
+
+      const transaction = await axios.post(
+        `${baseUrl}/api/villaTransaction`,
+        payload,
+        { headers }
+      );
+
+      if (transaction?.data?.success) {
+        toast.success(transaction?.data?.message);
+      }
+    } catch (error) {
+      // console.log(error);
+      toast.error(error?.response?.data?.message);
+    }
+  };
+
   return (
     <Modal show={showPaymentModal} onHide={handleClose}>
       <Modal.Header closeButton>
@@ -343,245 +384,99 @@ const VillaBookingBills = ({
                 <form
                 // onSubmit={handlePayment}
                 >
-                  <div className="d-flex gap-3 justify-items-center">
-                    <div>
-                      <label htmlFor="" className="fs-5 fw-normal">
-                        Payment Date
-                      </label>
-                      <br />
-                      <input
-                        type="date"
-                        ref={dateInputRef}
-                        placeholder="Payment Date"
-                        id=""
-                        className="px-2 rounded"
-                        style={{ width: "300px", height: "40px" }}
-                        name="paymentDate"
-                        min={new Date()}
-                        required
-                        onClick={() => dateInputRef.current?.showPicker()}
-                      />
-                    </div>
+                  <div className="">
+                    <label htmlFor="">Payment Method</label>
+                    <br />
+                    <select
+                      name="paymentType"
+                      id=""
+                      className="rounded"
+                      style={{ width: "300px", height: "40px" }}
+                      required
+                      onChange={(e) => setPaymentType(e.target.value)}
+                      value={paymentType}
+                    >
+                      <option disabled value="">
+                        Payment Platform
+                      </option>
+                      <option value="cash">Cash</option>
+                      <option value="bKash">Bkash</option>
+                      <option value="Nagad">Nagad</option>
+                      {resort?.bankDetails?.map((bank) => (
+                        <option value={bank?.bankName}>{bank?.bankName}</option>
+                      ))}
+                    </select>
+                  </div>
 
-                    <div className="">
-                      <label htmlFor="">Payment Method</label>
-                      <br />
-                      <select
-                        name="paymentType"
-                        id=""
-                        className="rounded"
-                        style={{
-                          width: "150px",
-                          height: "40px",
-                          marginTop: "5px",
-                        }}
-                        required
-                        onChange={(e) => setPaymentType(e.target.value)}
-                        value={paymentType}
-                      >
-                        <option disabled value="">
-                          Payment Type
-                        </option>
-                        <option value="Cash">Cash</option>
-                        <option value="bkash">Bkash</option>
-                        <option value="nagad">Nagad</option>
-                        <option value="dutch">dutch-bangla</option>
-                        <option value="bank">Bank</option>
-                      </select>
-                    </div>
+                  <div>
+                    <label htmlFor="" className="fs-5 fw-normal mt-2">
+                      Account Number (phone for cash)
+                    </label>
+                    <br />
+                    <input
+                      onChange={(e) => setSenderNumber(e.target.value)}
+                      type="text"
+                      placeholder="Account Number (phone for cash)"
+                      id=""
+                      className="px-2 rounded"
+                      style={{ width: "300px", height: "40px" }}
+                      name="senderNumber"
+                      required
+                    />{" "}
+                    <br />
+                  </div>
+
+                  <div>
+                    <label htmlFor="" className="fs-5 fw-normal">
+                      Received Amount
+                    </label>
+                    <br />
+                    <input
+                      onChange={(e) => setReceivedAmount(e.target.value)}
+                      type="number"
+                      placeholder="Type Received Tk "
+                      id=""
+                      className="px-2 rounded"
+                      style={{ width: "300px", height: "40px" }}
+                      name="receivedAmount"
+                      required
+                    />{" "}
+                    <br />
                   </div>
                   <div>
-                    <div>
-                      <label htmlFor="" className="fs-5 fw-normal">
-                        Received Amount
-                      </label>
-                      <br />
-                      <input
-                        onChange={(e) => setReciveTk(e.target.value)}
-                        type="number"
-                        placeholder="Type Received Tk "
-                        id=""
-                        className="px-2 rounded"
-                        style={{ width: "300px", height: "40px" }}
-                        name="receivedTk"
-                        required
-                      />{" "}
-                      <br />
-                    </div>
-
-                    <div>
-                      <label htmlFor="" className="fs-5 fw-normal">
-                        Customer Type
-                      </label>
-                      <br />
-                      <select
-                        style={{ width: "300px", height: "40px" }}
-                        required
-                        onChange={(e) => setCustomerType(e.target.value)}
-                        defaultValue={customerType}
-                      >
-                        <option disabled>Customer Type</option>
-                        <option value="Walk-in Guest">Walk-in Guest</option>
-                        <option value="Monthly">Monthly</option>
-                        <option value="Yearly">Yearly</option>
-                      </select>
-                    </div>
-                    {customerType === "Monthly" || customerType === "Yearly" ? (
-                      <div>
-                        <label htmlFor="" className="fs-5 fw-normal">
-                          Which of Month Payment
-                        </label>
-                        <br />
-                        <select
-                          style={{ width: "300px", height: "40px" }}
-                          required
-                          name="whichOfMonthPayment"
-                        >
-                          <option disabled>Which of Month Payment</option>
-                          <option value="January">January</option>
-                          <option value="February">February</option>
-                          <option value="March">March</option>
-                          <option value="April">April</option>
-                          <option value="May">May</option>
-                          <option value="June">June</option>
-                          <option value="July">July</option>
-                          <option value="August">August</option>
-                          <option value="September">September</option>
-                          <option value="October">October</option>
-                          <option value="November">November</option>
-                          <option value="December">December</option>
-                        </select>
-                      </div>
-                    ) : (
-                      ""
-                    )}
-
-                    {paymentType === "Payment Type" ? (
-                      ""
-                    ) : (
-                      <>
-                        {paymentType !== "Cash" && paymentType !== "bank" ? (
-                          <>
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Payment Number
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Payment Number "
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="paymentNumber"
-                              required
-                            />
-                            <br />
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Transaction Id
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Transaction Id"
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="transactionId"
-                              required
-                            />
-                            <br />
-                          </>
-                        ) : (
-                          ""
-                        )}
-
-                        {paymentType === "bank" ? (
-                          <>
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Bank Name
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Bank Name 
-                                                      "
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="bankName"
-                              required
-                            />
-                            <br />
-                            <label htmlFor="" className="fs-5 fw-normal">
-                              Bank {`Holder's`} Name
-                            </label>
-                            <br />
-                            <input
-                              type="text"
-                              placeholder="Type Holder's Name
-                                                            "
-                              id=""
-                              className="px-2 rounded mt-2"
-                              style={{ width: "300px", height: "40px" }}
-                              name="bankHoldingName"
-                              required
-                            />
-                            <br />
-                          </>
-                        ) : (
-                          ""
-                        )}
-                        <label htmlFor="" className="fs-5 fw-normal">
-                          Receiver Name
-                        </label>
-                        <br />
-                        <input
-                          type="text"
-                          placeholder="Receiver Name"
-                          id=""
-                          className="px-2 rounded mt-2"
-                          style={{ width: "300px", height: "40px" }}
-                          name="receiverName"
-                          required
-                        />
-                        <br />
-                      </>
-                    )}
-                    <div>
-                      <label htmlFor="" className="fs-5 fw-normal mt-2">
-                        Note : (Optional)
-                      </label>{" "}
-                      <br />
-                      <textarea
-                        className="px-2 rounded"
-                        placeholder="note"
-                        style={{ width: "300px", height: "70px" }}
-                        name="noteForTransaction"
-                      ></textarea>
-                      <br />
-                    </div>
+                    <label htmlFor="" className="fs-5 fw-normal">
+                      Receiver Name (as payment proof)
+                    </label>
+                    <br />
+                    <input
+                      onChange={(e) => setReceiverName(e.target.value)}
+                      type="text"
+                      placeholder="Receiver Name (as payment proof)"
+                      id=""
+                      className="px-2 rounded"
+                      style={{ width: "300px", height: "40px" }}
+                      name="receiverName"
+                      required
+                    />{" "}
+                    <br />
                   </div>
 
-                  <input
-                    type="submit"
-                    className="mt-2 px-4 py-1 rounded text-white"
-                    id=""
-                    style={{
-                      fontSize: "18px",
-                      backgroundColor:
-                        data?.totalReceiveTk === data?.payableAmount
-                          ? "rgb(170 221 220)"
-                          : "#00BBB4",
-                      border: "none",
-                    }}
-                    disabled={
-                      loading
-                        ? true
-                        : false || data?.totalReceiveTk === data?.payableAmount
-                        ? true
-                        : false
-                    }
-                  />
+                  <div className="d-flex justify-content-end  ">
+                    <button
+                      type="button"
+                      onClick={handlePayBill}
+                      style={{
+                        width: "140px",
+                        height: "40px",
+                        backgroundColor: "#00BBB4",
+                        border: "none",
+                        color: "white",
+                        margin: "16px 0px",
+                      }}
+                    >
+                      Submit Now
+                    </button>
+                  </div>
                 </form>
               ) : (
                 ""

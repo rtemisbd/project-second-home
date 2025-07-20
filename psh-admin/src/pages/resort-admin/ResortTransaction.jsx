@@ -309,7 +309,7 @@ const ResortTransaction = () => {
                             >
                               <img
                                 src={transaction.paymentProof}
-                                alt=""
+                                alt={`Receiver Name : ${transaction.paymentProof}`}
                                 style={{
                                   height: "80px",
                                   width: "120px",
@@ -393,6 +393,7 @@ const ResortTransaction = () => {
                                 className="modal-dialog"
                                 style={{ maxWidth: "1000px" }}
                               >
+                                {console.log(transaction)}
                                 <div className="modal-content">
                                   <div className="modal-header">
                                     <h3>Transaction Details</h3>
@@ -474,7 +475,11 @@ const ResortTransaction = () => {
                                           Total Payable Amount
                                         </label>
                                         <p>
-                                          TK {transaction?.order?.payableAmount}
+                                          TK{" "}
+                                          {
+                                            transaction?.order?.pricing
+                                              ?.payableAmount
+                                          }
                                         </p>
                                       </div>
                                     </div>
