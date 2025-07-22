@@ -99,7 +99,14 @@ const DownlaodInvoice = ({ data }) => {
             <Text style={styles.text}>Date: {currentDate}</Text>
 
             {/* Payment Method */}
-            <Text style={styles.text}>Payment Method: {data?.paymentType}</Text>
+            <Text style={styles.text}>
+              Payment Method:{" "}
+              {
+                data?.transactions[0]?.allProperties[
+                  data?.transactions[0]?.allProperties?.length - 1
+                ].paymentType
+              }
+            </Text>
           </View>
         </View>
 
@@ -113,7 +120,7 @@ const DownlaodInvoice = ({ data }) => {
         >
           <View>
             <Text style={styles.subtitle}>Booking Location</Text>
-            <Text style={styles.text}>Branch: {data?.branch?.name}</Text>
+            <Text style={styles.text}>Branch: {data?.branchDetails?.name}</Text>
             <Text
               style={{
                 fontSize: 12,
@@ -122,12 +129,14 @@ const DownlaodInvoice = ({ data }) => {
                 width: "150px",
               }}
             >
-              Address: {data?.branch?.branchAddress}
+              Address: {data?.branchDetails?.branchAddress}
             </Text>
             <Text style={styles.text}>
-              Mobile: {data?.branch?.branchMobileNumber}
+              Mobile: {data?.branchDetails?.branchMobileNumber}
             </Text>
-            <Text style={styles.text}>Email: {data?.branch?.branchEmail}</Text>
+            <Text style={styles.text}>
+              Email: {data?.branchDetails?.branchEmail}
+            </Text>
           </View>
           <View>
             {/* Bill To */}
@@ -145,7 +154,9 @@ const DownlaodInvoice = ({ data }) => {
                 Address: {data?.address}
               </Text>
               <Text style={styles.text}>Mobile: {data?.phone}</Text>
-              <Text style={styles.text}>Email: {data?.email}</Text>
+              {data?.email && (
+                <Text style={styles.text}>Email: {data?.email}</Text>
+              )}
               <Text style={styles.text}>
                 Check in Time: {data?.bookingInfo?.rentDate?.bookStartDate}
               </Text>
@@ -255,7 +266,7 @@ const DownlaodInvoice = ({ data }) => {
             >
               {data?.bookingInfo?.roomType === "Shared Room"
                 ? `${data?.bookingInfo?.roomName}, Room Number : ${data?.bookingInfo?.roomNumber}, Seat Number : ${data?.bookingInfo?.seatBooking?.seatNumber}`
-                : `${data?.bookingInfo?.data?.name}, Room Number : ${data?.bookingInfo?.data?.roomNumber}`}
+                : `${data?.bookingInfo?.roomName}, Room Number : ${data?.bookingInfo?.roomNumber}`}
             </Text>
           </View>
           <View
@@ -313,7 +324,12 @@ const DownlaodInvoice = ({ data }) => {
                   marginTop: "5px",
                 }}
               >
-                Payment Method : {data?.paymentType}
+                Payment Method :{" "}
+                {
+                  data?.transactions[0]?.allProperties[
+                    data?.transactions[0]?.allProperties?.length - 1
+                  ].paymentType
+                }
               </Text>
               <Text
                 style={{
@@ -440,7 +456,7 @@ const DownlaodInvoice = ({ data }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.bookingInfo?.discount?.toLocaleString()}
+                  BDT {data.adjustments[0]?.totatAdjustmentAmount || 0}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -457,7 +473,7 @@ const DownlaodInvoice = ({ data }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.totalReceiveTk?.toLocaleString()}
+                  BDT {data?.transactions[0]?.totalReceiveTk?.toLocaleString()}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -481,7 +497,10 @@ const DownlaodInvoice = ({ data }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.dueAmount?.toLocaleString()}
+                  BDT{" "}
+                  {data?.totalAmount -
+                    data.adjustments[0]?.totatAdjustmentAmount -
+                    data?.transactions[0]?.totalReceiveTk}
                 </Text>
               </View>
             </View>

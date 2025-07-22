@@ -14,9 +14,9 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const ref = useRef();
 
   const [discount, setDiscount] = useState(data?.discount || 0);
-  const [payableAmount, setPayableAmount] = useState(data?.payableAmount);
+  const [payableAmount, setPayableAmount] = useState(data?.payableAmount || 0);
   useEffect(() => {
-    if (data.adjustments) {
+    if (data.adjustments.length) {
       setPayableAmount(
         data.payableAmount - data.adjustments[0]?.totatAdjustmentAmount
       );
@@ -32,6 +32,8 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const formattedTime = new Date(data?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
+
+  console.log(data);
 
   return (
     <Modal
