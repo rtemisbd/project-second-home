@@ -47,7 +47,7 @@ const BookingList = () => {
   const [paymentModalData, setPaymentModalData] = useState(null);
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  const allBookingStatus = ["Pending", "Processing", "Approved", "Canceled"];
+  const allBookingStatus = ["Pending", "Processing", "Approved", "Rejected"];
 
   const handleShowDetails = (payload) => {
     setShowDetail(true);
@@ -118,6 +118,7 @@ const BookingList = () => {
           `${baseUrl}/api/villa-order?${queryParams.toString()}`,
           { headers }
         );
+        console.log(data?.data);
 
         setData(data?.data?.orders);
         setTotalDataCount(data?.data?.totalCount);

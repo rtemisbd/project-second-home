@@ -261,7 +261,7 @@ const getOrderFromDB = async (queries) => {
     matchStage["bookingInfo.rentDate.bookEndDate"] = { $lt: formattedDate };
   }
   if (category && category !== "All") {
-    matchStage["bookingInfo.roomType"] = category; 
+    matchStage["bookingInfo.roomType"] = category;
   }
   if (guestType && guestType !== "All") matchStage.customerType = guestType;
 

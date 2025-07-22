@@ -126,15 +126,12 @@ const getAllVillaOrdersFromDB = async (queries) => {
 
   const pipeline = [
     { $match: matchStage },
-
     {
       $facet: {
         paginatedResult: [
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
-
-          //USER
 
           {
             $lookup: {
@@ -146,16 +143,11 @@ const getAllVillaOrdersFromDB = async (queries) => {
                     $expr: { $eq: ["$_id", "$$userId"] },
                   },
                 },
-                // {
-                //   $project: { firstName: 1, phone: 1 },
-                // },
               ],
               as: "user",
             },
           },
-
           { $unwind: { path: "$user", preserveNullAndEmptyArrays: true } },
-          // ADD USER PHONE FILTER HERE
           ...(phone && phone !== ""
             ? [
                 {
@@ -165,8 +157,6 @@ const getAllVillaOrdersFromDB = async (queries) => {
                 },
               ]
             : []),
-
-          // VILLA
 
           {
             $lookup: {
@@ -187,7 +177,6 @@ const getAllVillaOrdersFromDB = async (queries) => {
           },
           { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
 
-          // transaction
           {
             $lookup: {
               from: "transactionforvillas",
@@ -214,7 +203,6 @@ const getAllVillaOrdersFromDB = async (queries) => {
               as: "transactions",
             },
           },
-          // { $unwind: { path: "$transactions", preserveNullAndEmptyArrays: true } },
         ],
       },
     },
@@ -227,7 +215,10 @@ const getAllVillaOrdersFromDB = async (queries) => {
 
   const aggregatedResult = await VillaOrders.aggregate(pipeline);
   const orders = aggregatedResult?.[0]?.paginatedResult || [];
-  // 🔁 Update paymentStatus based on payableAmount vs receivedTk
+
+  let totalPayable = 0;
+  let totalReceived = 0;
+
   for (const order of orders) {
     const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
     const totalAmount = order?.pricing?.totalAmount || 0;
@@ -241,11 +232,49 @@ const getAllVillaOrdersFromDB = async (queries) => {
       );
     }
 
-    // Optional: Attach payment status to result directly if needed
     order.paymentStatus = newPaymentStatus;
+
+    totalPayable += totalAmount;
+    totalReceived += receivedTk;
   }
 
-  return { orders, totalCount };
+  // 👇 Overview Summary
+  const overviewAggregation = await VillaOrders.aggregate([
+    { $match: matchStage },
+    {
+      $group: {
+        _id: "$status",
+        count: { $sum: 1 },
+        totalPayable: { $sum: "$pricing.totalAmount" },
+      },
+    },
+  ]);
+
+  const statusCounts = {
+    totalBookings: 0,
+    approved: 0,
+    pending: 0,
+    processing: 0,
+    rejected: 0,
+    totalPayable: 0,
+    totalReceived: totalReceived,
+    totalDue: totalPayable - totalReceived,
+  };
+
+  for (const row of overviewAggregation) {
+    statusCounts.totalBookings += row.count;
+    statusCounts.totalPayable += row.totalPayable;
+    const key = row._id?.toLowerCase();
+    if (key && key in statusCounts) {
+      statusCounts[key] = row.count;
+    }
+  }
+
+  return {
+    orders,
+    totalCount,
+    overview: statusCounts,
+  };
 };
 
 const getVillaOrderByIdFromDB = async (id) => {
@@ -277,7 +306,7 @@ const updateVillaOrderById = async (id, payload) => {
   const oldStatus = order.status;
   const newStatus = payload?.status;
 
-  // Step 2: Update the order 
+  // Step 2: Update the order
   const result = await VillaOrders.findByIdAndUpdate(
     id,
     { $set: payload },
