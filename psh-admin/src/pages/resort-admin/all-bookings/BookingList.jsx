@@ -48,6 +48,7 @@ const BookingList = () => {
   const [showPaymentModal, setShowPaymentModal] = useState(false);
 
   const allBookingStatus = ["Pending", "Processing", "Approved", "Rejected"];
+  const [overview, setOverview] = useState(null);
 
   const handleShowDetails = (payload) => {
     setShowDetail(true);
@@ -118,10 +119,10 @@ const BookingList = () => {
           `${baseUrl}/api/villa-order?${queryParams.toString()}`,
           { headers }
         );
-        console.log(data?.data);
 
         setData(data?.data?.orders);
         setTotalDataCount(data?.data?.totalCount);
+        setOverview(data?.data?.overview);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -164,23 +165,10 @@ const BookingList = () => {
                     </div>
                     <div className="ms-3 ">
                       <p className="fw-bold">
-                        <span className="text-white">
-                          {/* {bookingStatus === "All" ? "Approved" : bookingStatus} */}
-                        </span>{" "}
-                        (Bookings)
+                        <span className="text-white">Approved</span> (Bookings)
                       </p>
                       <p className="fw-bold text-white">
-                        {/* {bookingStatus === "Pending"
-                          ? data?.pendingCount
-                          : bookingStatus === "Canceled"
-                          ? data?.canceledCount
-                          : bookingStatus === "Processing"
-                          ? data?.processingCount
-                          : bookingStatus === "Approved" ||
-                            bookingStatus === "All"
-                          ? data?.approvedCount
-                          : ""}{" "} */}
-                        Booking
+                        {overview?.approved} Booking
                       </p>
                     </div>
                   </div>
@@ -195,7 +183,7 @@ const BookingList = () => {
                     <div className="ms-3 text-white">
                       <p className="">Total Payable Amount</p>
                       <p className="fw-bold">
-                        {/* Tk {data?.totalBookingAmount?.toLocaleString()} */}
+                        Tk {overview?.totalPayable?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -210,7 +198,7 @@ const BookingList = () => {
                     <div className="ms-3 text-white">
                       <p>Total Cash Amount</p>
                       <p className="fw-bold">
-                        {/* Tk {data?.totalReceiveAmountFilter?.toLocaleString()} */}
+                        Tk {overview?.totalReceived?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -225,7 +213,7 @@ const BookingList = () => {
                     <div className="ms-3 text-white">
                       <p>Total Due Amount</p>
                       <p className="fw-bold">
-                        {/* Tk {data?.totalDueAmount?.toLocaleString()} */}
+                        Tk {overview?.totalDue?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -235,16 +223,23 @@ const BookingList = () => {
             {/* booking summery */}
             <div className="mx-lg-5 customize">
               <div className="d-flex mt-4 fw-bold ">
-                {/* <p> Total Bookings : {data?.bookingsTotalCount}</p> */}
+                <p> Total Bookings : {overview?.totalBookings}</p>
                 <p className="ms-2 text-green ">
                   {" "}
-                  {/* Approved Bookings : {data?.approvedCount} */}
+                  Approved Bookings : {overview?.totalBookings}
                 </p>
                 <p className="ms-2 text-danger ">
                   {" "}
-                  {/* Pending Bookings : {data?.pendingCount} */}
+                  Processing Bookings : {overview?.processing}
                 </p>
-                {/* <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p> */}
+                <p className="ms-2 text-danger ">
+                  {" "}
+                  Pending Bookings : {overview?.pending}
+                </p>
+                <p className="ms-2">
+                  {" "}
+                  Rejecjed Bookings : {overview?.rejected}
+                </p>
               </div>
             </div>
           </div>

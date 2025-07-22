@@ -221,7 +221,10 @@ const getAllVillaOrdersFromDB = async (queries) => {
 
   for (const order of orders) {
     const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
-    const totalAmount = order?.pricing?.totalAmount || 0;
+    let totalAmount = 0;
+    if (order?.status !== "Rejected") {
+      totalAmount = order?.pricing?.payableAmount || 0;
+    }
 
     const newPaymentStatus = receivedTk === totalAmount ? "Paid" : "Unpaid";
 
