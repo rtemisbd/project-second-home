@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   Document,
   Page,
@@ -74,6 +74,11 @@ const styles = StyleSheet.create({
 
 const DownlaodInvoice = ({ data }) => {
   const currentDate = new Date().toISOString().split("T")[0];
+
+  const [paid, setPaid] = useState(data?.transactions[0]?.totalReceiveTk || 0);
+  const [discount, setDiscount] = useState(
+    data.adjustments[0]?.totatAdjustmentAmount || 0
+  );
   return (
     <Document>
       <Page size="A4" style={styles.page}>
@@ -456,7 +461,7 @@ const DownlaodInvoice = ({ data }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data.adjustments[0]?.totatAdjustmentAmount || 0}
+                  BDT {discount}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -473,14 +478,17 @@ const DownlaodInvoice = ({ data }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+                  BDT {paid}
                 </Text>
               </View>
               <View style={styles.flex}>
                 <Text
                   style={[
                     styles.bold,
-                    { color: data?.dueAmount > 0 ? "red" : "" },
+                    {
+                      color:
+                        data?.totalAmount - discount - paid > 0 ? "red" : "",
+                    },
                   ]}
                 >
                   Due :
@@ -497,10 +505,7 @@ const DownlaodInvoice = ({ data }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT{" "}
-                  {data?.totalAmount -
-                    data.adjustments[0]?.totatAdjustmentAmount -
-                    data?.transactions[0]?.totalReceiveTk}
+                  BDT {data?.totalAmount - discount - paid}
                 </Text>
               </View>
             </View>
