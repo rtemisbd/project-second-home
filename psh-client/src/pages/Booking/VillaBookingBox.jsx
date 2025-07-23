@@ -23,7 +23,7 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
   const endDate = useSelector((state) => state.dateCount.endDate);
   const customerRent = useSelector((state) => state.dateCount.customerRent);
 
-  const [subTotal, setSubTotal] = useState(0);
+  const [initialAmount, setInitialAmount] = useState(0);
   const [totalAmount, setTotalAmount] = useState(0);
   const [advance, setAdvance] = useState(0);
 
@@ -35,13 +35,12 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
   };
 
   useEffect(() => {
-    setSubTotal(
-      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference
-    );
-    setTotalAmount(
-      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference
-    );
-    setAdvance(villa?.pricing?.advancePayment);
+    const price =
+      villa?.pricing?.afterDiscountPerNight * customerRent?.daysDifference;
+    setInitialAmount(price);
+    setTotalAmount(price);
+    const advanceAmount = price * (villa?.pricing?.advancePayment / 100);
+    setAdvance(advanceAmount);
   }, [customerRent, villa]);
 
   const isAlreadyVillaBookings = (startDate, endDate, bookings) => {
@@ -77,11 +76,14 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
       villa: villa,
       resort: villa?.resortId?._id,
       user: user?._id,
-      perNight: villa?.pricing?.perNight,
-      subTotal,
-      totalAmount,
-      payableAmount: totalAmount,
-      minimumPayment: villa?.pricing?.advancePayment,
+      perNight: villa?.pricing?.afterDiscountPerNight,
+      pricing: {
+        initialAmount,
+        totalAmount,
+        payableAmount: totalAmount,
+      },
+
+      minimumPayment: advance,
       rentDate: {
         bookStartDate: format(new Date(startDate), "dd-MM-yyyy"),
         bookEndDate: format(new Date(endDate), "dd-MM-yyyy"),
@@ -336,8 +338,10 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                 </Tooltip>
               </div>
             </div>
-            <p>BDT {isNaN(subTotal) ? 0 : subTotal.toLocaleString()}</p>
-            {/* <p>BDT {isNaN(subTotal) ? 0 : subTotal?.toLocaleString()}</p> */}
+            <p>
+              BDT {isNaN(initialAmount) ? 0 : initialAmount.toLocaleString()}
+            </p>
+            {/* <p>BDT {isNaN(initialAmount) ? 0 : initialAmount?.toLocaleString()}</p> */}
           </div>
 
           <hr className="mt-1 ml-5 text-black" />
@@ -362,8 +366,9 @@ const VillaBookingBox = ({ villa, bookedDates }) => {
                         className="font-normal opacity-75 px-5 py-2 rounded"
                       >
                         <p>
-                          Non-refundable (It will be adjust in your Final
-                          Payment)
+                          {villa?.pricing?.advancePayment}% of total booking
+                          amount. Non-refundable (It will be adjust in your
+                          Final Payment)
                         </p>
                       </Typography>
                     </div>

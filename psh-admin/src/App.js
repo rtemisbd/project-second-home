@@ -75,14 +75,14 @@ import ResortList from "./pages/Resorts/ResortList";
 import AddVilla from "./pages/resort-admin/Villa/AddVilla";
 import VillaList from "./pages/resort-admin/Villa/VillaList";
 import EditVilla from "./pages/resort-admin/Villa/EditVilla";
-import BookingList from "./pages/resort-admin/BookingList";
 
 import AddResort2 from "./pages/Resorts/AddResort2";
 import AddResort from "./pages/resort-admin/resort/AddResort";
-import ResortTransaction from "./pages/resort-admin/ResortTransaction";
 import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
 import EditResort from "./pages/resort-admin/resort/EditResort";
-
+import VillaBookingOverview from "./pages/resort-admin/booking-overview/VillaBookingOverview";
+import BookingList from "./pages/resort-admin/all-bookings/BookingList";
+import ResortTransaction from "./pages/resort-admin/payment/ResortTransaction";
 
 function App() {
   return (
@@ -176,21 +176,32 @@ function App() {
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />
         {/* resort related */}
         <Route path="add-resort" element={<AddResort2 />} />
-        <Route path="resort-list" element={<ResortList/>} />
-        
-        <Route path="resort/booking-list" element={<BookingList/>} />
-        <Route path="resort/transaction" element={<ResortTransaction/>} />
-        <Route path="resort/add-resort" element={<AddResort/>} />
-        <Route path="resort/overview" element={<ResortOverview/>} />
-        <Route path="resort/edit-resort" element={<EditResort/>} />
+        <Route path="resort-list" element={<ResortList />} />
+
+        <Route path="resort/booking-list" element={<BookingList />} />
+        <Route path="resort/transaction" element={<ResortTransaction />} />
+        <Route
+          path="resort/booking-overview"
+          element={<VillaBookingOverview />}
+        />
+        <Route path="resort/add-resort" element={<AddResort />} />
+        <Route path="resort/overview" element={<ResortOverview />} />
+        <Route path="resort/edit-resort" element={<EditResort />} />
         <Route path="resort/add-villa" element={<AddVilla />} />
         <Route path="resort/villa-list" element={<VillaList />} />
         <Route path="resort/edit/villa/:id" element={<EditVilla />} />
-
+        <Route
+          path="resort/create-order/:category/:roomId"
+          element={<CreateUser />}
+        />
+        <Route path="resort/administration" element={<Manager />} />
+        <Route
+          path="resort/add_manager"
+          element={<Add_Manager comeFrom={"resort"} />}
+        />
       </Route>
 
-      <Route path="*" element={<NotFound />}></Route> 
-
+      <Route path="*" element={<NotFound />}></Route>
     </Routes>
   );
 }

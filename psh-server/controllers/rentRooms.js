@@ -90,7 +90,6 @@ export const getRentRooms = async (req, res, next) => {
         },
       },
     ]);
-    
 
     // Update bookingStatus to "reserved" for upcoming rent rooms
     await RentRoom.updateMany(
@@ -120,7 +119,7 @@ export const getRentRooms = async (req, res, next) => {
       .populate([
         {
           path: "category",
-          match: { name: "Private Room" },
+          match: { name: { $in: ["Private Room", "Home-Stay"] } },
           select: {
             name: 1,
             _id: 0,
@@ -144,7 +143,7 @@ export const getRentRooms = async (req, res, next) => {
     const bookedRooms = await RentRoom.find({
       _id: {
         $in: rentRooms
-          .filter((room) => room.roomType === "Private Room")
+          .filter((room) => room.roomType !== "Shared Room")
           .map((room) => room._id),
       },
     }).populate([

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import img from "../../img/college/Icon material-delete.png";
 import img3 from "../../img/college/Icon feather-edit.png";
 import axios from "axios";
@@ -14,56 +14,77 @@ import { baseUrl } from "../../utils/getBaseURL";
 import { useSelector } from "react-redux";
 import Pagination from "../Pagination/Pagination";
 import { Table } from "react-bootstrap";
+import { AuthContext } from "../../contexts/UserProvider";
+import { useQuery } from "react-query";
 
 const Manager_list = () => {
   const MySwal = withReactContent(Swal);
   const { page, size } = useSelector((state) => state.pagination);
 
+  const { resort } = useContext(AuthContext);
+
   //sub stream
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
+  const [resortId, setResortId] = useState(resort?._id || "");
 
   useEffect(() => {
-    const fetchData = async () => {
+    if (resort) {
+      setResortId(resort._id);
+    }
+  }, [resort]);
+
+  const { refetch } = useQuery(
+    ["fetchUser", page],
+    async () => {
       try {
         const queryParams = new URLSearchParams({
           page,
           size,
-          role: "manager",
+          role: resortId !== "" ? "" : "manager",
+          resort: resortId,
         });
+
         const { data } = await axios.get(
           `${baseUrl}/api/users?${queryParams.toString()}`
         );
-        console.log(data);
 
         setData(data?.data?.users);
         setTotalDataCount(data?.data?.totalCount);
       } catch (error) {
         console.log(error);
       }
-    };
-
-    fetchData();
-  }, [page, size]);
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
+  useEffect(() => {
+    refetch();
+  }, [size, resort, refetch]);
 
   //delete
-  const [products, setProducts] = useState(data);
-  const handleCategory = async (id) => {
-    const confirmation = window.confirm("Are you Sure?");
-    if (confirmation) {
-      const url = `${baseUrl}/api/users/${id}`;
-      fetch(url, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          MySwal.fire("Good job!", "successfully deleted", "success");
-          if (data.deletedCount === 1) {
-            const remainItem = products.filter((item) => item._id !== id);
-            setProducts(remainItem);
-          }
-        });
+  const handleDelete = async (id) => {
+    const result = await Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (result.isConfirmed) {
+      try {
+        const data = await axios.delete(`${baseUrl}/api/users/${id}`);
+
+        refetch();
+        Swal.fire("Deleted!", "User has been deleted.", "success");
+      } catch (err) {
+        console.error(err);
+        Swal.fire("Error!", "Something went wrong.", "error");
+      }
     }
   };
 
@@ -80,7 +101,7 @@ const Manager_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/dashboard/add_manager"}>
+                      <Link to={"/dashboard/resort/add_manager"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add Manager
                         </button>
@@ -102,7 +123,7 @@ const Manager_list = () => {
                     >
                       <th>No.</th>
                       <th>Name</th>
-                      <th>Branch</th>
+                      {!resortId ? <th>Branch</th> : ""}
                       <th>Role</th>
                       <th>Phone</th>
                       <th>Email</th>
@@ -118,9 +139,13 @@ const Manager_list = () => {
                         <td>
                           <p>{user?.firstName}</p>
                         </td>
-                        <td>
-                          <p>{user?.branch[0]?.name}</p>
-                        </td>
+                        {!resortId ? (
+                          <td>
+                            <p>{user?.branch[0]?.name}</p>
+                          </td>
+                        ) : (
+                          ""
+                        )}
                         <td>
                           <p>{user?.role}</p>
                         </td>
@@ -160,7 +185,7 @@ const Manager_list = () => {
                               src={img}
                               alt=""
                               className="ms-3"
-                              onClick={() => handleCategory(user._id)}
+                              onClick={() => handleDelete(user._id)}
                             />
                           </div>
                           <div

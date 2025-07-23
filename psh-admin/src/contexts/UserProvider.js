@@ -13,7 +13,8 @@ export const UserProvider = ({ children }) => {
   );
   const [resort, setResort] = useState(localStorage.getItem("resort") ||null);
 
-  const [token, setToken] = useState( JSON.parse(localStorage.getItem("resort")) || null);
+  // const [token, setToken] = useState( JSON.parse(localStorage.getItem("token")) || null);
+  const [token, setToken] = useState( localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -32,6 +33,7 @@ export const UserProvider = ({ children }) => {
         setResort(data?.data);
       } catch (error) {
         console.error("Failed to fetch resort by name:", error);
+         setResort(null);
       }
     };
      if (user?.firstName) {
@@ -114,9 +116,6 @@ const logoutUser = () => {
   localStorage.removeItem("token");
   localStorage.removeItem("resort");
 };
-
-
-
 
   // const isAuthenticated = () => {
   //   return token !== null && user !== null;

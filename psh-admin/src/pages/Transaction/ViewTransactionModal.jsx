@@ -139,7 +139,7 @@ const ViewTransactionModal = ({ data, bookings }) => {
                 <div className="col-lg-3">
                   {" "}
                   <label htmlFor="" className="fw-medium">
-                    Recieve Amount
+                    Received Amount
                   </label>
                   <p>Tk {data?.receivedTk?.toLocaleString()}</p>
                 </div>

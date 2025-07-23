@@ -156,7 +156,7 @@ const FindAccommodation = () => {
       <form className="" onSubmit={handleSearch}>
         <div className="pt-2 space-y-1 ">
           {/* room category */}
-          <ul className="flex ">
+          <ul className="flex text-[18px] ">
             {category.map((categoryItem, index) => (
               <li>
                 <span

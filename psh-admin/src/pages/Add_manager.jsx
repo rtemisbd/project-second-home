@@ -8,15 +8,20 @@ import { useForm } from "react-hook-form";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { baseUrl } from "../utils/getBaseURL";
-const Add_Manager = () => {
+import { AuthContext } from "../contexts/UserProvider";
+
+const Add_Manager = ({ comeFrom = "" }) => {
+  const { resort } = useContext(AuthContext);
+  const MySwal = withReactContent(Swal);
+
   const {
     register,
     formState: { errors },
     handleSubmit,
     reset,
   } = useForm();
+
   const [branches, setBranches] = useState([]);
-  const MySwal = withReactContent(Swal);
   const [showPassword, setShowPassword] = useState(false);
   const [selectedRole, setSelectedRole] = useState(null);
 
@@ -58,6 +63,13 @@ const Add_Manager = () => {
     ) {
       payload.branch = branch;
     }
+    if (
+      role === "resortAdmin" ||
+      role === "resortAccountant" ||
+      role === "resortReceptionist"
+    ) {
+      payload.resort = resort?._id;
+    }
 
     try {
       const response = await axios.post(`${baseUrl}/api/users`, payload);
@@ -97,18 +109,19 @@ const Add_Manager = () => {
     }
   };
 
-  const roles = [
-    "admin",
-    "SuperAdmin",
-    "user",
-    "manager",
-    "partner",
-    "subAdmin1",
-    "subAdmin2",
-    "resortAdmin",
-    "resortAccountant",
-    "resortReceptionist",
-  ];
+  const roles =
+    comeFrom === "resort"
+      ? ["resortAdmin", "resortAccountant", "resortReceptionist"]
+      : [
+          "admin",
+          "SuperAdmin",
+          "user",
+          "manager",
+          "partner",
+          "subAdmin1",
+          "subAdmin2",
+          "resortAdmin",
+        ];
   return (
     <div className="wrapper">
       <div className="content-wrapper " style={{ background: "unset" }}>
@@ -246,9 +259,7 @@ const Add_Manager = () => {
                   ))}
                 </select>
               </div>
-              {selectedRole !== "resortAdmin" &&
-              selectedRole !== "resortAccountant" &&
-              selectedRole !== "resortReceptionist" ? (
+              {comeFrom !== "resort" && selectedRole !== "resortAdmin" ? (
                 <div className="col-md-12 form_sub_stream">
                   <label htmlFor="inputState" className="profile_label3">
                     Branch

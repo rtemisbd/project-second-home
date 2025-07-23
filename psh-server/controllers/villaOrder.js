@@ -37,9 +37,21 @@ const getVillaOrderById = catchAsync(async(req, res, next)=>{
 
 }) 
 
+const updateSingleVillaOrder = catchAsync(async(req, res, next)=>{
+    const transaction = await villaOrderServices.updateVillaOrderById(req.params.id, req.body);
+
+    responseSend(res, {
+        statusCode : 200,
+        success : true,
+        data : transaction,
+        message : "Order updated successfully"
+    })
+})
+
 
 export const villaOrdersControllers = {
     createVilaOrderIntoDB,
     getAllVillaOrders,
-    getVillaOrderById
+    getVillaOrderById,
+    updateSingleVillaOrder
 }

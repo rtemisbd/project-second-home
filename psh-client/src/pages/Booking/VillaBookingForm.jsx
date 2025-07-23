@@ -20,6 +20,8 @@ const VillaBookingForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
+  console.log(singleUser);
+
   const [isBlur, setIsBlur] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [requiredMessage, setRequiredMessage] = useState(false);
@@ -47,7 +49,8 @@ const VillaBookingForm = () => {
     }));
   };
 
-  // handle Scrooled
+
+  // handle Scrolled
   const handleScroll = () => {
     setScrollY(window.scrollY);
   };
@@ -103,6 +106,7 @@ const VillaBookingForm = () => {
       dataForBooking.senderAccountNumber = senderAccountNumber;
       dataForBooking.sendAmount = sendAmount;
       dataForBooking.paymentProof = paymentProofImg;
+ 
 
       const { data } = await axios.post(
         `${serverBaseUrl}/villa-order`,
@@ -118,7 +122,7 @@ const VillaBookingForm = () => {
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       toast.error(error?.response?.data?.message || "Something is wrong");
       dispatch(placeLoadingShow(false));
     }
@@ -166,6 +170,22 @@ const VillaBookingForm = () => {
     }
   }, [villa, selectPlatform, selectMethod]);
 
+  useEffect(() => {
+    if (singleUser) {
+      setDataForBooking((prevData) => ({
+        ...prevData,
+        userId: singleUser?._id || "",
+        fullName: singleUser?.firstName || "",
+        phone: singleUser?.phone || "",
+        address: singleUser?.userAddress || "",
+        validityType: singleUser?.validityType || "",
+        emergencyContactName: singleUser?.emergencyContact?.contactName || "",
+        emergencyRelationC: singleUser?.emergencyContact?.relation || "",
+        emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
+      }));
+    }
+  }, [singleUser]);
+
   return (
     <div>
       <LoadingState />
@@ -206,7 +226,7 @@ const VillaBookingForm = () => {
                     placeholder="Your Full Name *"
                     type="text"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
-                    name="firstName"
+                    name="fullName"
                     defaultValue={singleUser ? singleUser?.firstName : ""}
                     required
                     disabled={singleUser?.firstName ? true : false}
@@ -226,7 +246,7 @@ const VillaBookingForm = () => {
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
                     name="phone"
                     required
-                    disabled
+                    disabled={singleUser?.phone ? true : false}
                     defaultValue={singleUser ? singleUser?.phone : ""}
                     style={{
                       height: "45px",
@@ -301,7 +321,7 @@ const VillaBookingForm = () => {
                     type="text"
                     placeholder="Guardian Contact Number *"
                     className="text-black personal-info rounded lg:w-[350px] md:w-[300px] sm:w-full"
-                    name="contactNumber"
+                    name="emergencyContact"
                     required
                     defaultValue={singleUser?.emergencyContact?.contactNumber}
                     style={{
@@ -501,13 +521,13 @@ const VillaBookingForm = () => {
                         </Tooltip>
                       </div>
                     </div>
-                    <p>BDT {bookingItem?.subTotal?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.pricing?.initialAmount?.toLocaleString()}</p>
                   </div>
 
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.totalAmount?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.pricing?.totalAmount?.toLocaleString()}</p>
                   </div>
 
                   <div className={`flex justify-between `}>

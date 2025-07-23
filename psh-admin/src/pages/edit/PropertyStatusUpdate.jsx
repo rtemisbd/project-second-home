@@ -25,7 +25,7 @@ const PropertyStatusUpdate = ({
     e.preventDefault();
 
     try {
-      if (category === "Private Room") {
+      if (category !== "Shared Room") {
         await axios.patch(`${baseUrl}/api/property/${id}`, {
           isPublished,
         });

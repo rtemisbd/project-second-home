@@ -1,20 +1,23 @@
 import { MdRefresh } from "react-icons/md";
-import img from "../../img/new/style.png";
+import img from "../../../img/new/style.png";
 import { Spinner, Table } from "react-bootstrap";
 import { useContext, useEffect, useState } from "react";
-import BookingsTable from "../../components/Orders/BookingsTable";
 import { useSelector } from "react-redux";
-import { baseUrl } from "../../utils/getBaseURL";
-import { getFromLocalStorage } from "../../utils/local-storage";
-import { authKey } from "../../utils/storageKey";
+import { baseUrl } from "../../../utils/getBaseURL";
+import { getFromLocalStorage } from "../../../utils/local-storage";
+import { authKey } from "../../../utils/storageKey";
 import { useQuery } from "react-query";
 import axios from "axios";
-import { formatDate } from "../../utils/dateConvert";
+import { formatDate } from "../../../utils/dateConvert";
 import { BiSolidEdit } from "react-icons/bi";
-import { FaWhatsapp } from "react-icons/fa";
 import { AiOutlineEye, AiOutlineFieldTime } from "react-icons/ai";
-import Pagination from "../../components/Pagination/Pagination";
-import { AuthContext } from "../../contexts/UserProvider";
+import Pagination from "../../../components/Pagination/Pagination";
+import { AuthContext } from "../../../contexts/UserProvider";
+import VillaBookingStatusUpdate from "../../../components/resort-admin/booking-list/VillaBookingStatusUpdate";
+import { Toaster } from "react-hot-toast";
+import VillaBookingDetail from "../../../components/resort-admin/booking-list/VillaBookingDetail";
+import VillaBookingDateExtend from "../../../components/resort-admin/booking-list/VillaBookingDateExtend";
+import VillaBookingBills from "../../../components/resort-admin/booking-list/VillaBookingBills";
 
 const BookingList = () => {
   const { resort } = useContext(AuthContext);
@@ -23,28 +26,57 @@ const BookingList = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const [fromDate, setFromDate] = useState("");
-  const [toDate, setToDate] = useState("");
+  const [toDate, setToDate] = useState(new Date());
 
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
   const [runningStatus, setRunningStatus] = useState("All");
-  const [guestType, setGuestType] = useState("All");
-  const [unknownQuery, setUnknownQuery] = useState("");
-  const [filteredName, setFilteredName] = useState("");
-  const [filteredPhone, setFilteredPhone] = useState("");
+
+  const [phone, setPhone] = useState("");
 
   const [data, setData] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
 
+  const [showDetail, setShowDetail] = useState(false);
+  const [selectedData, setSelectedData] = useState(null);
+  const [showExtendModal, setShowExtendModal] = useState(false);
+
   const [findingStatement, setFindingStatement] = useState(true);
   const [hasTimeoutRun, setHasTimeoutRun] = useState(false);
 
-  const allBookingStatus = ["Pending", "Processing", "Approved", "Canceled"];
+  const [paymentModalData, setPaymentModalData] = useState(null);
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
 
-  const handleShowDetails = (detailsData) => {
-    // setShowDurationModal(true);
-    // setShowDetails(true);
-    // setBookingDetails(detailsData);
+  const allBookingStatus = ["Pending", "Processing", "Approved", "Rejected"];
+  const [overview, setOverview] = useState(null);
+
+  const handleShowDetails = (payload) => {
+    setShowDetail(true);
+    setSelectedData(payload);
+  };
+  const handleShowExtend = (payload) => {
+    setSelectedData(payload);
+    setShowExtendModal(true);
+  };
+
+  const handlePaymentShow = (paymentData) => {
+    setShowPaymentModal(true);
+    setPaymentModalData(paymentData);
+  };
+
+  const handleRefreshQuery = () => {
+    setPhone("");
+    document.getElementById("phoneId").value = "";
+    setFromDate("");
+    document.getElementById("fromDateId").value = "";
+    setToDate("");
+    document.getElementById("toDateId").value = "";
+    setPaymentStatus("All");
+    document.getElementById("paymentStatusId").value = "All";
+    setBookingStatus("All");
+    document.getElementById("bookingStatusId").value = "All";
+    setRunningStatus("All");
+    document.getElementById("runningStatusId").value = "All";
   };
 
   // Get all Bookings
@@ -57,10 +89,9 @@ const BookingList = () => {
       fromDate,
       toDate,
       runningStatus,
-      guestType,
-      filteredName,
-      filteredPhone,
+      phone,
       resort._id,
+      size,
     ],
     async () => {
       try {
@@ -71,10 +102,8 @@ const BookingList = () => {
           page,
           size,
           runningStatus,
-          guestType,
           status: bookingStatus,
-          filteredName,
-          filteredPhone,
+          phone: phone,
           resort: resort._id,
         });
 
@@ -87,14 +116,13 @@ const BookingList = () => {
         };
 
         const { data } = await axios.get(
-          `${baseUrl}/api/villa-order?${queryParams.toString()}`
+          `${baseUrl}/api/villa-order?${queryParams.toString()}`,
+          { headers }
         );
-        console.log(data);
 
         setData(data?.data?.orders);
         setTotalDataCount(data?.data?.totalCount);
-
-        // setTotalDataCount(data?.data?.bookingsTotalCount);
+        setOverview(data?.data?.overview);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -107,7 +135,17 @@ const BookingList = () => {
   // Re-fetch data whenever size changes
   useEffect(() => {
     refetch();
-  }, [size, refetch]);
+  }, [size, page, refetch]);
+
+  useEffect(() => {
+    if (data?.length === 0 && !hasTimeoutRun) {
+      const timeoutId = setTimeout(() => {
+        setFindingStatement(!findingStatement);
+        setHasTimeoutRun(true);
+      }, 5000);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [data?.length, findingStatement, hasTimeoutRun, refetch]);
 
   return (
     <div className="wrapper">
@@ -127,23 +165,10 @@ const BookingList = () => {
                     </div>
                     <div className="ms-3 ">
                       <p className="fw-bold">
-                        <span className="text-white">
-                          {/* {bookingStatus === "All" ? "Approved" : bookingStatus} */}
-                        </span>{" "}
-                        (Bookings)
+                        <span className="text-white">Approved</span> (Bookings)
                       </p>
                       <p className="fw-bold text-white">
-                        {/* {bookingStatus === "Pending"
-                          ? data?.pendingCount
-                          : bookingStatus === "Canceled"
-                          ? data?.canceledCount
-                          : bookingStatus === "Processing"
-                          ? data?.processingCount
-                          : bookingStatus === "Approved" ||
-                            bookingStatus === "All"
-                          ? data?.approvedCount
-                          : ""}{" "} */}
-                        Booking
+                        {overview?.approved} Booking
                       </p>
                     </div>
                   </div>
@@ -158,7 +183,7 @@ const BookingList = () => {
                     <div className="ms-3 text-white">
                       <p className="">Total Payable Amount</p>
                       <p className="fw-bold">
-                        {/* Tk {data?.totalBookingAmount?.toLocaleString()} */}
+                        Tk {overview?.totalPayable?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -173,7 +198,7 @@ const BookingList = () => {
                     <div className="ms-3 text-white">
                       <p>Total Cash Amount</p>
                       <p className="fw-bold">
-                        {/* Tk {data?.totalReceiveAmountFilter?.toLocaleString()} */}
+                        Tk {overview?.totalReceived?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -188,7 +213,7 @@ const BookingList = () => {
                     <div className="ms-3 text-white">
                       <p>Total Due Amount</p>
                       <p className="fw-bold">
-                        {/* Tk {data?.totalDueAmount?.toLocaleString()} */}
+                        Tk {overview?.totalDue?.toLocaleString()}
                       </p>
                     </div>
                   </div>
@@ -198,16 +223,23 @@ const BookingList = () => {
             {/* booking summery */}
             <div className="mx-lg-5 customize">
               <div className="d-flex mt-4 fw-bold ">
-                {/* <p> Total Bookings : {data?.bookingsTotalCount}</p> */}
+                <p> Total Bookings : {overview?.totalBookings}</p>
                 <p className="ms-2 text-green ">
                   {" "}
-                  {/* Approved Bookings : {data?.approvedCount} */}
+                  Approved Bookings : {overview?.totalBookings}
                 </p>
                 <p className="ms-2 text-danger ">
                   {" "}
-                  {/* Pending Bookings : {data?.pendingCount} */}
+                  Processing Bookings : {overview?.processing}
                 </p>
-                {/* <p className="ms-2"> Cancel Bookings : {data?.canceledCount}</p> */}
+                <p className="ms-2 text-danger ">
+                  {" "}
+                  Pending Bookings : {overview?.pending}
+                </p>
+                <p className="ms-2">
+                  {" "}
+                  Rejecjed Bookings : {overview?.rejected}
+                </p>
               </div>
             </div>
           </div>
@@ -225,12 +257,11 @@ const BookingList = () => {
                 <div>
                   <input
                     type="number"
-                    name="unknownQuery"
-                    id="unknownQueryId"
-                    // onChange={handleUnknownQuery}
+                    name="phone"
+                    id="phoneId"
+                    value={phone}
+                    onChange={(e) => setPhone(e.target.value)}
                     placeholder="Enter phone number"
-                    // value={unknownQuery}
-                    // disabled={unknownQuery.length >= 11}
                     className="rounded"
                   />
                 </div>
@@ -241,10 +272,10 @@ const BookingList = () => {
                 <div>
                   <input
                     type="date"
-                    // onChange={(e) => setFromDate(e.target.value)}
+                    onChange={(e) => setFromDate(e.target.value)}
                     name=""
                     id="fromDateId"
-                    // value={fromDate}
+                    value={fromDate}
                     className="rounded"
                   />
                 </div>
@@ -256,42 +287,26 @@ const BookingList = () => {
                     type="date"
                     name=""
                     id="toDateId"
-                    // onChange={(e) => setToDate(e.target.value)}
-                    // value={toDate}
+                    onChange={(e) => setToDate(e.target.value)}
+                    value={toDate}
                     className="rounded"
                   />
                 </div>
               </div>
-              {/* {user?.role !== "manager" && (
-                <div>
-                  <label htmlFor="">Branch </label> <br />
-                  <select
-                    className="rounded"
-                    style={{ height: "30px" }}
-                    onChange={(e) => setBranch(e.target.value)}
-                    id="branchId"
-                    value={branch}
-                  >
-                    <option value="All">All</option>
-                    {allBranch?.map((branch) => (
-                      <option value={branch?._id}>{branch?.name}</option>
-                    ))}
-                  </select>
-                </div>
-              )} */}
+
               <div>
                 <label htmlFor="">Payment Status </label> <br />
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setPaymentStatus(e.target.value)}
+                  onChange={(e) => setPaymentStatus(e.target.value)}
                   id="paymentStatusId"
-                  //   value={paymentStatus}
+                  value={paymentStatus}
                 >
-                  <option>All</option>
+                  <option value="All">All</option>
 
-                  <option>Paid</option>
-                  <option>Unpaid</option>
+                  <option value="Paid">Paid</option>
+                  <option value="Unpaid">Unpaid</option>
                 </select>
               </div>
               <div>
@@ -299,9 +314,9 @@ const BookingList = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setBookingStatus(e.target.value)}
+                  onChange={(e) => setBookingStatus(e.target.value)}
                   id="bookingStatusId"
-                  // value={bookingStatus}
+                  value={bookingStatus}
                 >
                   <option value="All">All</option>
                   {allBookingStatus?.map((status, ind) => (
@@ -316,34 +331,20 @@ const BookingList = () => {
                 <select
                   className="rounded"
                   style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setRunningStatus(e.target.value)}
+                  onChange={(e) => setRunningStatus(e.target.value)}
                   id="runningStatusId"
-                  //   value={runningStatus}
+                  value={runningStatus}
                 >
                   <option>All</option>
                   <option>Running</option>
                   <option>Closed</option>
                 </select>
               </div>
-              <div>
-                <label htmlFor="">Guest Type </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px", width: "120px" }}
-                  //   onChange={(e) => setGuestType(e.target.value)}
-                  id="guestTypeId"
-                  //   value={guestType}
-                >
-                  <option>All</option>
-                  <option>Walk-in Guest</option>
-                  <option>Monthly</option>
-                </select>
-              </div>
 
               {/* refresh */}
               <button
                 type="button"
-                // onClick={handleRefreshQuery}
+                onClick={handleRefreshQuery}
                 style={{ marginTop: "18px" }}
                 aria-label="Refresh"
                 className="btn btn-sm"
@@ -379,11 +380,10 @@ const BookingList = () => {
                         <th>Total Tk</th>
                         <th>Discount</th>
                         <th>Payable Tk</th>
-                        {/* <th>Payment Status</th> */}
+                        <th>Payment Status</th>
                         <th>Total Receive</th>
                         <th>Due Amount</th>
                         <th>Status</th>
-                        {/* <th>Contact</th> */}
                         <th>Details</th>
                         <th>Update Duration</th>
                         <th>Action</th>
@@ -423,20 +423,26 @@ const BookingList = () => {
                           >
                             {" "}
                             <p className="fw-bold">
-                              Tk {booking?.totalAmount?.toLocaleString()}
+                              Tk{" "}
+                              {booking?.pricing?.initialAmount +
+                                booking?.pricing?.foodCost +
+                                booking?.pricing?.occupancyCharge}
                             </p>
-                          </td>
-                          <td>
-                            {" "}
-                            {/* <p className="fw-bold">Tk {discount}</p> */}
                           </td>
                           <td>
                             {" "}
                             <p className="fw-bold">
-                              Tk {booking?.payableAmount?.toLocaleString()}
+                              Tk {booking?.pricing?.discount || 0}
                             </p>
                           </td>
-                          {/* <td>
+                          <td>
+                            {" "}
+                            <p className="fw-bold">
+                              Tk{" "}
+                              {booking?.pricing?.payableAmount?.toLocaleString()}
+                            </p>
+                          </td>
+                          <td>
                             <span
                               className=" fw-bold "
                               style={{
@@ -449,10 +455,15 @@ const BookingList = () => {
                               {" "}
                               {booking?.paymentStatus}
                             </span>
-                          </td> */}
+                          </td>
 
                           <td>
-                            <p className="fw-bold">Tk {booking?.sendAmount}</p>
+                            <p className="fw-bold">
+                              Tk{" "}
+                              {booking?.transactions[0]?.totalReceiveTk
+                                ? booking?.transactions[0]?.totalReceiveTk
+                                : 0}
+                            </p>
                           </td>
                           <td>
                             {" "}
@@ -460,15 +471,19 @@ const BookingList = () => {
                               className=" fw-bold"
                               style={{
                                 color:
-                                  booking?.payableAmount -
-                                    booking?.sendAmount ===
+                                  booking?.pricing?.payableAmount -
+                                    booking?.transactions[0]?.totalReceiveTk ===
                                   0
                                     ? "green"
                                     : "red",
                               }}
                             >
                               {" "}
-                              TK {booking?.payableAmount - booking?.sendAmount}
+                              TK{" "}
+                              {booking?.transactions[0]?.totalReceiveTk
+                                ? booking?.pricing?.payableAmount -
+                                  booking?.transactions[0]?.totalReceiveTk
+                                : booking?.pricing?.payableAmount}
                             </span>
                           </td>
                           <td>
@@ -492,7 +507,8 @@ const BookingList = () => {
                                 style={{
                                   backgroundColor: "transparent",
                                 }}
-                                // onClick={() => handleStatusShow(booking)}
+                                data-bs-toggle="modal"
+                                data-bs-target={`#bookingStatus${booking._id}`}
                               >
                                 <BiSolidEdit
                                   style={{
@@ -505,45 +521,13 @@ const BookingList = () => {
                               {/* Modal Order Status Update */}
                             </div>
                             <div>
-                              {/* {statusModalData && (
-                                <OrderStatusUpdate
-                                  data={statusModalData}
-                                  refetch={refetch}
-                                  isLoading={isLoading}
-                                  showStatusModal={showStatusModal}
-                                  setShowStatusModal={setShowStatusModal}
-                                />
-                              )} */}
+                              <VillaBookingStatusUpdate
+                                data={booking}
+                                refetch={refetch}
+                              />
                             </div>
                           </td>
-                          {/* whats app contact */}
-                          {/* <td>
-                            <a
-                              href={`https://api.whatsapp.com/send?phone=88${booking?.user?.phone}`}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                            >
-                              <button class="btn position-relative">
-                                <FaWhatsapp
-                                  style={{
-                                    width: "32px",
-                                    height: "32px",
-                                    cursor: "pointer",
-                                    color: "#25D366",
-                                  }}
-                                />
-                                <span
-                                  class="spinner-grow spinner-grow-sm text-success "
-                                  aria-hidden="true"
-                                  style={{
-                                    position: "absolute",
-                                    top: "-5px",
-                                    left: "70%",
-                                  }}
-                                ></span>
-                              </button>
-                            </a>
-                          </td> */}
+
                           <td>
                             <div>
                               <span onClick={() => handleShowDetails(booking)}>
@@ -561,85 +545,43 @@ const BookingList = () => {
                             <div className="d-flex justify-content-center">
                               <button
                                 title={`${
-                                  booking?.status === "Approved"
+                                  booking?.status === "Approved" ||
+                                  booking?.status === "Processing"
                                     ? "Sorry ! Your Booking Already Approved"
                                     : ""
                                 }`}
                                 type="button"
                                 className={`rounded ${
-                                  booking?.status === "Approved"
+                                  booking?.status === "Approved" ||
+                                  booking?.status === "Processing"
                                     ? "bg-white"
                                     : "#35b0a7"
                                 }`}
                                 disabled={
-                                  booking?.status === "Approved" ? true : false
+                                  booking?.status === "Approved" ||
+                                  booking?.status === "Processing"
+                                    ? true
+                                    : false
                                 }
-                                // onClick={() => {
-                                //   booking?.bookingInfo?.roomType ===
-                                //   "Shared Room"
-                                //     ? handleSeatShow(booking)
-                                //     : handleDurationShow(booking);
-                                // }}
+                                onClick={() => handleShowExtend(booking)}
                               >
                                 <AiOutlineFieldTime
                                   style={{ width: "24px", height: "24px" }}
                                 />
                               </button>
                             </div>
-                            {/* Modal order Date Update */}
-                            {/* {booking?.bookingInfo?.roomType === "Shared Room" &&
-                            durationUpdateDataSeat ? (
-                              <div>
-                                <BookingSeatDateExtend
-                                  data={booking}
-                                  refetch={refetch}
-                                  extraCharge={extraCharge}
-                                  showDurationModal={showDurationModal}
-                                  setShowDurationModal={setShowDurationModal}
-                                />
-                              </div>
-                            ) : (
-                              ""
-                            )} */}
-                            {/* {durationUpdatePrivateRoom && (
-                              <div>
-                                <BookingDatesExtend
-                                  data={booking}
-                                  refetch={refetch}
-                                  extraCharge={extraCharge}
-                                  showDurationModal={showDurationModal}
-                                  setShowDurationModal={setShowDurationModal}
-                                />
-                              </div>
-                            )} */}
                           </td>
                           <td>
                             <div className="d-flex gap-2 fw-bold">
                               <button
                                 type="button"
                                 style={{ backgroundColor: "#00BBB4" }}
-                                // onClick={() => handlePaymentShow(booking)}
+                                onClick={() => handlePaymentShow(booking)}
                               >
                                 Payment
                               </button>
-                              {/* 
-              <button className="bg-danger">End</button> */}
                             </div>
-                            {/* {paymentModalData && (
-                              <Payment
-                                data={paymentModalData}
-                                refetch={refetch}
-                                isLoading={isLoading}
-                                showPaymentModal={showPaymentModal}
-                                setShowPaymentModal={setShowPaymentModal}
-                              />
-                            )} */}
                           </td>
-                          {/* <td>
-                            <p className=" fw-bold">
-                              {booking?.specialRequest}
-                            </p>
-                          </td> */}
                         </tr>
                       ))}
                     </tbody>
@@ -655,7 +597,34 @@ const BookingList = () => {
             )}
           </div>
         </section>
+        {showDetail && (
+          <VillaBookingDetail
+            data={selectedData}
+            showDetail={showDetail}
+            setShowDetail={setShowDetail}
+          />
+        )}
+        {showExtendModal && (
+          <VillaBookingDateExtend
+            data={selectedData}
+            showExtendModal={showExtendModal}
+            setShowExtendModal={setShowExtendModal}
+          />
+        )}
+        {paymentModalData && (
+          <VillaBookingBills
+            data={paymentModalData}
+            refetch={refetch}
+            isLoading={isLoading}
+            showPaymentModal={showPaymentModal}
+            setShowPaymentModal={setShowPaymentModal}
+          />
+        )}
         <Pagination totalDataCount={totalDataCount} />
+        <Toaster
+          containerStyle={{ top: 300 }}
+          toastOptions={{ position: "top-center" }}
+        />
       </div>
     </div>
   );

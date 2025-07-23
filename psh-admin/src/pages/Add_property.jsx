@@ -23,6 +23,8 @@ const Add_property = () => {
   const [categoryName, setCategoryName] = useState("");
   const [seatOptions, setSeatOptions] = useState([]);
 
+  const [highlights, setHighlights] = useState([""]);
+
   const [perDay, setPerDay] = useState(0);
   const [discountForDay, setDiscountForDay] = useState(null);
   const [dAmountForDay, setDAmountForDay] = useState(0);
@@ -121,6 +123,16 @@ const Add_property = () => {
       (category) => category._id === selectedCategoryId
     );
     setCategoryName(selectedCategory?.name || "");
+  };
+
+  // Function to add a new highlight
+  const addHighlight = () => {
+    setHighlights([...highlights, ""]);
+  };
+
+  // Function to remove a Highlight by ID
+  const removeHighlight = (ind) => {
+    setHighlights(highlights.filter((highlight, index) => index !== ind));
   };
 
   useEffect(() => {
@@ -244,7 +256,7 @@ const Add_property = () => {
 
     const data2 = {
       name: formData.get("name"),
-      type: formData.get("type"),
+      type: formData.get("type") || "both",
       city: formData.get("city"),
       floor: formData.get("floor"),
       roomNumber: formData.get("roomNumber"),
@@ -291,6 +303,7 @@ const Add_property = () => {
       occupanct: formData.get("occupanct"),
       facility: selectedFacilities,
       commonfacility: selectedCommonFacilities,
+      highlights: highlights.map((highlight) => highlight.trim()),
       seats: selectedSeatOptions,
     };
 
@@ -413,38 +426,39 @@ const Add_property = () => {
                   required
                 />
               </div>
-              {categoryName !== "Private Room" &&
-                categoryName !== "Shared Room" && (
-                  <div className="col-md-3 form_sub_stream">
-                    <label
-                      htmlFor="inputState"
-                      className="form-label profile_label3 "
-                    >
-                      Total Room
-                    </label>
-                    <input
-                      type="text"
-                      className="main_form w-100"
-                      name="totalRoom"
-                      placeholder="  Total Room"
-                      // required
-                    />
-                  </div>
-                )}
-              <div className="col-md-3 form_sub_stream mb-5">
-                <label htmlFor="inputState" className="profile_label3">
-                  Gender Type
-                </label>
-                <select
-                  name="type"
-                  className="main_form w-100"
-                  defaultValue={"female"}
-                  required
-                >
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
-                </select>
-              </div>
+              {categoryName === "Apartment" && (
+                <div className="col-md-3 form_sub_stream">
+                  <label
+                    htmlFor="inputState"
+                    className="form-label profile_label3 "
+                  >
+                    Total Room
+                  </label>
+                  <input
+                    type="text"
+                    className="main_form w-100"
+                    name="totalRoom"
+                    placeholder="  Total Room"
+                    // required
+                  />
+                </div>
+              )}
+              {categoryName !== "Home-Stay" && (
+                <div className="col-md-3 form_sub_stream mb-5">
+                  <label htmlFor="inputState" className="profile_label3">
+                    Gender Type
+                  </label>
+                  <select
+                    name="type"
+                    className="main_form w-100"
+                    defaultValue={"female"}
+                    required
+                  >
+                    <option value="male">Male</option>
+                    <option value="female">Female</option>
+                  </select>
+                </div>
+              )}
               <h2 className="profile_label3 profile_bg">Sort Details</h2>
               <div className="col-md-6 form_sub_stream ">
                 <label
@@ -638,8 +652,7 @@ const Add_property = () => {
                     </div>
                   </div>
 
-                  {categoryName === "Private Room" ||
-                  categoryName === "Shared Room" ? (
+                  {categoryName !== "Apartment" ? (
                     <>
                       <div className="row">
                         {facilities.map((facility, index) => (
@@ -725,6 +738,57 @@ const Add_property = () => {
                   </div>
                 </div>
               </div>
+              {/* highlights of home-stay */}
+              {categoryName === "Home-Stay" && (
+                <div className="row">
+                  <h2 className="profile_label3 profile_bg mt-4">
+                    Highlight Features
+                  </h2>
+                  {highlights.map((highlight, index) => (
+                    <div key={index} className="col-md-4 form_sub_stream">
+                      <input
+                        type="text"
+                        className="main_form w-100"
+                        value={highlight}
+                        onChange={(e) => {
+                          const updatedHighlights = [...highlights];
+                          updatedHighlights[index] = e.target.value;
+                          setHighlights(updatedHighlights);
+                        }}
+                        placeholder="Write the highlighted feature"
+                        required
+                      />
+
+                      {highlights.length > 1 && (
+                        <button
+                          type="button"
+                          className=""
+                          style={{
+                            background: "none",
+                            color: "red",
+                            marginTop: "-12px",
+
+                            fontWeight: "bold",
+                          }}
+                          onClick={() => removeHighlight(index)}
+                        >
+                          [ Remove ]
+                        </button>
+                      )}
+                    </div>
+                  ))}
+
+                  <div className="col-md-12 d-flex gap-2 justify-content-end">
+                    <button
+                      type="button"
+                      className="btn btn-success"
+                      onClick={addHighlight}
+                    >
+                      New Highlight
+                    </button>
+                  </div>
+                </div>
+              )}
 
               {categoryName !== "Shared Room" && (
                 <>
@@ -805,7 +869,7 @@ const Add_property = () => {
                           name="perMonth"
                           placeholder="Per Month"
                           onChange={(e) => setPerMonth(e.target.value)}
-                          required
+                          // required
                           onWheel={(e) => e.target.blur()}
                         />
                       </div>
@@ -863,7 +927,7 @@ const Add_property = () => {
                           className="main_form w-100"
                           name="perYear"
                           placeholder="Per Year"
-                          required
+                          // required
                           onChange={(e) => setPerYear(e.target.value)}
                           onWheel={(e) => e.target.blur()}
                         />
@@ -912,22 +976,22 @@ const Add_property = () => {
                   </div>
                 </>
               )}
-              {(categoryName === "Private Room" ||
-                categoryName === "Shared Room") && (
-                <>
-                  <div className="col-md-12 form_sub_stream mb-5">
-                    <label htmlFor="inputState" className="profile_label3">
-                      Room Number
-                    </label>
-                    <input
-                      type="text"
-                      className="main_form w-100"
-                      name="roomNumber"
-                      placeholder="Room Number"
-                    />
-                  </div>
-                </>
-              )}
+              {/* {(categoryName === "Private Room" ||
+                categoryName === "Shared Room") && ( */}
+              <>
+                <div className="col-md-12 form_sub_stream mb-5">
+                  <label htmlFor="inputState" className="profile_label3">
+                    Room Number
+                  </label>
+                  <input
+                    type="text"
+                    className="main_form w-100"
+                    name="roomNumber"
+                    placeholder="Room Number"
+                  />
+                </div>
+              </>
+              {/* )} */}
 
               {categoryName === "Shared Room" && (
                 <>

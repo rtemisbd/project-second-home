@@ -63,7 +63,7 @@ const RoomDetails = () => {
   }, [categoryId]);
 
   useEffect(() => {
-    if (roomType === "Private Room") {
+    if (roomType !== "Shared Room") {
       const fetchData = async () => {
         try {
           const response = await fetch(`${serverBaseUrl}/property/${id}`);
@@ -130,7 +130,7 @@ const RoomDetails = () => {
       fetchData();
     }
   }, [roomType, id]);
-  console.log(bookedDates);
+  // console.log(bookedDates);
 
   useEffect(() => {
     localStorage.removeItem("bookingItem");
@@ -141,7 +141,9 @@ const RoomDetails = () => {
 
   const recomended = useRecommended();
   const publishedRecomended = recomended?.filter(
-    (property) => property?.categoryDetails?.name === data?.category?.name
+    (property) =>
+      property?.categoryDetails?.name === data?.category?.name ||
+      property?.categoryDetails?.name === "Private Room"
   );
 
   // modal
@@ -452,19 +454,24 @@ const RoomDetails = () => {
                               </p>
                             </>
                           )}
-                          <div className="mt-2">
-                            <div className="flex items-center text-black">
-                              <p
-                                className={`ms-1  ${
-                                  seat
-                                    ? "text-[16px] text-[#9A9A9A] font-[700]"
-                                    : "md:text-xl sm:text-[1rem]"
-                                }`}
-                              >
-                                Room Number : {data?.roomNumber}
-                              </p>
+                          {data?.roomNumber && (
+                            <div className="mt-2">
+                              <div className="flex items-center text-black">
+                                <p
+                                  className={`ms-1  ${
+                                    seat
+                                      ? "text-[16px] text-[#9A9A9A] font-[700]"
+                                      : "md:text-xl sm:text-[1rem]"
+                                  }`}
+                                >
+                                  {data?.category?.name === "Home-Stay"
+                                    ? "Home Stay"
+                                    : "Room Number"}{" "}
+                                  : {data?.roomNumber}
+                                </p>
+                              </div>
                             </div>
-                          </div>
+                          )}
                         </div>
                       </div>
                       <div className="col-span-2 flex md:ml-[50px] md:justify-between sm:mt-3 md:mt-0">
@@ -547,15 +554,22 @@ const RoomDetails = () => {
                           <p className="font-bold">Type</p>
                           <p>{data?.category?.name}</p>
                         </div>
-                        <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
-                          <p className="font-bold">People</p>
-                          <p>
-                            {data?.totalSeats
-                              ? data?.totalSeats
-                              : data?.bedroom}{" "}
-                            People{" "}
-                          </p>
-                        </div>
+                        {data?.category?.name !== "Home-Stay" ? (
+                          <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                            <p className="font-bold">People</p>
+                            <p>
+                              {data?.totalSeats
+                                ? data?.totalSeats
+                                : data?.bedroom}{" "}
+                              People{" "}
+                            </p>
+                          </div>
+                        ) : (
+                          <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
+                            <p className="font-bold">Bedroom</p>
+                            <p>{data?.bedroom} Bedroom</p>
+                          </div>
+                        )}
                         <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                           <p className="font-bold">Bed Type</p>
                           <p>{data?.bedType} </p>
@@ -640,6 +654,23 @@ const RoomDetails = () => {
                       )}
                     </div>
                     <Facilities allFacilities={allFacilities} />
+                    {data?.category?.name === "Home-Stay" && (
+                      <div className="w-full">
+                        <h2
+                          id="apartmentDetails"
+                          className="text-xl font-bold text-gray-900 mb-5 facility_h1 p-2 mt-5"
+                        >
+                          Highlight Features
+                        </h2>
+                        <div className="leading-8 text-sm ">
+                          {data?.highlights?.map((highlight, ind) => (
+                            <p key={ind}>
+                              {ind + 1}. {highlight}
+                            </p>
+                          ))}
+                        </div>
+                      </div>
+                    )}
 
                     {data?.category?.name !== "Apartment" ? (
                       <div className="w-full">
@@ -659,9 +690,8 @@ const RoomDetails = () => {
                             Request)
                           </p>
                           <p>4. Meeting Room Facilities (On Request)</p>
-                          <p>5. Tuition Facilities (Students)</p>
-                          <p>6. Mental Healthcare</p>
-                          <p>7. Proper Guideline for new comes in Dhaka.</p>
+                          <p>5. Mental Healthcare</p>
+                          <p>6. Proper Guideline for new comes in Dhaka.</p>
                         </div>
                       </div>
                     ) : (

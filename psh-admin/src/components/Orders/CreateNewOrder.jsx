@@ -9,6 +9,7 @@ import useExtraCharge from "../../hooks/useExtraCharge";
 
 import toast, { Toaster } from "react-hot-toast";
 import useCategory from "../../hooks/useCategory";
+import CreateNewOrderForVilla from "../../pages/resort-admin/booking-overview/CreateNewOrderForVilla";
 
 const CreateNewOrder = ({ category, id, user }) => {
   const [extraCharge] = useExtraCharge();
@@ -67,7 +68,7 @@ const CreateNewOrder = ({ category, id, user }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        if (selectedCategory.name === "Private Room") {
+        if (selectedCategory.name !== "Shared Room") {
           const { data } = await axios.get(`${baseUrl}/api/property/${id}`);
           setRoom(data?.property);
           setRentDate(data?.rentRooms);
@@ -218,6 +219,9 @@ const CreateNewOrder = ({ category, id, user }) => {
     }
   };
 
+  if (selectedCategory?.name === "Villa") {
+    return <CreateNewOrderForVilla id={id} user={user} />;
+  }
   return (
     <div className="content customize_list">
       <h2>Create new order</h2>
@@ -525,7 +529,7 @@ const CreateNewOrder = ({ category, id, user }) => {
                   excludeDateIntervals={rentDates?.map((rent) => {
                     return {
                       start: subDays(new Date(rent?.bookStartDate), 1),
-                      end: addDays(new Date(rent?.bookEndDate), -1),
+                      end: addDays(new Date(rent?.bookEndDate), 0),
                     };
                   })}
                 />
@@ -555,12 +559,12 @@ const CreateNewOrder = ({ category, id, user }) => {
                   style={{ width: "95%", height: "30px" }}
                   value={`${
                     customerRent?.daysDifference >= 0
-                      ? `${customerRent?.daysDifference} days`
+                      ? `${customerRent?.daysDifference} night`
                       : "" ||
                         (customerRent?.months &&
                           customerRent?.days >= 0 &&
                           !customerRent?.years)
-                      ? `${customerRent?.months} months, ${customerRent?.days} days`
+                      ? `${customerRent?.months} months, ${customerRent?.days} night`
                       : "" ||
                         (customerRent?.years &&
                           customerRent?.months >= 0 &&
@@ -659,7 +663,8 @@ const CreateNewOrder = ({ category, id, user }) => {
             </div>
 
             {/* add food */}
-            {room?.branch?.foodAmount === 0 ? (
+            {room?.branch?.foodAmount === 0 ||
+            room?.category?.name === "Home-Stay" ? (
               ""
             ) : (
               <div className="d-flex gap-3 ms-3">

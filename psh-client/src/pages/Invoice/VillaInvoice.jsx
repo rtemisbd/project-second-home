@@ -21,7 +21,7 @@ const VillaInvoice = () => {
     const fetchBooking = async () => {
       const { data } = await axios.get(`${serverBaseUrl}/villa-order/${id}`);
       setBooking(data?.data);
-      setDueAmount(data?.data?.totalAmount - data?.data?.sendAmount);
+      setDueAmount(data?.data?.pricing?.totalAmount - data?.data?.sendAmount);
     };
     fetchBooking();
   }, [id]);
@@ -154,7 +154,7 @@ const VillaInvoice = () => {
                         ? "Night"
                         : "Nights"}
                     </span>
-                    <span>BDT {booking?.totalAmount}</span>
+                    <span>BDT {booking?.pricing?.totalAmount}</span>
                   </div>
 
                   {/*  Payment History */}
@@ -183,7 +183,7 @@ const VillaInvoice = () => {
                           <div className="font-bold">Total </div>
                           <div>:</div>
                           <div className="">
-                            BDT {booking?.totalAmount?.toLocaleString()}
+                            BDT {booking?.pricing?.totalAmount?.toLocaleString()}
                           </div>
                         </div>
                         <div className="flex justify-between gap-6 my-2">

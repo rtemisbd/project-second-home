@@ -54,7 +54,10 @@ const Navbar = () => {
       const { data } = await axios.get(`${baseUrl}/api/branch/${user?.branch}`);
       setBranch(data);
     };
-    fetchBranch();
+
+    if (user?.branch) {
+      fetchBranch();
+    }
   }, [user?.branch]);
 
   const handleLogOut = () => {
@@ -120,8 +123,7 @@ const Navbar = () => {
           }}
         >
           {/* Sidebar */}
-          <div className="sidebar">      
-            
+          <div className="sidebar">
             {/* Sidebar user panel (optional) */}
             <div className="mt-2 d-flex gap-3 mt-4">
               <CgProfile

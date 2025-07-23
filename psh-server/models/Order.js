@@ -154,7 +154,7 @@ const OrderSchema = new mongoose.Schema(
     },
     paymentStatus: {
       type: String,
-      enum : ["Paid", "Unpaid"]
+      enum: ["Paid", "Unpaid"],
     },
     bookingExtend: {
       type: Boolean,
@@ -175,6 +175,8 @@ const OrderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
+
+// new order model (optimized by rakiba)
 
 const OrderModel = mongoose.model("order", OrderSchema);
 

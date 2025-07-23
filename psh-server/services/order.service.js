@@ -43,7 +43,10 @@ const createOrderIntoDB = async (payload) => {
     // Step 2: Generate booking ID
     const generateId = await generateBookingId();
     dataForBooking.bookingId = generateId;
-    dataForBooking.paymentStatus = dataForBooking.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
+    dataForBooking.paymentStatus =
+      dataForBooking.payableAmount === dataForBooking?.receivedTk
+        ? "Paid"
+        : "Unpaid";
 
     if (selectMethod === "manual") {
       const result = await createOrderByManualBkash(dataForBooking);
@@ -94,7 +97,7 @@ export const createOrderByManualBkash = async (payload) => {
     // dataForBooking.paymentStatus = dataForBooking.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
 
     dataForBooking.paymentType = "bkash";
-    
+
     const result = await OrderModel.create([dataForBooking], { session });
 
     // Step 6: Create user transaction
@@ -222,6 +225,7 @@ const getOrderFromDB = async (queries) => {
     runningStatus,
     guestType,
     filteredPhone,
+    category,
   } = queries;
 
   const today = new Date();
@@ -235,10 +239,14 @@ const getOrderFromDB = async (queries) => {
 
   if (orderId && orderId !== "All") matchStage._id = orderId;
   if (userId && userId !== "All") matchStage.userId = userId;
-  if (branch && branch !== "All") matchStage.branch = mongoose.Types.ObjectId(branch);
-  if (paymentStatus && paymentStatus !== "All") matchStage.paymentStatus = paymentStatus;
-  if (bookingStatus && bookingStatus !== "All") matchStage.status = bookingStatus;
-  if (filteredPhone && filteredPhone !== "") matchStage.phone = { $regex: `^${filteredPhone}` };
+  if (branch && branch !== "All")
+    matchStage.branch = mongoose.Types.ObjectId(branch);
+  if (paymentStatus && paymentStatus !== "All")
+    matchStage.paymentStatus = paymentStatus;
+  if (bookingStatus && bookingStatus !== "All")
+    matchStage.status = bookingStatus;
+  if (filteredPhone && filteredPhone !== "")
+    matchStage.phone = { $regex: `^${filteredPhone}` };
   if (fromDate && toDate) {
     matchStage.createdAt = {
       $gte: new Date(fromDate),
@@ -251,6 +259,9 @@ const getOrderFromDB = async (queries) => {
   }
   if (runningStatus === "Closed") {
     matchStage["bookingInfo.rentDate.bookEndDate"] = { $lt: formattedDate };
+  }
+  if (category && category !== "All") {
+    matchStage["bookingInfo.roomType"] = category;
   }
   if (guestType && guestType !== "All") matchStage.customerType = guestType;
 
@@ -265,7 +276,8 @@ const getOrderFromDB = async (queries) => {
   ];
 
   const totalCountsResult = await OrderModel.aggregate(totalCountsPipeline);
-  const totalCount = totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
+  const totalCount =
+    totalCountsResult.length > 0 ? totalCountsResult[0].totalCount : 0;
 
   const pipeline = [
     { $match: matchStage },
@@ -433,7 +445,6 @@ const getOrderFromDB = async (queries) => {
 
   return { result: aggregatedResult, totalCount };
 };
-
 
 const getUserOrderFromDB = async (queries, phone) => {
   const { paymentStatus, bookingStatus } = queries;

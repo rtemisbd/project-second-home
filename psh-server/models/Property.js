@@ -75,7 +75,7 @@ const PropertySchema = new mongoose.Schema(
 
     roomNumber: {
       type: String,
-      unique: true,
+      unique: true,        
     },
     builtYear: {
       type: String,
@@ -186,6 +186,9 @@ const PropertySchema = new mongoose.Schema(
     commonfacility: {
       type: [{ type: mongoose.Schema.Types.ObjectId, ref: "CommonFacility" }],
       default: [],
+    },
+    highlights: {
+      type: [String],
     },
     bedType: {
       type: String,

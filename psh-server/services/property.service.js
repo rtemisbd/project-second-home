@@ -16,7 +16,6 @@ const getPropertiesFromDB = async (queries) => {
     roomNumber,
     seatNumber,
     fromClient,
-    
   } = queries;
 
   const page = parseInt(queries?.page);
@@ -119,7 +118,13 @@ const getPropertiesFromDB = async (queries) => {
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
-  if (withSharedRoom && category !== "Villa" && category !== "Private Room" && !roomNumber) {
+  if (
+    withSharedRoom &&
+    category !== "Villa" &&
+    category !== "Private Room" &&
+    category !== "Home-Stay" &&
+    !roomNumber
+  ) {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
       destination,
       seatNumber,
@@ -130,7 +135,7 @@ const getPropertiesFromDB = async (queries) => {
 
     allProperties = [
       ...allProperties.filter(
-        (result) => result.categoryDetails.name === "Private Room"
+        (result) => result.categoryDetails.name !== "Shared Room"
       ),
       ...extractedSeats,
     ];
@@ -167,7 +172,7 @@ const getRecommendedPropertiesFromDB = async () => {
         as: "categoryDetails",
       },
     },
-    { $unwind: "$categoryDetails" }, 
+    { $unwind: "$categoryDetails" },
   ]);
   const extractedSeats = await seatServices.getAllSeatsFromDB({});
   const properties = [

@@ -9,6 +9,8 @@ import { AiFillHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { IoCallOutline } from "react-icons/io5";
 import { HiOutlineMail } from "react-icons/hi";
 import Map from "../Details/Map";
+import { TbMoodKid, TbUsers } from "react-icons/tb";
+import { LuView } from "react-icons/lu";
 
 const ResortDetail = () => {
   const { id } = useParams();
@@ -48,8 +50,13 @@ const ResortDetail = () => {
   useEffect(() => {
     const fetchVillas = async () => {
       try {
+        const queries = {
+          resortId: id,
+          isPublished: "Published",
+        };
+        const searchParams = new URLSearchParams(queries).toString();
         const { data: villaData } = await axios.get(
-          `${serverBaseUrl}/villa?resortId=${id}`
+          `${serverBaseUrl}/villa?${searchParams}`
         );
         setAllVilla(villaData?.data);
       } catch (error) {
@@ -58,8 +65,6 @@ const ResortDetail = () => {
     };
     fetchVillas();
   }, [id]);
-
-  console.log({ resort, allVilla });
 
   return (
     <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0">
@@ -174,21 +179,78 @@ const ResortDetail = () => {
       </div>
 
       {/* villas */}
-      <div className="w-full">
-        <h2 className="text-xl font-bold text-gray-900 facility_h1 p-2 mt-5">
+      <div className="w-full py-5">
+        <h2 className="text-xl font-bold text-gray-900 facility_h1 p-2 ">
           List Of Villa
         </h2>
-        <div className=" grid md:grid-cols-2 px-5 py-5 "></div>
-        {resort?.facilities.length > 8 && (
-          <div
-            className=" flex justify-end cursor-pointer"
-            onClick={() => setShowAll(!showAll)}
-          >
-            <p className="bg-[#F4F4F4] px-5 py-3 font-bold">
-              {showAll ? "See Less" : "See More"}
-            </p>
-          </div>
-        )}
+        <div className="grid grid-cols-2 gap-6  py-5 ">
+          {allVilla?.map((villa) => (
+            <Link
+              to={`/villa/${villa._id}`}
+              className="flex bg-[#F8F8F8]  hover:text-black hover:bg-opacity-40"
+            >
+              <div className="w-1/3 h-full">
+                <img src={villa?.media?.photos[0]} className="w-full h-full" />
+              </div>
+              <div className="pt-4 pl-4 w-2/3">
+                <h2 className="text-xl font-bold">{villa?.title}</h2>
+
+                <div className="mt-4 flex gap-6">
+                  <div className="flex items-center gap-2">
+                    <TbUsers color="#35B0A7" size={22} />
+                    <span>{villa?.occupancy?.adults} Adult </span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <TbMoodKid color="#35B0A7" size={22} />
+                    <span>{villa?.occupancy?.kids} Kids </span>
+                  </div>
+                </div>
+                <div>
+                  <div className="flex gap-x-2 text-[#35B0A7] font-bold my-2">
+                    {villa?.pricing?.perNight ===
+                    villa?.pricing?.afterDiscountPerNight ? (
+                      <p className="">
+                        <span className="card-price-sub">
+                          BDT{" "}
+                          {villa?.pricing?.afterDiscountPerNight?.toLocaleString()}
+                        </span>
+                        <span className="day">/Night</span>
+                      </p>
+                    ) : (
+                      <>
+                        <p className="rotate-line-through text-red-500 font-medium">
+                          <span className="card-price-sub">
+                            BDT {villa?.pricing?.perNight?.toLocaleString()}
+                          </span>
+                          <span className="day">/Night</span>
+                        </p>
+                        <p>
+                          <span className="card-price-sub ">
+                            BDT{" "}
+                            {villa?.pricing?.afterDiscountPerNight?.toLocaleString()}
+                          </span>
+                          <span className="day">/Night</span>
+                        </p>
+                      </>
+                    )}
+                  </div>
+                </div>
+                <div className="flex items-center gap-2 bg-[#35B0A738] px-3 w-max ">
+                  <LuView />
+                  <span>{villa?.view}</span>
+                </div>
+                <div className="flex justify-end w-full">
+                  <button
+                    type="button"
+                    className="bg-[#35B0A7]  hover:bg-opacity-70 text-white px-4 py-2"
+                  >
+                    View Details
+                  </button>
+                </div>
+              </div>
+            </Link>
+          ))}
+        </div>
       </div>
 
       {/* location */}
@@ -210,7 +272,7 @@ const ResortDetail = () => {
 
       {/* review will include later */}
 
-      <div className="flex items-center gap-x-3 request-visit">
+      <div className="flex items-center gap-x-3 request-visit w-max my-3 ">
         <button
           className="text-neutral-800 text-center text-sm font-medium leading-5 whitespace-nowrap justify-center items-stretch   px-4 py-1 rounded-lg"
           style={{ width: 220 }}

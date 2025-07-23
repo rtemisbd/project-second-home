@@ -325,10 +325,6 @@ const VillaDetails = () => {
                       Per Night
                     </p>
                     <p className="col-span-1">:</p>
-                    {/* <p className="col-span-6 md:col-span-8 text[18px]">
-                      {" "}
-                      {villa?.pricing?.perNight} BDT
-                    </p> */}
 
                     <div className="col-span-6 md:col-span-8 text[18px] flex gap-x-2">
                       {villa?.pricing?.perNight ===
@@ -346,7 +342,6 @@ const VillaDetails = () => {
                             <span className="card-price-sub">
                               BDT {villa?.pricing?.perNight?.toLocaleString()}
                             </span>
-                            {/* <span className="day">/Night</span> */}
                           </p>
                           <p>
                             <span className="card-price-sub">
@@ -358,6 +353,19 @@ const VillaDetails = () => {
                         </>
                       )}
                     </div>
+                    {villa?.pricing?.advancePayment && (
+                      <>
+                        {" "}
+                        <p className="col-span-5 md:col-span-3 font-[600]">
+                          Advance Payment
+                        </p>
+                        <p className="col-span-1">:</p>
+                        <p className="col-span-6 md:col-span-8 text[18px]">
+                          {" "}
+                          {villa?.pricing?.advancePayment} % of total amount
+                        </p>{" "}
+                      </>
+                    )}
 
                     {villa?.pricing?.adultAddition && (
                       <>
@@ -477,12 +485,12 @@ const VillaDetails = () => {
               </div>
               {/* Total Box */}
 
-              <div className="flex flex-col  items-start  sm:col-span-12 lg:col-span-4 ">
+              <div className="flex flex-col  items-start  sm:col-span-12 lg:col-span-4  ">
                 <VillaBookingBox villa={villa} bookedDates={bookedDates} />
 
                 <div
                   ref={playerContainerRef}
-                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden sm:mt-3 md:mt-0 lg:mt-3 bg-gray-100"
+                  className="relative group rounded rounded-b-none w-full md:h-[240px] sm:h-[200px] cursor-pointer overflow-hidden sm:mt-3 md:mt-0 lg:mt-3 bg-gray-100 -z-10"
                   onClick={openVideoInYouTube}
                 >
                   {videoId ? (

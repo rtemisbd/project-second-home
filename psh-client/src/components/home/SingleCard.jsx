@@ -54,7 +54,12 @@ const SingleCard = ({ item }) => {
             <div className="flex items-center justify-between">
               <div>
                 <span className="text-sm font-medium bg-[#FCA22A] text-white px-2 py-1 rounded">
-                  {item?.categoryDetails?.name}[Female]
+                  {item?.categoryDetails?.name}{" "}
+                  {item?.categoryDetails?.name !== "Home-Stay" ? (
+                    <>[Female]</>
+                  ) : (
+                    <>[{item?.roomNumber}]</>
+                  )}
                 </span>
               </div>
 
@@ -77,16 +82,21 @@ const SingleCard = ({ item }) => {
                 <span className="text-[10px]">{item?.branchDetails?.name}</span>
               </p>
             </div>
-
-            <div className="">
-              <h2 className=" text-[14px] card-title ">
-                Room No-{}
-                {/* {item?.roomNumber} */}
-                {item?.categoryDetails?.name === "Private Room"
-                  ? item?.roomNumber
-                  : item?.property?.roomNumber}
-              </h2>
-            </div>
+            {item?.categoryDetails?.name !== "Home-Stay" ? (
+              <div className="">
+                <h2 className=" text-[14px] card-title ">
+                  Room No-{}
+                  {/* {item?.roomNumber} */}
+                  {item?.categoryDetails?.name === "Private Room"
+                    ? item?.roomNumber
+                    : item?.property?.roomNumber}
+                </h2>
+              </div>
+            ) : (
+              <div className="">
+                <h2 className=" text-[14px] card-title ">{item?.name}</h2>
+              </div>
+            )}
           </Link>
         </CardBody>
         <CardFooter className="p-0">

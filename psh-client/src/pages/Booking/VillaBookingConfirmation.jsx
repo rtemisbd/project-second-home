@@ -140,7 +140,7 @@ const VillaBookingConfirmation = () => {
             <p className="col-span-2 md:col-span-1">Total Amount</p>
             <p className=" justify-self-start">:</p>
             <p className="col-span-3 md:col-span-4 justify-self-end">
-              BDT {booking?.totalAmount}
+              BDT {booking?.pricing?.totalAmount}
             </p>
           </div>
           <hr className="mt-2" />

@@ -10,4 +10,6 @@ resortRoute.get('/:id', resortControllers.getSingleResortById);
 resortRoute.patch('/:id', resortControllers.updateResort);
 
 
+
+
 export default resortRoute;

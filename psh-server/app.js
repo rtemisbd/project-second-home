@@ -45,6 +45,9 @@ import districtRoute from "./routes/district.js";
 import globalErrorHandler from "./middleware/globalErrorHandler.js";
 import notFound from "./middleware/notFound.js";
 import villaOrderRoute from "./routes/villaOrder.js";
+import villaTransactionRoute from "./routes/villaTransaction.js";
+import villaRentDateRoute from "./routes/villaRentDates.js";
+import villaBookingAdjustmentRoute from "./routes/villaBookingAdjustmentRoute.js";
 
 const app = express();
 app.use("/public/uploads", express.static("public/uploads"));
@@ -85,7 +88,7 @@ const allowedOrigins = [
   "http://localhost:3001",
   "https://psh.com.bd",
   "https://www.psh.com.bd",
-  "https://partner.psh.com.bd"
+  "https://partner.psh.com.bd",
 ];
 
 // CORS configuration
@@ -110,7 +113,7 @@ app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-app.use("/api/auth", authRoute );
+app.use("/api/auth", authRoute);
 app.use("/api/users", usersRoute);
 app.use("/api/category", categoryRoute);
 app.use("/api/event", eventRoute);
@@ -145,10 +148,14 @@ app.use("/api/subscription", subscription);
 app.use("/api/subscriptionOrder", subscriptionOrder);
 app.use("/api/rent-rooms", rentRoomRoute);
 app.use("/api/bkash/payment", paymentRoute);
+
 app.use("/api/resort", resortRoute);
 app.use("/api/villa", villaRoute);
 app.use("/api/villa-order", villaOrderRoute);
 app.use("/api/district", districtRoute);
+app.use("/api/villaTransaction", villaTransactionRoute);
+app.use("/api/villaRentDates", villaRentDateRoute);
+app.use("/api/villa-order-adjustment", villaBookingAdjustmentRoute);
 
 // globally handle error
 app.use(globalErrorHandler);
@@ -157,4 +164,3 @@ app.use(globalErrorHandler);
 app.use(notFound);
 
 export default app;
-  

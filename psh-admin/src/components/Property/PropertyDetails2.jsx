@@ -16,7 +16,7 @@ const PropertyDetails2 = ({
   const [allSeats, setAllSeats] = useState([]);
 
   useEffect(() => {
-    if (category === "Private Room") {
+    if (category !== "Shared Room") {
       const fetchData = async () => {
         try {
           const response = await fetch(`${baseUrl}/api/property/${id}`);
@@ -115,16 +115,14 @@ const PropertyDetails2 = ({
                 <label htmlFor="">Floor Number</label>
                 <p> {data?.floor}</p>
               </div>
-              {data?.category?.name === "Apartment" ? (
-                ""
-              ) : (
+              {data?.roomNumber && (
                 <div className="col-lg-3">
                   <label htmlFor="">Room Number</label>
                   <p> {data?.roomNumber}</p>
                 </div>
               )}
 
-              {data?.category?.name === "Shared Room" ? (
+              {data?.category?.name === "Apartment" ? (
                 ""
               ) : (
                 <>
@@ -140,30 +138,38 @@ const PropertyDetails2 = ({
                     </label>
                     <p> {data?.dAmountForDay?.toLocaleString()}</p>
                   </div>
-                  <div className="col-lg-3">
-                    {" "}
-                    <label htmlFor="">Per Month</label>
-                    <p> {data?.perMonth?.toLocaleString()}</p>
-                  </div>
-                  <div className="col-lg-3">
-                    {" "}
-                    <label htmlFor="" className="text-danger">
-                      Discount Price (Month)
-                    </label>
-                    <p> {data?.dAmountForMonth?.toLocaleString()}</p>
-                  </div>
-                  <div className="col-lg-3">
-                    {" "}
-                    <label htmlFor="">Per Year</label>
-                    <p> {data?.perYear?.toLocaleString()}</p>
-                  </div>
-                  <div className="col-lg-3">
-                    {" "}
-                    <label htmlFor="" className="text-danger">
-                      Discount Price (Year)
-                    </label>
-                    <p> {data?.dAmountForYear?.toLocaleString()}</p>
-                  </div>
+                  {data?.perMonth && (
+                    <div className="col-lg-3">
+                      {" "}
+                      <label htmlFor="">Per Month</label>
+                      <p> {data?.perMonth?.toLocaleString()}</p>
+                    </div>
+                  )}
+                  {data?.dAmountForMonth && (
+                    <div className="col-lg-3">
+                      {" "}
+                      <label htmlFor="" className="text-danger">
+                        Discount Price (Month)
+                      </label>
+                      <p> {data?.dAmountForMonth?.toLocaleString()}</p>
+                    </div>
+                  )}
+                  {data?.perYear && (
+                    <div className="col-lg-3">
+                      {" "}
+                      <label htmlFor="">Per Year</label>
+                      <p> {data?.perYear?.toLocaleString()}</p>
+                    </div>
+                  )}
+                  {data?.dAmountForYear && (
+                    <div className="col-lg-3">
+                      {" "}
+                      <label htmlFor="" className="text-danger">
+                        Discount Price (Year)
+                      </label>
+                      <p> {data?.dAmountForYear?.toLocaleString()}</p>
+                    </div>
+                  )}
                 </>
               )}
               {data?.category?.name === "Apartment" ? (

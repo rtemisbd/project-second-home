@@ -15,7 +15,7 @@ const addNewWishlist = async (payload) => {
   }
 
   // Check if the property exists
-  if (payload.roomType === "Private Room") {
+  if (payload.roomType !== "Shared Room") {
     const property = await Property.findById(payload.property);
     if (!property) {
       return { error: "Property not found." };
