@@ -173,7 +173,7 @@ const Invoice = () => {
                   </div>
                   <div
                     className=" booking-table"
-                    style={{
+                    style={{        
                       backgroundColor: "rgba(53, 176, 167, 0.10)",
                     }}
                   >

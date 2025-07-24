@@ -92,8 +92,8 @@ const RoomOverview = () => {
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          fromDate,
-          toDate,
+          startDate: fromDate,
+          endDate: toDate,
         });
         const response = await fetch(
           `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
