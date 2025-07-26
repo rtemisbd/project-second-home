@@ -172,6 +172,7 @@ function App() {
         <Route path="terms_list" element={<Terms_list />} />
         <Route path="update_terms/:id" element={<Update_Terms />} />
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
+        <Route path="my-account" element={<MyAccount />} />
         {/*  new overview */}
         <Route path="booking-overview" element={<RoomOverview />} />
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />

@@ -11,7 +11,7 @@ import img3 from "../../../img/home/profile.png";
 import { AuthContext } from "../../../contexts/UserProvider";
 import "./Navbar.css";
 import { MdDashboard } from "react-icons/md";
-import { RiUserAddLine } from "react-icons/ri";
+import { RiAccountCircleLine, RiUserAddLine } from "react-icons/ri";
 import { RiBuilding2Line } from "react-icons/ri";
 import { IoBedOutline, IoCalendarOutline } from "react-icons/io5";
 import { MdOutlineLocalOffer } from "react-icons/md";
@@ -1753,6 +1753,29 @@ const Navbar = () => {
                         ""
                       )}
                     </ul>
+                  </li>
+                  {/*  Manage my account */}
+                  <li
+                    className="main_nav-link"
+                    // onClick={() => setActive(false)}
+                  >
+                    <Link
+                      to={"/dashboard/resort/my-account"}
+                      className=" nav-link text-black  d-flex align-items-center"
+                    >
+                      <RiAccountCircleLine
+                        style={{
+                          width: "24px",
+                          height: "24px",
+                          color: "white",
+                          marginRight: "10px",
+                        }}
+                      />
+                      <span className="span_text">My Account</span>
+                      <span className="span_text_mobile" data-widget="pushmenu">
+                        My Account
+                      </span>
+                    </Link>
                   </li>
 
                   <li className="main_nav-link" onClick={handleLogOut}>
