@@ -54,8 +54,8 @@ const MyAccount = () => {
       };
 
       await axios.patch(
-        `${baseUrl}/api/users/${user?._id}/update-password`,
-        { password: newPassword },
+        `${baseUrl}/api/users/reset_password/${user?._id}`,
+        { newPassword },
         { headers }
       );
 
@@ -92,7 +92,7 @@ const MyAccount = () => {
     fetchData();
   }, [user?._id, reFetch]);
 
-  console.log(userData);
+
 
   return (
     <div className="wrapper">

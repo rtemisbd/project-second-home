@@ -37,7 +37,20 @@ router.post("/login-admin", loginAdminUser);
 router.post("/send-otp", sendOtp);
 router.post("/send-password-recover-otp", sendOtpForForget);
 router.post("/verify-otp", verifyOtp);
-router.post("/reset_password/:id/", resetPassword);
+// router.post("/reset_password/:id/", resetPassword);
+router.patch(
+  "/reset_password/:id/",
+  auth(
+    ENUM_USER_ROLE.USER,
+    ENUM_USER_ROLE.SUPER_ADMIN,
+    ENUM_USER_ROLE.SUB_ADMIN_1,
+    ENUM_USER_ROLE.SUB_ADMIN_2,
+    ENUM_USER_ROLE.RESORT_ACCOUNTANT,
+    ENUM_USER_ROLE.RESORT_ADMIN,
+    ENUM_USER_ROLE.RESORT_RECEPTIONIST
+  ),
+  resetPassword
+);
 router.patch("/:id", updateUser);
 router.patch("/admin/:id", updateUserAdmin);
 router.put("/:email", updatePassword);
