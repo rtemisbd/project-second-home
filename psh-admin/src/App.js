@@ -24,7 +24,6 @@ import Review from "./pages/Review";
 import Issues from "./pages/Issues";
 import Admin_issue from "./pages/Admin_issue";
 
-import Invoice from "./pages/details/Invoice";
 import Add_Facility_Category from "./pages/Add_Facility_Category";
 import Facility_Category_list from "./components/Facility/Facility_Category_list";
 import Add_Banner from "./pages/Add_Banner";
@@ -163,7 +162,7 @@ function App() {
         <Route path="review" element={<Review />} />
         <Route path="lease-property" element={<LeasePropertyList />} />
         <Route path="extra-charge" element={<ExtraCharge />} />
-        <Route path="invoice/:id" element={<Invoice />} />
+
         <Route path="pages" element={<Pages />} />
         <Route path="featured" element={<FeaturedRoom />} />
         <Route path="add_privacy" element={<Add_Privacy />} />

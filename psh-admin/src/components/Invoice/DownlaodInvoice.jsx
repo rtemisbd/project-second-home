@@ -77,7 +77,7 @@ const DownlaodInvoice = ({ data }) => {
 
   const [paid, setPaid] = useState(data?.transactions[0]?.totalReceiveTk || 0);
   const [discount, setDiscount] = useState(
-    data.adjustments[0]?.totatAdjustmentAmount || 0
+    data?.adjustments[0]?.totatAdjustmentAmount || 0
   );
   return (
     <Document>
