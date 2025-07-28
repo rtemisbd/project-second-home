@@ -1,4 +1,4 @@
-import franchise from "../../assets/img/static/Franchise Partners_prmo.jpg";
+
 import legalSupport from "../../assets/img/static/legalSupport.jpg";
 import branch from "../../assets/img/static/Coming Soon!_promo.jpg";
 

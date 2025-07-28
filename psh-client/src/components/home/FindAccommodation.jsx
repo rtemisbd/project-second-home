@@ -234,7 +234,7 @@ const FindAccommodation = () => {
                       <i className="fa-solid fa-calendar-days  text-[#00bbb4] h-5 w-5" />
                     </div>
                     <DatePicker
-                      className="bg-white outline-none pl-2 py-[7px] w-[75%]"
+                      className="bg-white outline-none pl-2 py-[7px] w-[75%] relative z-40"
                       selected={new Date(startDate)}
                       dateFormat="dd/MM/yyyy"
                       onChange={(date) => reduxDispatch(leftDate(date))}
