@@ -24,13 +24,14 @@ const Main = () => {
   }, [pathname]);
 
   return (
-    <div>
-      {isProfileMenu ? "" : noHeaderFooter || <Navmenu />}
-      <div className="">
-        <Outlet></Outlet>
-      </div>
+    <div className="flex flex-col min-h-screen">
+      {!isProfileMenu && !noHeaderFooter && <Navmenu />}
 
-      <div>{isProfileMenu ? "" : noHeaderFooter || <Footer />}</div>
+      <main className="flex-grow">
+        <Outlet />
+      </main>
+
+      {!isProfileMenu && !noHeaderFooter && <Footer />}
     </div>
   );
 };
