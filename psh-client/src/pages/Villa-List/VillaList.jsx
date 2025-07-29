@@ -11,6 +11,7 @@ const VillaList = () => {
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
+  const [bookedData, setBookedData] = useState([]);
 
   const [resort, setResort] = useState(state?.resort || "");
   const [adults, setAdults] = useState(state?.adults || 0);
@@ -22,14 +23,18 @@ const VillaList = () => {
     const fetchData = async () => {
       try {
         setLoading(true);
-        const queryParams = new URLSearchParams({ resortId: resort });
+        const queryParams = new URLSearchParams({
+          resortId: resort,
+          adults,
+          kids,
+          isPublished: "Published",
+        });
 
         const { data } = await axios.get(
           `${serverBaseUrl}/villa?${queryParams.toString()}`
         );
 
         setData(data?.data);
-
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -41,7 +46,34 @@ const VillaList = () => {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    const fetchBookedData = async () => {
+      try {
+        setLoading(true);
+        const queryParams = new URLSearchParams({
+          resort: resort,
+          bookStartDate: checkIn,
+          bookEndDate: checkOut,
+        });
+    
+        const { data } = await axios.get(
+          `${serverBaseUrl}/villaRentDates?${queryParams.toString()}`
+        );
+
+        setBookedData(data?.data);
+        // setLoading(false);
+      } catch (error) {
+        setLoading(false);
+        console.error(error);
+        throw error;
+      }
+    };
+
+    fetchBookedData();
+  }, []);
+
   console.log(data);
+  console.log(bookedData);
 
   return (
     <div className="custom-container">

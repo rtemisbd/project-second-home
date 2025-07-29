@@ -113,7 +113,6 @@ const EditVilla = () => {
     getData();
   }, [id]);
 
-
   const handleTypeChange = (event) => {
     setSelectedType(event.target.value);
   };
@@ -701,7 +700,7 @@ const EditVilla = () => {
                 className="profile_btn"
                 style={{ width: 175 }}
               >
-                Add Villa
+                Update Now
               </button>
             </div>
           </form>
