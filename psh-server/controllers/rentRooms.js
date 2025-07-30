@@ -15,7 +15,7 @@ export const getRentRooms = async (req, res, next) => {
       });
     } else {
       rentRooms = await RentRoom.find({
-        bookStartDate: { $lte: today },
+        bookStartDate: { $lte: today },    
         bookEndDate: { $gte: today },
       });
     }
@@ -300,3 +300,4 @@ export const getRentRooms = async (req, res, next) => {
     next(err);
   }
 };
+
