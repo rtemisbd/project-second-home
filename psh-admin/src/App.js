@@ -83,6 +83,7 @@ import VillaBookingOverview from "./pages/resort-admin/booking-overview/VillaBoo
 import BookingList from "./pages/resort-admin/all-bookings/BookingList";
 import ResortTransaction from "./pages/resort-admin/payment/ResortTransaction";
 import MyAccount from "./pages/resort-admin/account/MyAccount";
+import BookingOverview from "./pages/roomOverview/BookingOverview";
 
 function App() {
   return (
@@ -173,7 +174,8 @@ function App() {
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
         <Route path="my-account" element={<MyAccount />} />
         {/*  new overview */}
-        <Route path="booking-overview" element={<RoomOverview />} />
+        {/* <Route path="booking-overview" element={<RoomOverview />} /> */}
+        <Route path="booking-overview" element={<BookingOverview />} />
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />
         {/* resort related */}
         <Route path="add-resort" element={<AddResort2 />} />
