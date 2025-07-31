@@ -4,7 +4,7 @@ import RentRoom from "../models/RentRoom.js";
 const getRentRooms = async (queries) => {
   const { seatId, roomId, bookingId, startDate, endDate } = queries;
 
-  const matchStage = [];
+  const matchStage = {};
 
   if (seatId && seatId !== "") {
     matchStage.seatId = new mongoose.Types.ObjectId(seatId);
@@ -21,7 +21,7 @@ const getRentRooms = async (queries) => {
   const result = await RentRoom.aggregate(pipeline);
 
   return result;
-};    
+};
 
 export const rentRoomServices = {
   getRentRooms,

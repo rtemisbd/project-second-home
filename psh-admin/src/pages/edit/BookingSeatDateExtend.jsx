@@ -53,10 +53,20 @@ const BookingSeatDateExtend = ({
   // set rent room collection
   useEffect(() => {
     setSeat(room?.data?.seat);
-    setRentRooms(
-      room?.data?.rentRooms?.filter((dates) => dates.bookingId !== data._id)
-    );
-  }, [room?.data?.rentRooms, room?.data?.seat, data._id]);
+    const fetchRentDates = async () => {
+      const { data: rentDatesData } = await axios.get(
+        `${baseUrl}/api/rent-rooms?seatId=${room?.data?.seat?._id}`
+      );
+      const allRentDates = rentDatesData?.data;
+      const filteredRentDates = allRentDates?.filter(
+        (rent) => rent.bookingId !== data._id
+      );
+
+      setRentRooms([...filteredRentDates]);
+    };
+
+    fetchRentDates();
+  }, [data._id, rentRooms, room?.data?.seat]);
 
   const handleDurationClose = () => setShowDurationModal(false);
   // Get Total Days this Year
