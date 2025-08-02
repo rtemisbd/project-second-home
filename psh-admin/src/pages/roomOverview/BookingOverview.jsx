@@ -102,7 +102,7 @@ const BookingOverview = () => {
           }
         );
         const data = await response.json();
-        console.log(data);
+        // console.log(data);
         setRentDates(data?.data);
       } catch (error) {
         throw new Error(error);
@@ -178,21 +178,19 @@ const BookingOverview = () => {
     if (room?.categoryDetails?.name === "Shared Room") {
       getBookingStatus(room, date);
       setBookingInfo(
-        bookedSeats.filter(
-          (bs) =>
-            bs.seatId === room._id &&
-            new Date(bs.bookStartDate) <= new Date(date) &&
-            new Date(bs.bookEndDate) >= new Date(date)
+        rentDates.filter(
+          (bs) => bs.seatId === room._id
+          // &&  new Date(bs.bookStartDate) <= new Date(date) &&
+          //   new Date(bs.bookEndDate) >= new Date(date)
         )
       );
     } else {
       getBookingStatus(room, date);
       setBookingInfo(
-        bookedRooms.filter(
-          (br) =>
-            br.roomId === room._id &&
-            new Date(br.bookStartDate) <= new Date(date) &&
-            new Date(br.bookEndDate) >= new Date(date)
+        rentDates.filter(
+          (br) => br.roomId === room._id
+          // && new Date(br.bookStartDate) <= new Date(date) &&
+          //   new Date(br.bookEndDate) >= new Date(date)
         )
       );
     }

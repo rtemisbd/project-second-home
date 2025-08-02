@@ -226,6 +226,8 @@ const getOrderFromDB = async (queries) => {
     guestType,
     filteredPhone,
     category,
+    // seatId,
+    // roomId,
   } = queries;
 
   const today = new Date();
@@ -263,6 +265,12 @@ const getOrderFromDB = async (queries) => {
   if (category && category !== "All") {
     matchStage["bookingInfo.roomType"] = category;
   }
+  // if (seatId && seatId !== "") {
+  //   matchStage["bookingInfo.seatBooking._id"] = mongoose.Types.ObjectId(seatId);
+  // }
+  // if (roomId && roomId !== "") {
+  //   matchStage["bookingInfo.data._id"] = mongoose.Types.ObjectId(roomId);
+  // }
   if (guestType && guestType !== "All") matchStage.customerType = guestType;
 
   const totalCountsPipeline = [

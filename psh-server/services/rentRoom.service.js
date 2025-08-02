@@ -16,7 +16,29 @@ const getRentRooms = async (queries) => {
     matchStage.bookingId = new mongoose.Types.ObjectId(bookingId);
   }
 
-  const pipeline = [{ $match: matchStage }];
+  const pipeline = [
+    { $match: matchStage },
+    {
+      $lookup: {
+        from: "users",
+        let: { userId: "$userId" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$userId"] },
+            },
+          },
+          {
+            $project: { firstName: 1, phone: 1 },
+          },
+        ],
+        as: "user",
+      },
+    },
+    {
+      $unwind: { path: "$user", preserveNullAndEmptyArrays: true },
+    },
+  ];
 
   const result = await RentRoom.aggregate(pipeline);
 
