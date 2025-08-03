@@ -25,6 +25,7 @@ const getAllVillaFromDB = async (queries) => {
     isPublished,
     adults: rawAdults,
     kids: rawKids,
+    division,
   } = queries;
 
   let query = {};
@@ -62,18 +63,24 @@ const getAllVillaFromDB = async (queries) => {
         as: "resort",
         pipeline: [
           {
-            $project: { _id: 1, name: 1, address: 1 },
+            $project: { _id: 1, name: 1, address: 1, division: 1 },
           },
         ],
       },
     },
     {
-      $unwind: {
-        path: "$resort",
-        preserveNullAndEmptyArrays: true,
-      },
+      $unwind: "$resort",
     },
   ];
+
+  // Add division filter AFTER unwind
+  if (division && division !== "") {
+    pipeline.push({
+      $match: {
+        "resort.division": division,
+      },
+    });
+  }
   const result = await Villa.aggregate(pipeline);
 
   return result;

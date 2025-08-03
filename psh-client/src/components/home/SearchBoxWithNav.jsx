@@ -16,6 +16,7 @@ import { GrLocation } from "react-icons/gr";
 import { SyncLoader } from "react-spinners";
 import { BiBody } from "react-icons/bi";
 import { FaBed } from "react-icons/fa";
+import FindVilla from "./FindVilla";
 
 const SearchBoxWithNav = () => {
   const isSearchBoxShow = useSelector(
@@ -35,6 +36,8 @@ const SearchBoxWithNav = () => {
   const [genderQuery, setGenderQuery] = useState("female");
   const [genderValue, setGenderValue] = useState(0);
   const gender = ["Female", "Male"];
+
+  const [showVillaForm, setShowVillaForm] = useState(false);
 
   const [categoryQuery, setCategoryQuery] = useState("All");
   const [categoryValue, setCategoryValue] = useState(0);
@@ -100,20 +103,23 @@ const SearchBoxWithNav = () => {
   const handleCategorySelection = (index) => {
     setCategoryValue(index);
     const selectedCategory = category[index];
-
-    // Map category values to query values
     if (selectedCategory === "All") {
-      setCategoryQuery("All"); // Empty string means no specific category filter
+      setCategoryQuery("All");
     } else {
       setCategoryQuery(selectedCategory);
     }
 
     // Handle bed selection based on category
     if (selectedCategory === "Private Room") {
+      setShowVillaForm(false);
     } else if (selectedCategory === "Shared Room") {
+      setShowVillaForm(false);
+    } else if (selectedCategory === "Villa") {
+      setShowVillaForm(true);
     } else {
+      setShowVillaForm(false);
       setBedValue(0); // Reset bed selection to "All" for other categories
-      setBedrooms("");
+      setBedrooms([]);
     }
   };
 
@@ -137,6 +143,7 @@ const SearchBoxWithNav = () => {
       gender: genderQuery,
       category: categoryQuery,
     };
+    console.log(payload);
 
     dispatch({ type: "NEW_SEARCH", payload });
     reduxDispatch(placeSearchBoxShow(false));
@@ -171,282 +178,195 @@ const SearchBoxWithNav = () => {
           </div>
 
           <form onSubmit={handleSearch}>
-            <div>
-              <div className="search-filed2">
-                <ul className="flex justify-center main-search text-[12px]">
-                  <li className="list-none py-1">
+            <div className="search-filed2">
+              <ul
+                className="flex 
+                 mt-6"
+              >
+                {category.map((categoryItem, index) => (
+                  <li key={index}>
                     <span
-                      onClick={() =>
-                        reduxDispatch(
-                          rightDate(addDays(new Date(startDate), 1))
-                        )
-                      }
-                      className={` px-11 cursor-pointer py-2 ${
-                        customerRent.remainingDays < getLastDayOfMonth() &&
-                        customerRent.years === undefined
-                          ? "dmyActive "
-                          : "dmyNonActive"
+                      className={`tab text-[12px]   ${
+                        categoryValue === index ? "selected" : ""
                       }`}
+                      onClick={() => handleCategorySelection(index)}
                     >
-                      Day
+                      {categoryItem}
                     </span>
                   </li>
-                  <li className="list-none py-1">
-                    <span
-                      onClick={() =>
-                        reduxDispatch(
-                          rightDate(addMonths(new Date(startDate), 1))
-                        )
-                      }
-                      className={` px-11 cursor-pointer py-2 ${
-                        customerRent.remainingDays >= getLastDayOfMonth() &&
-                        customerRent.years === undefined
-                          ? "dmyActive "
-                          : "dmyNonActive"
-                      }`}
-                    >
-                      Month
-                    </span>
-                  </li>
-                  <li className="list-none py-1">
-                    <span
-                      onClick={() =>
-                        reduxDispatch(rightDate(addYears(new Date(endDate), 1)))
-                      }
-                      className={` px-11 cursor-pointer py-2 ${
-                        customerRent.years >= 1 ? "dmyActive " : "dmyNonActive"
-                      }`}
-                    >
-                      Year
-                    </span>
-                  </li>
-                </ul>
-
-                <hr style={{ margin: "5px 0" }} />
-                <ul className="flex mt-6">
-                  {category.map((categoryItem, index) => (
-                    <li key={index}>
-                      <span
-                        className={`tab  ${
-                          categoryValue === index ? "selected" : ""
-                        }`}
-                        onClick={() => handleCategorySelection(index)}
-                      >
-                        {categoryItem}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
-                {/* Search filed */}
-                <div className="input-filed-area mb-6" ref={inputRef}>
-                  <div className="location-icon">
-                    <img
-                      src="https://i.ibb.co/z8kf0jf/location.png"
-                      style={{
-                        color: "#00bbb4",
-                        width: "20px",
-                        height: "20px",
-                        marginTop: "-4px",
-                      }}
-                      alt="location"
+                ))}
+              </ul>
+              {!showVillaForm ? (
+                <div>
+                  {/* Search filed */}
+                  <div className="input-filed-area mb-3" ref={inputRef}>
+                    <div className="location-icon">
+                      <img
+                        src="https://i.ibb.co/z8kf0jf/location.png"
+                        style={{
+                          color: "#00bbb4",
+                          width: "20px",
+                          height: "20px",
+                          marginTop: "-4px",
+                        }}
+                        alt="location"
+                      />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Looking for best place to live"
+                      required
+                      value={query}
+                      className="input_main rounded outline-none w-full h-10 pl-10"
+                      ref={inputRef}
+                      onChange={(e) => setQuery(e.target.value)}
+                      onClick={() => setInputActive(true)}
                     />
-                  </div>
-                  <input
-                    type="text"
-                    placeholder="Looking for best place to live"
-                    required
-                    value={query}
-                    className="input_main rounded outline-none w-full h-10 pl-10"
-                    ref={inputRef}
-                    onChange={(e) => setQuery(e.target.value)}
-                    onClick={() => setInputActive(true)}
-                  />
-                  {inputActive && (
-                    <ul className="p-2 absolute bg-white border border-[#00bbb4] rounded w-full z-10">
-                      {filteredData?.length > 0 ? (
-                        filteredData.map((item, index) => (
+                    {inputActive && (
+                      <ul className="p-2 absolute bg-white border border-[#00bbb4] rounded w-full z-10">
+                        {filteredData?.length > 0 ? (
+                          filteredData.map((item, index) => (
+                            <li
+                              key={item._id}
+                              onClick={() => handleItemClick(item)}
+                              className="hover:bg-gray-300 cursor-pointer px-2 flex items-center gap-x-2 rounded w-full"
+                            >
+                              <GrLocation /> {item.name}
+                            </li>
+                          ))
+                        ) : (
                           <li
-                            key={item._id}
-                            onClick={() => handleItemClick(item)}
-                            className="hover:bg-gray-300 cursor-pointer px-2 flex items-center gap-x-2 rounded w-full"
+                            className="text-center py-5 w-full"
+                            style={{ height: "100px" }}
                           >
-                            <GrLocation /> {item.name}
+                            <SyncLoader
+                              color="#6B7280"
+                              size={8}
+                              speedMultiplier={0.7}
+                            />
                           </li>
-                        ))
-                      ) : (
-                        <li
-                          className="text-center py-5 w-full"
-                          style={{ height: "100px" }}
-                        >
-                          <SyncLoader
-                            color="#6B7280"
-                            size={8}
-                            speedMultiplier={0.7}
+                        )}
+                      </ul>
+                    )}
+                  </div>
+                  {/* Date Picker */}
+                  <div className="flex mt-3 px-2 py-1 border border-[#00bbb4] rounded w-full justify-around items-start">
+                    <div className="flex sm-date ml-2 ">
+                      <i
+                        className="fa-solid fa-calendar-days me-2 mt-1"
+                        style={{ color: "#00bbb4" }}
+                      ></i>
+                      <DatePicker
+                        selected={new Date(startDate)}
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => reduxDispatch(leftDate(date))}
+                        minDate={subDays(new Date(), 0)}
+                        className="w-32"
+                      />
+                    </div>
+                    <div className="mt-1">
+                      <BsArrowRight />
+                    </div>
+                    <div className="flex sm-date ml-[28px] ">
+                      <i
+                        className="fa-solid fa-calendar-days me-2 mt-1"
+                        style={{ color: "#00bbb4" }}
+                      ></i>
+                      <DatePicker
+                        selected={
+                          customerRent?.remainingDays < 1
+                            ? addDays(new Date(startDate), 1)
+                            : new Date(endDate)
+                        }
+                        dateFormat="dd/MM/yyyy"
+                        onChange={(date) => reduxDispatch(rightDate(date))}
+                        minDate={subDays(new Date(startDate), -1)}
+                        className="w-32"
+                      />
+                    </div>
+                  </div>
+                  {/* Date Count and Gender */}
+                  {/* <p>Duration</p> */}
+                  <div className="flex gap-1 pt-2 w-full ">
+                    <div className="w-1/2">
+                      <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
+                        <div className="w-[24%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                          <i className="fa-solid fa-clock text-[#00bbb4] h-5 w-5" />
+                        </div>
+                        <div className="bg-white w-[71%] outline-none pl-2 py-[7px]">
+                          <span>
+                            {`${
+                              customerRent?.daysDifference >= 0
+                                ? `${customerRent?.daysDifference} days`
+                                : ""
+                            }`}
+                            {`${
+                              customerRent?.months &&
+                              customerRent?.days >= 0 &&
+                              !customerRent?.years
+                                ? `${customerRent?.months} m, ${customerRent?.days} days`
+                                : ""
+                            }`}
+                            {`${
+                              customerRent?.years &&
+                              customerRent?.months >= 0 &&
+                              customerRent?.days >= 0
+                                ? `${customerRent?.years} year`
+                                : ""
+                            }`}
+                          </span>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mt-1 border rounded-lg w-1/2">
+                      <ul className="flex   rounded-lg w-full  ">
+                        <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                          <BiBody
+                            className=""
+                            style={{
+                              color: "#339999",
+                              height: "24px",
+                              width: "100%",
+                            }}
                           />
                         </li>
-                      )}
-                    </ul>
-                  )}
-                </div>
-                {/* Date Picker */}
-                <div className="flex mt-5 px-2 py-1 border border-[#00bbb4] rounded w-full justify-around">
-                  <div className="flex sm-date ">
-                    <i
-                      className="fa-solid fa-calendar-days me-2 mt-1"
-                      style={{ color: "#00bbb4" }}
-                    ></i>
-                    <DatePicker
-                      selected={new Date(startDate)}
-                      dateFormat="dd/MM/yyyy"
-                      onChange={(date) => reduxDispatch(leftDate(date))}
-                      minDate={subDays(new Date(), 0)}
-                      className="w-32"
-                    />
-                  </div>
-                  <div className="arrow-icon-sm mt-1">
-                    <BsArrowRight />
-                  </div>
-                  <div className="flex sm-date ml-[-28px] ">
-                    <i
-                      className="fa-solid fa-calendar-days me-2 mt-1"
-                      style={{ color: "#00bbb4" }}
-                    ></i>
-                    <DatePicker
-                      selected={
-                        customerRent?.remainingDays < 1
-                          ? addDays(new Date(startDate), 1)
-                          : new Date(endDate)
-                      }
-                      dateFormat="dd/MM/yyyy"
-                      onChange={(date) => reduxDispatch(rightDate(date))}
-                      minDate={subDays(new Date(startDate), -1)}
-                      className="w-32"
-                    />
-                  </div>
-                </div>
-                {/* Date Count and Gender */}
-                {/* <p>Duration</p> */}
-                <div className="flex gap-1 pt-2 w-full ">
-                  <div className="w-1/2">
-                    <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
-                      <div className="w-[24%] py-1 rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                        <i className="fa-solid fa-clock text-[#00bbb4] h-5 w-5" />
-                      </div>
-                      <div className="bg-white w-[71%] outline-none pl-2 py-[7px]">
-                        <span>
-                          {`${
-                            customerRent?.daysDifference >= 0
-                              ? `${customerRent?.daysDifference} days`
-                              : ""
-                          }`}
-                          {`${
-                            customerRent?.months &&
-                            customerRent?.days >= 0 &&
-                            !customerRent?.years
-                              ? `${customerRent?.months} m, ${customerRent?.days} days`
-                              : ""
-                          }`}
-                          {`${
-                            customerRent?.years &&
-                            customerRent?.months >= 0 &&
-                            customerRent?.days >= 0
-                              ? `${customerRent?.years} year`
-                              : ""
-                          }`}
-                        </span>
-                      </div>
+                        {gender.map((gender, index) => (
+                          <li key={index} className="search_md_bed w-[35%] ">
+                            <button
+                              onClick={() => handleGenderSelection(index)}
+                              disabled={gender === "Male"}
+                              className={`${
+                                genderValue === index
+                                  ? "bedActive"
+                                  : "bedNonActive"
+                              } py-[7px] w-full  disabled:cursor-not-allowed`}
+                            >
+                              {gender}
+                            </button>
+                          </li>
+                        ))}
+                      </ul>
                     </div>
                   </div>
-                  <div className="mt-1 border rounded-lg w-1/2">
-                    <ul className="flex   rounded-lg w-full  ">
-                      <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                        <BiBody
-                          className=""
-                          style={{
-                            color: "#339999",
-                            height: "24px",
-                            width: "100%",
-                          }}
-                        />
-                      </li>
-                      {gender.map((gender, index) => (
-                        <li key={index} className="search_md_bed w-[35%] ">
-                          <button
-                            onClick={() => handleGenderSelection(index)}
-                            disabled={gender === "Male"}
-                            className={`${
-                              genderValue === index
-                                ? "bedActive"
-                                : "bedNonActive"
-                            } py-[7px] w-full  disabled:cursor-not-allowed`}
-                          >
-                            {gender}
-                          </button>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                </div>
-                {/* <div className="flex items-center mt-2 w-full gap-x-5">
-                  <div className="flex items-center rounded gap-x-1 border border-[#00bbb4] py-0.5 w-[45%] pl-1">
+
+                  <div className="flex items-center pt-2 w-full ">
                     <div>
-                      <img loading="lazy" src={durationImg} alt="" />
+                      <FaBed
+                        style={{
+                          color: "#339999",
+                          height: "24px",
+                          width: "24px",
+                          marginTop: "20px",
+                          marginRight: "12px",
+                        }}
+                      />
                     </div>
-                    <div className="text-[12px]">
-                      <span className="">
-                        {`${
-                          customerRent?.daysDifference >= 0
-                            ? `${customerRent?.daysDifference} days`
-                            : ""
-                        }`}
-                        {`${
-                          customerRent?.months &&
-                          customerRent?.days >= 0 &&
-                          !customerRent?.years
-                            ? `${customerRent?.months} months, ${customerRent?.days} days`
-                            : ""
-                        }`}
-                        {`${
-                          customerRent?.years &&
-                          customerRent?.months >= 0 &&
-                          customerRent?.days >= 0
-                            ? `${customerRent?.years} year`
-                            : ""
-                        }`}
-                      </span>
-                    </div>
-                  </div>
-                  <div className="w-[45%] border border-[#00bbb4] rounded">
-                    <select
-                      className="pl-5 py-1 gender-sm text-[14px]"
-                      value={genderValue}
-                      onChange={(e) => handleGenderSelection(e.target.value)}
+
+                    <ul
+                      className={`flex justify-start gap-2  w-full mt-3  ${
+                        categoryValue === 2 ? "hide-search-options" : ""
+                      }`}
                     >
-                      {gender.map((gender, index) => (
-                        <option
-                          key={index}
-                          value={index}
-                          disabled={gender === "Male"}
-                          className="disabled:cursor-not-allowed"
-                        >
-                          {gender}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                </div> */}
-                {/* Bed type and furnished or Unfurnished */}
-                {/* <div className="flex items-center mt-2 w-full gap-x-5">
-                  <div className="flex items-center rounded gap-x-1 border border-[#00bbb4] py-0.5 w-[50%] pl-1">
-                    <select
-                      className=" pl-5 py-1 gender-sm text-[14px]"
-                      name=""
-                      id=""
-                      onChange={(e) => handleBedSelection(e.target.value)}
-                    >
-                      <option selected disabled>
-                        Bed Type
-                      </option>
                       {beds.map((bed, index) => {
                         if (
                           (categoryValue === 1 &&
@@ -461,80 +381,36 @@ const SearchBoxWithNav = () => {
                         }
 
                         return (
-                          <option key={index} className="my-4" value={index}>
+                          <li key={index} className="text-[14px] font-semibold">
                             <span
-                              className={`${
+                              onClick={() => handleBedSelection(index)}
+                              className={`px-[6px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
                                 bedValue === index
                                   ? "bedActive"
                                   : "bedNonActive"
-                              } `}
+                              }`}
                             >
                               {bed}
                             </span>
-                          </option>
+                          </li>
                         );
                       })}
-                    </select>
-                  </div>
-                </div> */}
-
-                <div className="flex items-center pt-2 w-full ">
-                  <div>
-                    <FaBed
-                      style={{
-                        color: "#339999",
-                        height: "24px",
-                        width: "24px",
-                        marginTop: "20px",
-                        marginRight: "12px",
-                      }}
-                    />
+                    </ul>
                   </div>
 
-                  <ul
-                    className={`flex justify-start gap-2  w-full mt-3  ${
-                      categoryValue === 2 ? "hide-search-options" : ""
-                    }`}
-                  >
-                    {beds.map((bed, index) => {
-                      if (
-                        (categoryValue === 1 &&
-                          bed !== "Single Bed" &&
-                          bed !== "Single Bed" &&
-                          bed !== "King Size Bed") ||
-                        (categoryValue === 2 &&
-                          bed !== "Bunk Bed" &&
-                          bed !== "Single Bed")
-                      ) {
-                        return null; // Skip rendering
-                      }
-
-                      return (
-                        <li key={index} className="text-[14px] font-semibold">
-                          <span
-                            onClick={() => handleBedSelection(index)}
-                            className={`px-[6px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
-                              bedValue === index ? "bedActive" : "bedNonActive"
-                            }`}
-                          >
-                            {bed}
-                          </span>
-                        </li>
-                      );
-                    })}
-                  </ul>
-                </div>
-
-                <div className="mt-7 w-full">
-                  <div className="w-full flex justify-center">
-                    <input
-                      type="submit"
-                      value="Find Accommodation"
-                      className="bg-[#00bbb4] w-full text-white 4 py-3 rounded-md"
-                    />
+                  <div className="mt-7 w-full">
+                    <div className="w-full flex justify-center">
+                      <input
+                        type="submit"
+                        value="Find Accommodation"
+                        className="bg-[#00bbb4] w-full text-white 4 py-3 rounded-md"
+                      />
+                    </div>
                   </div>
                 </div>
-              </div>
+              ) : (
+                <FindVilla />
+              )}
             </div>
           </form>
         </div>

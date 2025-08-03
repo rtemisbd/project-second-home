@@ -93,8 +93,6 @@ const VillaList = () => {
     setFilteredData(availableData);
   }, [bookedData, data]);
 
-
-
   return (
     <div className="custom-container">
       {/* <Header type="list" /> */}

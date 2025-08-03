@@ -49,6 +49,8 @@ const FindVilla = () => {
   };
 
   const handleVillaList = () => {
+
+
     try {
       // e.preventDefault();
       const payload = {
@@ -215,7 +217,7 @@ const FindVilla = () => {
               <i className="fa-solid fa-calendar-days  text-[#00bbb4] h-5 w-5" />
             </div>
             <DatePicker
-              className="bg-white outline-none pl-2 py-[7px] w-[75%] "
+              className="bg-white outline-none pl-1 md:pl-2 py-[7px] w-[75%] "
               selected={new Date(startDate)}
               dateFormat="dd/MM/yyyy"
               onChange={(date) => reduxDispatch(leftDate(date))}
@@ -231,7 +233,7 @@ const FindVilla = () => {
               <i className="fa-solid fa-calendar-days  text-[#00bbb4]" />
             </div>
             <DatePicker
-              className="bg-white outline-none pl-2 py-[7px] w-[75%] z-30"
+              className="bg-white outline-none pl-1 md:pl-2 py-[7px] w-[75%] z-30"
               selected={
                 customerRent?.remainingDays < 1
                   ? addDays(new Date(startDate), 1)
@@ -269,7 +271,7 @@ const FindVilla = () => {
         {/* occupancy */}
         <div className="mt-1 border rounded-lg w-1/2 flex">
           <div className="w-1/2 rounded-l-lg border-r  flex justify-start items-center  h-full">
-            <p className="bg-[#eafffd] w-2/3 h-full text-center px-3 pt-2">
+            <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
               Adult
             </p>
             <div className="w-1/3">
@@ -283,8 +285,8 @@ const FindVilla = () => {
             </div>
           </div>
           <div className="w-1/2 rounded-l-lg   flex justify-start items-center  h-full">
-            <p className="bg-[#eafffd] w-2/3 h-full text-center px-3 pt-2">
-              Children
+            <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
+              Child
             </p>
             <div className="w-1/3">
               <input
