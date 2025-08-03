@@ -1,22 +1,26 @@
 import mongoose from "mongoose";
-import VillaRentDates from "../models/VillaRentDates.js"
+import VillaRentDates from "../models/VillaRentDates.js";
 
-const createRentDatesIntoDB = async(payload) =>{
-    const result = await VillaRentDates.create(payload)
-    return result;
-}
+const createRentDatesIntoDB = async (payload) => {
+  const result = await VillaRentDates.create(payload);
+  return result;
+};
 
+const getAllVillaRentDates = async (queries) => {
+  const { villa, resort, bookStartDate, bookEndDate } = queries;
 
-const getAllVillaRentDates = async(queries)=>{  
-  const { villa, resort} = queries
-
-  let matchStage = {}; 
-  if(resort && resort !== "undefined" && resort !== "null" && resort !== "") {
+  let matchStage = {};
+  if (resort && resort !== "undefined" && resort !== "null" && resort !== "") {
     matchStage.resortId = new mongoose.Types.ObjectId(resort);
   }
 
+  // Filter by date range (only if both provided)
+  if (bookStartDate && bookEndDate) {
+    matchStage.bookStartDate = { $lte: bookEndDate };
+    matchStage.bookEndDate = { $gte: bookStartDate };
+  }
 
-    const pipeline = [
+  const pipeline = [
     { $match: matchStage },
     {
       $lookup: {
@@ -40,16 +44,14 @@ const getAllVillaRentDates = async(queries)=>{
     },
   ];
 
-    const result = await VillaRentDates.aggregate(pipeline);
+  const result = await VillaRentDates.aggregate(pipeline);
 
-    return result;
-}
-
+  return result;
+};
 
 // const deleteVillaRents
 
 export const villaRentDatesServices = {
-    createRentDatesIntoDB,
-    getAllVillaRentDates,
-    
-}
+  createRentDatesIntoDB,
+  getAllVillaRentDates,
+};

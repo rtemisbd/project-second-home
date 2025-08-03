@@ -1760,7 +1760,7 @@ const Navbar = () => {
                     // onClick={() => setActive(false)}
                   >
                     <Link
-                      to={"/dashboard/resort/my-account"}
+                      to={"/dashboard/my-account"}
                       className=" nav-link text-black  d-flex align-items-center"
                     >
                       <RiAccountCircleLine

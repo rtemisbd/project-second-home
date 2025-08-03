@@ -7,7 +7,7 @@ import VillaCard from "../../components/home/VillaCard";
 
 const VillaList = () => {
   const { state } = useLocation();
-  console.log(state);
+
 
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
@@ -18,6 +18,16 @@ const VillaList = () => {
   const [kids, setKids] = useState(state?.kids || 0);
   const [checkIn, setCheckIn] = useState(state?.checkIn || "");
   const [checkOut, setCheckOut] = useState(state?.checkOut || "");
+
+  const [filteredData, setFilteredData] = useState([]);
+
+  const formatDateToDdMonthYyyy = (date) => {
+    const d = new Date(date);
+    const day = String(d.getDate()).padStart(2, "0");
+    const month = String(d.getMonth() + 1).padStart(2, "0"); // Months are 0-based
+    const year = d.getFullYear();
+    return `${day}-${month}-${year}`;
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,6 +45,7 @@ const VillaList = () => {
         );
 
         setData(data?.data);
+        setFilteredData(data?.data);
         setLoading(false);
       } catch (error) {
         setLoading(false);
@@ -52,10 +63,12 @@ const VillaList = () => {
         setLoading(true);
         const queryParams = new URLSearchParams({
           resort: resort,
-          bookStartDate: checkIn,
-          bookEndDate: checkOut,
+          // bookStartDate: checkIn,
+          // bookEndDate: checkOut,
+          bookStartDate: formatDateToDdMonthYyyy(checkIn),
+          bookEndDate: formatDateToDdMonthYyyy(checkOut),
         });
-    
+
         const { data } = await axios.get(
           `${serverBaseUrl}/villaRentDates?${queryParams.toString()}`
         );
@@ -72,8 +85,15 @@ const VillaList = () => {
     fetchBookedData();
   }, []);
 
-  console.log(data);
-  console.log(bookedData);
+  useEffect(() => {
+    const bookedVillaIds = bookedData.map((book) => book.villaId);
+    const availableData = data?.filter(
+      (villa) => !bookedVillaIds.includes(villa._id)
+    );
+    setFilteredData(availableData);
+  }, [bookedData, data]);
+
+
 
   return (
     <div className="custom-container">
@@ -89,10 +109,10 @@ const VillaList = () => {
                   color="#36d7b7"
                 />{" "}
               </p>
-            ) : data?.length > 0 ? (
+            ) : filteredData?.length > 0 ? (
               <>
                 <div className="px-4 md:px-0 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 md:gap-x-7 lg:gap-x-5">
-                  {data?.map((villa) => (
+                  {filteredData?.map((villa) => (
                     <div key={villa._id}>
                       <VillaCard villa={villa} />
                     </div>
