@@ -3,6 +3,8 @@ import { useEffect, useState } from "react";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import Slider from "react-slick";
 import VillaCard from "../home/VillaCard";
+import LeftArrow from "../../assets/img/arrow2.png";
+import RightArrow from "../../assets/img/arrow1.png";
 import CardSkeleton from "../CardSkeleton/CardSkeleton";
 
 const VillaRecommended = ({ division, resortId }) => {
