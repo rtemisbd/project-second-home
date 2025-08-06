@@ -105,7 +105,7 @@ const getSeatByIdFromDB = async (id) => {
     seatId: 1,
     seatNumber: 1,
   });
-  const seat = await Seat.findOne({_id :id}).populate("category branch");
+  const seat = await Seat.findOne({ _id: id }).populate("category branch");
   // if (seat?.isSeatPublished === "Unpublished") {
   //   throw new AppError(httpStatus.NO_CONTENT, "This seat has been unpublished!");
   // }

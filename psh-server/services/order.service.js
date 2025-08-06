@@ -581,7 +581,7 @@ const updateBookingStatusIntoDB = async (payload) => {
     roomType: booking?.bookingInfo?.roomType,
     bookingId: booking?._id,
     branch: booking?.bookingInfo?.branch?._id,
-    userId: booking?.userId,
+    userId: booking?.userId, 
   };
   if (booking?.status === "Approved" || booking?.status === "Processing") {
     const existRent = await RentRoom.findOne({ bookingId: booking._id });
@@ -621,7 +621,7 @@ const updateBookingStatusIntoDB = async (payload) => {
     await RentRoom.deleteOne({
       bookingId: booking?._id,
     });
-
+ 
     // if have promo code then remove promo code
     await User.updateOne(
       { phone: booking?.email },

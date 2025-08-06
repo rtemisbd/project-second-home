@@ -1,8 +1,82 @@
 import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema.Types;
 
+// new schema
 
+// const rentDateSchema = new mongoose.Schema({
+//   bookStartDate: { type: String, required: true },
+//   bookEndDate: {
+//     type: String,
+//     required: true,
+//   },
+//   dayDifference: {
+//     type: Number,
+//   },
+// });
 
+// const priceSchema = new mongoose.Schema({
+//   perNight: {
+//     type: Number,
+//   },
+//   initialAmount: {
+//     type: Number,
+//     required: true,
+//   },
+//   extraFoodCost: {
+//     type: Number,
+//   },
+//   totalAmount: { type: Number, required: true },
+//   totalDiscount: {
+//     type: Number,
+//     default: 0,
+//   },
+//   payableAmount: { type: Number, required: true },
+//   paidAmount: {
+//     type: Number,
+//     default: 0,
+//   },
+//   dueAmount: { type: Number },
+// });
+
+// const OrderSchema = new mongoose.Schema({
+//   bookingId: {
+//     type: String,
+//     unique: true,
+//     required: true,
+//   },
+//   category: {
+//     type: ObjectId,
+//   },
+//   branch: {
+//     type: ObjectId,
+//   },
+//   roomId: {
+//     type: ObjectId,
+//   },
+//   seatId: {
+//     type: ObjectId,
+//   },
+//   userId: {
+//     type: ObjectId,
+//   },
+//   rentDate: rentDateSchema,
+//   status: {
+//     type: String,
+//     enum: ["Approved", "Processing", "Pending", "Canceled"],
+//     default: "Pending",
+//   },
+//   pricing: priceSchema,
+//   paymentStatus: {
+//     type: String,
+//     enum: ["Paid", "Unpaid"],
+//     default: "Unpaid",
+//   },
+//   specialRequest: {
+//     type: String,
+//   },
+// });
+
+// old schema
 const OrderSchema = new mongoose.Schema(
   {
     bookingInfo: {
@@ -178,8 +252,6 @@ const OrderSchema = new mongoose.Schema(
   },
   { timestamps: true }
 );
-
-// new order model (optimized by rakiba)
 
 const OrderModel = mongoose.model("order", OrderSchema);
 

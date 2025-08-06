@@ -92,8 +92,8 @@ const RoomOverview = () => {
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          // startDate: fromDate,
-          // endDate: toDate,
+          fromDate,
+          toDate,
         });
         const response = await fetch(
           `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
@@ -101,12 +101,12 @@ const RoomOverview = () => {
             method: "GET",
           }
         );
-        const data = await response.json();
-        console.log(data);
+        const rents = await response.json();
+        console.log(rents);
 
-        // setBookedRooms(rents?.bookedRooms || []);
-        // setBookedSeats(rents?.bookedSeats || []);
-        // setReserved(rents?.upcomingRentRooms || []);
+        setBookedRooms(rents?.bookedRooms || []);
+        setBookedSeats(rents?.bookedSeats || []);
+        setReserved(rents?.upcomingRentRooms || []);
       } catch (error) {
         throw new Error(error);
       }
