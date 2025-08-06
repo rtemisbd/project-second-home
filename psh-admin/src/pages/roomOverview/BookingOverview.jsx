@@ -110,18 +110,33 @@ const BookingOverview = () => {
     }
   );
 
-  const changeSelectedMonth = (payload) => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const newMonthIndex = payload === "prev" ? monthIndex - 1 : monthIndex + 1;
+  const changeSelectedMonth = (direction) => {
+    let newMonth = monthIndex;
+    let newYear = startYear;
 
-    if (newMonthIndex < 0 || newMonthIndex > 11) return;
+    if (direction === "prev") {
+      if (newMonth === 0) {
+        newMonth = 11;
+        newYear = newYear - 1;
+      } else {
+        newMonth = newMonth - 1;
+      }
+    } else if (direction === "next") {
+      if (newMonth === 11) {
+        newMonth = 0;
+        newYear = newYear + 1;
+      } else {
+        newMonth = newMonth + 1;
+      }
+    }
 
-    setMonthIndex(newMonthIndex);
-    setStartMonth(months[newMonthIndex]);
+    setMonthIndex(newMonth);
+    setStartMonth(months[newMonth]);
+    setStartYear(newYear);
+    setEndYear(newYear);
 
-    const startOfMonth = new Date(currentYear, newMonthIndex, 1);
-    const endOfMonth = new Date(currentYear, newMonthIndex + 1, 0);
+    const startOfMonth = new Date(newYear, newMonth, 1);
+    const endOfMonth = new Date(newYear, newMonth + 1, 0);
 
     setFromDate(formatDate(startOfMonth));
     setToDate(formatDate(endOfMonth));
@@ -179,18 +194,20 @@ const BookingOverview = () => {
       getBookingStatus(room, date);
       setBookingInfo(
         rentDates.filter(
-          (bs) => bs.seatId === room._id
-          // &&  new Date(bs.bookStartDate) <= new Date(date) &&
-          //   new Date(bs.bookEndDate) >= new Date(date)
+          (bs) =>
+            bs.seatId === room._id &&
+            new Date(bs.bookStartDate) <= new Date(date) &&
+            new Date(bs.bookEndDate) >= new Date(date)
         )
       );
     } else {
       getBookingStatus(room, date);
       setBookingInfo(
         rentDates.filter(
-          (br) => br.roomId === room._id
-          // && new Date(br.bookStartDate) <= new Date(date) &&
-          //   new Date(br.bookEndDate) >= new Date(date)
+          (br) =>
+            br.roomId === room._id &&
+            new Date(br.bookStartDate) <= new Date(date) &&
+            new Date(br.bookEndDate) >= new Date(date)
         )
       );
     }
