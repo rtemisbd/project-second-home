@@ -2,7 +2,8 @@ import mongoose from "mongoose";
 import RentRoom from "../models/RentRoom.js";
 
 const getRentRooms = async (queries) => {
-  const { seatId, roomId, bookingId, startDate, endDate } = queries;
+  const { seatId, roomId, bookingId, startDate, endDate, selectedDate } =
+    queries;
 
   const matchStage = {};
 

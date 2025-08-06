@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import { useQuery } from "react-query";
 import BookingReportData from "./BookingReportsData";
@@ -6,61 +6,71 @@ import "./BookingReport.css";
 import { formatDate } from "../../utils/dateConvert";
 import { Spinner } from "react-bootstrap";
 import { baseUrl } from "../../utils/getBaseURL";
+import axios from "axios";
 
 const BookingReports = () => {
-  const [checkingDate, setCheckingDate] = useState(new Date());
-  // const [allBranch, setAllBranch] = useState([]);
-  // const [branch, setBranch] = useState("");
-  // Fetch booking reports based on the checkingDate
-  const { data, error, isLoading } = useQuery(
-    ["fetchBookingsReports", checkingDate],
-    async () => {
+  const [data, setData] = useState(null);
+  const [selectedDate, setSelectedDate] = useState(new Date());
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // const { data, error, isLoading } = useQuery(
+  //   ["fetchBookingsReports", selectedDate],
+  //   async () => {
+  //     try {
+  //       const queryParams = new URLSearchParams({
+  //         selectedDate,
+  //       });
+
+  //       const response = await fetch(
+  //         `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
+  //         {
+  //           method: "GET",
+  //         }
+  //       );
+
+  //       if (!response.ok) {
+  //         throw new Error("Network Error");
+  //       }
+
+  //       const { data } = await response.json();
+  //       console.log(data);
+
+  //       return data;
+  //     } catch (error) {
+  //       throw new Error(error.message);
+  //     }
+  //   },
+  //   {
+  //     refetchOnWindowFocus: false,
+  //     staleTime: 60000, // Cache data for 1 minute
+  //   }
+  // );
+
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         const queryParams = new URLSearchParams({
-          checkingDate: checkingDate,
-          // branch: branch,
+          selectedDate,
         });
-
-        const response = await fetch(
-          `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
-          {
-            method: "GET",
-          }
+        const { data } = await axios.get(
+          `${baseUrl}/api/rent-rooms?${queryParams.toString()}`
         );
-
-        if (!response.ok) {
-          throw new Error("Network Error");
-        }
-
-        const data = await response.json();
-        return data;
+        console.log(data);
       } catch (error) {
-        throw new Error(error.message);
+        setError(error?.response?.data);
       }
-    },
-    {
-      refetchOnWindowFocus: false,
-      staleTime: 60000, // Cache data for 1 minute
-    }
-  );
-  // Get All Branch
-  // useEffect(() => {
-  //   fetch(`${baseUrl}/api/branch`)
-  //     .then((res) => res.json())
-  //     .then((data) => setAllBranch(data));
-  // }, []);
+    };
+    fetchData();
+  }, [selectedDate]);
 
-  // // Get All Status Bookings
-
-  // const handleBranch = (e) => {
-  //   setBranch(e.target.value);
-  // };
+  console.log(selectedDate);
 
   if (isLoading)
     return (
       <div
         className="text-center text-danger fw-bold loading"
-        style={{ margin: "2rem 0" }}
+        style={{ margin: "2rem 0" }} 
       >
         <p>
           Finding Bookings Reports... <Spinner size="sm" animation="grow" />
@@ -88,35 +98,88 @@ const BookingReports = () => {
                 <label htmlFor="">Choose your day :</label>
                 <br />
                 <DatePicker
-                  selected={checkingDate}
+                  selected={selectedDate}
                   dateFormat="dd/MM/yyyy"
-                  onChange={(date) => setCheckingDate(date)}
+                  onChange={(date) => setSelectedDate(date)}
                 />
               </div>
-              {/* <div>
-                <label htmlFor="">Branch </label> <br />
-                <select
-                  className="rounded"
-                  style={{ height: "30px" }}
-                  onChange={handleBranch}
-                >
-                  <option value="">All</option>
-                  {allBranch?.map((branch) => (
-                    <option value={branch?._id}>{branch?.name}</option>
-                  ))}
-                </select>
-              </div> */}
             </div>
             <h6
               className="college_h6 fw-bold text-center"
               style={{ color: "#35b0a7", fontSize: "30px" }}
             >
-              {checkingDate.toDateString() === new Date().toDateString()
-                ? `Today Bookings Reports`
-                : `${formatDate(checkingDate)} Booking Reports`}
+              Bookings Reports : {formatDate(selectedDate)}
             </h6>
             <hr />
-            {data?.availableRooms ? (
+
+            <div
+              className="container"
+              style={{
+                margin: "auto",
+                // border: "1px solid red",
+                display: "flex",
+                gap: "12px",
+                flexWrap: "wrap",
+                justifyContent: "start",
+              }}
+            >
+              <div
+                style={{
+                  backgroundColor: "#321f39",
+                  color: "white",
+                  borderRadius: "5px",
+                  padding: "1rem",
+                  width: "30%",
+                }}
+              >
+                <p>Total Bookings: </p>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#321f39",
+                  color: "white",
+                  borderRadius: "5px",
+                  padding: "1rem",
+                  width: "30%",
+                }}
+              >
+                <p>Private Room Bookings: </p>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#321f39",
+                  color: "white",
+                  borderRadius: "5px",
+                  padding: "1rem",
+                  width: "30%",
+                }}
+              >
+                <p>Shared Room Bookings: </p>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#321f39",
+                  color: "white",
+                  borderRadius: "5px",
+                  padding: "1rem",
+                  width: "30%",
+                }}
+              >
+                <p>Check-In : </p>
+              </div>
+              <div
+                style={{
+                  backgroundColor: "#321f39",
+                  color: "white",
+                  borderRadius: "5px",
+                  padding: "1rem",
+                  width: "30%",
+                }}
+              >
+                <p>Check-Out : </p>
+              </div>
+            </div>
+            {data ? (
               <BookingReportData data={data} />
             ) : (
               <div className="text-center text-danger fw-bold loading">
