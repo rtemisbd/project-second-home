@@ -102,8 +102,8 @@ const BookingOverview = () => {
           }
         );
         const data = await response.json();
-        // console.log(data);
-        setRentDates(data?.data);
+        console.log(data);
+        setRentDates(data?.data?.result);
       } catch (error) {
         throw new Error(error);
       }

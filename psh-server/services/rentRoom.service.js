@@ -43,7 +43,11 @@ const getRentRooms = async (queries) => {
 
   const result = await RentRoom.aggregate(pipeline);
 
-  return result;
+  const checkin = result.filter((r) => r.bookStartDate === selectedDate);
+
+  const checkout = result.filter((r) => r.bookEndDate === selectedDate);
+
+  return { result, checkin, checkout };
 };
 
 export const rentRoomServices = {

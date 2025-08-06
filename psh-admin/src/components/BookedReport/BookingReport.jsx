@@ -14,6 +14,14 @@ const BookingReports = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const formatDateToYMD = (date) => {
+    const d = new Date(date);
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
+  };
+
   // const { data, error, isLoading } = useQuery(
   //   ["fetchBookingsReports", selectedDate],
   //   async () => {
@@ -51,7 +59,7 @@ const BookingReports = () => {
     const fetchData = async () => {
       try {
         const queryParams = new URLSearchParams({
-          selectedDate,
+          selectedDate: formatDateToYMD(selectedDate),
         });
         const { data } = await axios.get(
           `${baseUrl}/api/rent-rooms?${queryParams.toString()}`
@@ -64,13 +72,13 @@ const BookingReports = () => {
     fetchData();
   }, [selectedDate]);
 
-  console.log(selectedDate);
+  console.log(formatDateToYMD(selectedDate));
 
   if (isLoading)
     return (
       <div
         className="text-center text-danger fw-bold loading"
-        style={{ margin: "2rem 0" }} 
+        style={{ margin: "2rem 0" }}
       >
         <p>
           Finding Bookings Reports... <Spinner size="sm" animation="grow" />
