@@ -57,7 +57,7 @@ import RoomRent from "./pages/RoomRent/RoomRent";
 import RoomVisit from "./pages/RoomVisit/RoomVisit";
 import RoomVisitAdmin from "./pages/RoomVisit/RoomVisitAdmin";
 // import PropertyReports from "./components/Property/PropertyReports";
-import BookingReport from "./components/BookedReport/BookingReport";
+
 import FeaturedRoom from "./pages/Featured/FeaturedRoom";
 import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
@@ -84,6 +84,7 @@ import BookingList from "./pages/resort-admin/all-bookings/BookingList";
 import ResortTransaction from "./pages/resort-admin/payment/ResortTransaction";
 import MyAccount from "./pages/resort-admin/account/MyAccount";
 import BookingOverview from "./pages/roomOverview/BookingOverview";
+import BookingReports from "./pages/BookedReport/BookingReport";
 
 function App() {
   return (
@@ -138,7 +139,7 @@ function App() {
         <Route path="edit/share-room/:id" element={<EditSeat />} />
 
         {/* <Route path="property-report" element={<PropertyReports />} /> */}
-        <Route path="property-report" element={<BookingReport />} />
+        <Route path="property-report" element={<BookingReports />} />
         <Route path="add-promo" element={<Add_Promo />} />
         <Route path="promo_list" element={<Promo />} />
         <Route path="adjustmen-list" element={<AdjustmentList />} />

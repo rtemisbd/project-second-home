@@ -2,8 +2,7 @@ import mongoose from "mongoose";
 import RentRoom from "../models/RentRoom.js";
 
 const getRentRooms = async (queries) => {
-  const { seatId, roomId, bookingId, startDate, endDate, selectedDate } =
-    queries;
+  const { seatId, roomId, bookingId, selectedDate } = queries;
 
   const matchStage = {};
 
@@ -63,11 +62,41 @@ const getRentRooms = async (queries) => {
 
   const result = await RentRoom.aggregate(pipeline);
 
-  const checkin = result.filter((r) => r.bookStartDate === selectedDate);
+  let filtered = result;
+  let checkin = [];
+  let checkout = [];
 
-  const checkout = result.filter((r) => r.bookEndDate === selectedDate);
+  if (selectedDate) {
+    filtered = result.filter(
+      (r) =>
+        r.bookStartDate &&
+        r.bookEndDate &&
+        r.bookStartDate <= selectedDate &&
+        r.bookEndDate >= selectedDate
+    );
 
-  return { result, checkin, checkout };
+    checkin = filtered.filter((r) => r.bookStartDate === selectedDate);
+    checkout = filtered.filter((r) => r.bookEndDate === selectedDate);
+  }
+
+  const totalBookingCount = filtered.length;
+
+  const privateRoomBooking = filtered.filter(
+    (r) => r.roomType === "Private Room"
+  ).length;
+
+  const sharedRoomBooking = filtered.filter(
+    (r) => r.roomType === "Shared Room"
+  ).length;
+
+  return {
+    result: filtered,
+    checkin,
+    checkout,
+    totalBookingCount,
+    privateRoomBooking,
+    sharedRoomBooking,
+  };
 };
 
 export const rentRoomServices = {

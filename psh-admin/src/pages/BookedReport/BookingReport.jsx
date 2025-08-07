@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
-import { useQuery } from "react-query";
-import BookingReportData from "./BookingReportsData";
+
 import "./BookingReport.css";
 import { formatDate } from "../../utils/dateConvert";
 import { Spinner } from "react-bootstrap";
@@ -9,11 +8,13 @@ import { baseUrl } from "../../utils/getBaseURL";
 import axios from "axios";
 
 const BookingReports = () => {
-  const [data, setData] = useState(null);
   const [checkin, setCheckin] = useState([]);
   const [checkout, setCheckout] = useState([]);
+  const [totalBookingCount, setTotalBookingCount] = useState(0);
+  const [privateBooking, setPrivateBooking] = useState(0);
+  const [sharedBooking, setSharedBooking] = useState(0);
   const [selectedDate, setSelectedDate] = useState(new Date());
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
   const formatDateToYMD = (date) => {
@@ -24,39 +25,6 @@ const BookingReports = () => {
     return `${year}-${month}-${day}`;
   };
 
-  // const { data, error, isLoading } = useQuery(
-  //   ["fetchBookingsReports", selectedDate],
-  //   async () => {
-  //     try {
-  //       const queryParams = new URLSearchParams({
-  //         selectedDate,
-  //       });
-
-  //       const response = await fetch(
-  //         `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
-  //         {
-  //           method: "GET",
-  //         }
-  //       );
-
-  //       if (!response.ok) {
-  //         throw new Error("Network Error");
-  //       }
-
-  //       const { data } = await response.json();
-  //       console.log(data);
-
-  //       return data;
-  //     } catch (error) {
-  //       throw new Error(error.message);
-  //     }
-  //   },
-  //   {
-  //     refetchOnWindowFocus: false,
-  //     staleTime: 60000, // Cache data for 1 minute
-  //   }
-  // );
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -66,17 +34,20 @@ const BookingReports = () => {
         const { data } = await axios.get(
           `${baseUrl}/api/rent-rooms?${queryParams.toString()}`
         );
-        console.log(data.data);
+
         setCheckin(data?.data?.checkin);
         setCheckout(data?.data?.checkout);
+        setTotalBookingCount(data?.data?.totalBookingCount);
+        setPrivateBooking(data?.data?.privateRoomBooking);
+        setSharedBooking(data?.data?.sharedRoomBooking);
       } catch (error) {
         setError(error?.response?.data);
+      } finally {
+        setIsLoading(false);
       }
     };
     fetchData();
   }, [selectedDate]);
-
-  console.log(formatDateToYMD(selectedDate));
 
   if (isLoading)
     return (
@@ -144,7 +115,7 @@ const BookingReports = () => {
                   width: "30%",
                 }}
               >
-                <p>Total Bookings: </p>
+                <p>Total Bookings: {totalBookingCount} </p>
               </div>
               <div
                 style={{
@@ -155,7 +126,7 @@ const BookingReports = () => {
                   width: "30%",
                 }}
               >
-                <p>Private Room Bookings: </p>
+                <p>Private Room Bookings: {privateBooking}</p>
               </div>
               <div
                 style={{
@@ -166,7 +137,7 @@ const BookingReports = () => {
                   width: "30%",
                 }}
               >
-                <p>Shared Room Bookings: </p>
+                <p>Shared Room Bookings: {sharedBooking} </p>
               </div>
               <div
                 style={{
@@ -276,13 +247,6 @@ const BookingReports = () => {
                 )}
               </div>
             </div>
-            {/* {data ? (
-              <BookingReportData data={data} />
-            ) : (
-              <div className="text-center text-danger fw-bold loading">
-                <p>No Bookings Data Available</p>
-              </div>
-            )} */}
           </div>
         </section>
       </div>
