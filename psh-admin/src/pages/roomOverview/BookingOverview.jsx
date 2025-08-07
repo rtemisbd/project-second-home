@@ -100,7 +100,7 @@ const BookingOverview = () => {
           {
             method: "GET",
           }
-        );
+        ); 
         const data = await response.json();
         console.log(data);
         setRentDates(data?.data?.result);

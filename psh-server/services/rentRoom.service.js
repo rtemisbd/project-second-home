@@ -39,6 +39,26 @@ const getRentRooms = async (queries) => {
     {
       $unwind: { path: "$user", preserveNullAndEmptyArrays: true },
     },
+    {
+      $lookup: {
+        from: "branches",
+        let: { branchId: "$branch" },
+        pipeline: [
+          {
+            $match: {
+              $expr: { $eq: ["$_id", "$$branchId"] },
+            },
+          },
+          {
+            $project: { name: 1 },
+          },
+        ],
+        as: "branch",
+      },
+    },
+    {
+      $unwind: { path: "$branch", preserveNullAndEmptyArrays: true },
+    },
   ];
 
   const result = await RentRoom.aggregate(pipeline);
