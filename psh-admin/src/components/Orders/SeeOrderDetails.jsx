@@ -12,6 +12,7 @@ import { formatDate } from "../../utils/dateConvert";
 
 const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const ref = useRef();
+  console.log(data);
 
   const [discount, setDiscount] = useState(data?.discount || 0);
   const [payableAmount, setPayableAmount] = useState(data?.payableAmount || 0);
@@ -32,8 +33,6 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const formattedTime = new Date(data?.createdAt)
     ?.toLocaleString()
     ?.split(",")[1];
-
-
 
   return (
     <Modal
@@ -76,56 +75,56 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Customer Name
               </label>
-              <p>{data?.fullName}</p>
+              <p>{data?.userInfo?.firstName}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Father Name
               </label>
-              <p>{data?.fatherName}</p>
+              <p>{data?.userInfo?.fatherName}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Mother Name
               </label>
-              <p>{data?.motherName}</p>
+              <p>{data?.userInfo?.motherName}</p>
             </div>
             <div className="col-lg-3 ">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Email
               </label>
-              <span className="user_email">{data?.email}</span>
+              <span className="user_email">{data?.userInfo?.email}</span>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Phone Number
               </label>
-              <p>{data?.phone}</p>
+              <p>{data?.userInfo?.phone}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
-                {/* {data?.validityType} */} Identity Number
+                {/* {data?.userInfo?.validityType} */} Identity Number
               </label>
-              <p>{data?.validityNumber}</p>
+              <p>{data?.userInfo?.validityNumber}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Emergency Contact Name :
               </label>
-              <p>{data?.emergencyContactName}</p>
+              <p>{data?.userInfo?.emergencyContact?.contactName}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Emergency Contact Relationship :
               </label>
-              <p>{data?.emergencyRelationC}</p>
+              <p>{data?.userInfo?.emergencyContact?.relation}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
                 Emergency Contact Number :
               </label>
-              <p>{data?.emergencyContact}</p>
+              <p>{data?.userInfo?.emergencyContact?.contactNumber}</p>
             </div>
             <div className="col-lg-3">
               <label htmlFor="" className="fw-medium">
@@ -200,40 +199,40 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Branch
               </label>
-              <p>{data?.bookingInfo?.branch?.name}</p>
+              <p>{data?.branchDetails?.name}</p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Room Type
               </label>
-              <p> {data?.bookingInfo?.roomType}</p>
+              <p> {data?.roomType}</p>
             </div>
-            {data?.bookingInfo?.roomType === "Shared Room" ? (
+            {data?.roomType === "Shared Room" ? (
               ""
             ) : (
               <div className="col-lg-3">
                 <label htmlFor="" className="fw-medium">
                   Room Title
                 </label>
-                <p> {data?.bookingInfo?.roomName}</p>
+                <p> {data?.room?.name}</p>
               </div>
             )}
-            {data?.bookingInfo?.roomType === "Shared Room" ? (
+            {data?.roomType === "Shared Room" ? (
               <>
                 <div className="col-lg-3">
                   {" "}
                   <label htmlFor="" className="fw-medium">
                     Seat Number
                   </label>
-                  <p> {data?.bookingInfo?.seatBooking?.seatNumber}</p>
+                  <p> {data?.seat?.seatNumber} </p>
                 </div>
                 <div className="col-lg-3">
                   {" "}
                   <label htmlFor="" className="fw-medium">
                     Room Number
                   </label>
-                  <p> {data?.bookingInfo?.roomNumber}</p>
+                  <p> {data?.room?.roomNumber}</p>
                 </div>
               </>
             ) : (
@@ -242,7 +241,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 <label htmlFor="" className="fw-medium">
                   Room Number
                 </label>
-                <p> {data?.bookingInfo?.roomNumber}</p>
+                <p> {data?.roomNumber}</p>
               </div>
             )}
 
@@ -251,14 +250,14 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Check In{" "}
               </label>
-              <p> {formatDate(data?.bookingInfo?.rentDate?.bookStartDate)}</p>
+              <p> {formatDate(data?.rentDate?.bookStartDate)}</p>
             </div>
             <div className="col-lg-3">
               {" "}
               <label htmlFor="" className="fw-medium">
                 Check Out{" "}
               </label>
-              <p> {formatDate(data?.bookingInfo?.rentDate?.bookEndDate)}</p>
+              <p> {formatDate(data?.rentDate?.bookEndDate)}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -268,18 +267,18 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               </label>
               <p>
                 {" "}
-                {data?.bookingInfo?.customerRent?.daysDifference >= 0
-                  ? `${data?.bookingInfo?.customerRent?.daysDifference} days`
+                {data?.customerRent?.daysDifference >= 0
+                  ? `${data?.customerRent?.daysDifference} days`
                   : "" ||
-                    (data?.bookingInfo?.customerRent?.months &&
-                      data?.bookingInfo?.customerRent?.days >= 0 &&
-                      !data?.bookingInfo?.customerRent?.years)
-                  ? `${data?.bookingInfo?.customerRent?.months} months, ${data?.bookingInfo?.customerRent?.days} days`
+                    (data?.customerRent?.months &&
+                      data?.customerRent?.days >= 0 &&
+                      !data?.customerRent?.years)
+                  ? `${data?.customerRent?.months} months, ${data?.customerRent?.days} days`
                   : "" ||
-                    (data?.bookingInfo?.customerRent?.years &&
-                      data?.bookingInfo?.customerRent?.months >= 0 &&
-                      data?.bookingInfo?.customerRent?.days >= 0)
-                  ? `${data?.bookingInfo?.customerRent?.years} year`
+                    (data?.customerRent?.years &&
+                      data?.customerRent?.months >= 0 &&
+                      data?.customerRent?.days >= 0)
+                  ? `${data?.customerRent?.years} year`
                   : ""}
               </p>
             </div>
@@ -289,7 +288,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <label htmlFor="" className="fw-medium">
                 Future Extend{" "}
               </label>
-              <p> {data?.bookingInfo?.bookingExtend === true ? "Yes" : "No"}</p>
+              <p> {data?.bookingExtend === true ? "Yes" : "No"}</p>
             </div>
             <div className="col-lg-3">
               {" "}
@@ -298,9 +297,9 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               </label>
               <p>
                 {" "}
-                {data?.bookingInfo.isIncludeFood === true
+                {data?.isIncludeFood === true
                   ? "Yes"
-                  : data?.bookingInfo?.isIncludeFood === false
+                  : data?.isIncludeFood === false
                   ? "No"
                   : "Yes"}
               </p>
@@ -383,8 +382,8 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               </label>
               <p>
                 Tk{" "}
-                {data?.bookingInfo?.minimumPayment
-                  ? data?.bookingInfo?.minimumPayment?.toLocaleString()
+                {data?.minimumPayment
+                  ? data?.minimumPayment?.toLocaleString()
                   : 0}
               </p>
             </div>
@@ -395,8 +394,8 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               </label>
               <p>
                 Tk{" "}
-                {data?.bookingInfo?.addMissionFee
-                  ? data?.bookingInfo?.addMissionFee?.toLocaleString()
+                {data?.addMissionFee
+                  ? data?.addMissionFee?.toLocaleString()
                   : 0}
               </p>
             </div>
@@ -406,10 +405,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 Security Fee
               </label>
               <p>
-                Tk{" "}
-                {data?.bookingInfo?.securityFee
-                  ? data?.bookingInfo?.securityFee?.toLocaleString()
-                  : 0}
+                Tk {data?.securityFee ? data?.securityFee?.toLocaleString() : 0}
               </p>
             </div>
           </div>

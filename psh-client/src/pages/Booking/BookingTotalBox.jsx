@@ -177,7 +177,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
 
       setShowMinimumPayment(true);
     } else {
-      setMinimumPayment(500);
+      setMinimumPayment(seat ? seat?.dAmountForDay : data?.dAmountForDay);
       setShowMinimumPayment(true);
     }
 
@@ -351,15 +351,16 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     promoCodeDiscount:
       userPromo?.promoDiscount === undefined ? 0 : userPromo?.promoDiscount,
     discount: discountTk,
-    vatTax: vatTax,
+    // vatTax: vatTax,
     totalAmount: totalRentAmount,
     payableAmount: payableAmount,
     roomId: data?._id,
-    roomName: data?.name,
-    roomNumber: data?.roomNumber,
+    // roomName: data?.name,
+    // roomNumber: data?.roomNumber,
     roomType: data?.category?.name,
     branch: data?.branch,
-    seatBooking: seat,
+    seatBooking: seat?._id,
+    perDay: amountForDay,
     rentDate: {
       bookStartDate: new Date(startDate).toISOString().split("T")[0],
       bookEndDate: new Date(endDate).toISOString().split("T")[0],
@@ -387,8 +388,8 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
         addMissionFee: addMissionFee,
         securityFee: securityFee,
         minimumPayment: minimumPayment,
-        fullPayment: payableAmount,
-        selectedPaymentType: selectedCheckPayment,
+        // fullPayment: payableAmount,
+        // selectedPaymentType: selectedCheckPayment,
       };
     }
 

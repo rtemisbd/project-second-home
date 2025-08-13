@@ -1,233 +1,68 @@
 import mongoose from "mongoose";
 const { ObjectId } = mongoose.Schema.Types;
 
-// new schema
-
-// const rentDateSchema = new mongoose.Schema({
-//   bookStartDate: { type: String, required: true },
-//   bookEndDate: {
-//     type: String,
-//     required: true,
-//   },
-//   dayDifference: {
-//     type: Number,
-//   },
-// });
-
-// const priceSchema = new mongoose.Schema({
-//   perNight: {
-//     type: Number,
-//   },
-//   initialAmount: {
-//     type: Number,
-//     required: true,
-//   },
-//   extraFoodCost: {
-//     type: Number,
-//   },
-//   totalAmount: { type: Number, required: true },
-//   totalDiscount: {
-//     type: Number,
-//     default: 0,
-//   },
-//   payableAmount: { type: Number, required: true },
-//   paidAmount: {
-//     type: Number,
-//     default: 0,
-//   },
-//   dueAmount: { type: Number },
-// });
-
-// const OrderSchema = new mongoose.Schema({
-//   bookingId: {
-//     type: String,
-//     unique: true,
-//     required: true,
-//   },
-//   category: {
-//     type: ObjectId,
-//   },
-//   branch: {
-//     type: ObjectId,
-//   },
-//   roomId: {
-//     type: ObjectId,
-//   },
-//   seatId: {
-//     type: ObjectId,
-//   },
-//   userId: {
-//     type: ObjectId,
-//   },
-//   rentDate: rentDateSchema,
-//   status: {
-//     type: String,
-//     enum: ["Approved", "Processing", "Pending", "Canceled"],
-//     default: "Pending",
-//   },
-//   pricing: priceSchema,
-//   paymentStatus: {
-//     type: String,
-//     enum: ["Paid", "Unpaid"],
-//     default: "Unpaid",
-//   },
-//   specialRequest: {
-//     type: String,
-//   },
-// });
-
 // old schema
 const OrderSchema = new mongoose.Schema(
   {
-    bookingInfo: {
-      type: Object,
+    userId: {
+      type: ObjectId,
+      ref: "User",
     },
-    bookingId: {
-      type: String,
+    phone: { type: String },
+    roomId: {
+      type: ObjectId,
+      ref: "Property",
+    },
+    roomType: { type: String },
+    seatId: {
+      type: ObjectId,
+      ref: "Seat",
     },
     branch: {
       type: ObjectId,
       ref: "Branch",
     },
-    fullName: {
-      type: String,
+
+    bookingId: { type: String },
+
+    customerRent: {
+      daysDifference: { type: Number },
+      remainingDays: { type: Number },
     },
-    fatherName: {
-      type: String,
-    },
-    motherName: {
-      type: String,
-    },
-    userId: {
-      type: ObjectId,
-      ref: "User",
-    },
-    email: {
-      type: String,
-    },
-    phone: {
-      type: String,
-    },
-    address: {
-      type: String,
-    },
-    gender: {
-      type: String,
-      enum: ["Male", "Female"],
-    },
-    birthDate: {
-      type: String,
-    },
-    emergencyContactName: {
-      type: String,
-    },
-    emergencyRelationC: {
-      type: String,
-    },
-    emergencyContact: {
-      type: String,
-    },
-    employeeStatus: {
-      type: String,
-    },
-    emplyeeIncome: {
-      type: String,
-    },
-    nid: {
-      type: Number,
-    },
-    validityType: {
-      type: String,
-    },
-    validityNumber: {
-      type: Number,
-    },
-    passport: {
-      type: String,
-    },
-    arrivalTime: {
-      type: String,
-    },
-    request: {
-      type: String,
-    },
-    image: {
-      type: String,
-    },
-    gardianImg: {
-      type: String,
-    },
-    paymentType: {
-      type: String,
-    },
-    paymentNumber: {
-      type: String,
-    },
-    transactionId: {
-      type: String,
-    },
-    bkashNumber: {
-      type: String,
-    },
-    bkashTrx: {
-      type: String,
-    },
-    nagadNumber: {
-      type: String,
-    },
-    nagadTrx: {
-      type: String,
-    },
-    dutchNumber: {
-      type: String,
-    },
-    dutchTrx: {
-      type: String,
+    rentDate: {
+      bookStartDate: { type: String },
+      bookEndDate: { type: String },
     },
     customerType: {
       type: String,
-      // enum: ["Walk-in Guest", "Monthly", "Yearly"],
-      // default: "Walk-in Guest",
+      enum: ["Walk-in Guest", "Monthly", "Yearly"],
+      default: "Walk-in Guest",
     },
-    whichOfMonthPayment: {
-      type: String,
-    },
-    seat: {
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Seat",
+
+    perDay: { type: Number },
+
+    subTotal: { type: Number },
+    isIncludeFood: { type: Boolean },
+    foodAmount: { type: Number, default: 0 },
+    totalAmount: { type: Number },
+    discount: { type: Number, default: 0 },
+    payableAmount: { type: Number },
+    dueAmount: { type: Number },
+
+    minimumPayment: { type: Number },
+    receivedTk: { type: Number },
+    paymentNumber: { type: String },
+    promoCodeDiscount: { type: Number, default: 0 },
+
+    securityFee: { type: Number, default: 0 },
+    usedPromo: {
+      promo: { type: String },
+      usedDate: { type: String },
     },
     status: {
       type: String,
       enum: ["Pending", "Processing", "Approved", "Canceled"],
       default: "Pending",
-    },
-    totalAmount: {
-      type: Number,
-    },
-    payableAmount: {
-      type: Number,
-    },
-    discount: {
-      type: Number,
-    },
-    adjustmentAmount: {
-      type: Number,
-    },
-
-    receivedTk: {
-      type: Number,
-    },
-    dueAmount: {
-      type: Number,
-    },
-    totalReceiveTk: {
-      type: Number,
-    },
-    foodAmount: {
-      type: Number,
-    },
-    isIncludeFood: {
-      type: Boolean,
     },
     paymentStatus: {
       type: String,
@@ -244,11 +79,7 @@ const OrderSchema = new mongoose.Schema(
     userCancel: {
       type: Object,
     },
-    isAdjustmentRQ: {
-      type: String,
-      enum: ["Yes", "No"],
-      default: "No",
-    },
+    arrivalTime: { type: String },
   },
   { timestamps: true }
 );

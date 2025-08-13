@@ -3,7 +3,7 @@ import { v4 as uuidv4 } from "uuid";
 import { getValue, setValue } from "node-global-storage";
 import config from "../config/index.js";
 import OrderModel from "../models/Order.js";
-import mongoose from "mongoose"; // MongoDB session handling
+import mongoose, { startSession } from "mongoose";
 import { generateBookingId } from "../utils/generateBookingId.js";
 import { bookingSms } from "../SMS/BookingSms.js";
 import RentRoom from "../models/RentRoom.js";
@@ -29,19 +29,50 @@ const bkashHeaders = async () => {
 
 // Create Payment Method
 const paymentCreate = async (req, res) => {
+  const session = await startSession();
+
+  session.startTransaction();
   const { amount, selectMethod, dataForBooking } = req.body;
+  const { userInfo, ...bookingData } = dataForBooking;
 
   // Find User
   const findUser = await User.findOne({
-    _id: dataForBooking?.userId,
+    _id: bookingData?.userId,
   });
 
   if (!findUser) {
     return new Error("Sorry! User Not Found"); //   User Not Exist
   }
+
+  // Set user context
+  await setValue("userId", bookingData?.userId);
+
+  // Step 1: Update user information
+  const userUpdate = {
+    firstName: userInfo?.fullName,
+    phone: userInfo?.phone,
+    userAddress: userInfo?.address,
+    validityType: userInfo?.validityType,
+    emergencyContact: {
+      contactName: userInfo?.emergencyContactName,
+      relation: userInfo?.emergencyRelationC,
+      contactNumber: userInfo?.emergencyContact,
+    },
+  };
+  await User.updateOne(
+    { phone: userInfo?.phone },
+    { $set: userUpdate },
+    { runValidators: true, session }
+  );
+
+  // Step 2: Generate booking ID
+  const generateId = await generateBookingId();
+  bookingData.bookingId = generateId;
+  bookingData.paymentStatus =
+    bookingData.payableAmount === bookingData?.receivedTk ? "Paid" : "Unpaid";
   // If Manual Payment
   if (selectMethod === "manual") {
-    const result = await createOrderByManualBkash(dataForBooking);
+    const result = await createOrderByManualBkash(bookingData);
 
     sendResponse(res, {
       statusCode: 200,
@@ -51,7 +82,7 @@ const paymentCreate = async (req, res) => {
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
   } else if (selectMethod === "cash") {
-    const result = await createOrderByCash(dataForBooking);
+    const result = await createOrderByCash(bookingData);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -60,7 +91,7 @@ const paymentCreate = async (req, res) => {
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
   } else {
-    setValue("dataForBooking", dataForBooking);
+    setValue("dataForBooking", bookingData);
 
     try {
       const { data } = await axios.post(
@@ -112,9 +143,9 @@ const callBack = async (req, res) => {
 
       if (data && data.statusCode === "0000") {
         // Start Create Booking
-        const generateId = await generateBookingId();
+        // const generateId = await generateBookingId();
 
-        dataForBooking.bookingId = generateId;
+        // dataForBooking.bookingId = generateId;
         dataForBooking.status = "Approved";
         // dataForBooking.paymentStatus = dataForBooking?.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
 
@@ -130,15 +161,15 @@ const callBack = async (req, res) => {
           orderId: result?._id,
           branch: dataForBooking?.branch,
           paymentDate: new Date(),
-          totalAmount: dataForBooking?.bookingInfo?.totalAmount,
+          totalAmount: dataForBooking?.totalAmount,
           payableAmount: dataForBooking?.payableAmount,
           paymentType: "bkash",
           receivedTk: parseInt(data?.amount),
           paymentNumber: data?.customerMsisdn,
           transactionId: data.trxID,
           userId: dataForBooking?.userId,
-          userPhone: dataForBooking?.phone,
-          userName: dataForBooking?.fullName,
+          // userPhone: dataForBooking?.phone,
+          // userName: dataForBooking?.fullName,
           acceptableStatus: "Accepted",
         });
 
@@ -147,43 +178,43 @@ const callBack = async (req, res) => {
 
         // Create rent collection
         const newRent = new RentRoom({
-          bookStartDate: dataForBooking?.bookingInfo?.rentDate?.bookStartDate,
-          bookEndDate: dataForBooking?.bookingInfo?.rentDate?.bookEndDate,
-          roomId: dataForBooking?.bookingInfo?.roomId,
-          roomNumber: dataForBooking?.bookingInfo?.data?.roomNumber,
-          roomType: dataForBooking?.bookingInfo?.roomType,
-          seatId: dataForBooking?.bookingInfo?.seatBooking?._id,
-          seatNumber: dataForBooking?.bookingInfo?.seatBooking?.seatNumber,
+          bookStartDate: dataForBooking?.rentDate?.bookStartDate,
+          bookEndDate: dataForBooking?.rentDate?.bookEndDate,
+          roomId: dataForBooking?.roomId,
+          // roomNumber: dataForBooking?.data?.roomNumber,
+          roomType: dataForBooking?.roomType,
+          seatId: dataForBooking?.seatBooking?._id,
+          // seatNumber: dataForBooking?.seatBooking?.seatNumber,
           bookingId: dataForBooking?._id,
-          branch: dataForBooking?.bookingInfo?.branch?._id,
+          branch: dataForBooking?.branch,
           userId: dataForBooking?.userId,
         });
         await newRent.save({ session });
         //  End Create Rent Collection
 
         // Phone SMS for booking
-        const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${dataForBooking?.bookingId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+        const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${dataForBooking?.bookingId}.%20Check-in%3A%${dataForBooking?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
         await bookingSms(bookingMessage);
 
         // Start Update user information
-        const userUpdate = {
-          firstName: dataForBooking?.fullName,
-          phone: dataForBooking?.phone,
-          userAddress: dataForBooking?.address,
-          validityType: dataForBooking?.validityType,
-          emergencyContact: {
-            contactName: dataForBooking?.emergencyContactName,
-            relation: dataForBooking?.emergencyRelationC,
-            contactNumber: dataForBooking?.emergencyContact,
-          },
-        };
+        // const userUpdate = {
+        //   firstName: dataForBooking?.fullName,
+        //   phone: dataForBooking?.phone,
+        //   userAddress: dataForBooking?.address,
+        //   validityType: dataForBooking?.validityType,
+        //   emergencyContact: {
+        //     contactName: dataForBooking?.emergencyContactName,
+        //     relation: dataForBooking?.emergencyRelationC,
+        //     contactNumber: dataForBooking?.emergencyContact,
+        //   },
+        // };
 
-        await User.updateOne(
-          { _id: dataForBooking?.userId },
-          { $set: userUpdate },
-          { runValidators: true, session }
-        );
+        // await User.updateOne(
+        //   { _id: dataForBooking?.userId },
+        //   { $set: userUpdate },
+        //   { runValidators: true, session }
+        // );
         // End Update User
 
         // Commit the transaction if both operations are successful

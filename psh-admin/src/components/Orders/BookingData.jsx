@@ -18,8 +18,6 @@ const BookingData = ({
   page,
   size,
 }) => {
-  // console.log(booking);
-
   // For Status Modal
   const [statusModalData, setStatusModalData] = useState(null);
   const [showStatusModal, setShowStatusModal] = useState(false);
@@ -104,17 +102,17 @@ const BookingData = ({
         <td>
           {" "}
           <p>#{booking?.bookingId} </p>
-          <p className="fw-bold">{booking?.bookingInfo?.branch?.name}</p>
+          <p className="fw-bold">{booking?.branchDetails?.name}</p>
         </td>
         <td>
           <p>{booking?.phone}</p>
-          <p>{booking?.fullName}</p>
+          <p>{booking?.userInfo?.firstName}</p>
         </td>
         <td>
           {" "}
-          {booking?.bookingInfo?.roomType === "Shared Room"
-            ? booking?.bookingInfo?.seatBooking?.seatNumber
-            : booking?.bookingInfo?.roomNumber}
+          {booking?.roomType === "Shared Room"
+            ? booking?.seat?.seatNumber
+            : booking?.room?.roomNumber}
         </td>
         <td
           style={{

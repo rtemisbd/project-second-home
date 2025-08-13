@@ -18,7 +18,7 @@ const Payment = ({
   showPaymentModal,
   setShowPaymentModal,
 }) => {
-  // console.log(data);
+  console.log(data);
 
   const dispatch = useDispatch();
   const dateInputRef = useRef(null);
@@ -45,6 +45,8 @@ const Payment = ({
   useEffect(() => {
     refetch();
   }, [data?.payableAmount, data?.totalReceiveTk, refetch]);
+
+  console.log(data);
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -517,17 +519,28 @@ const Payment = ({
                         <div className="d-flex ">
                           <p className="fw-bold">Already Discount :</p>
 
-                          <p className=" ms-5">{data?.discount} Tk</p>
+                          <p className=" ms-5">
+                            {data?.adjustments[0]?.totatAdjustmentAmount || 0}{" "}
+                            Tk
+                          </p>
                         </div>
                         <div className="d-flex ">
                           <p className="fw-bold">Payable :</p>
 
-                          <p className=" ms-5">{data?.payableAmount} Tk</p>
+                          <p className=" ms-5">
+                            {data?.totalAmount -
+                              (data?.adjustments[0]?.totatAdjustmentAmount ||
+                                0)}{" "}
+                            Tk
+                          </p>
                         </div>
 
                         <div className="paid-amount d-flex ">
                           <p className="fw-bold ">Receive :</p>
-                          <p className=" ms-5"> {data?.totalReceiveTk} Tk</p>
+                          <p className=" ms-5">
+                            {" "}
+                            {data?.transactions[0]?.totalReceiveTk} Tk
+                          </p>
                         </div>
 
                         <div className="paid-amount d-flex ">
