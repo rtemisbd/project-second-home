@@ -18,16 +18,13 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
   const userName = user?.firstName;
   const navigate = useNavigate();
   const propertyId =
-    order?.bookingInfo?.roomType === "Shared Room"
-      ? order?.bookingInfo?.seatBooking?._id
-      : order?.bookingInfo?.roomId;
+    order?.roomType === "Shared Room" ? order?.seatBooking?._id : order?.roomId;
   const formRef = useRef(null);
 
   const [roomCategory, setRoomCategory] = useState(null);
   const [rating, setRating] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
-  const [payableAmount, setPayableAmount] = useState(0);
-  const [discount, setDiscount] = useState(0);
+
 
   const handleRatingChange = (newRating) => {
     setRating(newRating);
@@ -70,29 +67,14 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
     const fetchCategory = async () => {
       const { data } = await axios.get(`${serverBaseUrl}/category`);
 
-      const selected = data?.find(
-        (item) => item?.name === order?.bookingInfo?.roomType
-      );
+      const selected = data?.find((item) => item?.name === order?.roomType);
       setRoomCategory(selected?._id);
     };
     fetchCategory();
-  }, [order?.bookingInfo?.roomType]);
+  }, [order?.roomType]);
 
-  useEffect(() => {
-    const totalDiscount = order?.adjustments?.[0]?.totatAdjustmentAmount || 0;
-    const updatedDiscount = order?.discount || 0;
 
-    const newDiscount = updatedDiscount + totalDiscount;
-    setDiscount(newDiscount);
-
-    const newPayableAmount = (order?.totalAmount || 0) - newDiscount;
-
-    if (order?.discount > 0) {
-      setPayableAmount(order?.payableAmount);
-    } else {
-      setPayableAmount(newPayableAmount);
-    }
-  }, [order]);
+ 
 
   return (
     <>
@@ -120,7 +102,7 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                   Get Invoice
                 </p>
                 <Link
-                  to={`/${roomCategory}/${order?.bookingInfo?.roomName}/${propertyId}`}
+                  to={`/${roomCategory}/${order?.roomName}/${propertyId}`}
                   target="_blank"
                 >
                   <p className="text-sm pt-1  px-3 rounded hover:text-[#00BBB4]">
@@ -150,20 +132,15 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                     {order?.bookingId}
                   </span>
                   <span className="block text-start font-bold">
-                    {order?.branch?.name}
+                    {order?.branchDetails?.name}
                   </span>
                   <span className="block text-start font-bold">
                     {" "}
-                    {order?.bookingInfo?.roomType}
+                    {order?.roomType}
                   </span>
                   <span className="block text-start font-bold">
                     {" "}
-                    {order?.bookingInfo?.data?.roomNumber
-                      ? order?.bookingInfo?.data?.roomNumber
-                      : ""}
-                    {order?.bookingInfo?.roomNumber
-                      ? order?.bookingInfo?.roomNumber
-                      : ""}
+                    {order?.room?.roomNumber}
                   </span>
                 </div>
               </div>
@@ -182,25 +159,25 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                 </div>
                 <div className="">
                   <span className="block font-bold text-start">
-                    {order?.bookingInfo?.rentDate?.bookStartDate}
+                    {order?.rentDate?.bookStartDate}
                   </span>
                   <span className="block font-bold text-start">
-                    {order?.bookingInfo?.rentDate?.bookEndDate}
+                    {order?.rentDate?.bookEndDate}
                   </span>
                   <span className="block font-bold text-start">
                     {`${
-                      order?.bookingInfo?.customerRent?.daysDifference >= 0
-                        ? `${order?.bookingInfo?.customerRent?.daysDifference} Days`
+                      order?.customerRent?.daysDifference >= 0
+                        ? `${order?.customerRent?.daysDifference} Days`
                         : "" ||
-                          (order?.bookingInfo?.customerRent?.months &&
-                            order?.bookingInfo?.customerRent?.days >= 0 &&
-                            !order?.bookingInfo?.customerRent?.years)
-                        ? `${order?.bookingInfo?.customerRent?.months} months, ${order?.bookingInfo?.customerRent?.days} Days`
+                          (order?.customerRent?.months &&
+                            order?.customerRent?.days >= 0 &&
+                            !order?.customerRent?.years)
+                        ? `${order?.customerRent?.months} months, ${order?.customerRent?.days} Days`
                         : "" ||
-                          (order?.bookingInfo?.customerRent?.years &&
-                            order?.bookingInfo?.customerRent?.months >= 0 &&
-                            order?.bookingInfo?.customerRent?.days >= 0)
-                        ? `${order?.bookingInfo?.customerRent?.years} years, ${order?.bookingInfo?.customerRent?.months} months, ${order?.bookingInfo?.customerRent?.days} Days`
+                          (order?.customerRent?.years &&
+                            order?.customerRent?.months >= 0 &&
+                            order?.customerRent?.days >= 0)
+                        ? `${order?.customerRent?.years} years, ${order?.customerRent?.months} months, ${order?.customerRent?.days} Days`
                         : ""
                     }`}
                   </span>
@@ -249,10 +226,10 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                     Tk {order?.payableAmount?.toLocaleString()}
                   </span>
                   <span className="block text-start font-bold">
-                    Tk {discount}
+                    Tk {order?.discount}
                   </span>
                   <span className="block text-start font-bold">
-                    Tk {payableAmount}
+                    Tk {order?.payableAmount}
                   </span>
                 </div>
               </div>
@@ -280,23 +257,16 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
                   </span>
                   <span className="block font-bold text-start text-green-500">
                     {" "}
-                    Tk {order?.transactions[0]?.totalReceiveTk}
+                    Tk {order?.transactions[0]?.totalReceiveTk || 0}
                   </span>
                   <span
                     className="block font-bold text-start"
                     style={{
-                      color: order?.transactions[0]?.totalReceiveTk
-                        ? payableAmount - order?.transactions[0]?.totalReceiveTk
-                        : payableAmount !== 0
-                        ? "red"
-                        : "green",
+                      color: order?.dueAmount !== 0 ? "red" : "green",
                     }}
                   >
                     {" "}
-                    Tk{" "}
-                    {order?.transactions[0]?.totalReceiveTk
-                      ? payableAmount - order?.transactions[0]?.totalReceiveTk
-                      : payableAmount}
+                    Tk {order?.dueAmount}
                   </span>
                 </div>
               </div>

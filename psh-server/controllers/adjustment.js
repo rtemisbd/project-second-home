@@ -60,10 +60,12 @@ export const updateAdjustment = async (req, res, next) => {
     console.log({ findBooking });
 
     if (req?.body?.status === "Accepted") {
+      // const payableAmount =
+      //   findBooking?.totalAmount -
+      //   (parseInt(findBooking?.discount) +
+      //     parseInt(req?.body?.adjustmentAmount));
       const payableAmount =
-        findBooking?.totalAmount -
-        (parseInt(findBooking?.discount) +
-          parseInt(req?.body?.adjustmentAmount));
+        findBooking?.payableAmount - parseInt(req?.body?.adjustmentAmount);
       const dueAmount =
         findBooking?.dueAmount - parseInt(req?.body?.adjustmentAmount);
 

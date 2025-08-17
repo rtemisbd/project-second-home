@@ -74,7 +74,6 @@ const AdjustmentList = () => {
       refetchOnWindowFocus: false,
     }
   );
-  console.log(data);
 
   // handle Accept Adjustment
   const handleAccept = async (adjustment) => {

@@ -569,15 +569,107 @@ const getUserOrderFromDB = async (queries, phone) => {
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
+          // user
+          {
+            $lookup: {
+              from: "users",
+              let: { userId: "$userId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$userId"] },
+                  },
+                },
+                {
+                  $project: {
+                    firstName: 1,
+                    phone: 1,
+                    userAddress: 1,
+                    email: 1,
+                  },
+                },
+              ],
+              as: "userInfo",
+            },
+          },
+          { $unwind: { path: "$userInfo", preserveNullAndEmptyArrays: true } },
+          // branch
           {
             $lookup: {
               from: "branches",
-              localField: "branch",
-              foreignField: "_id",
-              as: "branch",
+              let: { branchId: "$branch" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$branchId"] },
+                  },
+                },
+                {
+                  $project: {
+                    name: 1,
+                    branchMobileNumber: 1,
+                    branchAddress: 1,
+                    branchEmail: 1,
+                  },
+                },
+              ],
+              as: "branchDetails",
             },
           },
-          { $unwind: "$branch" },
+          {
+            $unwind: {
+              path: "$branchDetails",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // room
+          {
+            $lookup: {
+              from: "properties",
+              let: { roomId: "$roomId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$roomId"] },
+                  },
+                },
+                {
+                  $project: { name: 1, roomNumber: 1 },
+                },
+              ],
+              as: "room",
+            },
+          },
+          {
+            $unwind: {
+              path: "$room",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // seat
+          {
+            $lookup: {
+              from: "seats",
+              let: { seatId: "$seatId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$seatId"] },
+                  },
+                },
+                {
+                  $project: { name: 1, seatNumber: 1 },
+                },
+              ],
+              as: "seat",
+            },
+          },
+          {
+            $unwind: {
+              path: "$seat",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
 
           {
             $lookup: {

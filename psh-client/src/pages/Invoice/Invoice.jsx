@@ -20,6 +20,8 @@ const Invoice = () => {
   const [transactions] = useUserTransactions();
   const { pathname } = useLocation();
 
+  console.log(userEndOrder);
+
   const [discount, setDiscount] = useState(0);
   const [payableAmount, setPayableAmount] = useState(0);
 
@@ -107,20 +109,20 @@ const Invoice = () => {
                     </p>
                     <p>
                       <span className="font-bold">Branch :</span>{" "}
-                      {userEndOrder?.bookingInfo?.branch?.name}
+                      {userEndOrder?.branchDetails?.name}
                     </p>
                     <p>
                       <span className="font-bold">Address :</span>
 
-                      {userEndOrder?.bookingInfo?.branch?.branchAddress}
+                      {userEndOrder?.branchDetails?.branchAddress}
                     </p>
                     <p>
                       <span className="font-bold">Mobile :</span>{" "}
-                      {userEndOrder?.bookingInfo?.branch?.branchMobileNumber}
+                      {userEndOrder?.branchDetails?.branchMobileNumber}
                     </p>
                     <p>
                       <span className="font-bold">Email :</span>{" "}
-                      {userEndOrder?.bookingInfo?.branch?.branchEmail}
+                      {userEndOrder?.branchDetails?.branchEmail}
                     </p>
                   </div>
                   <div>
@@ -128,29 +130,28 @@ const Invoice = () => {
                       <p className="text-[#35B0A7] font-bold ">Bill To,</p>
                       <p className="">
                         <span className="font-bold">Name :</span>{" "}
-                        {userEndOrder?.fullName}
+                        {userEndOrder?.userInfo?.firstName}
                       </p>
                       <p className="w-[180px]">
                         <span className="font-bold">Address :</span>{" "}
-                        {userEndOrder?.address}
+                        {userEndOrder?.userInfo?.userAddress}
                       </p>
                       <p className="">
                         <span className="font-bold">Mobile :</span>{" "}
-                        {userEndOrder?.phone}
+                        {userEndOrder?.userInfo?.phone}
                       </p>
                       <p>
                         <span className="font-bold">Email :</span>{" "}
-                        {userEndOrder?.email}
+                        {userEndOrder?.userInfo?.email}
                       </p>
 
                       <div className="mt-2.5">
                         <p>
                           Check in Time :{" "}
-                          {userEndOrder?.bookingInfo?.rentDate?.bookStartDate}
+                          {userEndOrder?.rentDate?.bookStartDate}
                         </p>
                         <p>
-                          Check Out Time :{" "}
-                          {userEndOrder?.bookingInfo?.rentDate?.bookEndDate}
+                          Check Out Time : {userEndOrder?.rentDate?.bookEndDate}
                         </p>
                       </div>
                     </div>
@@ -173,56 +174,46 @@ const Invoice = () => {
                   </div>
                   <div
                     className=" booking-table"
-                    style={{        
+                    style={{
                       backgroundColor: "rgba(53, 176, 167, 0.10)",
                     }}
                   >
                     <div className="grid xl:gird-cols-2 lg:grid-cols-2 md:grid-cols-2 sm:grid-cols-2 py-1.5 px-3">
                       <div className="flex col-span-1 items-center font-medium">
                         <p>01.</p>
-                        {userEndOrder?.bookingInfo?.roomType ===
-                        "Shared Room" ? (
+                        {userEndOrder?.roomType === "Shared Room" ? (
                           <p className="ml-10">
-                            {userEndOrder?.bookingInfo?.roomName +
+                            {userEndOrder?.room?.name +
                               ", Room Number : " +
-                              userEndOrder?.bookingInfo?.roomNumber +
+                              userEndOrder?.room?.roomNumber +
                               ", Seat Number : " +
-                              userEndOrder?.bookingInfo?.seatBooking
-                                ?.seatNumber}
+                              userEndOrder?.seat?.seatNumber}
                           </p>
                         ) : (
                           <p className="ml-10">
-                            {userEndOrder?.bookingInfo?.roomName +
+                            {userEndOrder?.room?.name +
                               ", Room Number : " +
-                              userEndOrder?.bookingInfo?.roomNumber}
+                              userEndOrder?.room?.roomNumber}
                           </p>
                         )}
                       </div>
                       <div className="flex items-center justify-between">
                         <p>
-                          {userEndOrder?.bookingInfo?.customerRent
-                            ?.daysDifference >= 0
-                            ? `${userEndOrder?.bookingInfo?.customerRent?.daysDifference} days`
+                          {userEndOrder?.customerRent?.daysDifference >= 0
+                            ? `${userEndOrder?.customerRent?.daysDifference} days`
                             : "" ||
-                              (userEndOrder?.bookingInfo?.customerRent
-                                ?.months &&
-                                userEndOrder?.bookingInfo?.customerRent?.days >=
-                                  0 &&
-                                !userEndOrder?.bookingInfo?.customerRent?.years)
-                            ? `${userEndOrder?.bookingInfo?.customerRent?.months} months, ${userEndOrder?.bookingInfo?.customerRent?.days} days`
+                              (userEndOrder?.customerRent?.months &&
+                                userEndOrder?.customerRent?.days >= 0 &&
+                                !userEndOrder?.customerRent?.years)
+                            ? `${userEndOrder?.customerRent?.months} months, ${userEndOrder?.customerRent?.days} days`
                             : "" ||
-                              (userEndOrder?.bookingInfo?.customerRent?.years &&
-                                userEndOrder?.bookingInfo?.customerRent
-                                  ?.months >= 0 &&
-                                userEndOrder?.bookingInfo?.customerRent?.days >=
-                                  0)
-                            ? `${userEndOrder?.bookingInfo?.customerRent?.years} year`
+                              (userEndOrder?.customerRent?.years &&
+                                userEndOrder?.customerRent?.months >= 0 &&
+                                userEndOrder?.customerRent?.days >= 0)
+                            ? `${userEndOrder?.customerRent?.years} year`
                             : ""}
                         </p>
-                        <p>
-                          BDT{" "}
-                          {userEndOrder?.bookingInfo?.subTotal?.toLocaleString()}
-                        </p>
+                        <p>BDT {userEndOrder?.subTotal?.toLocaleString()}</p>
                       </div>
                     </div>
                   </div>
@@ -339,16 +330,14 @@ const Invoice = () => {
                           <p className="font-bold">Subtotal</p>{" "}
                           <p className="ml-[55px]">:</p>{" "}
                           <p className="">
-                            BDT{" "}
-                            {userEndOrder?.bookingInfo?.subTotal?.toLocaleString()}
+                            BDT {userEndOrder?.subTotal?.toLocaleString()}
                           </p>
                         </div>
                         <div className="flex justify-between">
                           <p className="font-bold">Food</p>{" "}
                           <p className="ml-[55px]">:</p>{" "}
                           <p className="">
-                            BDT{" "}
-                            {userEndOrder?.bookingInfo?.foodAmount?.toLocaleString()}
+                            BDT {userEndOrder?.foodAmount?.toLocaleString()}
                           </p>
                         </div>
 
@@ -356,8 +345,7 @@ const Invoice = () => {
                           <p className="font-bold">VAT </p>{" "}
                           <p className="ml-[70px]">:</p>
                           <p className="">
-                            BDT{" "}
-                            {userEndOrder?.bookingInfo?.vatTax?.toLocaleString()}
+                            BDT {userEndOrder?.vatTax?.toLocaleString()}
                           </p>
                         </div>
                         <div className="flex justify-between">
@@ -365,8 +353,8 @@ const Invoice = () => {
                           <p className="mx-5">:</p>
                           <p className="">
                             BDT{" "}
-                            {userEndOrder?.bookingInfo?.addMissionFee > 0
-                              ? userEndOrder?.bookingInfo?.addMissionFee?.toLocaleString()
+                            {userEndOrder?.addMissionFee > 0
+                              ? userEndOrder?.addMissionFee?.toLocaleString()
                               : 0}
                           </p>
                         </div>
@@ -375,8 +363,8 @@ const Invoice = () => {
                           <p className="ml-4">:</p>
                           <p className="">
                             BDT{" "}
-                            {userEndOrder?.bookingInfo?.securityFee > 0
-                              ? userEndOrder?.bookingInfo?.securityFee?.toLocaleString()
+                            {userEndOrder?.securityFee > 0
+                              ? userEndOrder?.securityFee?.toLocaleString()
                               : 0}
                           </p>
                         </div>
