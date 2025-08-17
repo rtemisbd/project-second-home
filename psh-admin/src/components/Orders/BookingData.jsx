@@ -30,8 +30,8 @@ const BookingData = ({
     useState(null);
   const [isIncludeFood, setIsIncludeFood] = useState(false);
   // For Seat Update Duration Modal
-  const [discount, setDiscount] = useState(0);
-  const [payableAmount, setPayableAmount] = useState(0);
+  // const [discount, setDiscount] = useState(0);
+  // const [payableAmount, setPayableAmount] = useState(0);
   const [durationUpdateDataSeat, setDurationUpdateDataSeat] = useState(null);
   const [showSeatUpdateDuration, setShowSeatUpdateDuration] = useState(false);
   // Details Modal
@@ -69,22 +69,22 @@ const BookingData = ({
     setBookingDetails(detailsData);
   };
 
-  useEffect(() => {
-    setIsIncludeFood(booking?.isIncludeFood);
-  }, [booking.isIncludeFood]);
+  // useEffect(() => {
+  //   setIsIncludeFood(booking?.isIncludeFood);
+  // }, [booking.isIncludeFood]);
 
-  useEffect(() => {
-    const totalDiscount = booking?.adjustments?.[0]?.totatAdjustmentAmount || 0;
-    const updatedDiscount = booking?.discount || 0;
+  // useEffect(() => {
+  //   const totalDiscount = booking?.adjustments?.[0]?.totatAdjustmentAmount || 0;
+  //   const updatedDiscount = booking?.discount || 0;
 
-    // Update the discount to include adjustments
-    const newDiscount = updatedDiscount + totalDiscount;
-    setDiscount(newDiscount);
+  //   // Update the discount to include adjustments
+  //   const newDiscount = updatedDiscount + totalDiscount;
+  //   setDiscount(newDiscount);
 
-    // Calculate and set the payable amount
-    const newPayableAmount = (booking?.totalAmount || 0) - newDiscount;
-    setPayableAmount(newPayableAmount > 0 ? newPayableAmount : 0); // Ensure no negative value
-  }, [booking?.adjustments, booking?.totalAmount, booking?.discount]);
+  //   // Calculate and set the payable amount
+  //   const newPayableAmount = (booking?.totalAmount || 0) - newDiscount;
+  //   setPayableAmount(newPayableAmount > 0 ? newPayableAmount : 0); // Ensure no negative value
+  // }, [booking?.adjustments, booking?.totalAmount, booking?.discount]);
 
   return (
     <>
@@ -121,7 +121,7 @@ const BookingData = ({
         >
           {" "}
           <p className="fw-bold">Tk {booking?.totalAmount?.toLocaleString()}</p>
-          {booking?.bookingInfo?.isIncludeFood === true ? (
+          {booking?.isIncludeFood === true ? (
             <p
               className="fw-bold"
               style={{
@@ -138,13 +138,13 @@ const BookingData = ({
         </td>
         <td>
           {" "}
-          <p className="fw-bold">Tk {discount}</p>
+          <p className="fw-bold">Tk {booking?.discount}</p>
         </td>
         <td>
           {" "}
           <p className="fw-bold">
             {/* Tk {booking?.payableAmount?.toLocaleString()} */}
-            Tk {payableAmount}
+            Tk {booking?.payableAmount}
           </p>
         </td>
         <td>
@@ -164,7 +164,7 @@ const BookingData = ({
             Tk{" "}
             {booking?.transactions[0]?.totalReceiveTk
               ? booking?.transactions[0]?.totalReceiveTk?.toLocaleString()
-              : "0"}
+              : 0}
           </p>
         </td>
         <td>
@@ -175,12 +175,7 @@ const BookingData = ({
               color: booking?.paymentStatus === "Paid" ? "green" : "red",
             }}
           >
-            {" "}
-            TK{" "}
-            {booking?.transactions[0]?.totalReceiveTk
-              ? payableAmount - booking?.transactions[0]?.totalReceiveTk
-              : payableAmount}
-            {/* Tk {booking?.dueAmount?.toLocaleString()} */}
+            Tk {booking?.dueAmount?.toLocaleString()}
           </span>
         </td>
         <td>

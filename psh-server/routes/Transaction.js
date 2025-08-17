@@ -29,7 +29,7 @@ router.get(
 );
 router.post("/", createTransaction);
 router.post("/user-transaction", bkash_auth, createTransactionByUser);
-router.get("/:id", getTransactionById )
+router.get("/:id", getTransactionById);
 // router.route("/:id").get(getTransactionById);
 // router.route("/:phone").get(getUserTransactions);
 router.route("/:id").delete(deleteTransaction);

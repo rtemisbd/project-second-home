@@ -21,9 +21,9 @@ const TransactionPrint = ({ transaction, refetch }) => {
       <td>#{transaction?.orderDetails?.bookingId}</td>
       <td> {transaction?.branchDetails?.name}</td>
 
-      <td>{transaction?.userName}</td>
+      <td>{transaction?.userInfo?.firstName}</td>
       {/* <td>#{transaction?.userDetails.userId}</td> */}
-      <td>{transaction?.userPhone}</td>
+      <td>{transaction?.userInfo?.phone}</td>
       <td style={{ color: "#1d6f42", fontWeight: "bold" }}>
         {" "}
         Tk {transaction?.receivedTk}

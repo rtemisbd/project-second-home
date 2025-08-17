@@ -1,38 +1,7 @@
-/* eslint-disable no-unused-vars */
-import axios from "axios";
-import React from "react";
-import { useState } from "react";
-import { useEffect } from "react";
 
-const ViewTransactionModal = ({ data, bookings }) => {
-  // console.log(data?.bookingInfo);
 
-  const [branchs, SetBranchs] = useState([]);
-  const [singleBranch, setSingleBranch] = useState({});
-  const [shareRoomBranch, setShareRoomBranch] = useState({});
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.get("https://api.psh.com.bd/api/branch");
-        SetBranchs(response.data);
-      } catch (error) {
-        console.log(error);
-      }
-    };
+const ViewTransactionModal = ({ data }) => {
 
-    fetchData();
-    const branch = branchs.find((branch) => branch._id === data?.branch);
-    setSingleBranch(branch);
-
-    const shareRoomBranch = branchs.find(
-      (branch) => branch._id === data?.branch
-    );
-    setShareRoomBranch(shareRoomBranch);
-  }, [branchs, data?.branch]);
-
-  const findBookig = bookings?.find(
-    (booking) => booking?._id === data?.orderId
-  );
 
   const formattedDate = new Date(data?.createdAt).toLocaleString();
 
@@ -76,19 +45,19 @@ const ViewTransactionModal = ({ data, bookings }) => {
                   <label htmlFor="" className="fw-medium">
                     Customer Name
                   </label>
-                  <p>{data?.userName}</p>
+                  <p>{data?.userInfo?.firstName}</p>
                 </div>
                 <div className="col-lg-4">
                   <label htmlFor="" className="fw-medium">
                     Customer Email
                   </label>
-                  <p>{data?.userEmail}</p>
+                  <p>{data?.userInfo?.email}</p>
                 </div>
                 <div className="col-lg-3">
                   <label htmlFor="" className="fw-medium">
                     Phone Number
                   </label>
-                  <p>{data?.userPhone}</p>
+                  <p>{data?.userInfo?.phone}</p>
                 </div>
                 <div className="col-lg-2">
                   <label htmlFor="" className="fw-medium">

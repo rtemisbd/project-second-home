@@ -12,7 +12,7 @@ import { formatDate } from "../../utils/dateConvert";
 
 const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
   const ref = useRef();
-  console.log(data);
+  // console.log(data);
 
   const [discount, setDiscount] = useState(data?.discount || 0);
   const [payableAmount, setPayableAmount] = useState(data?.payableAmount || 0);
@@ -241,7 +241,7 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                 <label htmlFor="" className="fw-medium">
                   Room Number
                 </label>
-                <p> {data?.roomNumber}</p>
+                <p> {data?.room?.roomNumber}</p>
               </div>
             )}
 
@@ -370,8 +370,8 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               </label>
               <p>
                 Tk{" "}
-                {payableAmount - (data?.transactions[0]?.totalReceiveTk || 0)}
-                {/* {data?.dueAmount?.toLocaleString()} */}
+                {/* {payableAmount - (data?.transactions[0]?.totalReceiveTk || 0)} */}
+                {data?.dueAmount?.toLocaleString()}
               </p>
             </div>
 
@@ -473,9 +473,9 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
                     <tr key={transaction._id}>
                       <td>{formatDate(transaction?.paymentDate)}</td>
 
-                      <td className="fw-bold">{transaction?.userName}</td>
+                      <td className="fw-bold">{data?.userInfo?.firstName}</td>
 
-                      <td className="fw-bold">{transaction?.userPhone}</td>
+                      <td className="fw-bold">{data?.userInfo?.phone}</td>
                       <td className="fw-bold" style={{ color: "green" }}>
                         Tk {transaction?.receivedTk?.toLocaleString()}
                       </td>

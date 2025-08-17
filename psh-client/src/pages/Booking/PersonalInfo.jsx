@@ -60,7 +60,7 @@ const PersonalInfo = () => {
       setBookingItem(parseToJson);
     }
   }, []);
-  console.log(bookingItem);
+  // console.log(bookingItem);
 
   useEffect(() => {
     if (singleUser) {
@@ -147,12 +147,13 @@ const PersonalInfo = () => {
       }
 
       if (amount && dataForBooking) {
+        dataForBooking.receivedTk = amount;
         const { data } = await axios.post(
           `${serverBaseUrl}/bkash/payment/create`,
-          { amount, dataForBooking, selectMethod },
+          { amount: 1, dataForBooking, selectMethod },
           { withCredentials: true }
         );
-        console.log(data);
+        // console.log(data);
 
         window.location.href =
           selectMethod === "manual" ? data?.data?.bkashURL : data?.bkashURL;
@@ -171,7 +172,7 @@ const PersonalInfo = () => {
       localStorage.removeItem("seatItem");
       // navigate("/booking-now");
     } catch (error) {
-      console.log(error);
+      // console.log(error);
 
       dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");

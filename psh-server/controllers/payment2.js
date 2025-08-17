@@ -10,12 +10,8 @@ import RentRoom from "../models/RentRoom.js";
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
-import {
-  createOrderByCash,
-  createOrderByManualBkash,
-} from "../services/order.service.js";
-
 import sendResponse from "../shared/sendResponse.js";
+import { orderServices } from "../services/order.service.js";
 
 // Helper to prepare bkash headers
 const bkashHeaders = async () => {
@@ -68,11 +64,10 @@ const paymentCreate = async (req, res) => {
   // Step 2: Generate booking ID
   const generateId = await generateBookingId();
   bookingData.bookingId = generateId;
-  bookingData.paymentStatus =
-    bookingData.payableAmount === bookingData?.receivedTk ? "Paid" : "Unpaid";
+  bookingData.dueAmount = bookingData.payableAmount;
   // If Manual Payment
   if (selectMethod === "manual") {
-    const result = await createOrderByManualBkash(bookingData);
+    const result = await orderServices.createOrderByManualBkash(bookingData);
 
     sendResponse(res, {
       statusCode: 200,
@@ -82,7 +77,7 @@ const paymentCreate = async (req, res) => {
         "Thank You! Your Booking Successfully Done, We will contact you very soon.",
     });
   } else if (selectMethod === "cash") {
-    const result = await createOrderByCash(bookingData);
+    const result = await orderServices.createOrderByCash(bookingData);
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -120,6 +115,7 @@ const paymentCreate = async (req, res) => {
 // Callback Method (After Payment Confirmation)
 const callBack = async (req, res) => {
   const { paymentID, status } = req.query;
+
   const dataForBooking = getValue("dataForBooking");
 
   if (status === "cancel" || status === "failure") {
@@ -147,13 +143,18 @@ const callBack = async (req, res) => {
 
         // dataForBooking.bookingId = generateId;
         dataForBooking.status = "Approved";
-        // dataForBooking.paymentStatus = dataForBooking?.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
-
+        dataForBooking.paymentStatus =
+          dataForBooking?.payableAmount === dataForBooking?.receivedTk
+            ? "Paid"
+            : "Unpaid";
+        dataForBooking.dueAmount =
+          dataForBooking?.payableAmount - dataForBooking?.receivedTk;
         const orderData = new OrderModel({
           ...dataForBooking,
         });
 
         const result = await orderData.save({ session });
+
         // End Create Booking
 
         // Start Create user transaction

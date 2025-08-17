@@ -44,7 +44,6 @@ const createTransactionByUserBkash = async (payload) => {
 
 const getAllTransactionFromDB = async (queries) => {
   const {
-        
     fromDate,
     toDate,
     branch,
@@ -82,6 +81,25 @@ const getAllTransactionFromDB = async (queries) => {
 
   const pipeline = [
     { $match: matchStage },
+    {
+      $lookup: {
+        from: "users",
+        localField: "userId",
+        foreignField: "_id",
+        as: "userInfo",
+        pipeline: [
+          {
+            $project: {
+              _id: 1,
+              firstName: 1,
+              phone: 1,
+              email: 1,
+            },
+          },
+        ],
+      },
+    },
+    { $unwind: "$userInfo" },
     {
       $lookup: {
         from: "branches",
@@ -133,7 +151,7 @@ const getAllTransactionFromDB = async (queries) => {
           { $limit: size },
         ],
         totalCounts: [
-          { 
+          {
             $group: {
               _id: null,
               totalCount: { $sum: 1 },
@@ -189,24 +207,23 @@ const getTransactionByIdFromDB = async (id) => {
   const matchCondition = id.length > 11 ? { _id: id } : { userPhone: id };
 
   const result = await Transaction.aggregate([
-    { $match: matchCondition }, 
+    { $match: matchCondition },
     {
       $lookup: {
-        from: "orders", 
+        from: "orders",
         localField: "orderId",
         foreignField: "_id",
         as: "orderDetail",
         pipeline: [
           {
             $project: {
-              _id: 0, 
+              _id: 0,
               bookingId: 1, // Only include bookingId
             },
           },
         ],
       },
     },
-    
   ]);
 
   return result;

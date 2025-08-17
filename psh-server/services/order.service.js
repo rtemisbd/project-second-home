@@ -112,6 +112,7 @@ export const createOrderByManualBkash = async (payload) => {
           paymentType: "bkash",
           receivedTk: dataForBooking?.receivedTk,
           paymentNumber: dataForBooking?.paymentNumber,
+
           // transactionId: data.trxID,
           userId: dataForBooking?.userId,
           // userPhone: dataForBooking?.phone,
@@ -651,15 +652,15 @@ const updateBookingStatusIntoDB = async (payload) => {
   // find the booking
   const booking = await OrderModel.findById(payload.id);
   const newRent = {
-    bookStartDate: booking?.bookingInfo?.rentDate?.bookStartDate,
-    bookEndDate: booking?.bookingInfo?.rentDate?.bookEndDate,
-    roomId: booking?.bookingInfo?.roomId,
-    roomNumber: booking?.bookingInfo?.roomNumber,
-    seatId: booking?.bookingInfo?.seatBooking?._id,
-    seatNumber: booking?.bookingInfo?.seatBooking?.seatNumber,
-    roomType: booking?.bookingInfo?.roomType,
+    bookStartDate: booking?.rentDate?.bookStartDate,
+    bookEndDate: booking?.rentDate?.bookEndDate,
+    roomId: booking?.roomId,
+    // roomNumber: booking?.bookingInfo?.roomNumber,
+    seatId: booking?.seatId,
+    // seatNumber: booking?.seatBooking,
+    roomType: booking?.roomType,
     bookingId: booking?._id,
-    branch: booking?.bookingInfo?.branch?._id,
+    branch: booking?.branch,
     userId: booking?.userId,
   };
   if (booking?.status === "Approved" || booking?.status === "Processing") {
@@ -703,12 +704,12 @@ const updateBookingStatusIntoDB = async (payload) => {
 
     // if have promo code then remove promo code
     await User.updateOne(
-      { phone: booking?.email },
+      { phone: booking?.phone },
 
       {
         $pull: {
           usedPromo: {
-            promo: booking?.bookingInfo?.usedPromo?.promo,
+            promo: booking?.usedPromo?.promo,
           },
         },
       }
@@ -725,6 +726,8 @@ const updateBookingStatusIntoDB = async (payload) => {
 
 export const orderServices = {
   createOrderIntoDB,
+  createOrderByManualBkash,
+  createOrderByCash,
   getOrderFromDB,
   updateBookingStatusIntoDB,
   createOrderByCash,

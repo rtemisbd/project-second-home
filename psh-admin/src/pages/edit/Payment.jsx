@@ -18,7 +18,7 @@ const Payment = ({
   showPaymentModal,
   setShowPaymentModal,
 }) => {
-  console.log(data);
+
 
   const dispatch = useDispatch();
   const dateInputRef = useRef(null);
@@ -94,7 +94,7 @@ const Payment = ({
       bankName: e.target?.bankName?.value,
       bankHoldingName: e.target?.bankHoldingName?.value,
       receiverName: e.target?.receiverName?.value,
-      acceptableStatus: paymentType === "Cash" ? "Accepted" : "Pending",
+      // acceptableStatus: paymentType === "Cash" ? "Accepted" : "Pending",
       noteForTransaction: e.target?.noteForTransaction?.value,
       userId: data?.userId,
       userPhone: data?.phone,
@@ -157,7 +157,7 @@ const Payment = ({
     setLoading(true);
     const adjustment = {
       booking: data?._id,
-      branch: data?.bookingInfo?.branch,
+      branch: data?.branch,
       userId: data?.userId,
       adjustmentAmount: adjustmentAmount,
       noteForAdjustment: noteForAdjustment,
