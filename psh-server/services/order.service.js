@@ -323,7 +323,12 @@ const getOrderFromDB = async (queries) => {
                   },
                 },
                 {
-                  $project: { name: 1 },
+                  $project: {
+                    name: 1,
+                    branchEmail: 1,
+                    branchAddress: 1,
+                    branchMobileNumber: 1,
+                  },
                 },
               ],
               as: "branchDetails",

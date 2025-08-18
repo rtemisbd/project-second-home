@@ -20,8 +20,6 @@ const Invoice = () => {
   const [transactions] = useUserTransactions();
   const { pathname } = useLocation();
 
-  console.log(userEndOrder);
-
   const [discount, setDiscount] = useState(0);
   const [payableAmount, setPayableAmount] = useState(0);
 
