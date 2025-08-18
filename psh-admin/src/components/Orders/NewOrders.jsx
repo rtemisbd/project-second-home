@@ -161,7 +161,7 @@ const NewOrders = () => {
       return () => clearTimeout(timeoutId);
     }
   }, [data?.orders?.length, findingStatement, hasTimeoutRun, refetch]);
-  // console.log(data?.orders?.[0]);
+  console.log(data?.orders);
 
   return (
     <div className="wrapper">

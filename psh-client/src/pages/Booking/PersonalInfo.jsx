@@ -150,7 +150,7 @@ const PersonalInfo = () => {
         dataForBooking.receivedTk = amount;
         const { data } = await axios.post(
           `${serverBaseUrl}/bkash/payment/create`,
-          { amount: 1, dataForBooking, selectMethod },
+          { amount, dataForBooking, selectMethod },
           { withCredentials: true }
         );
         // console.log(data);
