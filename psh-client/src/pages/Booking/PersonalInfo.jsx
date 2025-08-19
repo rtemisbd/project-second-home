@@ -925,7 +925,7 @@ const PersonalInfo = () => {
                       </div>
                     </div>
 
-                    <p> + BDT {bookingItem?.vatTax?.toLocaleString()}</p>
+                    <p> + BDT {bookingItem?.vatTax?.toLocaleString() || 0}</p>
                   </div>
                   {bookingItem?.customerRent?.months >= 1 ||
                   bookingItem?.customerRent?.years ? (
@@ -1033,7 +1033,7 @@ const PersonalInfo = () => {
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.payableAmount?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.totalAmount?.toLocaleString()}</p>
                   </div>
 
                   {bookingItem?.discount ? (

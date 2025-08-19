@@ -81,7 +81,7 @@ const updateOrderPaymentStatus = async () => {
 };
 
 export const orderCorrection = async (req, res) => {
-  console.log("bbjdrgwa");
+
 
   try {
     /*

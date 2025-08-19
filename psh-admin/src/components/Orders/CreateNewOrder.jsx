@@ -39,15 +39,17 @@ const CreateNewOrder = ({ category, id, user }) => {
   const [minimumPayment, setMinimumPayment] = useState(0);
 
   const [dataForBooking, setDataForBooking] = useState({
+    userInfo: {
+      userId: user?._id || "",
+      fullName: user?.firstName || "",
+      phone: user?.phone || "",
+      address: user?.userAddress || "",
+      validityType: user?.validityType || "",
+      emergencyContactName: user?.emergencyContact?.contactName || "",
+      emergencyRelationC: user?.emergencyContact?.relation || "",
+      emergencyContact: user?.emergencyContact?.contactNumber || "",
+    },
     bookingExtend: false,
-    userId: user?._id || "",
-    fullName: user?.firstName || "",
-    phone: user?.phone || "",
-    address: user?.userAddress || "",
-    validityType: user?.validityType || "",
-    emergencyContactName: user?.emergencyContact?.contactName || "",
-    emergencyRelationC: user?.emergencyContact?.relation || "",
-    emergencyContact: user?.emergencyContact?.contactNumber || "",
     arrivalTime: "09 AM To 10 AM",
   });
 
@@ -181,29 +183,44 @@ const CreateNewOrder = ({ category, id, user }) => {
   // handle booking
   const handleBooking = async () => {
     try {
-      const bookingInfo = {
-        subTotal,
-        foodAmount,
-        isIncludeFood,
-        vatTax,
-        totalAmount,
-        payableAmount,
-        roomId: id,
-        roomName: room?.name,
-        roomNumber: room?.roomNumber,
-        roomType: room?.category?.name,
-        seatBooking: room?.category?.name === "Shared Room" ? room : null,
-        branch: room?.branch,
-        rentDate: {
-          bookStartDate: new Date(startDate).toISOString().split("T")[0],
-          bookEndDate: new Date(endDate).toISOString().split("T")[0],
-        },
-        customerRent,
-      };
-      dataForBooking.bookingInfo = bookingInfo;
-      dataForBooking.branch = room?.branch?._id;
+      // const bookingInfo = {
+      //   subTotal,
+      //   foodAmount,
+      //   isIncludeFood,
+      //   vatTax,
+      //   totalAmount,
+      //   payableAmount,
+      //   roomId: id,
+      //   roomName: room?.name,
+      //   roomNumber: room?.roomNumber,
+      //   roomType: room?.category?.name,
+      //   seatBooking: room?.category?.name === "Shared Room" ? room : null,
+      //   branch: room?.branch,
+      //   rentDate: {
+      //     bookStartDate: new Date(startDate).toISOString().split("T")[0],
+      //     bookEndDate: new Date(endDate).toISOString().split("T")[0],
+      //   },
+      //   customerRent,
+      // };
+      dataForBooking.userId = user?._id || "";
+      dataForBooking.phone = user?.phone || "";
+      dataForBooking.subTotal = subTotal;
+      dataForBooking.foodAmount = foodAmount;
+      dataForBooking.isIncludeFood = isIncludeFood;
       dataForBooking.totalAmount = totalAmount;
       dataForBooking.payableAmount = payableAmount;
+      dataForBooking.roomId = id;
+      dataForBooking.roomType = room?.category?.name;
+      dataForBooking.branch = room?.branch?._id;
+      dataForBooking.seatId = room?.branch?._id;
+      dataForBooking.perDay = room?.dAmountForDay;
+      dataForBooking.rentDate = {
+        bookStartDate: new Date(startDate).toISOString().split("T")[0],
+        bookEndDate: new Date(endDate).toISOString().split("T")[0],
+      };
+      dataForBooking.customerRent = customerRent;
+
+      // dataForBooking.bookingInfo = bookingInfo;
 
       const { data } = await axios.post(
         `${baseUrl}/api/bkash/payment/create`,

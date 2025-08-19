@@ -57,7 +57,7 @@ export const updateAdjustment = async (req, res, next) => {
     const findBooking = await OrderModel.findOne({
       _id: findAdjustment.booking,
     });
-    console.log({ findBooking });
+
 
     if (req?.body?.status === "Accepted") {
       // const payableAmount =

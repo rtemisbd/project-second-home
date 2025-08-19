@@ -76,9 +76,12 @@ const createOrderIntoDB = async (payload) => {
     // console.log({ data });
 
     await session.commitTransaction();
+    session.endSession();
+
     return { bkashURL: responseData?.bkashURL };
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
     // console.error("Error in createOrderIntoDB:", error);
     return { error: error };
   } finally {
@@ -150,19 +153,19 @@ export const createOrderByManualBkash = async (payload) => {
 
     // Commit the transaction
     await session.commitTransaction();
+    session.endSession();
     return {
       bkashURL: `${config.client_url}/success`,
     };
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
     // console.error("Error during payment execution:", error);
     return {
       bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
         error.message
       )}`,
     };
-  } finally {
-    session.endSession();
   }
 };
 export const createOrderByCash = async (payload) => {
@@ -171,10 +174,12 @@ export const createOrderByCash = async (payload) => {
     session.startTransaction();
 
     const dataForBooking = payload;
+
     // const generateId = await generateBookingId();
     // dataForBooking.bookingId = generateId;
     // dataForBooking.paymentType = "Cash";
     const result = await OrderModel.create([dataForBooking], { session });
+    // const result = await OrderModel.create(dataForBooking);
 
     // Phone SMS for booking
     const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
@@ -203,15 +208,13 @@ export const createOrderByCash = async (payload) => {
 
     // Commit the transaction
     await session.commitTransaction();
-    return {
-      status: true,
-    };
+    session.endSession();
+    return result[0];
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
     // console.error("Error during payment execution:", error);
     return { error };
-  } finally {
-    session.endSession();
   }
 };
 

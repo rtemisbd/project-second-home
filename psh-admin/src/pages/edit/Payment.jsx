@@ -18,8 +18,6 @@ const Payment = ({
   showPaymentModal,
   setShowPaymentModal,
 }) => {
-
-
   const dispatch = useDispatch();
   const dateInputRef = useRef(null);
 
@@ -519,27 +517,19 @@ const Payment = ({
                         <div className="d-flex ">
                           <p className="fw-bold">Already Discount :</p>
 
-                          <p className=" ms-5">
-                            {data?.adjustments[0]?.totatAdjustmentAmount || 0}{" "}
-                            Tk
-                          </p>
+                          <p className=" ms-5">{data?.discount || 0} Tk</p>
                         </div>
                         <div className="d-flex ">
                           <p className="fw-bold">Payable :</p>
 
-                          <p className=" ms-5">
-                            {data?.totalAmount -
-                              (data?.adjustments[0]?.totatAdjustmentAmount ||
-                                0)}{" "}
-                            Tk
-                          </p>
+                          <p className=" ms-5">{data?.payableAmount || 0} Tk</p>
                         </div>
 
                         <div className="paid-amount d-flex ">
                           <p className="fw-bold ">Receive :</p>
                           <p className=" ms-5">
                             {" "}
-                            {data?.transactions[0]?.totalReceiveTk} Tk
+                            {data?.transactions[0]?.totalReceiveTk || 0} Tk
                           </p>
                         </div>
 

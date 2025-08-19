@@ -313,7 +313,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
           setDisCountTk(totalRentAmount * discount - userPromo?.discountAmount);
           // setMinimumPayment(0);
           setMinimumPayment(userPromo?.discountAmount);
-          setTotalRentAmount(userPromo?.discountAmount);
+          // setTotalRentAmount(userPromo?.discountAmount);
         } else {
           setPayableAmount(
             parseInt(totalRentAmount - totalRentAmount * discount)

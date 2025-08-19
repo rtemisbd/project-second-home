@@ -37,6 +37,8 @@ const paymentCreate = async (req, res) => {
   });
 
   if (!findUser) {
+    await session.abortTransaction();
+    session.endSession();
     return new Error("Sorry! User Not Found"); //   User Not Exist
   }
 
@@ -78,6 +80,8 @@ const paymentCreate = async (req, res) => {
     });
   } else if (selectMethod === "cash") {
     const result = await orderServices.createOrderByCash(bookingData);
+
+
     sendResponse(res, {
       statusCode: 200,
       success: true,
@@ -104,9 +108,14 @@ const paymentCreate = async (req, res) => {
           headers: await bkashHeaders(),
         }
       );
+      await session.commitTransaction();
+      session.endSession();
 
       return res.status(200).json({ bkashURL: data.bkashURL });
     } catch (error) {
+      await session.abortTransaction();
+      session.endSession();
+
       return res.status(401).json({ error: error.message });
     }
   }
