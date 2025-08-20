@@ -89,11 +89,8 @@ const createOrderIntoDB = async (payload) => {
   }
 };
 
-export const createOrderByManualBkash = async (payload) => {
-  const session = await startSession();
+export const createOrderByManualBkash = async (payload, session) => {
   try {
-    session.startTransaction();
-
     const dataForBooking = payload;
     // const generateId = await generateBookingId();
     // dataForBooking.bookingId = generateId;
@@ -131,35 +128,10 @@ export const createOrderByManualBkash = async (payload) => {
 
     await bookingSms(bookingMessage);
 
-    // Start Update user information
-    // const userUpdate = {
-    //   firstName: dataForBooking?.fullName,
-    //   phone: dataForBooking?.phone,
-    //   userAddress: dataForBooking?.address,
-    //   validityType: dataForBooking?.validityType,
-    //   emergencyContact: {
-    //     contactName: dataForBooking?.emergencyContactName,
-    //     relation: dataForBooking?.emergencyRelationC,
-    //     contactNumber: dataForBooking?.emergencyContact,
-    //   },
-    // };
-
-    // await User.updateOne(
-    //   { _id: dataForBooking?.userId },
-    //   { $set: userUpdate },
-    //   { runValidators: true, session }
-    // );
-    // End Update User
-
-    // Commit the transaction
-    await session.commitTransaction();
-    session.endSession();
     return {
       bkashURL: `${config.client_url}/success`,
     };
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     // console.error("Error during payment execution:", error);
     return {
       bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
@@ -168,11 +140,8 @@ export const createOrderByManualBkash = async (payload) => {
     };
   }
 };
-export const createOrderByCash = async (payload) => {
-  const session = await startSession();
+export const createOrderByCash = async (payload, session) => {
   try {
-    session.startTransaction();
-
     const dataForBooking = payload;
 
     // const generateId = await generateBookingId();
@@ -186,33 +155,8 @@ export const createOrderByCash = async (payload) => {
 
     await bookingSms(bookingMessage);
 
-    // Start Update user information
-    // const userUpdate = {
-    //   firstName: dataForBooking?.fullName,
-    //   phone: dataForBooking?.phone,
-    //   userAddress: dataForBooking?.address,
-    //   validityType: dataForBooking?.validityType,
-    //   emergencyContact: {
-    //     contactName: dataForBooking?.emergencyContactName,
-    //     relation: dataForBooking?.emergencyRelationC,
-    //     contactNumber: dataForBooking?.emergencyContact,
-    //   },
-    // };
-
-    // await User.updateOne(
-    //   { _id: dataForBooking?.userId },
-    //   { $set: userUpdate },
-    //   { runValidators: true, session }
-    // );
-    // End Update User
-
-    // Commit the transaction
-    await session.commitTransaction();
-    session.endSession();
     return result[0];
   } catch (error) {
-    await session.abortTransaction();
-    session.endSession();
     // console.error("Error during payment execution:", error);
     return { error };
   }

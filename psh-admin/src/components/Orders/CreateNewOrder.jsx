@@ -224,14 +224,17 @@ const CreateNewOrder = ({ category, id, user }) => {
 
       const { data } = await axios.post(
         `${baseUrl}/api/bkash/payment/create`,
-        { amount: null, dataForBooking, selectMethod: "cash" },
+        { dataForBooking, selectMethod: "cash" },
         { withCredentials: true }
       );
+      // console.log(data);
 
-      if (data?.data?.status === true) {
+      if (data?.success === true) {
         toast.success("Booking Added!");
       }
     } catch (error) {
+      console.log(error);
+
       toast.error("Something is wrong");
     }
   };

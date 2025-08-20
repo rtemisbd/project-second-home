@@ -303,7 +303,7 @@ const PersonalInfo = () => {
                         lg:w-[350px] md:w-[300px] sm:w-full"
                     name="address"
                     // defaultValue={singleUser ? singleUser?.userAddress : ""}
-                    value={dataForBooking.address}
+                    value={singleUser?.userAddress}
                     style={{
                       height: "45px",
                       padding: "0px 10px",

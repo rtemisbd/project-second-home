@@ -177,7 +177,13 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
 
       setShowMinimumPayment(true);
     } else {
-      setMinimumPayment(seat ? seat?.dAmountForDay : data?.dAmountForDay);
+      setMinimumPayment(
+        seat
+          ? seat?.dAmountForDay
+          : data?.dAmountForDay > 500
+          ? 500
+          : data?.dAmountForDay
+      );
       setShowMinimumPayment(true);
     }
 

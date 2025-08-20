@@ -12,8 +12,7 @@ const BookNow = () => {
 
   useEffect(() => {
     if (userOrder) {
-      const lastOrder =
-        userOrder?.data?.orders[userOrder?.data?.orders.length - 1];
+      const lastOrder = userOrder?.data?.orders[0];
       setEndOrder(lastOrder);
     }
   }, [userOrder, user]);
@@ -39,9 +38,9 @@ const BookNow = () => {
       <div className=" md:text-xl sm:text-sm">
         <div className="flex justify-between ">
           <p className="flex">
-            <span>Name</span> <span className="md:ml-32 sm:ml-2">:</span>
+            <span>Name</span>
           </p>
-          <p>{endOrder?.fullName}</p>
+          <p>{endOrder?.userInfo?.firstName}</p>
         </div>
         {/* <hr className="mt-2" /> */}
         {/* <div className="flex justify-between mt-4">
@@ -54,22 +53,20 @@ const BookNow = () => {
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Phone Number</span>{" "}
-            <span className="md:ml-[45px] sm:ml-2">:</span>
           </p>
-          <p>{endOrder?.phone}</p>
+          <p>{endOrder?.userInfo?.phone}</p>
         </div>
         <hr className="mt-2" />
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Address</span>{" "}
-            <span className="ml-[32px] sm:mr-5 md:mr-0">:</span>
           </p>
-          <p>{endOrder?.address}</p>
+          <p>{endOrder?.userInfo?.userAddress}</p>
         </div>
         <hr className="mt-2" />
         <div className="flex justify-between mt-4">
           <p className="flex ">
-            <span>Coupon</span> <span className="md:ml-[110px] sm:ml-2">:</span>
+            <span>Coupon</span>
           </p>
           <p>None</p>
         </div>
@@ -77,7 +74,6 @@ const BookNow = () => {
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Arrival Time</span>{" "}
-            <span className="ml-[75px] sm:ml-2">:</span>
           </p>
           <p>{endOrder?.arrivalTime}</p>
         </div>
@@ -90,26 +86,24 @@ const BookNow = () => {
       <div className="md:text-xl sm:text-sm">
         <div className="flex justify-between">
           <p className="flex">
-            <span>Room Type</span> <span className="md:ml-20 sm:ml-2">:</span>
+            <span>Room Type</span>
           </p>
-          <p>{endOrder?.bookingInfo?.roomType}</p>
+          <p>{endOrder?.roomType}</p>
         </div>
         <hr className="mt-2" />
-        {endOrder?.bookingInfo?.roomType === "Shared Room" ? (
+        {endOrder?.roomType === "Shared Room" ? (
           <div className="flex justify-between mt-4">
             <p className="flex ">
               <span>Seat Number</span>{" "}
-              <span className="md:ml-[64px] sm:ml-2">:</span>
             </p>
-            <p>{endOrder?.bookingInfo?.seatBooking?.seatNumber}</p>
+            <p>{endOrder?.seat?.seatNumber}</p>
           </div>
         ) : (
           <div className="flex justify-between mt-4">
             <p className="flex ">
               <span>Room Number</span>{" "}
-              <span className="md:ml-[64px] sm:ml-2 ">:</span>
             </p>
-            <p>{endOrder?.bookingInfo?.roomNumber}</p>
+            <p>{endOrder?.room?.roomNumber}</p>
           </div>
         )}
 
@@ -117,37 +111,34 @@ const BookNow = () => {
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Check-In</span>{" "}
-            <span className="md:ml-[102px] sm:ml-2">:</span>
           </p>
-          <p>{endOrder?.bookingInfo?.rentDate?.bookStartDate}</p>
+          <p>{endOrder?.rentDate?.bookStartDate}</p>
         </div>
         <hr className="mt-2" />
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Check-Out</span>{" "}
-            <span className="md:ml-[85px] sm:ml-2">:</span>
           </p>
-          <p>{endOrder?.bookingInfo?.rentDate?.bookEndDate}</p>
+          <p>{endOrder?.rentDate?.bookEndDate}</p>
         </div>
         <hr className="mt-2" />
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Total Duration</span>{" "}
-            <span className="md:ml-[58px] sm:ml-2">:</span>
           </p>
           <p>
-            {endOrder?.bookingInfo?.customerRent?.daysDifference >= 0
-              ? `${endOrder?.bookingInfo?.customerRent?.daysDifference} days`
+            {endOrder?.customerRent?.daysDifference >= 0
+              ? `${endOrder?.customerRent?.daysDifference} days`
               : "" ||
-                (endOrder?.bookingInfo?.customerRent?.months &&
-                  endOrder?.bookingInfo?.customerRent?.days >= 0 &&
-                  !endOrder?.bookingInfo?.customerRent?.years)
-              ? `${endOrder?.bookingInfo?.customerRent?.months} months, ${endOrder?.bookingInfo?.customerRent?.days} days`
+                (endOrder?.customerRent?.months &&
+                  endOrder?.customerRent?.days >= 0 &&
+                  !endOrder?.customerRent?.years)
+              ? `${endOrder?.customerRent?.months} months, ${endOrder?.customerRent?.days} days`
               : "" ||
-                (endOrder?.bookingInfo?.customerRent?.years &&
-                  endOrder?.bookingInfo?.customerRent?.months >= 0 &&
-                  endOrder?.bookingInfo?.customerRent?.days >= 0)
-              ? `${endOrder?.bookingInfo?.customerRent?.years} year`
+                (endOrder?.customerRent?.years &&
+                  endOrder?.customerRent?.months >= 0 &&
+                  endOrder?.customerRent?.days >= 0)
+              ? `${endOrder?.customerRent?.years} year`
               : ""}
           </p>
         </div>
@@ -155,9 +146,8 @@ const BookNow = () => {
         <div className="flex justify-between mt-4">
           <p className="flex ">
             <span>Total Amount</span>{" "}
-            <span className="md:ml-[64px] sm:ml-2">:</span>
           </p>
-          <p>Tk {endOrder?.bookingInfo?.totalAmount}</p>
+          <p>Tk {endOrder?.totalAmount}</p>
         </div>
       </div>
 

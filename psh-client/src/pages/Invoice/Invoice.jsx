@@ -305,7 +305,7 @@ const Invoice = () => {
                               userEndOrder?.transactions[0]?.allProperties
                                 .length - 1
                             ]?.paymentType
-                          : " null"}
+                          : " "}
                       </p>
                       <p>
                         <span className="font-bold mr-3">Account Number :</span>{" "}
@@ -335,7 +335,8 @@ const Invoice = () => {
                           <p className="font-bold">Food</p>{" "}
                           <p className="ml-[55px]">:</p>{" "}
                           <p className="">
-                            BDT {userEndOrder?.foodAmount?.toLocaleString()}
+                            BDT{" "}
+                            {userEndOrder?.foodAmount?.toLocaleString() || 0}
                           </p>
                         </div>
 
@@ -343,7 +344,7 @@ const Invoice = () => {
                           <p className="font-bold">VAT </p>{" "}
                           <p className="ml-[70px]">:</p>
                           <p className="">
-                            BDT {userEndOrder?.vatTax?.toLocaleString()}
+                            BDT {userEndOrder?.vatTax?.toLocaleString() || 0}
                           </p>
                         </div>
                         <div className="flex justify-between">
@@ -392,7 +393,8 @@ const Invoice = () => {
                           {transactions?.length >= 1 ? (
                             <p className=" text-[12px]">
                               BDT{" "}
-                              {userEndOrder?.transactions[0]?.totalReceiveTk}
+                              {userEndOrder?.transactions[0]?.totalReceiveTk ||
+                                0}
                             </p>
                           ) : (
                             <p className="text-red-500">Pending</p>
@@ -410,9 +412,7 @@ const Invoice = () => {
                           </p>
                           <p className="ml-[75px]">:</p>
                           <p className=" text-[12px]">
-                            BDT{" "}
-                            {payableAmount -
-                              userEndOrder?.transactions[0]?.totalReceiveTk}
+                            BDT {userEndOrder?.dueAmount}
                             {/* {transactions[transactions?.length - 1]?.payableAmount -
                               transactions[transactions?.length - 1]?.receivedTk}{" "} */}
                             {/* {userEndOrder?.dueAmount?.toLocaleString()} */}
