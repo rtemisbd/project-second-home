@@ -14,12 +14,14 @@ const AdjustmentData = ({
   handleAccept,
   handleDelete,
 }) => {
+  console.log(adjustment);
+
   return (
     <>
       <tr>
         <td>
           <div>
-            <p>#{adjustment?.booking?._id?.slice(-5)} </p>
+            <p>#{adjustment?.booking?.bookingId} </p>
             <p>{adjustment?.branch?.name}</p>
           </div>
         </td>

@@ -44,8 +44,8 @@ const PersonalInfo = () => {
   const [receivedTk, setReceivedTk] = useState(null);
 
   const [dataForBooking, setDataForBooking] = useState({
-    arrivalTime: "",
-    bookingExtend: false,
+    // arrivalTime: "",
+    // bookingExtend: false,
   });
 
   const [extraCharge] = useExtraCharge(bookingItem);
@@ -60,25 +60,48 @@ const PersonalInfo = () => {
       setBookingItem(parseToJson);
     }
   }, []);
+  // console.log(bookingItem);
 
   useEffect(() => {
     if (singleUser) {
       setDataForBooking((prevData) => ({
         ...prevData,
+        // user Info
+        userInfo: {
+          userId: singleUser?._id || "",
+          fullName: singleUser?.firstName || "",
+          phone: singleUser?.phone || "",
+          address: singleUser?.userAddress || "",
+          validityType: singleUser?.validityType || "",
+          emergencyContactName: singleUser?.emergencyContact?.contactName || "",
+          emergencyRelationC: singleUser?.emergencyContact?.relation || "",
+          emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
+        },
         userId: singleUser?._id || "",
-        fullName: singleUser?.firstName || "",
-        phone: singleUser?.phone || "",
-        address: singleUser?.userAddress || "",
-        validityType: singleUser?.validityType || "",
-        emergencyContactName: singleUser?.emergencyContact?.contactName || "",
-        emergencyRelationC: singleUser?.emergencyContact?.relation || "",
-        emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
+        phone: singleUser?.phone,
         arrivalTime: "09 AM To 10 AM",
-        bookingInfo: bookingItem,
+        // bookingInfo: bookingItem,
+        // addMissionFee: bookingItem?.addMissionFee,
         branch: bookingItem?.branch?._id,
-        totalAmount: bookingItem?.totalAmount,
-        payableAmount: bookingItem?.payableAmount,
+        customerRent: bookingItem?.customerRent,
         discount: bookingItem?.discount,
+        foodAmount: bookingItem?.foodAmount,
+        isIncludeFood: bookingItem?.isIncludeFood,
+        minimumPayment: bookingItem?.minimumPayment,
+        payableAmount: bookingItem?.payableAmount,
+        promoCodeDiscount: bookingItem?.promoCodeDiscount,
+        rentDate: bookingItem?.rentDate,
+        roomId: bookingItem?.roomId,
+        roomType: bookingItem?.roomType,
+        seatId: bookingItem?.seatBooking,
+        securityFee: bookingItem?.securityFee,
+        subTotal: bookingItem?.subTotal,
+        totalAmount: bookingItem?.totalAmount,
+        usedPromo: bookingItem?.usedPromo,
+        // vatTax: bookingItem?.vatTax,
+        perDay: bookingItem?.perDay,
+
+        // branch: bookingItem?.branch?._id,
       }));
     }
   }, [singleUser]);
@@ -124,6 +147,7 @@ const PersonalInfo = () => {
       }
 
       if (amount && dataForBooking) {
+        dataForBooking.receivedTk = amount;
         const { data } = await axios.post(
           `${serverBaseUrl}/bkash/payment/create`,
           { amount, dataForBooking, selectMethod },
@@ -146,9 +170,10 @@ const PersonalInfo = () => {
       dispatch(placeLoadingShow(false));
       localStorage.removeItem("bookingItem");
       localStorage.removeItem("seatItem");
-
       // navigate("/booking-now");
     } catch (error) {
+      // console.log(error);
+
       dispatch(placeLoadingShow(false));
       toast.error("Something is wrong");
     }
@@ -278,7 +303,7 @@ const PersonalInfo = () => {
                         lg:w-[350px] md:w-[300px] sm:w-full"
                     name="address"
                     // defaultValue={singleUser ? singleUser?.userAddress : ""}
-                    value={dataForBooking.address}
+                    value={singleUser?.userAddress}
                     style={{
                       height: "45px",
                       padding: "0px 10px",
@@ -646,9 +671,8 @@ const PersonalInfo = () => {
                                     <span>
                                       {bookingItem?.customerRent
                                         ?.remainingDays + " day"}{" "}
-                                      X {bookingItem?.seatBooking?.perDay} ={" "}
-                                      {""}
-                                      {bookingItem?.seatBooking?.perDay *
+                                      X {bookingItem?.perDay} = {""}
+                                      {bookingItem?.perDay *
                                         bookingItem?.customerRent
                                           ?.remainingDays +
                                         " Tk"}
@@ -673,7 +697,7 @@ const PersonalInfo = () => {
                                           {bookingItem?.customerRent?.days +
                                             " Days"}{" "}
                                           = {""}
-                                          {bookingItem?.seatBooking?.perDay *
+                                          {bookingItem?.perDay *
                                             bookingItem?.customerRent?.days +
                                             " Tk"}
                                         </span>
@@ -901,7 +925,7 @@ const PersonalInfo = () => {
                       </div>
                     </div>
 
-                    <p> + BDT {bookingItem?.vatTax?.toLocaleString()}</p>
+                    <p> + BDT {bookingItem?.vatTax?.toLocaleString() || 0}</p>
                   </div>
                   {bookingItem?.customerRent?.months >= 1 ||
                   bookingItem?.customerRent?.years ? (
@@ -1009,7 +1033,7 @@ const PersonalInfo = () => {
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.payableAmount?.toLocaleString()}</p>
+                    <p>BDT {bookingItem?.totalAmount?.toLocaleString()}</p>
                   </div>
 
                   {bookingItem?.discount ? (

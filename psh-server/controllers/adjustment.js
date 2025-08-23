@@ -54,53 +54,56 @@ export const updateAdjustment = async (req, res, next) => {
     );
     res.status(200).json(adjustment);
 
-    // const findBooking = await OrderModel.findOne({
-    //   _id: findAdjustment.booking,
-    // });
-    // console.log({ findBooking });
+    const findBooking = await OrderModel.findOne({
+      _id: findAdjustment.booking,
+    });
 
-    // if (req?.body?.status) {
-    //   const payableAmount =
-    //     findBooking?.totalAmount -
-    //     (parseInt(findBooking?.discount) +
-    //       parseInt(req?.body?.adjustmentAmount));
-    //   const dueAmount = payableAmount - findBooking?.totalReceiveTk;
 
-    //   await OrderModel.findByIdAndUpdate(
-    //     findAdjustment.booking,
-    //     {
-    //       $set: {
-    //         payableAmount: payableAmount,
-    //         dueAmount: dueAmount,
-    //         discount: findBooking?.discount + req?.body?.adjustmentAmount,
-    //         adjustmentAmount:
-    //           findBooking?.adjustmentAmount + req?.body?.adjustmentAmount,
-    //         isAdjustmentRQ: "No",
-    //       },
-    //     },
-    //     { new: true }
-    //   );
-    //   // Update Adjustment Status
-    //   await Adjustment.findByIdAndUpdate(
-    //     req.params.id,
-    //     {
-    //       $set: {
-    //         status: req?.body?.status,
-    //       },
-    //     },
-    //     { new: true }
-    //   );
-    //   res.status(200).json({
-    //     message: "Success",
-    //   });
-    // } else {
-    //   const adjustment = await Adjustment.findByIdAndUpdate(
-    //     req.params.id,
-    //     { $set: req.body },
-    //     { new: true }
-    //   );
-    //   res.status(200).json(adjustment);
-    // }
+    if (req?.body?.status === "Accepted") {
+      // const payableAmount =
+      //   findBooking?.totalAmount -
+      //   (parseInt(findBooking?.discount) +
+      //     parseInt(req?.body?.adjustmentAmount));
+      const payableAmount =
+        findBooking?.payableAmount - parseInt(req?.body?.adjustmentAmount);
+      const dueAmount =
+        findBooking?.dueAmount - parseInt(req?.body?.adjustmentAmount);
+
+      await OrderModel.findByIdAndUpdate(
+        findAdjustment.booking,
+        {
+          $set: {
+            payableAmount: payableAmount,
+            dueAmount: dueAmount,
+            discount: findBooking?.discount + req?.body?.adjustmentAmount,
+            adjustmentAmount:
+              findBooking?.adjustmentAmount + req?.body?.adjustmentAmount,
+            isAdjustmentRQ: "No",
+          },
+        },
+        { new: true }
+      );
+      // Update Adjustment Status
+      // await Adjustment.findByIdAndUpdate(
+      //   req.params.id,
+      //   {
+      //     $set: {
+      //       status: req?.body?.status,
+      //     },
+      //   },
+      //   { new: true }
+      // );
+      // res.status(200).json({
+      //   message: "Success",
+      // });
+    } else {
+      const adjustment = await Adjustment.findByIdAndUpdate(
+        req.params.id,
+        { $set: req.body },
+        { new: true }
+      );
+      res.status(200).json(adjustment);
+    }
   } catch (err) {
     next(err);
   }

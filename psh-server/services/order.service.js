@@ -76,9 +76,12 @@ const createOrderIntoDB = async (payload) => {
     // console.log({ data });
 
     await session.commitTransaction();
+    session.endSession();
+
     return { bkashURL: responseData?.bkashURL };
   } catch (error) {
     await session.abortTransaction();
+    session.endSession();
     // console.error("Error in createOrderIntoDB:", error);
     return { error: error };
   } finally {
@@ -86,14 +89,11 @@ const createOrderIntoDB = async (payload) => {
   }
 };
 
-export const createOrderByManualBkash = async (payload) => {
-  const session = await startSession();
+export const createOrderByManualBkash = async (payload, session) => {
   try {
-    session.startTransaction();
-
     const dataForBooking = payload;
-    const generateId = await generateBookingId();
-    dataForBooking.bookingId = generateId;
+    // const generateId = await generateBookingId();
+    // dataForBooking.bookingId = generateId;
     // dataForBooking.paymentStatus = dataForBooking.payableAmount === dataForBooking?.receivedTk ? "Paid" : "Unpaid";
 
     dataForBooking.paymentType = "bkash";
@@ -112,10 +112,11 @@ export const createOrderByManualBkash = async (payload) => {
           paymentType: "bkash",
           receivedTk: dataForBooking?.receivedTk,
           paymentNumber: dataForBooking?.paymentNumber,
+
           // transactionId: data.trxID,
           userId: dataForBooking?.userId,
-          userPhone: dataForBooking?.phone,
-          userName: dataForBooking?.fullName,
+          // userPhone: dataForBooking?.phone,
+          // userName: dataForBooking?.fullName,
           acceptableStatus: "Pending",
         },
       ],
@@ -127,90 +128,37 @@ export const createOrderByManualBkash = async (payload) => {
 
     await bookingSms(bookingMessage);
 
-    // Start Update user information
-    const userUpdate = {
-      firstName: dataForBooking?.fullName,
-      phone: dataForBooking?.phone,
-      userAddress: dataForBooking?.address,
-      validityType: dataForBooking?.validityType,
-      emergencyContact: {
-        contactName: dataForBooking?.emergencyContactName,
-        relation: dataForBooking?.emergencyRelationC,
-        contactNumber: dataForBooking?.emergencyContact,
-      },
-    };
-
-    await User.updateOne(
-      { _id: dataForBooking?.userId },
-      { $set: userUpdate },
-      { runValidators: true, session }
-    );
-    // End Update User
-
-    // Commit the transaction
-    await session.commitTransaction();
     return {
       bkashURL: `${config.client_url}/success`,
     };
   } catch (error) {
-    await session.abortTransaction();
     // console.error("Error during payment execution:", error);
     return {
       bkashURL: `${config.client_url}/error?message=${encodeURIComponent(
         error.message
       )}`,
     };
-  } finally {
-    session.endSession();
   }
 };
-export const createOrderByCash = async (payload) => {
-  const session = await startSession();
+export const createOrderByCash = async (payload, session) => {
   try {
-    session.startTransaction();
-
     const dataForBooking = payload;
-    const generateId = await generateBookingId();
-    dataForBooking.bookingId = generateId;
+
+    // const generateId = await generateBookingId();
+    // dataForBooking.bookingId = generateId;
     // dataForBooking.paymentType = "Cash";
     const result = await OrderModel.create([dataForBooking], { session });
+    // const result = await OrderModel.create(dataForBooking);
 
     // Phone SMS for booking
     const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${result[0]?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${result[0]?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
 
     await bookingSms(bookingMessage);
 
-    // Start Update user information
-    const userUpdate = {
-      firstName: dataForBooking?.fullName,
-      phone: dataForBooking?.phone,
-      userAddress: dataForBooking?.address,
-      validityType: dataForBooking?.validityType,
-      emergencyContact: {
-        contactName: dataForBooking?.emergencyContactName,
-        relation: dataForBooking?.emergencyRelationC,
-        contactNumber: dataForBooking?.emergencyContact,
-      },
-    };
-
-    await User.updateOne(
-      { _id: dataForBooking?.userId },
-      { $set: userUpdate },
-      { runValidators: true, session }
-    );
-    // End Update User
-
-    // Commit the transaction
-    await session.commitTransaction();
-    return {
-      status: true,
-    };
+    return result[0];
   } catch (error) {
-    await session.abortTransaction();
     // console.error("Error during payment execution:", error);
     return { error };
-  } finally {
-    session.endSession();
   }
 };
 
@@ -226,6 +174,8 @@ const getOrderFromDB = async (queries) => {
     guestType,
     filteredPhone,
     category,
+    // seatId,
+    // roomId,
   } = queries;
 
   const today = new Date();
@@ -254,15 +204,16 @@ const getOrderFromDB = async (queries) => {
     };
   }
   if (runningStatus === "Running") {
-    matchStage["bookingInfo.rentDate.bookStartDate"] = { $lte: formattedDate };
-    matchStage["bookingInfo.rentDate.bookEndDate"] = { $gte: formattedDate };
+    matchStage["rentDate.bookStartDate"] = { $lte: formattedDate };
+    matchStage["rentDate.bookEndDate"] = { $gte: formattedDate };
   }
   if (runningStatus === "Closed") {
-    matchStage["bookingInfo.rentDate.bookEndDate"] = { $lt: formattedDate };
+    matchStage["rentDate.bookEndDate"] = { $lt: formattedDate };
   }
   if (category && category !== "All") {
     matchStage["bookingInfo.roomType"] = category;
   }
+
   if (guestType && guestType !== "All") matchStage.customerType = guestType;
 
   const totalCountsPipeline = [
@@ -287,15 +238,104 @@ const getOrderFromDB = async (queries) => {
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
+
+          // user
+          {
+            $lookup: {
+              from: "users",
+              let: { userId: "$userId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$userId"] },
+                  },
+                },
+                // {
+                //   $project: { firstName: 1, phone: 1 },
+                // },
+              ],
+              as: "userInfo",
+            },
+          },
+          { $unwind: { path: "$userInfo", preserveNullAndEmptyArrays: true } },
+          // branch
           {
             $lookup: {
               from: "branches",
-              localField: "branch",
-              foreignField: "_id",
+              let: { branchId: "$branch" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$branchId"] },
+                  },
+                },
+                {
+                  $project: {
+                    name: 1,
+                    branchEmail: 1,
+                    branchAddress: 1,
+                    branchMobileNumber: 1,
+                  },
+                },
+              ],
               as: "branchDetails",
             },
           },
-          { $unwind: "$branchDetails" },
+          {
+            $unwind: {
+              path: "$branchDetails",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // room
+          {
+            $lookup: {
+              from: "properties",
+              let: { roomId: "$roomId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$roomId"] },
+                  },
+                },
+                {
+                  $project: { name: 1, roomNumber: 1 },
+                },
+              ],
+              as: "room",
+            },
+          },
+          {
+            $unwind: {
+              path: "$room",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // seat
+          {
+            $lookup: {
+              from: "seats",
+              let: { seatId: "$seatId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$seatId"] },
+                  },
+                },
+                {
+                  $project: { name: 1, seatNumber: 1 },
+                },
+              ],
+              as: "seat",
+            },
+          },
+          {
+            $unwind: {
+              path: "$seat",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          //transaction
           {
             $lookup: {
               from: "transactions",
@@ -481,15 +521,107 @@ const getUserOrderFromDB = async (queries, phone) => {
           { $sort: { createdAt: -1 } },
           { $skip: (page - 1) * size },
           { $limit: size },
+          // user
+          {
+            $lookup: {
+              from: "users",
+              let: { userId: "$userId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$userId"] },
+                  },
+                },
+                {
+                  $project: {
+                    firstName: 1,
+                    phone: 1,
+                    userAddress: 1,
+                    email: 1,
+                  },
+                },
+              ],
+              as: "userInfo",
+            },
+          },
+          { $unwind: { path: "$userInfo", preserveNullAndEmptyArrays: true } },
+          // branch
           {
             $lookup: {
               from: "branches",
-              localField: "branch",
-              foreignField: "_id",
-              as: "branch",
+              let: { branchId: "$branch" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$branchId"] },
+                  },
+                },
+                {
+                  $project: {
+                    name: 1,
+                    branchMobileNumber: 1,
+                    branchAddress: 1,
+                    branchEmail: 1,
+                  },
+                },
+              ],
+              as: "branchDetails",
             },
           },
-          { $unwind: "$branch" },
+          {
+            $unwind: {
+              path: "$branchDetails",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // room
+          {
+            $lookup: {
+              from: "properties",
+              let: { roomId: "$roomId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$roomId"] },
+                  },
+                },
+                {
+                  $project: { name: 1, roomNumber: 1 },
+                },
+              ],
+              as: "room",
+            },
+          },
+          {
+            $unwind: {
+              path: "$room",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
+          // seat
+          {
+            $lookup: {
+              from: "seats",
+              let: { seatId: "$seatId" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$seatId"] },
+                  },
+                },
+                {
+                  $project: { name: 1, seatNumber: 1 },
+                },
+              ],
+              as: "seat",
+            },
+          },
+          {
+            $unwind: {
+              path: "$seat",
+              preserveNullAndEmptyArrays: true,
+            },
+          },
 
           {
             $lookup: {
@@ -564,15 +696,15 @@ const updateBookingStatusIntoDB = async (payload) => {
   // find the booking
   const booking = await OrderModel.findById(payload.id);
   const newRent = {
-    bookStartDate: booking?.bookingInfo?.rentDate?.bookStartDate,
-    bookEndDate: booking?.bookingInfo?.rentDate?.bookEndDate,
-    roomId: booking?.bookingInfo?.roomId,
-    roomNumber: booking?.bookingInfo?.roomNumber,
-    seatId: booking?.bookingInfo?.seatBooking?._id,
-    seatNumber: booking?.bookingInfo?.seatBooking?.seatNumber,
-    roomType: booking?.bookingInfo?.roomType,
+    bookStartDate: booking?.rentDate?.bookStartDate,
+    bookEndDate: booking?.rentDate?.bookEndDate,
+    roomId: booking?.roomId,
+    // roomNumber: booking?.bookingInfo?.roomNumber,
+    seatId: booking?.seatId,
+    // seatNumber: booking?.seatBooking,
+    roomType: booking?.roomType,
     bookingId: booking?._id,
-    branch: booking?.bookingInfo?.branch?._id,
+    branch: booking?.branch,
     userId: booking?.userId,
   };
   if (booking?.status === "Approved" || booking?.status === "Processing") {
@@ -616,12 +748,12 @@ const updateBookingStatusIntoDB = async (payload) => {
 
     // if have promo code then remove promo code
     await User.updateOne(
-      { phone: booking?.email },
+      { phone: booking?.phone },
 
       {
         $pull: {
           usedPromo: {
-            promo: booking?.bookingInfo?.usedPromo?.promo,
+            promo: booking?.usedPromo?.promo,
           },
         },
       }
@@ -638,6 +770,8 @@ const updateBookingStatusIntoDB = async (payload) => {
 
 export const orderServices = {
   createOrderIntoDB,
+  createOrderByManualBkash,
+  createOrderByCash,
   getOrderFromDB,
   updateBookingStatusIntoDB,
   createOrderByCash,

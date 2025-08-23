@@ -22,6 +22,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
 
     return `${formattedDay} ${formattedMonth} ${formattedYear}`;
   };
+  console.log(data);
 
   return (
     <Modal
@@ -51,45 +52,47 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
           width: "100%",
         }}
       >
-        <div>
+        <div ref={ref}>
           <h3
             className=" fs-4 mt-3 ps-3 rounded"
             style={{ backgroundColor: "#00bbb4", color: "White" }}
           >
             Customer Details
           </h3>
-
-          <div className="row px-5">
-            <div className="col-lg-3">
-              <label htmlFor="" className="fw-medium">
-                Customer Name
-              </label>
-              <p>{data?.user?.firstName}</p>
+          <div>
+            <div className="d-flex  px-5">
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Customer Name :
+                </label>
+                <p>{data?.user?.firstName}</p>
+              </div>
+              <div style={{ width: "50%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Phone Number :
+                </label>
+                <p>{data?.user?.phone}</p>
+              </div>
             </div>
-            <div className="col-lg-3">
-              <label htmlFor="" className="fw-medium">
-                Phone Number
-              </label>
-              <p>{data?.user?.phone}</p>
-            </div>
-
-            <div className="col-lg-6">
-              <label htmlFor="" className="fw-medium">
-                Emergency Contact Name :
-              </label>
-              <p>{data?.user?.emergencyContact?.contactName}</p>
-            </div>
-            <div className="col-lg-6">
-              <label htmlFor="" className="fw-medium">
-                Emergency Contact Relationship :
-              </label>
-              <p>{data?.user?.emergencyContact?.relation}</p>
-            </div>
-            <div className="col-lg-6">
-              <label htmlFor="" className="fw-medium">
-                Emergency Contact Number :
-              </label>
-              <p>{data?.user?.emergencyContact?.contactNumber}</p>
+            <div className="d-flex  px-5">
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Emergency Contact Name :
+                </label>
+                <p>{data?.user?.emergencyContact?.contactName}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Emergency Contact Relationship :
+                </label>
+                <p>{data?.user?.emergencyContact?.relation}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Emergency Contact Number :
+                </label>
+                <p>{data?.user?.emergencyContact?.contactNumber}</p>
+              </div>
             </div>
           </div>
 
@@ -100,55 +103,59 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
           >
             Booking Details
           </h3>
-          <div className="row px-5">
-            <div className="col-lg-4">
-              <label htmlFor="" className="fw-medium">
-                Booking Id
-              </label>
-              <p>#{data?.bookingId}</p>
+          <div>
+            <div className="d-flex px-5">
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Booking Id
+                </label>
+                <p>#{data?.bookingId}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Booking Date & Time
+                </label>
+                <p>
+                  {formatDate(data?.createdAt)}
+                  {formattedTime}
+                </p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Villa
+                </label>
+                <p>
+                  {data?.villa?.title} - [{data?.villa?.villaNumber}]
+                </p>
+              </div>
             </div>
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Booking Date & Time
-              </label>
-              <p>
-                {formatDate(data?.createdAt)}
-                {formattedTime}
-              </p>
-            </div>
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Villa
-              </label>
-              <p>
-                {data?.villa?.title} - [{data?.villa?.villaNumber}]
-              </p>
+            <div className="d-flex px-5">
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Check In{" "}
+                </label>
+                <p> {formatDateOfRent(data?.rentDate?.bookStartDate)}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Check Out{" "}
+                </label>
+                <p> {formatDateOfRent(data?.rentDate?.bookEndDate)}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  {" "}
+                  Total Duraion{" "}
+                </label>
+                <p>{data?.rentDate?.daysDifference} Nights</p>
+              </div>
             </div>
 
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Check In{" "}
-              </label>
-              <p> {formatDateOfRent(data?.rentDate?.bookStartDate)}</p>
-            </div>
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Check Out{" "}
-              </label>
-              <p> {formatDateOfRent(data?.rentDate?.bookEndDate)}</p>
-            </div>
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                {" "}
-                Total Duraion{" "}
-              </label>
-              <p>{data?.rentDate?.daysDifference} Nights</p>
-            </div>
             {data?.specialRequest && (
               <div className="col-lg-12">
                 <label
@@ -170,116 +177,92 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
             Price Details
           </h3>
 
-          <div className="row px-5">
-            <div className="col-lg-3">
-              <label htmlFor="" className="fw-medium">
-                Payment Status
-              </label>
-              <p
-                className="fw-bold"
-                style={{
-                  color: data.paymentStatus === "Paid" ? "green" : "red",
-                }}
-              >
-                {data.paymentStatus}
-              </p>
-            </div>
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Initial Booking Cost
-              </label>
-              <p>Tk {data?.pricing?.initialAmount?.toLocaleString()}</p>
-            </div>
-            <div className="col-lg-4">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Extra Occupancy Cost
-              </label>
-              <p>Tk {data?.pricing?.occupancyCharge?.toLocaleString()}</p>
-            </div>
-            <div className="col-lg-3">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Food Cost
-              </label>
-              <p>Tk {data?.pricing?.foodCost?.toLocaleString()}</p>
-            </div>
-            <div className="col-lg-3">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Total Amount
-              </label>
-              <p>Tk {data?.pricing?.totalAmount?.toLocaleString()}</p>
-            </div>
-            <div className="col-lg-3">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Discount
-              </label>
-              <p>Tk {data?.pricing?.discount || 0}</p>
-            </div>
-            <div className="col-lg-3">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Payable Amount
-              </label>
-              <p>Tk {data?.pricing?.payableAmount?.toLocaleString()}</p>
-            </div>
-            <div className="col-lg-3">
-              {" "}
-              <label htmlFor="" className="fw-medium">
-                Total Payment
-              </label>
-              <p>
-                Tk{" "}
-                {data?.transactions[0]?.totalReceiveTk?.toLocaleString() || 0}
-              </p>
-            </div>
-
-            <div className="col-lg-3">
-              <label htmlFor="" className="fw-medium">
-                Due Amount
-              </label>
-              <p>
-                Tk{" "}
-                {data?.pricing?.payableAmount -
-                  (data?.transactions[0]?.totalReceiveTk || 0)}
-              </p>
-            </div>
-          </div>
-          <div className="d-flex justify-content-end ">
-            <ReactToPrint
-              trigger={() => (
-                <button
-                  className=" px-3 mr-2 rounded text-white font-medium"
-                  style={{ backgroundColor: "#35b0a7" }}
+          <div>
+            <div className="d-flex px-5">
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Payment Status
+                </label>
+                <p
+                  className="fw-bold"
+                  style={{
+                    color: data.paymentStatus === "Paid" ? "green" : "red",
+                  }}
                 >
-                  Print
-                </button>
-              )}
-              //   content={() => ref.current}
-            />
-            <div className="mt-3">
-              <View>
-                <BlobProvider document={<DownlaodInvoice data={data} />}>
-                  {({ url }) => (
-                    <a
-                      href={url}
-                      download="invoice.pdf"
-                      style={{
-                        backgroundColor: "#399",
-                      }}
-                      className="  px-3 py-3 rounded text-white font-medium "
-                    >
-                      Invoice
-                    </a>
-                  )}
-                </BlobProvider>
-              </View>
+                  {data.paymentStatus}
+                </p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Initial Booking Cost
+                </label>
+                <p>Tk {data?.pricing?.initialAmount?.toLocaleString()}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Extra Occupancy Cost
+                </label>
+                <p>Tk {data?.pricing?.occupancyCharge?.toLocaleString()}</p>
+              </div>
+            </div>
+            <div className="d-flex px-5">
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Food Cost
+                </label>
+                <p>Tk {data?.pricing?.foodCost?.toLocaleString()}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Total Amount
+                </label>
+                <p>Tk {data?.pricing?.totalAmount?.toLocaleString()}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Discount
+                </label>
+                <p>Tk {data?.pricing?.discount || 0}</p>
+              </div>
+            </div>
+            <div className="d-flex px-5">
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Payable Amount
+                </label>
+                <p>Tk {data?.pricing?.payableAmount?.toLocaleString()}</p>
+              </div>
+              <div style={{ width: "30%" }}>
+                {" "}
+                <label htmlFor="" className="fw-medium">
+                  Total Payment
+                </label>
+                <p>
+                  Tk{" "}
+                  {data?.transactions[0]?.totalReceiveTk?.toLocaleString() || 0}
+                </p>
+              </div>
+
+              <div style={{ width: "30%" }}>
+                <label htmlFor="" className="fw-medium">
+                  Due Amount
+                </label>
+                <p>
+                  Tk{" "}
+                  {data?.pricing?.payableAmount -
+                    (data?.transactions[0]?.totalReceiveTk || 0)}
+                </p>
+              </div>
             </div>
           </div>
-          <div ref={ref} className="mb-4">
+
+          <div className="mb-4">
             <h3
               className=" fs-4 mt-3 ps-3 rounded mb-2"
               style={{ backgroundColor: "#00bbb4", color: "White" }}
@@ -345,6 +328,37 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
                 </p>
               </div>
             </div>
+          </div>
+        </div>
+        <div className="d-flex justify-content-end ">
+          <ReactToPrint
+            trigger={() => (
+              <button
+                className=" px-3 mr-2 rounded text-white font-medium"
+                style={{ backgroundColor: "#35b0a7" }}
+              >
+                Print
+              </button>
+            )}
+            content={() => ref.current}
+          />
+          <div className="mt-3">
+            {/* <View>
+                <BlobProvider document={<DownlaodInvoice data={data} />}>
+                  {({ url }) => (
+                    <a
+                      href={url}
+                      download="invoice.pdf"
+                      style={{
+                        backgroundColor: "#399",
+                      }}
+                      className="  px-3 py-3 rounded text-white font-medium "
+                    >
+                      Invoice
+                    </a>
+                  )}
+                </BlobProvider>
+              </View> */}
           </div>
         </div>
       </Modal.Body>

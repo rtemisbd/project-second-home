@@ -11,6 +11,7 @@ import { AiOutlineDollarCircle } from "react-icons/ai";
 import { FaList } from "react-icons/fa";
 import { MdLogout } from "react-icons/md";
 import villaIcon from "../../../img/home/villa.png";
+import { RiAccountCircleLine } from "react-icons/ri";
 
 const ResortSidebar = () => {
   const { logoutUser, user } = useContext(AuthContext);
@@ -321,6 +322,27 @@ const ResortSidebar = () => {
               </li>
             </Link>
           </ul>
+        </li>
+
+        {/*  Manage my account */}
+        <li className="main_nav-link" onClick={() => setActive(false)}>
+          <Link
+            to={"/dashboard/resort/my-account"}
+            className=" nav-link text-black  d-flex align-items-center"
+          >
+            <RiAccountCircleLine
+              style={{
+                width: "24px",
+                height: "24px",
+                color: "white",
+                marginRight: "10px",
+              }}
+            />
+            <span className="span_text">My Account</span>
+            <span className="span_text_mobile" data-widget="pushmenu">
+              My Account
+            </span>
+          </Link>
         </li>
 
         <li className="main_nav-link" onClick={handleLogOut}>

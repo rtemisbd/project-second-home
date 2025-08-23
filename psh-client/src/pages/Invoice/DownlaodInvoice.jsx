@@ -99,7 +99,16 @@ const DownlaodInvoice = ({ data, transactions }) => {
             <Text style={styles.text}>Date: {currentDate}</Text>
 
             {/* Payment Method */}
-            <Text style={styles.text}>Payment Method: {data?.paymentType}</Text>
+            <Text style={styles.text}>
+              Payment Method:{" "}
+              {data?.transactions[0]?.allProperties[
+                data?.transactions[0]?.allProperties.length - 1
+              ]?.paymentType
+                ? data?.transactions[0]?.allProperties[
+                    data?.transactions[0]?.allProperties.length - 1
+                  ]?.paymentType
+                : " null"}
+            </Text>
           </View>
         </View>
 
@@ -122,26 +131,30 @@ const DownlaodInvoice = ({ data, transactions }) => {
                 width: "150px",
               }}
             >
-              Address: {data?.branch?.branchAddress}
+              Address: {data?.branchDetails?.branchAddress}
             </Text>
             <Text style={styles.text}>
-              Mobile: {data?.branch?.branchMobileNumber}
+              Mobile: {data?.branchDetails?.branchMobileNumber}
             </Text>
-            <Text style={styles.text}>Email: {data?.branch?.branchEmail}</Text>
+            <Text style={styles.text}>
+              Email: {data?.branchDetails?.branchEmail}
+            </Text>
           </View>
           <View>
             {/* Bill To */}
             <View>
               <Text style={styles.subtitle}>Bill To</Text>
-              <Text style={styles.text}>Name: {data?.fullName}</Text>
-              <Text style={styles.text}>Address: {data?.address}</Text>
-              <Text style={styles.text}>Mobile: {data?.phone}</Text>
-              <Text style={styles.text}>Email: {data?.email}</Text>
+              <Text style={styles.text}>Name: {data?.userInfo?.firstName}</Text>
               <Text style={styles.text}>
-                Check in Time: {data?.bookingInfo?.rentDate?.bookStartDate}
+                Address: {data?.userInfo?.userAddress}
+              </Text>
+              <Text style={styles.text}>Mobile: {data?.userInfo?.phone}</Text>
+              <Text style={styles.text}>Email: {data?.userInfo?.email}</Text>
+              <Text style={styles.text}>
+                Check in Time: {data?.rentDate?.bookStartDate}
               </Text>
               <Text style={styles.text}>
-                Check Out Time: {data?.bookingInfo?.rentDate?.bookEndDate}
+                Check Out Time: {data?.rentDate?.bookEndDate}
               </Text>
             </View>
           </View>
@@ -244,9 +257,15 @@ const DownlaodInvoice = ({ data, transactions }) => {
                 fontSize: 12,
               }}
             >
-              {data?.bookingInfo?.roomType === "Shared Room"
-                ? `${data?.bookingInfo?.roomName}, Room Number : ${data?.bookingInfo?.roomNumber}, Seat Number : ${data?.bookingInfo?.seatBooking?.seatNumber}`
-                : `${data?.bookingInfo?.data?.name}, Room Number : ${data?.bookingInfo?.data?.roomNumber}`}
+              {data?.roomType === "Shared Room"
+                ? data?.room?.name +
+                  ", Room Number : " +
+                  data?.room?.roomNumber +
+                  ", Seat Number : " +
+                  data?.seat?.seatNumber
+                : data?.room?.name +
+                  ", Room Number : " +
+                  data?.room?.roomNumber}
             </Text>
           </View>
           <View
@@ -258,16 +277,16 @@ const DownlaodInvoice = ({ data, transactions }) => {
             }}
           >
             <Text>
-              {data?.bookingInfo?.customerRent?.daysDifference >= 0
-                ? `${data?.bookingInfo?.customerRent?.daysDifference} days`
-                : data?.bookingInfo?.customerRent?.months &&
-                  data?.bookingInfo?.customerRent?.days >= 0 &&
-                  !data?.bookingInfo?.customerRent?.years
-                ? `${data?.bookingInfo?.customerRent?.months} months, ${data?.bookingInfo?.customerRent?.days} days`
-                : data?.bookingInfo?.customerRent?.years &&
-                  data?.bookingInfo?.customerRent?.months >= 0 &&
-                  data?.bookingInfo?.customerRent?.days >= 0
-                ? `${data?.bookingInfo?.customerRent?.years} year`
+              {data?.customerRent?.daysDifference >= 0
+                ? `${data?.customerRent?.daysDifference} days`
+                : data?.customerRent?.months &&
+                  data?.customerRent?.days >= 0 &&
+                  !data?.customerRent?.years
+                ? `${data?.customerRent?.months} months, ${data?.customerRent?.days} days`
+                : data?.customerRent?.years &&
+                  data?.customerRent?.months >= 0 &&
+                  data?.customerRent?.days >= 0
+                ? `${data?.customerRent?.years} year`
                 : ""}
             </Text>
             <Text
@@ -277,7 +296,7 @@ const DownlaodInvoice = ({ data, transactions }) => {
                 marginLeft: 10,
               }}
             >
-              BDT {data?.bookingInfo?.subTotal?.toLocaleString()}
+              BDT {data?.subTotal?.toLocaleString()}
             </Text>
           </View>
         </View>
@@ -304,7 +323,14 @@ const DownlaodInvoice = ({ data, transactions }) => {
                   marginTop: "5px",
                 }}
               >
-                Payment Method : {data?.paymentType}
+                Payment Method :{" "}
+                {data?.transactions[0]?.allProperties[
+                  data?.transactions[0]?.allProperties.length - 1
+                ]?.paymentType
+                  ? data?.transactions[0]?.allProperties[
+                      data?.transactions[0]?.allProperties.length - 1
+                    ]?.paymentType
+                  : " null"}
               </Text>
               <Text
                 style={{
@@ -312,7 +338,10 @@ const DownlaodInvoice = ({ data, transactions }) => {
                   marginTop: "5px",
                 }}
               >
-                Account Number : {data?.paymentNumber}
+                Account Number :{" "}
+                {data?.paymentNumber
+                  ? data.paymentNumber
+                  : data?.transactions[transactions?.length - 1]?.paymentNumber}
               </Text>
               <Text
                 style={{
@@ -320,7 +349,8 @@ const DownlaodInvoice = ({ data, transactions }) => {
                   marginTop: "5px",
                 }}
               >
-                Transaction ID :{data?.transactionId}
+                Transaction ID{" "}
+                {data?.transactions[transactions?.length - 1]?.transactionId}
               </Text>
             </View>
           </View>
@@ -334,7 +364,7 @@ const DownlaodInvoice = ({ data, transactions }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.bookingInfo?.subTotal?.toLocaleString()}
+                  BDT {data?.subTotal?.toLocaleString()}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -345,7 +375,7 @@ const DownlaodInvoice = ({ data, transactions }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.bookingInfo?.foodAmount?.toLocaleString()}
+                  BDT {data?.foodAmount?.toLocaleString()}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -362,7 +392,7 @@ const DownlaodInvoice = ({ data, transactions }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.bookingInfo?.vatTax?.toLocaleString()}
+                  BDT {data?.vatTax?.toLocaleString()}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -380,8 +410,8 @@ const DownlaodInvoice = ({ data, transactions }) => {
                   }}
                 >
                   BDT{" "}
-                  {data?.bookingInfo?.addMissionFee > 0
-                    ? data?.bookingInfo?.addMissionFee?.toLocaleString()
+                  {data?.addMissionFee > 0
+                    ? data?.addMissionFee?.toLocaleString()
                     : 0}
                 </Text>
               </View>
@@ -400,8 +430,8 @@ const DownlaodInvoice = ({ data, transactions }) => {
                   }}
                 >
                   BDT{" "}
-                  {data?.bookingInfo?.securityFee > 0
-                    ? data?.bookingInfo?.securityFee?.toLocaleString()
+                  {data?.securityFee > 0
+                    ? data?.securityFee?.toLocaleString()
                     : 0}
                 </Text>
               </View>
@@ -436,7 +466,7 @@ const DownlaodInvoice = ({ data, transactions }) => {
                     fontSize: 12,
                   }}
                 >
-                  BDT {data?.bookingInfo?.discount?.toLocaleString()}
+                  BDT {data?.discount?.toLocaleString()}
                 </Text>
               </View>
               <View style={styles.flex}>
@@ -448,24 +478,16 @@ const DownlaodInvoice = ({ data, transactions }) => {
             >
               :
             </Text> */}
-                {transactions?.length === 1 &&
-                transactions[0]?.acceptableStatus !== "Accepted" ? (
-                  <Text
-                    style={{
-                      color: "red",
-                    }}
-                  >
-                    Pending
-                  </Text>
-                ) : (
-                  <Text
-                    style={{
-                      fontSize: 12,
-                    }}
-                  >
-                    BDT {data?.totalReceiveTk?.toLocaleString()}
-                  </Text>
-                )}
+
+                <Text
+                  style={
+                    {
+                      // color: "red",
+                    }
+                  }
+                >
+                  BDT {data?.transactions[0]?.totalReceiveTk?.toLocaleString()}
+                </Text>
               </View>
               <View style={styles.flex}>
                 <Text

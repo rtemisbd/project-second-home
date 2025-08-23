@@ -1,15 +1,14 @@
+import { useSelector } from "react-redux";
+import { dateFormatter } from "../../utils/dateFormatter";
 import { useEffect, useState } from "react";
-import { Table } from "react-bootstrap";
-import { useQuery } from "react-query";
-import { baseUrl } from "../../utils/getBaseURL";
 import useBranch from "../../hooks/useBranch";
 import useCategory from "../../hooks/useCategory";
-import { useSelector } from "react-redux";
+import { useQuery } from "react-query";
+import { baseUrl } from "../../utils/getBaseURL";
+import { Table } from "react-bootstrap";
 import DetailOverview from "../../components/BookOverview/DetailOverview";
-import { dateFormatter } from "../../utils/dateFormatter";
-// import Pagination from "../../components/Pagination/Pagination";
 
-const RoomOverview = () => {
+const BookingOverview = () => {
   const { page, size } = useSelector((state) => state.pagination);
 
   const { months, formatDate, generateDateArray } = dateFormatter;
@@ -22,6 +21,7 @@ const RoomOverview = () => {
   const [seatId, setSeatId] = useState("");
 
   const [data, setData] = useState([]);
+  const [rentDates, setRentDates] = useState([]);
   const [totalDataCount, setTotalDataCount] = useState(0);
   const [bookedRooms, setBookedRooms] = useState([]);
   const [bookedSeats, setBookedSeats] = useState([]);
@@ -92,8 +92,8 @@ const RoomOverview = () => {
     async () => {
       try {
         const queryParams = new URLSearchParams({
-          fromDate,
-          toDate,
+          // startDate: fromDate,
+          // endDate: toDate,
         });
         const response = await fetch(
           `${baseUrl}/api/rent-rooms?${queryParams.toString()}`,
@@ -101,50 +101,42 @@ const RoomOverview = () => {
             method: "GET",
           }
         );
-        const rents = await response.json();
-        console.log(rents);
+        const data = await response.json();
 
-        setBookedRooms(rents?.bookedRooms || []);
-        setBookedSeats(rents?.bookedSeats || []);
-        setReserved(rents?.upcomingRentRooms || []);
+        setRentDates(data?.data?.result);
       } catch (error) {
         throw new Error(error);
       }
     }
   );
 
-  // useEffect(() => {
-  //   const initializeCurrentMonth = () => {
-  //     const today = new Date();
-  //     const currentMonthIndex = today.getMonth();
-  //     const year = today.getFullYear();
+  const changeSelectedMonth = (direction) => {
+    let newMonth = monthIndex;
+    let newYear = startYear;
 
-  //     // Set the first and last day of the current month
-  //     const startOfMonth = new Date(year, currentMonthIndex, 1);
-  //     const endOfMonth = new Date(year, currentMonthIndex + 1, 0);
-  //     setMonthIndex(today.getMonth());
-  //     setStartMonth(months[monthIndex]);
-  //     setSelectedYear(year);
-  //     setFromDate(startOfMonth.toISOString().split("T")[0]);
-  //     setToDate(endOfMonth.toISOString().split("T")[0]);
-  //   };
+    if (direction === "prev") {
+      if (newMonth === 0) {
+        newMonth = 11;
+        newYear = newYear - 1;
+      } else {
+        newMonth = newMonth - 1;
+      }
+    } else if (direction === "next") {
+      if (newMonth === 11) {
+        newMonth = 0;
+        newYear = newYear + 1;
+      } else {
+        newMonth = newMonth + 1;
+      }
+    }
 
-  //   initializeCurrentMonth();
-  // }, [months]);
-  // console.log(monthIndex);
+    setMonthIndex(newMonth);
+    setStartMonth(months[newMonth]);
+    setStartYear(newYear);
+    setEndYear(newYear);
 
-  const changeSelectedMonth = (payload) => {
-    const today = new Date();
-    const currentYear = today.getFullYear();
-    const newMonthIndex = payload === "prev" ? monthIndex - 1 : monthIndex + 1;
-
-    if (newMonthIndex < 0 || newMonthIndex > 11) return;
-
-    setMonthIndex(newMonthIndex);
-    setStartMonth(months[newMonthIndex]);
-
-    const startOfMonth = new Date(currentYear, newMonthIndex, 1);
-    const endOfMonth = new Date(currentYear, newMonthIndex + 1, 0);
+    const startOfMonth = new Date(newYear, newMonth, 1);
+    const endOfMonth = new Date(newYear, newMonth + 1, 0);
 
     setFromDate(formatDate(startOfMonth));
     setToDate(formatDate(endOfMonth));
@@ -177,39 +169,20 @@ const RoomOverview = () => {
     const isPrivateRoom = room?.categoryDetails?.name !== "Shared Room";
 
     const booking = isPrivateRoom
-      ? bookedRooms.find(
+      ? rentDates.find(
           (br) =>
             br.roomId === room._id &&
             new Date(br.bookStartDate) <= new Date(date) &&
             new Date(br.bookEndDate) >= new Date(date)
         )
-      : bookedSeats.find(
+      : rentDates.find(
           (bs) =>
             bs.seatId === room._id &&
             new Date(bs.bookStartDate) <= new Date(date) &&
             new Date(bs.bookEndDate) >= new Date(date)
         );
 
-    return booking?.bookingStatus;
-  };
-  const getReservedStatus = (room, date) => {
-    const isPrivateRoom = room?.categoryDetails?.name !== "Shared Room";
-
-    const booking = isPrivateRoom
-      ? reserved.find(
-          (br) =>
-            br.roomId === room._id &&
-            new Date(br.bookStartDate) <= new Date(date) &&
-            new Date(br.bookEndDate) >= new Date(date)
-        )
-      : reserved.find(
-          (bs) =>
-            bs.seatId === room._id &&
-            new Date(bs.bookStartDate) <= new Date(date) &&
-            new Date(bs.bookEndDate) >= new Date(date)
-        );
-
-    return booking?.bookingStatus;
+    return booking ? true : false;
   };
 
   const handleShowDetails = (room, date) => {
@@ -218,48 +191,27 @@ const RoomOverview = () => {
     setShowDetailModal(true);
     setDetail(room);
     if (room?.categoryDetails?.name === "Shared Room") {
-      if (getBookingStatus(room, date)) {
-        setBookingInfo(
-          bookedSeats.filter(
-            (bs) =>
-              bs.seatId === room._id &&
-              new Date(bs.bookStartDate) <= new Date(date) &&
-              new Date(bs.bookEndDate) >= new Date(date)
-          )
-        );
-      } else {
-        setBookingInfo(
-          reserved.filter(
-            (bs) =>
-              bs.seatId === room._id &&
-              new Date(bs.bookStartDate) <= new Date(date) &&
-              new Date(bs.bookEndDate) >= new Date(date)
-          )
-        );
-      }
+      getBookingStatus(room, date);
+      setBookingInfo(
+        rentDates.filter(
+          (bs) =>
+            bs.seatId === room._id &&
+            new Date(bs.bookStartDate) <= new Date(date) &&
+            new Date(bs.bookEndDate) >= new Date(date)
+        )
+      );
     } else {
-      if (getBookingStatus(room, date)) {
-        setBookingInfo(
-          bookedRooms.filter(
-            (br) =>
-              br.roomId === room._id &&
-              new Date(br.bookStartDate) <= new Date(date) &&
-              new Date(br.bookEndDate) >= new Date(date)
-          )
-        );
-      } else {
-        setBookingInfo(
-          reserved.filter(
-            (br) =>
-              br.roomId === room._id &&
-              new Date(br.bookStartDate) <= new Date(date) &&
-              new Date(br.bookEndDate) >= new Date(date)
-          )
-        );
-      }
+      getBookingStatus(room, date);
+      setBookingInfo(
+        rentDates.filter(
+          (br) =>
+            br.roomId === room._id &&
+            new Date(br.bookStartDate) <= new Date(date) &&
+            new Date(br.bookEndDate) >= new Date(date)
+        )
+      );
     }
   };
-
   return (
     <div className="wrapper">
       <div className="content-wrapper" style={{ background: "unset" }}>
@@ -413,17 +365,6 @@ const RoomOverview = () => {
                             >
                               {" "}
                             </div>
-                          ) : getReservedStatus(room, date) ? (
-                            <div
-                              style={{
-                                backgroundColor: "#F96167",
-                                width: "100%",
-                                height: "100%",
-                                // margin: "auto",
-                              }}
-                            >
-                              {" "}
-                            </div>
                           ) : (
                             <div
                               style={{
@@ -460,4 +401,4 @@ const RoomOverview = () => {
   );
 };
 
-export default RoomOverview;
+export default BookingOverview;

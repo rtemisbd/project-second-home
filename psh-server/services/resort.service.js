@@ -5,7 +5,7 @@ const createResortIntoDB = async(payload) =>{
     const result = await Resort.create(payload);
     const district = payload.district;
     const postDistrict = await districtServices.createDistrictIntoDB({name : district})
-
+ 
 
     return result;
 }

@@ -24,7 +24,6 @@ import Review from "./pages/Review";
 import Issues from "./pages/Issues";
 import Admin_issue from "./pages/Admin_issue";
 
-import Invoice from "./pages/details/Invoice";
 import Add_Facility_Category from "./pages/Add_Facility_Category";
 import Facility_Category_list from "./components/Facility/Facility_Category_list";
 import Add_Banner from "./pages/Add_Banner";
@@ -58,7 +57,7 @@ import RoomRent from "./pages/RoomRent/RoomRent";
 import RoomVisit from "./pages/RoomVisit/RoomVisit";
 import RoomVisitAdmin from "./pages/RoomVisit/RoomVisitAdmin";
 // import PropertyReports from "./components/Property/PropertyReports";
-import BookingReport from "./components/BookedReport/BookingReport";
+
 import FeaturedRoom from "./pages/Featured/FeaturedRoom";
 import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
@@ -83,6 +82,9 @@ import EditResort from "./pages/resort-admin/resort/EditResort";
 import VillaBookingOverview from "./pages/resort-admin/booking-overview/VillaBookingOverview";
 import BookingList from "./pages/resort-admin/all-bookings/BookingList";
 import ResortTransaction from "./pages/resort-admin/payment/ResortTransaction";
+import MyAccount from "./pages/resort-admin/account/MyAccount";
+import BookingOverview from "./pages/roomOverview/BookingOverview";
+import BookingReports from "./pages/BookedReport/BookingReport";
 
 function App() {
   return (
@@ -137,7 +139,7 @@ function App() {
         <Route path="edit/share-room/:id" element={<EditSeat />} />
 
         {/* <Route path="property-report" element={<PropertyReports />} /> */}
-        <Route path="property-report" element={<BookingReport />} />
+        <Route path="property-report" element={<BookingReports />} />
         <Route path="add-promo" element={<Add_Promo />} />
         <Route path="promo_list" element={<Promo />} />
         <Route path="adjustmen-list" element={<AdjustmentList />} />
@@ -162,7 +164,7 @@ function App() {
         <Route path="review" element={<Review />} />
         <Route path="lease-property" element={<LeasePropertyList />} />
         <Route path="extra-charge" element={<ExtraCharge />} />
-        <Route path="invoice/:id" element={<Invoice />} />
+
         <Route path="pages" element={<Pages />} />
         <Route path="featured" element={<FeaturedRoom />} />
         <Route path="add_privacy" element={<Add_Privacy />} />
@@ -171,8 +173,10 @@ function App() {
         <Route path="terms_list" element={<Terms_list />} />
         <Route path="update_terms/:id" element={<Update_Terms />} />
         <Route path="update_privacy/:id" element={<Update_Privacy />} />
+        <Route path="my-account" element={<MyAccount />} />
         {/*  new overview */}
-        <Route path="booking-overview" element={<RoomOverview />} />
+        {/* <Route path="booking-overview" element={<RoomOverview />} /> */}
+        <Route path="booking-overview" element={<BookingOverview />} />
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />
         {/* resort related */}
         <Route path="add-resort" element={<AddResort2 />} />
@@ -199,6 +203,7 @@ function App() {
           path="resort/add_manager"
           element={<Add_Manager comeFrom={"resort"} />}
         />
+        <Route path="resort/my-account" element={<MyAccount />} />
       </Route>
 
       <Route path="*" element={<NotFound />}></Route>

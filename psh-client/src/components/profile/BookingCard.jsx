@@ -1,31 +1,9 @@
-import { useEffect, useState } from "react";
-
 const BookingCard = ({
   order,
   handleMakePaymentShow,
   handleCancelShow,
   handleDetailsShow,
-  setOrder,
 }) => {
-  const [payableAmount, setPayableAmount] = useState(0);
-  const [discount, setDiscount] = useState(0);
-
-  useEffect(() => {
-    const totalDiscount = order?.adjustments?.[0]?.totatAdjustmentAmount || 0;
-    const updatedDiscount = order?.discount || 0;
-
-    const newDiscount = updatedDiscount + totalDiscount;
-    setDiscount(newDiscount);
-
-    const newPayableAmount = (order?.totalAmount || 0) - newDiscount;
-
-    if (order?.discount > 0) {
-      setPayableAmount(order?.payableAmount);
-    } else {
-      setPayableAmount(newPayableAmount);
-    }
-  }, [order]);
-
   return (
     <div
       key={order?._id}
@@ -50,21 +28,23 @@ const BookingCard = ({
           <p className="font-bold text-sm">
             Booking Date :{" "}
             {
-              new Date(order?.bookingInfo?.rentDate?.bookStartDate)
+              new Date(order?.rentDate?.bookStartDate)
                 ?.toLocaleString()
                 ?.split(",")[0]
             }{" "}
             -{" "}
             {
-              new Date(order?.bookingInfo?.rentDate?.bookEndDate)
+              new Date(order?.rentDate?.bookEndDate)
                 ?.toLocaleString()
                 ?.split(",")[0]
             }
           </p>
           <h2 className="font-bold text-sm">
-            Room Category : {order?.bookingInfo?.roomType}
+            Room Category : {order?.roomType}
           </h2>
-          <h2 className="font-bold text-sm">Branch : {order?.branch?.name}</h2>
+          <h2 className="font-bold text-sm">
+            Branch : {order?.branchDetails?.name}
+          </h2>
         </div>
         <hr />
         <div className="p-2 text-sm flex justify-between">
@@ -74,7 +54,8 @@ const BookingCard = ({
               <span className="font-bold ">BDT {order?.totalAmount}</span>
             </p>
             <p>
-              Discount : <span className="font-bold ">BDT {discount}</span>
+              Discount :{" "}
+              <span className="font-bold ">BDT {order?.discount}</span>
             </p>
 
             <p>
@@ -92,7 +73,7 @@ const BookingCard = ({
           <div>
             <p>
               Payable Amount :{" "}
-              <span className="font-bold ">BDT {payableAmount}</span>
+              <span className="font-bold ">BDT {order?.payableAmount}</span>
             </p>
             <p className="mb-2">
               Total Paid :{" "}
@@ -110,16 +91,10 @@ const BookingCard = ({
               <span
                 className={`font-bold `}
                 style={{
-                  color:
-                    payableAmount - order?.transactions[0]?.totalReceiveTk !== 0
-                      ? "red"
-                      : "green",
+                  color: order?.dueAmount !== 0 ? "red" : "green",
                 }}
               >
-                BDT{" "}
-                {order?.transactions[0]?.totalReceiveTk
-                  ? payableAmount - order?.transactions[0]?.totalReceiveTk
-                  : payableAmount}
+                BDT {order?.dueAmount}
               </span>
             </p>
           </div>

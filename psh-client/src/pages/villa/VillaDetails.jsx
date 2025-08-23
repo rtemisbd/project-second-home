@@ -18,6 +18,7 @@ import YouTube from "react-youtube";
 import getYouTubeVideoId from "../../helpers/utils/getYouTubeVideoId";
 import { playerOptions } from "../../helpers/utils/playerOptions";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
+import VillaRecommended from "../../components/Villa/VillaRecommended";
 
 const VillaDetails = () => {
   const { id } = useParams();
@@ -533,6 +534,12 @@ const VillaDetails = () => {
                 </div>
               </div>
             </div>
+
+            {/* recommended */}
+            <VillaRecommended
+              division={villa?.resortId?.division}
+              resortId={villa?.resortId?._id}
+            />
           </div>
         </div>
       </div>

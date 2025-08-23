@@ -234,6 +234,7 @@ export const loginAdminUser = async (req, res) => {
 export const updateUser = async (req, res) => {
   try {
     const { id } = req.params;
+    const payload = req?.body;
     // Status Update
 
     if (req?.body?.userStatus) {
@@ -251,51 +252,52 @@ export const updateUser = async (req, res) => {
         message: "Data updated Successfully",
       });
     } else {
-      const presentAddressParse = JSON.parse(req.body?.presentAddress);
-      const permanentAddressParse = JSON.parse(req.body?.permanentAddress);
-      const employmentStatusParse = JSON.parse(req.body?.employmentStatus);
-      const emergencyContactParse = JSON.parse(req.body?.emergencyContact);
-      const userUpdate = {
-        firstName: req.body?.firstName,
-        email: req.body?.email,
-        phone: req.body?.phone,
-        userName: req.body?.userName,
-        userId: req.body?.userId,
-        photos: req.body?.photos,
-        dateOfBirth: req.body?.dateOfBirth,
-        gender: req.body?.gender,
-        nationalId: req.body?.nationalId,
-        presentAddress: {
-          address: presentAddressParse?.address,
-          city: presentAddressParse?.city,
-          state: presentAddressParse?.state,
-          postCode: presentAddressParse?.postCode,
-          country: presentAddressParse?.country,
-        },
-        permanentAddress: {
-          address: permanentAddressParse?.address,
-          city: permanentAddressParse?.city,
-          state: permanentAddressParse?.state,
-          postCode: permanentAddressParse?.postCode,
-          country: permanentAddressParse?.country,
-        },
-        idCardType: req.body?.idCardType,
-        cardImage: req.body?.cardImage,
+      // const presentAddressParse = JSON.parse(req.body?.presentAddress);
+      // const permanentAddressParse = JSON.parse(req.body?.permanentAddress);
+      // const employmentStatusParse = JSON.parse(req.body?.employmentStatus);
+      // const emergencyContactParse = JSON.parse(req.body?.emergencyContact);
+      // const userUpdate = {
+      //   firstName: req.body?.firstName,
+      //   email: req.body?.email,
+      //   phone: req.body?.phone,
+      //   userName: req.body?.userName,
+      //   userId: req.body?.userId,
+      //   photos: req.body?.photos,
+      //   dateOfBirth: req.body?.dateOfBirth,
+      //   gender: req.body?.gender,
+      //   nationalId: req.body?.nationalId,
+      //   presentAddress: {
+      //     address: presentAddressParse?.address,
+      //     city: presentAddressParse?.city,
+      //     state: presentAddressParse?.state,
+      //     postCode: presentAddressParse?.postCode,
+      //     country: presentAddressParse?.country,
+      //   },
+      //   permanentAddress: {
+      //     address: permanentAddressParse?.address,
+      //     city: permanentAddressParse?.city,
+      //     state: permanentAddressParse?.state,
+      //     postCode: permanentAddressParse?.postCode,
+      //     country: permanentAddressParse?.country,
+      //   },
+      //   idCardType: req.body?.idCardType,
+      //   cardImage: req.body?.cardImage,
 
-        employmentStatus: {
-          workAs: employmentStatusParse?.workAs,
-          monthlyIncome: employmentStatusParse?.monthlyIncome,
-        },
-        emergencyContact: {
-          contactName: emergencyContactParse?.contactName,
-          relation: emergencyContactParse?.relation,
-          phoneNumber: emergencyContactParse?.phoneNumber,
-        },
-      };
+      //   employmentStatus: {
+      //     workAs: employmentStatusParse?.workAs,
+      //     monthlyIncome: employmentStatusParse?.monthlyIncome,
+      //   },
+      //   emergencyContact: {
+      //     contactName: emergencyContactParse?.contactName,
+      //     relation: emergencyContactParse?.relation,
+      //     phoneNumber: emergencyContactParse?.phoneNumber,
+      //   },
+      // };
 
       await User.updateOne(
         { _id: id },
-        { $set: userUpdate },
+        { $set: payload },
+        // { $set: userUpdate },
         { runValidators: true }
       );
       res.status(200).json({

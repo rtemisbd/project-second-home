@@ -1,4 +1,3 @@
-import React from "react";
 import { Modal } from "react-bootstrap";
 import { formatDate } from "../../utils/dateConvert";
 import { Link } from "react-router-dom";
@@ -96,8 +95,8 @@ const DetailOverview = ({
                 }}
               >
                 <p>
-                  {info?.userId?.firstName}
-                  <br /> Phone : {info?.userId?.phone}
+                  {info?.user?.firstName}
+                  <br /> Phone : {info?.user?.phone}
                 </p>
                 <p style={{ fontWeight: "semibold" }}>
                   Duration : {formatDate(info?.bookStartDate)} -{" "}

@@ -12,7 +12,7 @@ const Dashboard = ({ children }) => {
   return (
     <div>
       <Navbar />
-      {outlet}
+      <div style={{ minHeight: "86vh" }}>{outlet}</div>
       <Footer />
     </div>
   );

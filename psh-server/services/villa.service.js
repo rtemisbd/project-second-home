@@ -18,12 +18,29 @@ const createVillaIntoDB = async (payload) => {
 };
 
 const getAllVillaFromDB = async (queries) => {
-  const { resortId, villaName, villaNumber, isPublished } = queries;
+  const {
+    resortId,
+    villaName,
+    villaNumber,
+    isPublished,
+    adults: rawAdults,
+    kids: rawKids,
+    division,
+  } = queries;
 
   let query = {};
 
   if (resortId && resortId !== "") {
     query.resortId = new mongoose.Types.ObjectId(resortId);
+  }
+  const adults = parseInt(rawAdults);
+  if (!isNaN(adults) && adults > 0) {
+    query["occupancy.adults"] = { $gte: adults };
+  }
+
+  const kids = parseInt(rawKids);
+  if (!isNaN(kids) && kids >= 0) {
+    query["occupancy.kids"] = { $gte: kids };
   }
 
   if (villaName && villaName !== "") {
@@ -46,18 +63,24 @@ const getAllVillaFromDB = async (queries) => {
         as: "resort",
         pipeline: [
           {
-            $project: { _id: 1, name: 1, address: 1 },
+            $project: { _id: 1, name: 1, address: 1, division: 1 },
           },
         ],
       },
     },
     {
-      $unwind: {
-        path: "$resort",
-        preserveNullAndEmptyArrays: true,
-      },
+      $unwind: "$resort",
     },
   ];
+
+  // Add division filter AFTER unwind
+  if (division && division !== "") {
+    pipeline.push({
+      $match: {
+        "resort.division": division,
+      },
+    });
+  }
   const result = await Villa.aggregate(pipeline);
 
   return result;

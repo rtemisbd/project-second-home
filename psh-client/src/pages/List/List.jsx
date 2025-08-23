@@ -146,7 +146,6 @@ function List() {
     setMax(maxPrice);
   };
 
-  // ... rest of your component ...
 
   const handleFacilityFilterChange = (facility) => {
     setFacilityFilters((prevFilters) => {
@@ -228,7 +227,7 @@ function List() {
     // ...
     return true;
   });
-  const [size, setSize] = React.useState(null);
+  const [size, setSize] = useState(null);
   const handleOpen = (value) => setSize(value);
 
   // find Published Property

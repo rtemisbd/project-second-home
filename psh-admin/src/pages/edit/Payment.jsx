@@ -18,8 +18,6 @@ const Payment = ({
   showPaymentModal,
   setShowPaymentModal,
 }) => {
-  // console.log(data);
-
   const dispatch = useDispatch();
   const dateInputRef = useRef(null);
 
@@ -45,6 +43,8 @@ const Payment = ({
   useEffect(() => {
     refetch();
   }, [data?.payableAmount, data?.totalReceiveTk, refetch]);
+
+  console.log(data);
 
   const handlePayment = async (e) => {
     e.preventDefault();
@@ -92,7 +92,7 @@ const Payment = ({
       bankName: e.target?.bankName?.value,
       bankHoldingName: e.target?.bankHoldingName?.value,
       receiverName: e.target?.receiverName?.value,
-      acceptableStatus: paymentType === "Cash" ? "Accepted" : "Pending",
+      // acceptableStatus: paymentType === "Cash" ? "Accepted" : "Pending",
       noteForTransaction: e.target?.noteForTransaction?.value,
       userId: data?.userId,
       userPhone: data?.phone,
@@ -155,7 +155,7 @@ const Payment = ({
     setLoading(true);
     const adjustment = {
       booking: data?._id,
-      branch: data?.bookingInfo?.branch,
+      branch: data?.branch,
       userId: data?.userId,
       adjustmentAmount: adjustmentAmount,
       noteForAdjustment: noteForAdjustment,
@@ -517,17 +517,20 @@ const Payment = ({
                         <div className="d-flex ">
                           <p className="fw-bold">Already Discount :</p>
 
-                          <p className=" ms-5">{data?.discount} Tk</p>
+                          <p className=" ms-5">{data?.discount || 0} Tk</p>
                         </div>
                         <div className="d-flex ">
                           <p className="fw-bold">Payable :</p>
 
-                          <p className=" ms-5">{data?.payableAmount} Tk</p>
+                          <p className=" ms-5">{data?.payableAmount || 0} Tk</p>
                         </div>
 
                         <div className="paid-amount d-flex ">
                           <p className="fw-bold ">Receive :</p>
-                          <p className=" ms-5"> {data?.totalReceiveTk} Tk</p>
+                          <p className=" ms-5">
+                            {" "}
+                            {data?.transactions[0]?.totalReceiveTk || 0} Tk
+                          </p>
                         </div>
 
                         <div className="paid-amount d-flex ">
