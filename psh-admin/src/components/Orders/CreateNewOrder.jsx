@@ -212,7 +212,8 @@ const CreateNewOrder = ({ category, id, user }) => {
       dataForBooking.roomId = id;
       dataForBooking.roomType = room?.category?.name;
       dataForBooking.branch = room?.branch?._id;
-      dataForBooking.seatId = room?.branch?._id;
+      dataForBooking.seatId =
+        room?.category?.name === "Shared Room" ? id : null;
       dataForBooking.perDay = room?.dAmountForDay;
       dataForBooking.rentDate = {
         bookStartDate: new Date(startDate).toISOString().split("T")[0],
