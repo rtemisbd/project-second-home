@@ -466,22 +466,7 @@ const getOrderFromDB = async (queries) => {
   const orders = aggregatedResult?.[0]?.paginatedResults || [];
 
   // 🔁 Update paymentStatus based on payableAmount vs receivedTk
-  for (const order of orders) {
-    const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
-    const payableAmount = order?.payableAmount || 0;
-
-    const newPaymentStatus = receivedTk === payableAmount ? "Paid" : "Unpaid";
-
-    if (order.paymentStatus !== newPaymentStatus) {
-      await OrderModel.updateOne(
-        { _id: order._id },
-        { $set: { paymentStatus: newPaymentStatus } }
-      );
-    }
-
-    // Optional: Attach payment status to result directly if needed
-    order.paymentStatus = newPaymentStatus;
-  }
+   
 
   return { result: aggregatedResult, totalCount };
 };
