@@ -10,7 +10,7 @@ const WishlistSchema = new mongoose.Schema(
     },
     roomType: {
       type: String,
-      enum: ["Private Room", "Shared Room", "Home-Stay"],
+      enum: ["Private Room", "Shared Room", "Home-Stay", "Villa"],
       required: true,
     },
     property: {
@@ -20,7 +20,7 @@ const WishlistSchema = new mongoose.Schema(
     propertyModel: {
       type: String,
       required: true,
-      enum: ["Property", "Seat"],
+      enum: ["Property", "Seat", "Villa"],
     },
   },
   { timestamps: true }

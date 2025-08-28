@@ -9,6 +9,7 @@ export default function WishList() {
   const { user } = useContext(AuthContext);
   const [data, setData] = useState([]);
 
+
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -24,6 +25,7 @@ export default function WishList() {
     };
     fetchData();
   }, []);
+  // console.log(data);
 
   return (
     <div className="md:p-0 sm:p-2">
