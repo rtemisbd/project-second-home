@@ -100,7 +100,7 @@ const BookingHistory = () => {
         });
 
         const response = await fetch(
-          `${serverBaseUrl}/villa-order/${
+          `${serverBaseUrl}/villa-order/user/${
             user?.phone
           }?${queryParams.toString()}`,
           {
@@ -129,7 +129,7 @@ const BookingHistory = () => {
     refetch();
     refetchVillaOrder();
   }, [page, size, bookingStatus, paymentStatus]);
-  console.log(villaOrders);
+  // console.log(villaOrders);
 
   return (
     <div className="md:p-0 sm:p-2">

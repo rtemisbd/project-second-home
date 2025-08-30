@@ -104,6 +104,8 @@ const VillaDetails = () => {
 
         setAddedWishlist(true);
       } catch (error) {
+        console.log(error);
+
         toast.error("Something went wrong!");
       }
     } else {
@@ -114,6 +116,7 @@ const VillaDetails = () => {
         toast.success("This room has been removed from your wishlist!");
         setAddedWishlist(false);
       } catch (error) {
+        console.log(error);
         toast.error("Something went wrong!");
       }
     }
