@@ -28,6 +28,7 @@ const VillaDetails = () => {
   const [villa, setVilla] = useState(null);
   const [bookedDates, setBookDates] = useState(null);
   const [addedWishList, setAddedWishlist] = useState(false);
+  const [wishId, setWishId] = useState(null);
   const videoId = getYouTubeVideoId(villa?.resortId.video);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -82,7 +83,19 @@ const VillaDetails = () => {
     const adjustedHour = hour % 12 || 12; // 0 becomes 12
     return `${adjustedHour}:${minutes} ${ampm}`;
   };
+  useEffect(() => {
+    const fetchWishList = async () => {
+      const { data } = await axios.get(
+        `${serverBaseUrl}/wishlist/${user?.phone}/${id}`
+      );
 
+      if (data?.data) {
+        setAddedWishlist(true);
+        setWishId(data?.data?._id);
+      }
+    };
+    fetchWishList();
+  }, [addedWishList]);
   const handleWishlist = async () => {
     if (!user?.phone) {
       toast.error("Please login first.");
@@ -113,7 +126,7 @@ const VillaDetails = () => {
         const response = await axios.delete(
           `${serverBaseUrl}/wishlist/${wishId}`
         );
-        toast.success("This room has been removed from your wishlist!");
+        toast.success("Removed from your wishlist!");
         setAddedWishlist(false);
       } catch (error) {
         console.log(error);
