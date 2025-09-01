@@ -11,7 +11,7 @@ const MakePayment = ({
   order,
   due,
 }) => {
-  console.log("payment");
+
 
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [minimumAmount, setMinimumAMount] = useState(0);
