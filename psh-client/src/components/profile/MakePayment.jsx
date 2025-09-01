@@ -11,6 +11,8 @@ const MakePayment = ({
   order,
   due,
 }) => {
+  console.log("payment");
+
   const [showUserInputForPayment, setShowUserInputForPayment] = useState(false);
   const [minimumAmount, setMinimumAMount] = useState(0);
 
@@ -71,6 +73,7 @@ const MakePayment = ({
     <>
       <Dialog open={makePaymentShow} size="md" className="">
         <DialogHeader>
+          m
           <h2 className="text-xl font-bold md:py-0 sm:py-2">
             Make New Payment{" "}
           </h2>

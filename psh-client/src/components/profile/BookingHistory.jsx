@@ -34,13 +34,10 @@ const BookingHistory = () => {
     setOrder(order);
     setCancelShow(!cancelShow);
   };
-  const handleMakePaymentShow = (order, payableAmount) => {
+  const handleMakePaymentShow = (order) => {
     setOrder(order);
-    if (order?.transactions[0]?.totalReceiveTk) {
-      setDue(payableAmount - order?.transactions[0]?.totalReceiveTk);
-    } else {
-      setDue(payableAmount);
-    }
+    setDue(order?.dueAmount);
+
     setMakePaymentShow(!makePaymentShow);
   };
 
@@ -199,6 +196,7 @@ const BookingHistory = () => {
         cancelShow={cancelShow}
         endOrder={order}
       />
+
       <MakePayment
         handleMakePaymentShow={handleMakePaymentShow}
         makePaymentShow={makePaymentShow}
