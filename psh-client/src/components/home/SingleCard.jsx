@@ -55,7 +55,7 @@ const SingleCard = ({ item }) => {
               <div>
                 <span className="text-sm font-medium bg-[#FCA22A] text-white px-2 py-1 rounded">
                   {item?.categoryDetails?.name}{" "}
-                  {item?.categoryDetails?.name !== "Home-Stay" ? (
+                  {item?.categoryDetails?.name !== "Home Stay" ? (
                     <>[Female]</>
                   ) : (
                     <>[{item?.roomNumber}]</>
@@ -82,7 +82,7 @@ const SingleCard = ({ item }) => {
                 <span className="text-[10px]">{item?.branchDetails?.name}</span>
               </p>
             </div>
-            {item?.categoryDetails?.name !== "Home-Stay" ? (
+            {item?.categoryDetails?.name !== "Home Stay" ? (
               <div className="">
                 <h2 className=" text-[14px] card-title ">
                   Room No-{}

@@ -685,7 +685,7 @@ const CreateNewOrder = ({ category, id, user }) => {
 
             {/* add food */}
             {room?.branch?.foodAmount === 0 ||
-            room?.category?.name === "Home-Stay" ? (
+            room?.category?.name === "Home Stay" ? (
               ""
             ) : (
               <div className="d-flex gap-3 ms-3">

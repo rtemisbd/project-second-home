@@ -1161,7 +1161,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             ""
           )}
 
-          {data?.category?.name === "Home-Stay" ||
+          {data?.category?.name === "Home Stay" ||
           data?.branch?.foodAmount === 0 ? (
             ""
           ) : (
