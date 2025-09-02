@@ -20,8 +20,6 @@ const VillaBookingForm = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  console.log(singleUser);
-
   const [isBlur, setIsBlur] = useState(false);
   const [scrollY, setScrollY] = useState(0);
   const [requiredMessage, setRequiredMessage] = useState(false);
@@ -48,7 +46,6 @@ const VillaBookingForm = () => {
       [name]: value,
     }));
   };
-
 
   // handle Scrolled
   const handleScroll = () => {
@@ -106,7 +103,6 @@ const VillaBookingForm = () => {
       dataForBooking.senderAccountNumber = senderAccountNumber;
       dataForBooking.sendAmount = sendAmount;
       dataForBooking.paymentProof = paymentProofImg;
- 
 
       const { data } = await axios.post(
         `${serverBaseUrl}/villa-order`,
@@ -521,13 +517,18 @@ const VillaBookingForm = () => {
                         </Tooltip>
                       </div>
                     </div>
-                    <p>BDT {bookingItem?.pricing?.initialAmount?.toLocaleString()}</p>
+                    <p>
+                      BDT{" "}
+                      {bookingItem?.pricing?.initialAmount?.toLocaleString()}
+                    </p>
                   </div>
 
                   <hr className="mt-3 ml-5 text-black" />
                   <div className="flex justify-between mt-2">
                     <p className="ml-16">Total Amount</p>
-                    <p>BDT {bookingItem?.pricing?.totalAmount?.toLocaleString()}</p>
+                    <p>
+                      BDT {bookingItem?.pricing?.totalAmount?.toLocaleString()}
+                    </p>
                   </div>
 
                   <div className={`flex justify-between `}>

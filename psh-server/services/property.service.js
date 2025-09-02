@@ -122,7 +122,7 @@ const getPropertiesFromDB = async (queries) => {
     withSharedRoom &&
     category !== "Villa" &&
     category !== "Private Room" &&
-    category !== "Home-Stay" &&
+    category !== "Home Stay" &&
     !roomNumber
   ) {
     const extractedSeats = await seatServices.getAllSeatsFromDB({

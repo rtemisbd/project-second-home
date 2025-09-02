@@ -468,18 +468,40 @@ const getOrderFromDB = async (queries) => {
   // 🔁 Update paymentStatus based on payableAmount vs receivedTk
   for (const order of orders) {
     const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
-    const payableAmount = order?.payableAmount || 0;
+    const adjustmentAmount =
+      order?.adjustments?.[0]?.totatAdjustmentAmount || 0; // could be positive (extra charge) or negative (discount)
+    const existingDiscount = order?.discount || 0;
+    const baseAmount = order?.totalAmount || 0;
 
-    const newPaymentStatus = receivedTk === payableAmount ? "Paid" : "Unpaid";
+    // Effective discount is only existingDiscount
+    const totalDiscount = existingDiscount + adjustmentAmount;
 
-    if (order.paymentStatus !== newPaymentStatus) {
-      await OrderModel.updateOne(
-        { _id: order._id },
-        { $set: { paymentStatus: newPaymentStatus } }
-      );
-    }
+    // Adjusted amount = baseAmount - discount + adjustment
+    const payableAmount = baseAmount - totalDiscount;
 
-    // Optional: Attach payment status to result directly if needed
+    // Due = payable - received
+    const dueAmount = Math.max(payableAmount - receivedTk, 0);
+
+    // Payment Status
+    const newPaymentStatus = dueAmount === 0 ? "Paid" : "Unpaid";
+
+    // Update in DB (only if needed)
+    await OrderModel.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          discount: totalDiscount,
+          payableAmount,
+          dueAmount,
+          paymentStatus: newPaymentStatus,
+        },
+      }
+    );
+
+    // Attach to response too
+    order.discount = totalDiscount;
+    order.payableAmount = payableAmount;
+    order.dueAmount = dueAmount;
     order.paymentStatus = newPaymentStatus;
   }
 
@@ -728,15 +750,9 @@ const updateBookingStatusIntoDB = async (payload) => {
 
     // Phone Sms for Confirmation
     if (booking?.status === "Approved") {
-      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${booking?.bookingId}.%20Check-in%3A%${booking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${booking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${booking?.phone}&senderid=${config.sms_sender_id}&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${booking?.bookingId}.%20Check-in%3A%${booking?.rentDate?.bookStartDate}%2C%20Check-out%3A%${booking?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
-      bookingSms(bookingMessage)
-        .then((response) => {
-          // console.log("Response from SMS API:", response);
-        })
-        .catch((error) => {
-          // console.error("Error while sending SMS:", error);
-        });
+      await bookingSms(bookingMessage);
     }
   }
 

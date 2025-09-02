@@ -1,5 +1,5 @@
 import axios from "axios";
-import { useEffect, useRef, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import VillaMedia from "../../components/Villa/VillaMedia";
@@ -19,12 +19,16 @@ import getYouTubeVideoId from "../../helpers/utils/getYouTubeVideoId";
 import { playerOptions } from "../../helpers/utils/playerOptions";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import VillaRecommended from "../../components/Villa/VillaRecommended";
+import { AuthContext } from "../../contexts/UserProvider";
+import toast from "react-hot-toast";
 
 const VillaDetails = () => {
   const { id } = useParams();
+  const { user } = useContext(AuthContext);
   const [villa, setVilla] = useState(null);
   const [bookedDates, setBookDates] = useState(null);
   const [addedWishList, setAddedWishlist] = useState(false);
+  const [wishId, setWishId] = useState(null);
   const videoId = getYouTubeVideoId(villa?.resortId.video);
   const [isMuted, setIsMuted] = useState(true);
   const [isPlaying, setIsPlaying] = useState(false);
@@ -78,6 +82,57 @@ const VillaDetails = () => {
     const ampm = hour >= 12 ? "PM" : "AM";
     const adjustedHour = hour % 12 || 12; // 0 becomes 12
     return `${adjustedHour}:${minutes} ${ampm}`;
+  };
+  useEffect(() => {
+    const fetchWishList = async () => {
+      const { data } = await axios.get(
+        `${serverBaseUrl}/wishlist/${user?.phone}/${id}`
+      );
+
+      if (data?.data) {
+        setAddedWishlist(true);
+        setWishId(data?.data?._id);
+      }
+    };
+    fetchWishList();
+  }, [addedWishList]);
+  const handleWishlist = async () => {
+    if (!user?.phone) {
+      toast.error("Please login first.");
+      return;
+    }
+    if (!addedWishList) {
+      try {
+        const newWishlist = {
+          userName: user?.firstName,
+          userPhone: user?.phone,
+          propertyId: id,
+          roomType: "Villa",
+        };
+        const response = await axios.post(
+          `${serverBaseUrl}/wishlist`,
+          newWishlist
+        );
+        toast.success("Added to your wishlist!");
+
+        setAddedWishlist(true);
+      } catch (error) {
+        console.log(error);
+
+        toast.error("Something went wrong!");
+      }
+    } else {
+      try {
+        const response = await axios.delete(
+          `${serverBaseUrl}/wishlist/${wishId}`
+        );
+        toast.success("Removed from your wishlist!");
+        setAddedWishlist(false);
+      } catch (error) {
+        console.log(error);
+        toast.error("Something went wrong!");
+      }
+    }
   };
 
   useEffect(() => {
@@ -232,7 +287,7 @@ const VillaDetails = () => {
                         className={`w-[24px] h-[30px] cursor-pointer ${
                           addedWishList && "text-red-600"
                         }`}
-                        // onClick={handleWishlist}
+                        onClick={handleWishlist}
                       />
                     </div>
                     <div>

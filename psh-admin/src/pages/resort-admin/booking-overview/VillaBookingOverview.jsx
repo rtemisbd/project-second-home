@@ -106,6 +106,7 @@ const VillaBookingOverview = () => {
           resortId: resort?._id,
           villaName,
           villaNumber,
+          isPublished: "Published",
         });
         const { data } = await axios.get(
           `${baseUrl}/api/villa?${queryParams.toString()}`

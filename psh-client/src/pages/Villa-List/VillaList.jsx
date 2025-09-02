@@ -8,7 +8,6 @@ import VillaCard from "../../components/home/VillaCard";
 const VillaList = () => {
   const { state } = useLocation();
 
-
   const [loading, setLoading] = useState(false);
   const [data, setData] = useState([]);
   const [bookedData, setBookedData] = useState([]);
@@ -86,9 +85,12 @@ const VillaList = () => {
   }, []);
 
   useEffect(() => {
-    const bookedVillaIds = bookedData.map((book) => book.villaId);
+    const bookedVillaIds = bookedData?.map((book) => book.villaId);
+
+    const uniqueBookedIds = [...new Set(bookedVillaIds)];
+
     const availableData = data?.filter(
-      (villa) => !bookedVillaIds.includes(villa._id)
+      (villa) => !uniqueBookedIds.includes(villa._id)
     );
     setFilteredData(availableData);
   }, [bookedData, data]);

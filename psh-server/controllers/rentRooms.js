@@ -15,7 +15,7 @@ export const getRentRooms = async (req, res, next) => {
       });
     } else {
       rentRooms = await RentRoom.find({
-        bookStartDate: { $lte: today },    
+        bookStartDate: { $lte: today },
         bookEndDate: { $gte: today },
       });
     }
@@ -119,7 +119,7 @@ export const getRentRooms = async (req, res, next) => {
       .populate([
         {
           path: "category",
-          match: { name: { $in: ["Private Room", "Home-Stay"] } },
+          match: { name: { $in: ["Private Room", "Home Stay"] } },
           select: {
             name: 1,
             _id: 0,
@@ -300,4 +300,3 @@ export const getRentRooms = async (req, res, next) => {
     next(err);
   }
 };
-

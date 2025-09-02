@@ -23,8 +23,7 @@ const VillaBookingConfirmation = () => {
     };
     fetchBooking();
   }, [orderId]);
-  console.log(booking);
-  
+  // console.log(booking);
 
   return (
     <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 text-gray-900">

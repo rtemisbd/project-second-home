@@ -10,6 +10,7 @@ import { addDays, subDays } from "date-fns";
 import { leftDate, rightDate, toTalRent } from "../../redux/reducers/dateSlice";
 import { useNavigate } from "react-router-dom";
 import { SearchContext } from "../../contexts/SearchContext";
+import { placeSearchBoxShow } from "../../redux/reducers/smProfileMenuSlice";
 
 const FindVilla = () => {
   const districtRef = useRef(null);
@@ -49,8 +50,6 @@ const FindVilla = () => {
   };
 
   const handleVillaList = () => {
-
-
     try {
       // e.preventDefault();
       const payload = {
@@ -67,11 +66,10 @@ const FindVilla = () => {
       };
 
       dispatch({ type: "NEW_SEARCH", payload });
+      reduxDispatch(placeSearchBoxShow(false));
       navigate("/villas", { state: payload });
       // navigate("/villas");
-    } catch (error) {
-      console.log(error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {

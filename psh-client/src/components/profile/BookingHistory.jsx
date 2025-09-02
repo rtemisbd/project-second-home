@@ -18,6 +18,7 @@ const BookingHistory = () => {
   const [cancelShow, setCancelShow] = useState(false);
   const [makePaymentShow, setMakePaymentShow] = useState(false);
   const [order, setOrder] = useState(null);
+  const [villaOrders, setVillaOrders] = useState([]);
   const [totalCount, setTotalCount] = useState();
   const [paymentStatus, setPaymentStatus] = useState("All");
   const [bookingStatus, setBookingStatus] = useState("All");
@@ -33,13 +34,10 @@ const BookingHistory = () => {
     setOrder(order);
     setCancelShow(!cancelShow);
   };
-  const handleMakePaymentShow = (order, payableAmount) => {
+  const handleMakePaymentShow = (order) => {
     setOrder(order);
-    if (order?.transactions[0]?.totalReceiveTk) {
-      setDue(payableAmount - order?.transactions[0]?.totalReceiveTk);
-    } else {
-      setDue(payableAmount);
-    }
+    setDue(order?.dueAmount);
+
     setMakePaymentShow(!makePaymentShow);
   };
 
@@ -86,10 +84,49 @@ const BookingHistory = () => {
     }
   );
   // console.log(userOrder);
+  const { refetch: refetchVillaOrder } = useQuery(
+    ["fetchVillaBookings"],
+    async () => {
+      try {
+        const headers = getHeader();
+        const queryParams = new URLSearchParams({
+          page,
+          size,
+          bookingStatus,
+          paymentStatus,
+        });
+
+        const response = await fetch(
+          `${serverBaseUrl}/villa-order/user/${
+            user?.phone
+          }?${queryParams.toString()}`,
+          {
+            method: "GET",
+            headers,
+          }
+        );
+
+        if (!response.ok) {
+          throw new Error("Network Error");
+        }
+        const { data } = await response.json();
+
+        setVillaOrders(data?.orders);
+        // setTotalCount(data?.totalCount);
+      } catch (error) {
+        console.error("Error fetching data:", error);
+      }
+    },
+    {
+      refetchOnWindowFocus: false,
+    }
+  );
 
   useEffect(() => {
     refetch();
+    refetchVillaOrder();
   }, [page, size, bookingStatus, paymentStatus]);
+  // console.log(villaOrders);
 
   return (
     <div className="md:p-0 sm:p-2">
@@ -159,6 +196,7 @@ const BookingHistory = () => {
         cancelShow={cancelShow}
         endOrder={order}
       />
+
       <MakePayment
         handleMakePaymentShow={handleMakePaymentShow}
         makePaymentShow={makePaymentShow}

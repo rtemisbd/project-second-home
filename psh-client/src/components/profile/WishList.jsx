@@ -23,7 +23,7 @@ export default function WishList() {
       }
     };
     fetchData();
-  }, []);
+  }, [user?.phone]);
 
   return (
     <div className="md:p-0 sm:p-2">
@@ -48,7 +48,7 @@ export default function WishList() {
                 </th>
                 <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
                   <Typography className="font-normal leading-none opacity-70">
-                    Branch
+                    Branch / Resort
                   </Typography>
                 </th>
                 <th className="border-b border-blue-gray-100 bg-blue-gray-50 p-2">
@@ -65,52 +65,58 @@ export default function WishList() {
               </tr>
             </thead>
             <tbody>
-              {data?.map((item, i) => {
-                const formattedDate = new Date(
-                  item?.createdAt
-                ).toLocaleString();
+              {data?.map((item, i) => (
+                <tr className="even:bg-blue-gray-50/50  border " key={i}>
+                  <td className="p-2 border">
+                    <img
+                      src={
+                        item?.roomType === "Villa"
+                          ? item?.propertyData?.media?.photos[0]
+                          : item?.propertyData?.photos[0]
+                      }
+                      alt=""
+                      style={{ width: 120 }}
+                    />
+                  </td>
+                  <td className="p-2 border">
+                    <Typography className="font-normal ">
+                      {item?.roomType === "Villa"
+                        ? item?.propertyData?.title
+                        : item?.propertyData?.name}
+                    </Typography>
+                  </td>
+                  <td className="p-2 border">
+                    <Typography className="font-normal">
+                      {item?.roomType === "Villa"
+                        ? item?.propertyData?.resort?.name
+                        : item?.propertyData?.branch?.name}
+                    </Typography>
+                  </td>
 
-                return (
-                  <tr className="even:bg-blue-gray-50/50  border " key={i}>
-                    <td className="p-2 border">
-                      <img
-                        src={item?.property?.photos[0]}
-                        alt=""
-                        style={{ width: 120 }}
-                      />
-                    </td>
-                    <td className="p-2 border">
-                      <Typography className="font-normal ">
-                        {item?.property?.name}
-                      </Typography>
-                    </td>
-                    <td className="p-2 border">
-                      <Typography className="font-normal">
-                        {item?.property?.branch?.name}
-                      </Typography>
-                    </td>
+                  <td className="p-2 border">
+                    <Typography className="font-normal">
+                      {item?.roomType}
+                    </Typography>
+                  </td>
 
-                    <td className="p-2 border">
-                      <Typography className="font-normal">
-                        {item?.roomType}
-                      </Typography>
-                    </td>
-
-                    <td className="p-2 border">
-                      <Link
-                        to={`/${item?.property?.category}/${item?.property?.name}/${item?.property?._id}`}
-                      >
-                        Details
-                      </Link>
-                    </td>
-                  </tr>
-                );
-              })}
+                  <td className="p-2 border">
+                    <Link
+                      to={
+                        item.roomType === "Villa"
+                          ? `/villa/${item?.propertyData?._id}`
+                          : `/${item?.propertyData?.category}/${item?.propertyData?.name}/${item?.propertyData?._id}`
+                      }
+                    >
+                      Details
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </Card>
       ) : (
-        <p className="text-red-500 text-center text-xl">Whislist Not Found</p>
+        <p className="text-red-500 text-center text-xl">Wishlist Not Found</p>
       )}
     </div>
   );

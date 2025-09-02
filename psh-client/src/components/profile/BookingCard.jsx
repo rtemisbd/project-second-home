@@ -109,7 +109,7 @@ const BookingCard = ({
               Details
             </button>
             <button
-              onClick={() => handleMakePaymentShow(order, payableAmount)}
+              onClick={() => handleMakePaymentShow(order)}
               className={` text-white px-1 py-1 md:px-2 rounded ${
                 order?.status === "Canceled" ? "bg-red-200" : "bg-[#FCA22A]"
               } ${order?.paymentStatus === "Paid" ? "hidden" : ""}`}
