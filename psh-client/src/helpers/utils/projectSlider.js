@@ -1,5 +1,5 @@
 export const propertySlider = (projects) => ({
-  perPage: 1,
+  // perPage: 4,
   perMove: 1,
   gap: "20px",
   pagination: false,
