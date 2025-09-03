@@ -27,6 +27,7 @@ import useRecommended from "../../hooks/useRecommended";
 import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import Facilities from "../../components/RoomDetails/Facilities";
+import CancellationPolicy from "../../components/RoomDetails/CancellationPolicy";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
@@ -821,6 +822,9 @@ const RoomDetails = () => {
                         </p>
                       </div>
                     </div>
+
+                    {/* cancellation  */}
+                    <CancellationPolicy category={data?.category?.name} />
 
                     <div className="w-full">
                       {data?.branch?.locationLink !== "." ? (
