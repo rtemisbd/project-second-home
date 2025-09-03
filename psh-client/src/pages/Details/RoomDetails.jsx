@@ -28,6 +28,7 @@ import ImageViewerSlider from "../../components/RoomDetails/ImageViewerSlider";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import Facilities from "../../components/RoomDetails/Facilities";
 import CancellationPolicy from "../../components/RoomDetails/CancellationPolicy";
+import GeneralRules from "../../components/RoomDetails/GeneralRules";
 
 const RoomDetails = () => {
   const { id, category: categoryId } = useParams();
@@ -783,45 +784,8 @@ const RoomDetails = () => {
                       ""
                     )}
 
-                    <div>
-                      <h2
-                        id="apartmentDetails"
-                        className="text-xl font-bold text-gray-900 mb-5  facility_h1 p-2 mt-5"
-                      >
-                        {data?.category?.name} Rules
-                      </h2>
-                      <div className="leading-8 text-sm">
-                        <p>
-                          1. Respect Others: Treat your fellow residents with
-                          kindness, consideration, and respect.
-                        </p>
-                        <p>
-                          {" "}
-                          2. Quiet Hours: Maintain a peaceful environment during
-                          designated quiet hours to ensure everyone's comfort
-                          and rest.
-                        </p>
-                        <p>
-                          3. Cleanliness: Keep your living space clean and tidy,
-                          and follow the hostel's cleanliness guidelines in
-                          common areas.
-                        </p>
-                        <p>
-                          4. No Smoking: Smoking is strictly prohibited within
-                          the premises of Project Second Home.
-                        </p>
-                        <p>
-                          5. Security: Ensure the safety and security of
-                          yourself and others by following the hostel's security
-                          measures and reporting any concerns.
-                        </p>
-                        <p>
-                          6. Visitors Policy: Adhere to the hostel's visitors
-                          policy, which may include restrictions on overnight
-                          guests.
-                        </p>
-                      </div>
-                    </div>
+                    {/* general rules */}
+                    <GeneralRules category={data?.category?.name} />
 
                     {/* cancellation  */}
                     <CancellationPolicy category={data?.category?.name} />

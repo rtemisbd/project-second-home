@@ -492,7 +492,8 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                 borderRadius: "5px",
               }}
             >
-              {data?.category?.name} ({data?.type})
+              {data?.category?.name}{" "}
+              {data?.category?.name !== "Home Stay" && "(Female)"}
             </p>
           </div>
         </div>

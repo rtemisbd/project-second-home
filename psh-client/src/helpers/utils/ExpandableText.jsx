@@ -27,7 +27,7 @@ const ExpandableText = ({ htmlContent }) => {
     <div className="w-full">
       <div
         ref={contentRef}
-        className={`leading-8 w-full transition-all duration-300 ${
+        className={`leading-4 w-full transition-all duration-300 ${
           expanded ? "" : "line-clamp-4"
         }`}
         dangerouslySetInnerHTML={{ __html: cleanedHtml }}
