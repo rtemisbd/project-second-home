@@ -14,6 +14,7 @@ import { Link } from "react-router-dom";
 import jsPDF from "jspdf";
 import "jspdf-autotable";
 import "./Facility.css";
+import { baseUrl } from "../../utils/getBaseURL";
 
 const Facility_list = () => {
   const MySwal = withReactContent(Swal);
@@ -120,12 +121,9 @@ const Facility_list = () => {
   useEffect(() => {
     const getData = async () => {
       try {
-        const { data } = await axios.get(
-          `https://api.psh.com.bd/api/facility`,
-          {
-            mode: "cors",
-          }
-        );
+        const { data } = await axios.get(`${baseUrl}/api/facility`, {
+          mode: "cors",
+        });
         setData(data);
       } catch (error) {
         console.log(error);
@@ -138,7 +136,7 @@ const Facility_list = () => {
   const handleFacility = async (id) => {
     const confirmation = window.confirm("Are you Sure?");
     if (confirmation) {
-      const url = `https://api.psh.com.bd/api/facility/${id}`;
+      const url = `${baseUrl}/api/facility/${id}`;
       fetch(url, {
         method: "DELETE",
       })
@@ -167,7 +165,7 @@ const Facility_list = () => {
                 <div>
                   <div className="">
                     <div className="corporate_addNew_btn">
-                      <Link to={"/add_facility"}>
+                      <Link to={"../add_facility"}>
                         <button className="college_btn2 ms-4 p-3">
                           Add New
                         </button>

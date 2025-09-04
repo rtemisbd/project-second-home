@@ -135,59 +135,66 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       setVatTax(parseInt(getvatTax));
     }
     // minimum Payment
-    if (
-      customerRent.remainingDays > 3 &&
-      customerRent?.months === undefined &&
-      customerRent?.years === undefined
-    ) {
-      // const minimum = data?.dAmountForDay * 3;
-      // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
-      setMinimumPayment(500);
-
-      setShowMinimumPayment(true);
-
-      setAddmissionFee(0);
-
-      setSecurityFee(0);
-    } else if (
-      customerRent?.months >= 2 &&
-      customerRent?.months < 6 &&
-      customerRent?.years === undefined
-    ) {
-      setMinimumPayment(extraCharge[0]?.securityFee);
-
-      setAddmissionFee(extraCharge[0]?.admissionFee);
-
-      setSecurityFee(extraCharge[0]?.securityFee);
-
-      setShowMinimumPayment(true);
-    } else if (customerRent?.months >= 6 && customerRent?.years === undefined) {
-      setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
-
-      setAddmissionFee(extraCharge[0]?.upto6MonthsAdmissionFee);
-
-      setSecurityFee(extraCharge[0]?.upto6MonthsSecurityFee);
-
-      setShowMinimumPayment(true);
-    } else if (customerRent?.years !== undefined) {
-      setMinimumPayment(extraCharge[0]?.for1YearSecurityFee);
-
-      setAddmissionFee(extraCharge[0]?.for1YearAdmissionFee);
-
-      setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
-
+    if (data?.category?.name === "Home Stay") {
+      setMinimumPayment(5000);
       setShowMinimumPayment(true);
     } else {
-      setMinimumPayment(
-        seat
-          ? seat?.dAmountForDay
-          : data?.dAmountForDay > 500
-          ? 500
-          : data?.dAmountForDay
-      );
-      setShowMinimumPayment(true);
-    }
+      if (
+        customerRent.remainingDays > 3 &&
+        customerRent?.months === undefined &&
+        customerRent?.years === undefined
+      ) {
+        // const minimum = data?.dAmountForDay * 3;
+        // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
+        setMinimumPayment(500);
 
+        setShowMinimumPayment(true);
+
+        setAddmissionFee(0);
+
+        setSecurityFee(0);
+      } else if (
+        customerRent?.months >= 2 &&
+        customerRent?.months < 6 &&
+        customerRent?.years === undefined
+      ) {
+        setMinimumPayment(extraCharge[0]?.securityFee);
+
+        setAddmissionFee(extraCharge[0]?.admissionFee);
+
+        setSecurityFee(extraCharge[0]?.securityFee);
+
+        setShowMinimumPayment(true);
+      } else if (
+        customerRent?.months >= 6 &&
+        customerRent?.years === undefined
+      ) {
+        setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
+
+        setAddmissionFee(extraCharge[0]?.upto6MonthsAdmissionFee);
+
+        setSecurityFee(extraCharge[0]?.upto6MonthsSecurityFee);
+
+        setShowMinimumPayment(true);
+      } else if (customerRent?.years !== undefined) {
+        setMinimumPayment(extraCharge[0]?.for1YearSecurityFee);
+
+        setAddmissionFee(extraCharge[0]?.for1YearAdmissionFee);
+
+        setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
+
+        setShowMinimumPayment(true);
+      } else {
+        setMinimumPayment(
+          seat
+            ? seat?.dAmountForDay
+            : data?.dAmountForDay > 500
+            ? 500
+            : data?.dAmountForDay
+        );
+        setShowMinimumPayment(true);
+      }
+    }
     // total Amount
     if (customerRent?.months >= 2) {
       const totalAmountForMonths =

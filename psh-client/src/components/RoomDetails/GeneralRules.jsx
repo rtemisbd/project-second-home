@@ -28,7 +28,7 @@ const GeneralRules = ({ category }) => {
       </h2>
 
       {/* Expandable wrapper */}
-      <div className="relative">
+      <div className="">
         <div
           ref={contentRef}
           className={`leading-4 w-full transition-all duration-300 ${
