@@ -21,6 +21,7 @@ import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import MobileBanking from "../Payment/MobileBanking";
 import useUser from "../../hooks/userUser";
+import { SiPinboard } from "react-icons/si";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);
@@ -1281,27 +1282,43 @@ const PersonalInfo = () => {
                 style={{
                   backgroundColor: "#FDF6B1",
                   borderLeft: "4px solid #02625a",
-                  fontSize: "14px",
                   color: "#02625a",
                   fontWeight: "bolder",
+                  fontSize: "16px",
                 }}
-                className="px-3 py-2"
+                className="pl-3 pr-1 py-2"
               >
-                <span
+                <div className="flex gap-1  ">
+                  <p
+                    style={{
+                      color: "red",
+                    }}
+                  >
+                    Attention :
+                  </p>
+                  <p className="text-black  flex gap-1 items-end">
+                    <span> Check In ~ 12.00 p.m </span>
+                    <span>Check Out ~ 10.00 a.m</span>
+                  </p>
+                </div>
+
+                <div
                   style={{
-                    fontSize: "18px",
-                    color: "red",
+                    color: "#02625a",
+                    fontWeight: "bolder",
                   }}
+                  className=" flex gap-1 items-start mt-1"
                 >
-                  Attention :
-                </span>
-                <span>
-                  {" "}
-                  Please bring two{" "}
-                  <span className="text-black">Passport-Size Photos</span> and
-                  one copy of your <span className="text-black"> NID Card</span>{" "}
-                  at the time of check-in.
-                </span>
+                  <SiPinboard size={28} color="red" />
+                  <p>
+                    {" "}
+                    Please bring two{" "}
+                    <span className="text-black">Passport-Size Photos</span> and
+                    one copy of your{" "}
+                    <span className="text-black"> NID Card</span> at the time of
+                    check-in.
+                  </p>
+                </div>
               </div>
             </div>
           </div>

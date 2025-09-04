@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useRef } from "react";
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { baseUrl } from "../utils/getBaseURL";
 
 const Add_Facility_Category = () => {
   const MySwal = withReactContent(Swal);
@@ -18,7 +19,7 @@ const Add_Facility_Category = () => {
         ...data2,
       };
 
-      await axios.post("https://api.psh.com.bd/api/facilityCategory", product);
+      await axios.post(`${baseUrl}/api/facilityCategory`, product);
       MySwal.fire("Good job!", "successfully added", "success");
       formRef.current.reset();
     } catch (err) {

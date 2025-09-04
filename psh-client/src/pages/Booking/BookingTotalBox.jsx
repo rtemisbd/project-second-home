@@ -23,6 +23,7 @@ import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { isAlreadyBookings } from "../../utilities/bookingChecking";
 import useExtraCharge from "../../hooks/useExtraCharge";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
+import { SiPinboard } from "react-icons/si";
 
 const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const { user } = useContext(AuthContext);
@@ -134,59 +135,66 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       setVatTax(parseInt(getvatTax));
     }
     // minimum Payment
-    if (
-      customerRent.remainingDays > 3 &&
-      customerRent?.months === undefined &&
-      customerRent?.years === undefined
-    ) {
-      // const minimum = data?.dAmountForDay * 3;
-      // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
-      setMinimumPayment(500);
-
-      setShowMinimumPayment(true);
-
-      setAddmissionFee(0);
-
-      setSecurityFee(0);
-    } else if (
-      customerRent?.months >= 2 &&
-      customerRent?.months < 6 &&
-      customerRent?.years === undefined
-    ) {
-      setMinimumPayment(extraCharge[0]?.securityFee);
-
-      setAddmissionFee(extraCharge[0]?.admissionFee);
-
-      setSecurityFee(extraCharge[0]?.securityFee);
-
-      setShowMinimumPayment(true);
-    } else if (customerRent?.months >= 6 && customerRent?.years === undefined) {
-      setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
-
-      setAddmissionFee(extraCharge[0]?.upto6MonthsAdmissionFee);
-
-      setSecurityFee(extraCharge[0]?.upto6MonthsSecurityFee);
-
-      setShowMinimumPayment(true);
-    } else if (customerRent?.years !== undefined) {
-      setMinimumPayment(extraCharge[0]?.for1YearSecurityFee);
-
-      setAddmissionFee(extraCharge[0]?.for1YearAdmissionFee);
-
-      setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
-
+    if (data?.category?.name === "Home Stay") {
+      setMinimumPayment(5000);
       setShowMinimumPayment(true);
     } else {
-      setMinimumPayment(
-        seat
-          ? seat?.dAmountForDay
-          : data?.dAmountForDay > 500
-          ? 500
-          : data?.dAmountForDay
-      );
-      setShowMinimumPayment(true);
-    }
+      if (
+        customerRent.remainingDays > 3 &&
+        customerRent?.months === undefined &&
+        customerRent?.years === undefined
+      ) {
+        // const minimum = data?.dAmountForDay * 3;
+        // setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
+        setMinimumPayment(500);
 
+        setShowMinimumPayment(true);
+
+        setAddmissionFee(0);
+
+        setSecurityFee(0);
+      } else if (
+        customerRent?.months >= 2 &&
+        customerRent?.months < 6 &&
+        customerRent?.years === undefined
+      ) {
+        setMinimumPayment(extraCharge[0]?.securityFee);
+
+        setAddmissionFee(extraCharge[0]?.admissionFee);
+
+        setSecurityFee(extraCharge[0]?.securityFee);
+
+        setShowMinimumPayment(true);
+      } else if (
+        customerRent?.months >= 6 &&
+        customerRent?.years === undefined
+      ) {
+        setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
+
+        setAddmissionFee(extraCharge[0]?.upto6MonthsAdmissionFee);
+
+        setSecurityFee(extraCharge[0]?.upto6MonthsSecurityFee);
+
+        setShowMinimumPayment(true);
+      } else if (customerRent?.years !== undefined) {
+        setMinimumPayment(extraCharge[0]?.for1YearSecurityFee);
+
+        setAddmissionFee(extraCharge[0]?.for1YearAdmissionFee);
+
+        setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
+
+        setShowMinimumPayment(true);
+      } else {
+        setMinimumPayment(
+          seat
+            ? seat?.dAmountForDay
+            : data?.dAmountForDay > 500
+            ? 500
+            : data?.dAmountForDay
+        );
+        setShowMinimumPayment(true);
+      }
+    }
     // total Amount
     if (customerRent?.months >= 2) {
       const totalAmountForMonths =
@@ -491,7 +499,8 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
                 borderRadius: "5px",
               }}
             >
-              {data?.category?.name} ({data?.type})
+              {data?.category?.name}{" "}
+              {data?.category?.name !== "Home Stay" && "(Female)"}
             </p>
           </div>
         </div>
@@ -1278,27 +1287,42 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
           style={{
             backgroundColor: "#FDF6B1",
             borderLeft: "4px solid #02625a",
-            fontSize: "14px",
             color: "#02625a",
             fontWeight: "bolder",
+            fontSize: "16px",
           }}
-          className="px-3 py-2"
+          className="pl-3 pr-1 py-2"
         >
-          <span
+          <div className="flex gap-1  ">
+            <p
+              style={{
+                color: "red",
+              }}
+            >
+              Attention :
+            </p>
+            <p className="text-black  flex gap-1 items-end">
+              <span> Check In ~ 12.00 p.m </span>
+              <span>Check Out ~ 10.00 a.m</span>
+            </p>
+          </div>
+
+          <div
             style={{
-              fontSize: "18px",
-              color: "red",
+              color: "#02625a",
+              fontWeight: "bolder",
             }}
+            className=" flex gap-1 items-start mt-1"
           >
-            Attention :
-          </span>
-          <span>
-            {" "}
-            Please bring two{" "}
-            <span className="text-black">Passport-Size Photos</span> and one
-            copy of your <span className="text-black"> NID Card</span> at the
-            time of check-in.
-          </span>
+            <SiPinboard size={28} color="red" />
+            <p>
+              {" "}
+              Please bring two{" "}
+              <span className="text-black">Passport-Size Photos</span> and one
+              copy of your <span className="text-black"> NID Card</span> at the
+              time of check-in.
+            </p>
+          </div>
         </div>
       </div>
       <Toaster
