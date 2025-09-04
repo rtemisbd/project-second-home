@@ -1284,9 +1284,8 @@ const PersonalInfo = () => {
                   borderLeft: "4px solid #02625a",
                   color: "#02625a",
                   fontWeight: "bolder",
-                  fontSize: "16px",
                 }}
-                className="pl-3 pr-1 py-2"
+                className="pl-2 md:pl-3 md:pr-1 py-2 text-[14px] md:text-[16px]"
               >
                 <div className="flex gap-1  ">
                   <p
@@ -1296,11 +1295,10 @@ const PersonalInfo = () => {
                   >
                     Attention :
                   </p>
-                  <p className="text-black  flex gap-1 items-end">
-                    <span> Check In ~ 12.00 p.m </span>
-                    <span>Check Out ~ 10.00 a.m</span>
-                  </p>
                 </div>
+                <p className="text-black  ">
+                  Check In ~ 12.00 p.m. & Check Out ~ 10.00 a.m.
+                </p>
 
                 <div
                   style={{
@@ -1309,7 +1307,7 @@ const PersonalInfo = () => {
                   }}
                   className=" flex gap-1 items-start mt-1"
                 >
-                  <SiPinboard size={28} color="red" />
+                  {/* <SiPinboard size={28} color="red" /> */}
                   <p>
                     {" "}
                     Please bring two{" "}
