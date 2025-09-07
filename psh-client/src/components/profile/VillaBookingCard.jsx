@@ -1,4 +1,6 @@
 const VillaBookingCard = ({ order }) => {
+  console.log(order);
+
   return (
     <div
       key={order?._id}
