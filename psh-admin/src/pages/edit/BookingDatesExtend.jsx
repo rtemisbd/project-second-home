@@ -15,38 +15,32 @@ const BookingDatesExtend = ({
   showDurationModal,
   setShowDurationModal,
 }) => {
-  const [startDate, setStartDate] = useState(
-    data?.bookingInfo?.rentDate?.bookStartDate
-  );
-  const [endDate, setEndDate] = useState(
-    data?.bookingInfo?.rentDate?.bookEndDate
-  );
+  console.log(data);
+
+  const [startDate, setStartDate] = useState(data?.rentDate?.bookStartDate);
+  const [endDate, setEndDate] = useState(data?.rentDate?.bookEndDate);
   const [customerRent, setCustomerRent] = useState({});
   const [isAdjustment, setIsAdjustment] = useState(false);
-  const [isIncludeFood, setIsIncludeFood] = useState(
-    data?.bookingInfo?.isIncludeFood
-  );
+  const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
   const [userPromo, setUserPromo] = useState({});
 
   const [payableAmount, setPayableAmount] = useState(data?.payableAmount || 0);
-  const [subTotal, setSubTotal] = useState(data?.bookingInfo?.subTotal || 0);
-  const [foodAmount, setFoodAmount] = useState(data?.bookingInfo?.foodAmount);
+  const [subTotal, setSubTotal] = useState(data?.subTotal || 0);
+  const [foodAmount, setFoodAmount] = useState(data?.foodAmount);
   const [vatTax, setVatTax] = useState(
     (subTotal * extraCharge[0]?.vatTax) / 100
   );
   const [addMissionFee, setAddMissionFee] = useState(0);
   const [securityFee, setSecurityFee] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(
-    data?.bookingInfo?.totalAmount
-  );
+  const [totalAmount, setTotalAmount] = useState(data?.totalAmount);
   const [discount, setDiscount] = useState(data?.discount || 0);
   const [minimumPayment, setMinimumPayment] = useState(
-    data?.bookingInfo?.minimumPayment || 0
+    data?.minimumPayment || 0
   );
   const [rentRooms, setRentRooms] = useState([]);
 
   //fetch already booked dates for this specific room
-  const { room } = UseFetch(`property/${data?.bookingInfo?.roomId}`);
+  const { room } = UseFetch(`property/${data?.roomId}`);
   const [promos] = usePromo();
   const { bookingInfo } = data;
 
@@ -119,7 +113,7 @@ const BookingDatesExtend = ({
 
     // set promo
     const promo = promos.find(
-      (promo) => promo?.promoCode === data?.bookingInfo?.usedPromo?.promo
+      (promo) => promo?.promoCode === data?.usedPromo?.promo
     );
     setUserPromo(promo);
 
@@ -135,7 +129,7 @@ const BookingDatesExtend = ({
       (customerRent?.months === undefined || customerRent?.months <= 1) &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.minimumPayment;
+      const minimum = data?.minimumPayment;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
       setAddMissionFee(0);
       setSecurityFee(0);
@@ -145,7 +139,7 @@ const BookingDatesExtend = ({
       customerRent?.years === undefined
     ) {
       setMinimumPayment(extraCharge[0]?.securityFee);
-      setAddMissionFee(extraCharge[0]?.admissionFee);
+      setAddMissionFee(extraCharge[0]?.admissionFee);       
       setSecurityFee(extraCharge[0]?.securityFee);
     } else if (customerRent?.months >= 6 && customerRent?.years === undefined) {
       setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
@@ -156,7 +150,7 @@ const BookingDatesExtend = ({
       setAddMissionFee(extraCharge[0]?.for1YearAdmissionFee);
       setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
     } else {
-      setMinimumPayment(data?.bookingInfo?.minimumPayment);
+      setMinimumPayment(data?.minimumPayment);
     }
 
     // set food amount
@@ -179,16 +173,16 @@ const BookingDatesExtend = ({
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
-        const discount = data?.bookingInfo?.promoCodeDiscount / 100;
+        const discount = data?.promoCodeDiscount / 100;
         setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
             ? totalAmount * discount
-            : data?.adjustmentAmount
+            : data?.discount
         );
       } else {
-        setDiscount(data?.adjustmentAmount);
+        setDiscount(data?.discount);
 
-        setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
+        setIsAdjustment(data?.discount > 0 ? true : false);
       }
     } else if (
       customerRent?.months === 0 &&
@@ -198,30 +192,30 @@ const BookingDatesExtend = ({
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
-        const discount = data?.bookingInfo?.promoCodeDiscount / 100;
+        const discount = data?.promoCodeDiscount / 100;
         setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
             ? totalAmount * discount
             : data?.adjustmentAmount
         );
       } else {
-        setDiscount(data?.adjustmentAmount);
-        setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
+        setDiscount(data?.discount);
+        setIsAdjustment(data?.discount > 0 ? true : false);
       }
     } else {
       if (
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
-        const discount = data?.bookingInfo?.promoCodeDiscount / 100;
+        const discount = data?.promoCodeDiscount / 100;
         setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
             ? totalAmount * discount
-            : data?.adjustmentAmount
+            : data?.discount
         );
       } else {
-        setDiscount(data?.adjustmentAmount);
-        setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
+        setDiscount(data?.discount);
+        setIsAdjustment(data?.discount > 0 ? true : false);
       }
     }
     // set payable amount
@@ -231,34 +225,35 @@ const BookingDatesExtend = ({
       setPayableAmount(totalAmount);
     }
   }, [
-    days,
-    daysDifference,
-    months,
-    remainingDays,
-    years,
     addMissionFee,
     customerRent?.days,
     customerRent?.months,
     customerRent.remainingDays,
     customerRent?.years,
+    data?.adjustmentAmount,
+    data?.branchDetails?.foodAmount,
+    data?.discount,
+    data?.minimumPayment,
+    data?.promoCodeDiscount,
+    data?.usedPromo?.promo,
+    days,
+    daysDifference,
     discount,
+    extraCharge,
     foodAmount,
+    isIncludeFood,
+    months,
     promos,
+    remainingDays,
     room?.property?.dAmountForDay,
     room?.property?.dAmountForMonth,
     room?.property?.dAmountForYear,
-    isIncludeFood,
-    data?.bookingInfo?.minimumPayment,
     securityFee,
     subTotal,
     totalAmount,
     userPromo?.minimumDays,
     vatTax,
-    data?.adjustmentAmount,
-    data?.bookingInfo?.promoCodeDiscount,
-    data?.bookingInfo?.usedPromo?.promo,
-    data?.branchDetails?.foodAmount,
-    extraCharge,
+    years,
   ]);
 
   // date format
@@ -280,25 +275,19 @@ const BookingDatesExtend = ({
       discount: discount || 0,
       payableAmount,
       totalAmount,
-      bookingInfo: {
-        ...bookingInfo,
-        addMissionFee,
-        customerRent,
-        discount,
-        foodAmount,
-        fullPayment: payableAmount,
-        isIncludeFood,
-        minimumPayment,
-        payableAmount,
-        rentDate: {
-          bookStartDate: formatDate(startDate),
-          bookEndDate: formatDate(endDate),
-        },
-        securityFee,
-        subTotal,
-        totalAmount,
-        vatTax,
+      addMissionFee,
+      customerRent,
+      foodAmount,
+      isIncludeFood,
+      minimumPayment,
+      rentDate: {
+        bookStartDate: formatDate(startDate),
+        bookEndDate: formatDate(endDate),
       },
+      securityFee,
+      subTotal,
+
+      vatTax,
     };
 
     try {
@@ -354,8 +343,7 @@ const BookingDatesExtend = ({
                 }}
               >
                 <h4 className="text-left " style={{ color: "#212A42" }}>
-                  {data?.bookingInfo?.roomName} -{" "}
-                  {data?.bookingInfo?.roomNumber}
+                  {data?.room?.name} - {data?.room?.roomNumber}
                 </h4>
 
                 <p
@@ -367,7 +355,7 @@ const BookingDatesExtend = ({
                     borderRadius: "5px",
                   }}
                 >
-                  {data?.bookingInfo?.roomType}-[{data?.branchDetails?.name}]
+                  {data?.roomType}-[{data?.branchDetails?.name}]
                 </p>
               </div>
               {/* day month year */}
@@ -570,7 +558,7 @@ const BookingDatesExtend = ({
                   <div className="ml-5 d-flex justify-items-center ">
                     <p className="text-danger fw-bold">Minimum Payment</p>
                   </div>
-                  <p> BDT {minimumPayment}</p>
+                  <p> BDT {data?.minimumPayment}</p>
                 </div>
               </div>
               {data?.branchDetails?.foodAmount === 0 ||

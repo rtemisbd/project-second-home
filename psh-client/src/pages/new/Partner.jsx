@@ -30,7 +30,7 @@ const Partner = () => {
 
   return (
     <div>
-      <Toaster
+      <Toaster 
         containerStyle={{ top: 200 }}
         toastOptions={{ position: "top-center" }}
       ></Toaster>
