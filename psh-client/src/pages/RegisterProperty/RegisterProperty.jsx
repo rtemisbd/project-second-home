@@ -33,6 +33,33 @@ const RegisterProperty = () => {
         "Track bookings, income, and performance in real-time via our easy-to-use dashboard.",
     },
   ];
+
+  const workMethods = [
+    {
+      heading: "Register Your Property",
+      description:
+        "Complete our quick and simple form with property details and photos.",
+    },
+    {
+      heading: "Property Evaluation & Optimization",
+      description:
+        "Our experts review your listing and provide tips to boost bookings and guest satisfaction.",
+    },
+    {
+      heading: "Professional Listing Goes Live",
+      description:
+        "Your property appears on PSH and partner platforms with professional photos and descriptions.",
+    },
+    {
+      heading: "Sit Back & Earn",
+      description:
+        "We handle all bookings, guest support, and maintenance, while you enjoy passive income.",
+    },
+    {
+      heading: "Continuous Support & Insights",
+      description: "Continuous Support & Insights",
+    },
+  ];
   return (
     <div className="bg-[#E9F5F4]">
       {/* banner */}
@@ -69,7 +96,7 @@ const RegisterProperty = () => {
         <h2 className="text-[#35B0A7] text-2xl font-medium">
           Why PSH Is the Smart Choice
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 my-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 my-5">
           {choiceArray.map((item) => (
             <div>
               <img
@@ -79,6 +106,25 @@ const RegisterProperty = () => {
               />
               <h3 className="my-2 md:my-3 font-bold">{item.heading}</h3>
               <p className="text-[#646464] text-sm">{item.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+      {/* How it Works */}
+      <div className="py-6 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
+        <h2 className="text-[#35B0A7] text-2xl font-medium">How it Works</h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 my-5">
+          {workMethods.map((item, ind) => (
+            <div className="flex gap-2">
+              <div className="bg-gradient-to-b from-[#27B3B1] to-[#E9F5F400] px-2 pt-3 text-white">
+                {ind + 1}
+              </div>
+              <div className="bg-[#D3ECEA] w-full">
+                <h3 className="bg-[#27B3B1] py-3 text-white pl-3">
+                  {item.heading}
+                </h3>
+                <p className="px-3 pt-3 pb-5 text-sm">{item?.description}</p>
+              </div>
             </div>
           ))}
         </div>
