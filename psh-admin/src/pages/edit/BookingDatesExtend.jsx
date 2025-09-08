@@ -15,8 +15,6 @@ const BookingDatesExtend = ({
   showDurationModal,
   setShowDurationModal,
 }) => {
-  console.log(data);
-
   const [startDate, setStartDate] = useState(data?.rentDate?.bookStartDate);
   const [endDate, setEndDate] = useState(data?.rentDate?.bookEndDate);
   const [customerRent, setCustomerRent] = useState({});
@@ -139,7 +137,7 @@ const BookingDatesExtend = ({
       customerRent?.years === undefined
     ) {
       setMinimumPayment(extraCharge[0]?.securityFee);
-      setAddMissionFee(extraCharge[0]?.admissionFee);       
+      setAddMissionFee(extraCharge[0]?.admissionFee);
       setSecurityFee(extraCharge[0]?.securityFee);
     } else if (customerRent?.months >= 6 && customerRent?.years === undefined) {
       setMinimumPayment(extraCharge[0]?.upto6MonthsSecurityFee);
