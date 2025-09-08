@@ -44,6 +44,7 @@ import VillaBookingConfirmation from "../pages/Booking/VillaBookingConfirmation"
 import ResortDetail from "../pages/resorts/ResortDetail";
 import VillaInvoice from "../pages/Invoice/VillaInvoice";
 import VillaList from "../pages/Villa-List/VillaList";
+import RegisterProperty from "../pages/RegisterProperty/RegisterProperty";
 
 export const router = createBrowserRouter([
   {
@@ -179,7 +180,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "/register-property",
-        element: <Partner />,
+        // element: <Partner />,
+        element: <RegisterProperty />,
       },
       {
         path: "/collaberation",
