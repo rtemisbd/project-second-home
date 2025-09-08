@@ -15,40 +15,32 @@ const BookingSeatDateExtend = ({
   showDurationModal,
   setShowDurationModal,
 }) => {
-  const [startDate, setStartDate] = useState(
-    data?.bookingInfo?.rentDate?.bookStartDate
-  );
-  const [endDate, setEndDate] = useState(
-    data?.bookingInfo?.rentDate?.bookEndDate
-  );
+  const [startDate, setStartDate] = useState(data?.rentDate?.bookStartDate);
+  const [endDate, setEndDate] = useState(data?.rentDate?.bookEndDate);
   const [customerRent, setCustomerRent] = useState({});
   const [isAdjustment, setIsAdjustment] = useState(false);
-  const [isIncludeFood, setIsIncludeFood] = useState(
-    data?.bookingInfo?.isIncludeFood
-  );
+  const [isIncludeFood, setIsIncludeFood] = useState(data?.isIncludeFood);
   const [userPromo, setUserPromo] = useState({});
 
   const [payableAmount, setPayableAmount] = useState(data?.payableAmount || 0);
-  const [subTotal, setSubTotal] = useState(data?.bookingInfo?.subTotal || 0);
-  const [foodAmount, setFoodAmount] = useState(data?.bookingInfo?.foodAmount);
+  const [subTotal, setSubTotal] = useState(data?.subTotal || 0);
+  const [foodAmount, setFoodAmount] = useState(data?.foodAmount);
   const [vatTax, setVatTax] = useState(
     (subTotal * extraCharge[0]?.vatTax) / 100
   );
   const [addMissionFee, setAddMissionFee] = useState(0);
   const [securityFee, setSecurityFee] = useState(0);
-  const [totalAmount, setTotalAmount] = useState(
-    data?.bookingInfo?.totalAmount
-  );
+  const [totalAmount, setTotalAmount] = useState(data?.totalAmount);
   const [discount, setDiscount] = useState(data?.discount || 0);
   const [minimumPayment, setMinimumPayment] = useState(
-    data?.bookingInfo?.minimumPayment || 0
+    data?.minimumPayment || 0
   );
   const [rentRooms, setRentRooms] = useState([]);
   const [seat, setSeat] = useState([]);
   //fetch already booked dates for this specific room
   const { bookingInfo } = data;
   const [promos] = usePromo();
-  const { room } = UseFetch(`seats/${data?.bookingInfo?.seatBooking?._id}`);
+  const { room } = UseFetch(`seats/${data?.seatBooking?._id}`);
 
   // set rent room collection
   useEffect(() => {
@@ -120,7 +112,7 @@ const BookingSeatDateExtend = ({
 
     // set promo
     const promo = promos.find(
-      (promo) => promo?.promoCode === data?.bookingInfo?.usedPromo?.promo
+      (promo) => promo?.promoCode === data?.usedPromo?.promo
     );
     setUserPromo(promo);
 
@@ -136,7 +128,7 @@ const BookingSeatDateExtend = ({
       (customerRent?.months === undefined || customerRent?.months <= 1) &&
       customerRent?.years === undefined
     ) {
-      const minimum = data?.bookingInfo?.minimumPayment;
+      const minimum = data?.minimumPayment;
       setMinimumPayment((minimum * extraCharge[0]?.vatTax) / 100 + minimum);
       setAddMissionFee(0);
       setSecurityFee(0);
@@ -157,7 +149,7 @@ const BookingSeatDateExtend = ({
       setAddMissionFee(extraCharge[0]?.for1YearAdmissionFee);
       setSecurityFee(extraCharge[0]?.for1YearSecurityFee);
     } else {
-      setMinimumPayment(data?.bookingInfo?.minimumPayment);
+      setMinimumPayment(data?.minimumPayment);
     }
 
     // set food amount
@@ -180,16 +172,16 @@ const BookingSeatDateExtend = ({
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
-        const discount = data?.bookingInfo?.promoCodeDiscount / 100;
+        const discount = data?.promoCodeDiscount / 100;
         setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
             ? totalAmount * discount
-            : data?.adjustmentAmount
+            : data?.discount
         );
       } else {
-        setDiscount(data?.adjustmentAmount);
+        setDiscount(data?.discount);
 
-        setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
+        setIsAdjustment(data?.discount > 0 ? true : false);
       }
     } else if (
       customerRent?.months === 0 &&
@@ -199,30 +191,30 @@ const BookingSeatDateExtend = ({
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
-        const discount = data?.bookingInfo?.promoCodeDiscount / 100;
+        const discount = data?.promoCodeDiscount / 100;
         setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
             ? totalAmount * discount
-            : data?.adjustmentAmount
+            : data?.discount
         );
       } else {
-        setDiscount(data?.adjustmentAmount);
-        setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
+        setDiscount(data?.discount);
+        setIsAdjustment(data?.discount > 0 ? true : false);
       }
     } else {
       if (
         userPromo?.minimumDays &&
         customerRent?.remainingDays >= userPromo?.minimumDays
       ) {
-        const discount = data?.bookingInfo?.promoCodeDiscount / 100;
+        const discount = data?.promoCodeDiscount / 100;
         setDiscount(
           customerRent?.remainingDays >= userPromo?.minimumDays
             ? totalAmount * discount
-            : data?.adjustmentAmount
+            : data?.discount
         );
       } else {
-        setDiscount(data?.adjustmentAmount);
-        setIsAdjustment(data?.adjustmentAmount > 0 ? true : false);
+        setDiscount(data?.discount);
+        setIsAdjustment(data?.discount > 0 ? true : false);
       }
     }
     // set payable amount
@@ -249,15 +241,15 @@ const BookingSeatDateExtend = ({
     seat?.dAmountForMonth,
     seat?.dAmountForYear,
     isIncludeFood,
-    data?.bookingInfo?.minimumPayment,
+    data?.minimumPayment,
     securityFee,
     subTotal,
     totalAmount,
     userPromo?.minimumDays,
     vatTax,
-    data?.adjustmentAmount,
-    data?.bookingInfo?.promoCodeDiscount,
-    data?.bookingInfo?.usedPromo?.promo,
+    data?.discount,
+    data?.promoCodeDiscount,
+    data?.usedPromo?.promo,
     data?.branchDetails?.foodAmount,
     extraCharge,
   ]);
@@ -355,8 +347,7 @@ const BookingSeatDateExtend = ({
                 }}
               >
                 <h4 className="text-left " style={{ color: "#212A42" }}>
-                  {data?.bookingInfo?.roomName} -{" "}
-                  {data?.bookingInfo?.roomNumber}
+                  {data?.roomName} - {data?.roomNumber}
                 </h4>
 
                 <p
@@ -368,7 +359,7 @@ const BookingSeatDateExtend = ({
                     borderRadius: "5px",
                   }}
                 >
-                  {data?.bookingInfo?.roomType}-[{data?.branchDetails?.name}]
+                  {data?.roomType}-[{data?.branchDetails?.name}]
                 </p>
               </div>
               {/* day month year */}

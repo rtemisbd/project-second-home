@@ -275,6 +275,7 @@ const getOrderFromDB = async (queries) => {
                     branchEmail: 1,
                     branchAddress: 1,
                     branchMobileNumber: 1,
+                    foodAmount: 1,
                   },
                 },
               ],
