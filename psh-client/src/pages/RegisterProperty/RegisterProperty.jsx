@@ -97,18 +97,18 @@ const RegisterProperty = () => {
               everything. <br /> Join hundreds of property owners already
               boosting their income with PSH.
             </p>
-            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-12 md:px-24 py-2 md:py-4 rounded md:rounded-lg">
-              Join Now
+            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-8  py-2 rounded md:rounded-lg">
+              Register Your Property Today
             </button>
           </div>
         </div>
       </div>
       {/* Why PSH Is the Smart Choice */}
-      <div className="py-6 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
+      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
         <h2 className="text-[#35B0A7] text-2xl font-medium">
           Why PSH Is the Smart Choice
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 my-5">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-5">
           {choiceArray.map((item) => (
             <div>
               <img
@@ -123,7 +123,7 @@ const RegisterProperty = () => {
         </div>
       </div>
       {/* How it Works */}
-      <div className="py-6 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
+      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
         <h2 className="text-[#35B0A7] text-2xl font-medium">How it Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 my-5">
           {workMethods.map((item, ind) => (
@@ -142,11 +142,8 @@ const RegisterProperty = () => {
         </div>
       </div>
       {/* Who Can List? */}
-      <div className="py-6 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex gap-10">
-        <div className="w-[45%]">
-          <img src={banner} className="w-full h-full rounded-lg" />
-        </div>
-        <div className="">
+      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex justify-between">
+        <div className="w-[55%]">
           <h2 className="text-[#35B0A7]  text-2xl font-medium mb-3">
             Who Can List?
           </h2>
@@ -163,17 +160,58 @@ const RegisterProperty = () => {
           <div className="grid grid-cols-2 gap-4">
             {listArray.map((list) => (
               <div className="flex  items-center  ">
-                <div className="bg-[#35B0A7] p-2 w-[48px] h-[40px] rounded-tl-lg">
+                <div className="bg-[#35B0A7] p-2 w-[48px] h-[48px] rounded-tl-2xl">
                   <img src={list.icon} className="w-[32px] h-[32px]" />
                 </div>
-                <p className="pl-4 bg-gray-100 py-2 w-full rounded-br-lg">{list.title}</p>
+                <p className="pl-4 bg-gray-100 py-3 w-full rounded-br-2xl">
+                  {list.title}
+                </p>
               </div>
             ))}
           </div>
-          <p className="text-black my-2">
+          <p className="text-black mt-4">
             No matter the type or size, PSH turns your property into a
             high-performing rental asset.
           </p>
+        </div>
+        <div className="w-[40%]">
+          <img src={banner} className="w-full h-full rounded-lg" />
+        </div>
+      </div>
+
+      {/* benefits */}
+      <div></div>
+      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex justify-between ">
+        <div className="w-[50%]">
+          <img src={banner} className="w-full h-full rounded-lg" />
+        </div>
+        <div className="w-[40%]">
+          <h2 className="text-[#35B0A7]  text-2xl font-medium mb-3">
+            Benefits That Make a Difference
+          </h2>
+
+          <ul className="ml-8 list-disc text-[#646464] ">
+            <li>24/7 professional guest support</li>
+            <li>SEO-optimized, high-converting listings</li>
+            <li>Secure and timely payments</li>
+            <li>Expert property management guidance</li>
+            <li>Analytics & insights to track performance</li>
+          </ul>
+
+          <div>
+            <h3 className=" text-xl font-bold mt-6">
+              Don’t Miss Out—Start Earning Today!
+            </h3>
+            <p className="text-[#646464] ">
+              Properties listed on PSH earn 30–50% more on average than
+              self-managed rentals. The sooner you register, the sooner you
+              start earning. Join now and turn your property into a reliable
+              income stream.
+            </p>
+            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-8  py-2  rounded  my-4">
+              Register Your Property Today
+            </button>
+          </div>
         </div>
       </div>
     </div>
