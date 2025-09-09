@@ -1,4 +1,8 @@
 import banner from "../../assets/img/register/banner.png";
+import Apartment from "../../assets/img/register/Apartment.png";
+import Villa from "../../assets/img/register/Villa.png";
+import Hotel from "../../assets/img/register/Hotel.png";
+import Building from "../../assets/img/register/Building.png";
 
 const RegisterProperty = () => {
   const choiceArray = [
@@ -60,8 +64,16 @@ const RegisterProperty = () => {
       description: "Continuous Support & Insights",
     },
   ];
+
+  const listArray = [
+    { icon: Apartment, title: "Apartments & flats" },
+    { icon: Villa, title: "Villas & vacation homes" },
+    { icon: Hotel, title: "Guesthouses & Home stays" },
+    { icon: Building, title: "Commercial rental properties" },
+  ];
+
   return (
-    <div className="bg-[#E9F5F4]">
+    <div className="">
       {/* banner */}
       <div className="relative w-full h-[40vh] md:h-[60vh]">
         {/* Responsive Image */}
@@ -127,6 +139,41 @@ const RegisterProperty = () => {
               </div>
             </div>
           ))}
+        </div>
+      </div>
+      {/* Who Can List? */}
+      <div className="py-6 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex gap-10">
+        <div className="w-[45%]">
+          <img src={banner} className="w-full h-full rounded-lg" />
+        </div>
+        <div className="">
+          <h2 className="text-[#35B0A7]  text-2xl font-medium mb-3">
+            Who Can List?
+          </h2>
+          {/* <ul className="text-[18px] space-y-2">
+            {listArray.map((list) => (
+              <li className="flex items-center gap-2">
+                <div className="bg-[#35B0A7] p-1 w-[28px] h-[28px] rounded ">
+                  <img src={list.icon} className="w-[24px] h-[24px]" />
+                </div>
+                <p>{list.title}</p>
+              </li>
+            ))}
+          </ul> */}
+          <div className="grid grid-cols-2 gap-4">
+            {listArray.map((list) => (
+              <div className="flex  items-center  ">
+                <div className="bg-[#35B0A7] p-2 w-[48px] h-[40px] rounded-tl-lg">
+                  <img src={list.icon} className="w-[32px] h-[32px]" />
+                </div>
+                <p className="pl-4 bg-gray-100 py-2 w-full rounded-br-lg">{list.title}</p>
+              </div>
+            ))}
+          </div>
+          <p className="text-black my-2">
+            No matter the type or size, PSH turns your property into a
+            high-performing rental asset.
+          </p>
         </div>
       </div>
     </div>
