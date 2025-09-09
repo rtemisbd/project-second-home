@@ -97,7 +97,7 @@ const RegisterProperty = () => {
               everything. <br /> Join hundreds of property owners already
               boosting their income with PSH.
             </p>
-            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-8  py-2 rounded md:rounded-lg">
+            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded md:rounded-lg">
               Register Your Property Today
             </button>
           </div>
@@ -123,7 +123,7 @@ const RegisterProperty = () => {
         </div>
       </div>
       {/* How it Works */}
-      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
+      <div className=" lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
         <h2 className="text-[#35B0A7] text-2xl font-medium">How it Works</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 my-5">
           {workMethods.map((item, ind) => (
@@ -142,22 +142,13 @@ const RegisterProperty = () => {
         </div>
       </div>
       {/* Who Can List? */}
-      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex justify-between">
-        <div className="w-[55%]">
-          <h2 className="text-[#35B0A7]  text-2xl font-medium mb-3">
+      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col-reverse lg:flex-row justify-between">
+        <div className="lg:w-[55%]">
+          <h2 className="text-[#35B0A7] text-2xl font-medium mt-6 lg:mt-0 mb-3">
             Who Can List?
           </h2>
-          {/* <ul className="text-[18px] space-y-2">
-            {listArray.map((list) => (
-              <li className="flex items-center gap-2">
-                <div className="bg-[#35B0A7] p-1 w-[28px] h-[28px] rounded ">
-                  <img src={list.icon} className="w-[24px] h-[24px]" />
-                </div>
-                <p>{list.title}</p>
-              </li>
-            ))}
-          </ul> */}
-          <div className="grid grid-cols-2 gap-4">
+
+          <div className="grid md:grid-cols-2 gap-4">
             {listArray.map((list) => (
               <div className="flex  items-center  ">
                 <div className="bg-[#35B0A7] p-2 w-[48px] h-[48px] rounded-tl-2xl">
@@ -174,19 +165,19 @@ const RegisterProperty = () => {
             high-performing rental asset.
           </p>
         </div>
-        <div className="w-[40%]">
-          <img src={banner} className="w-full h-full rounded-lg" />
+        <div className="lg:w-[40%]">
+          <img src={banner} className="w-full h-full md:rounded-lg" />
         </div>
       </div>
 
       {/* benefits */}
-      <div></div>
-      <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex justify-between ">
-        <div className="w-[50%]">
+
+      <div className="py-4 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col lg:flex-row justify-between ">
+        <div className="lg:w-[50%]">
           <img src={banner} className="w-full h-full rounded-lg" />
         </div>
-        <div className="w-[40%]">
-          <h2 className="text-[#35B0A7]  text-2xl font-medium mb-3">
+        <div className="lg:w-[40%]">
+          <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium mb-3  mt-6 lg:mt-0">
             Benefits That Make a Difference
           </h2>
 
@@ -208,7 +199,7 @@ const RegisterProperty = () => {
               start earning. Join now and turn your property into a reliable
               income stream.
             </p>
-            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-8  py-2  rounded  my-4">
+            <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded  my-4">
               Register Your Property Today
             </button>
           </div>
