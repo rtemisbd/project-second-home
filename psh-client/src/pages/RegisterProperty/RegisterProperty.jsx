@@ -3,10 +3,10 @@ import Apartment from "../../assets/img/register/Apartment.png";
 import Villa from "../../assets/img/register/Villa.png";
 import Hotel from "../../assets/img/register/Hotel.png";
 import Building from "../../assets/img/register/Building.png";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 const RegisterProperty = () => {
-  const [showRegister, setShowRegister] = useState(false);
+  const formRef = useRef(null);
 
   const choiceArray = [
     {
@@ -75,15 +75,19 @@ const RegisterProperty = () => {
     { icon: Building, title: "Commercial rental properties" },
   ];
 
+  const handleScrollToForm = () => {
+    formRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
   const handleRegisterProperty = async (e) => {
     console.log(7);
   };
 
   return (
     <div className={``}>
-      <div className={`relative ${showRegister ? "blur-sm" : ""}`}>
+      <div>
         {/* banner */}
-        <div className="relative w-full h-[40vh] md:h-[60vh]">
+        <div className=" w-full h-[40vh] md:h-[60vh]">
           {/* Responsive Image */}
           <img
             src={banner}
@@ -106,7 +110,7 @@ const RegisterProperty = () => {
                 already boosting their income with PSH.
               </p>
               <button
-                onClick={() => setShowRegister(true)}
+                onClick={handleScrollToForm}
                 className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded md:rounded-lg"
               >
                 Register Your Property Today
@@ -181,12 +185,134 @@ const RegisterProperty = () => {
 
         {/* benefits */}
 
-        <div className="py-4 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col lg:flex-row justify-between ">
-          <div className="lg:w-[50%]">
-            <img src={banner} className="w-full h-full rounded-lg" />
+        <div className="pb-6 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col-reverse lg:flex-row justify-between  ">
+          <div
+            ref={formRef}
+            className="lg:w-[55%] border rounded-xl md:rounded-2xl shadow-md bg-white mt-6 md:mt-0 "
+          >
+            <div className="px-4 md:px-8 py-6">
+              <form
+                onSubmit={handleRegisterProperty}
+                className="extra-form space-y-4 "
+              >
+                <h3 className="text-black font-bold md:text-xl mb-4">
+                  Join Now and Turn Your Property Into A Reliable Income Stream.
+                </h3>
+                <div className="md:flex gap-4">
+                  {/* Full Name */}
+                  <div className="relative md:w-1/2 mb-3 md:mb-0">
+                    <input
+                      type="text"
+                      id="fullname"
+                      name="fullname"
+                      required
+                      placeholder=" "
+                      className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
+                    />
+                    <label
+                      htmlFor="fullname"
+                      className="absolute left-2.5 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#35B0A7]"
+                    >
+                      Owner Name
+                    </label>
+                  </div>
+
+                  {/* Phone */}
+                  <div className="relative md:w-1/2 mb-3 md:mb-0">
+                    <input
+                      type="text"
+                      id="phoneNumber"
+                      name="phoneNumber"
+                      required
+                      placeholder=" "
+                      className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
+                    />
+                    <label
+                      htmlFor="phoneNumber"
+                      className="absolute left-2.5 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#35B0A7]"
+                    >
+                      Mobile
+                    </label>
+                  </div>
+                </div>
+                <div className="md:flex gap-4">
+                  {/* Email */}
+                  <div className="relative md:w-1/2 mb-3 md:mb-0">
+                    <input
+                      type="email"
+                      id="email"
+                      name="email"
+                      required
+                      placeholder=" "
+                      className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
+                    />
+                    <label
+                      htmlFor="email"
+                      className="absolute left-2.5 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#35B0A7]"
+                    >
+                      Email
+                    </label>
+                  </div>
+
+                  {/* Property Type */}
+                  <div className="relative md:w-1/2 mb-3 md:mb-0">
+                    <select
+                      id="propertyType"
+                      name="propertyType"
+                      required
+                      defaultValue=""
+                      className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
+                    >
+                      <option value="" disabled hidden>
+                        <span className="!text-gray-200">
+                          Choose Your Property Type
+                        </span>
+                      </option>
+                      <option value="building">Building</option>
+                      <option value="apartment">Apartment</option>
+                      <option value="flat">Flat</option>
+                      <option value="villa">Villa</option>
+                    </select>
+                    <label
+                      htmlFor="propertyType"
+                      className="absolute left-2.5 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#35B0A7]"
+                    >
+                      Property Type
+                    </label>
+                  </div>
+                </div>
+
+                {/* Location */}
+                <div className="relative ">
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    required
+                    placeholder=" "
+                    className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
+                  />
+                  <label
+                    htmlFor="address"
+                    className="absolute left-2.5 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#35B0A7]"
+                  >
+                    Address
+                  </label>
+                </div>
+
+                {/* Submit */}
+                <button
+                  type="submit"
+                  className="w-full py-3 mt-6 rounded-md bg-[#35B0A7] hover:bg-[#2dc3c0] text-white font-medium transition"
+                >
+                  Register Your Property
+                </button>
+              </form>
+            </div>
           </div>
-          <div className="lg:w-[40%]">
-            <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium mb-3  mt-6 lg:mt-0">
+
+          <div className="lg:w-[40%] md:py-6">
+            <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium mb-3 ">
               Benefits That Make a Difference
             </h2>
 
@@ -205,159 +331,17 @@ const RegisterProperty = () => {
               <p className="text-[#646464] ">
                 Properties listed on PSH earn 30–50% more on average than
                 self-managed rentals. The sooner you register, the sooner you
-                start earning. Join now and turn your property into a reliable
-                income stream.
+                start earning.
+                {/* Join now and turn your property into a reliable
+                income stream. */}
               </p>
-              <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded  my-4">
+              {/* <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded  my-4">
                 Register Your Property Today
-              </button>
+              </button> */}
             </div>
           </div>
         </div>
       </div>
-
-      {showRegister && (
-        <div className="w-[40%] mx-auto bg-gray-100 p-12 rounded-2xl absolute top-20 left-1/2 right-1/2">
-          <form className="extra-form">
-            {/* Property Owner Details */}
-            <p className="text-black flex justify-left font-bold border-b pb-2">
-              Property Owner Details *
-            </p>
-            <div className="grid grid-cols-1 md:gap-x-5 md:mt-5">
-              <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  ">
-                <label htmlFor="">Full Name</label>
-                <input
-                  type="text"
-                  className="text-black personal-info rounded w-full"
-                  placeholder="Full Name"
-                  name="fullname"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                />
-              </div>
-
-              <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
-                <label htmlFor="">Phone Number</label>
-                <input
-                  type="text"
-                  className="text-black personal-info rounded w-full"
-                  placeholder="Phone Number"
-                  name="phoneNumber"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                />
-              </div>
-              <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
-                <label htmlFor="">Email Address</label>
-                <input
-                  type="text"
-                  className="text-black personal-info rounded w-full"
-                  placeholder="Email Address"
-                  name="email"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                />
-              </div>
-            </div>
-            {/* Property Information */}
-            <div className="mt-7 font-bold text-xl border-b ">
-              <span>Property Information *</span>
-            </div>
-            <div className="grid grid-cols-1 gap-x-5 mt-5">
-              <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
-                <label htmlFor="">Property Type</label>
-
-                <select
-                  name="propertyType"
-                  className="text-black personal-info rounded w-full"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                >
-                  <option value="Building">Building</option>
-                  <option value="Flat">Flat</option>
-                  <option value="Villa">Villa</option>
-                </select>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-x-5 mt-5">
-              <div className="col-span-1  ">
-                <label htmlFor="">Address</label>
-                <input
-                  type="text"
-                  className="text-black personal-info rounded w-full"
-                  placeholder="Permanent Address"
-                  name="address"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="border-b ">
-              <div className="mt-7 font-bold text-xl">
-                <span>Property Visit Request *</span>
-              </div>
-            </div>
-
-            <div className="grid grid-cols-1 gap-x-5 mt-5">
-              <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
-                <label htmlFor="">Availability for Visit</label>
-                <input
-                  type="date"
-                  className="text-black personal-info rounded w-full"
-                  placeholder="Availability for Visit"
-                  name="availabilityForVisit"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                />
-              </div>
-
-              <div className="xl:col-span-1 lg:col-span-1 md:col-span-1 sm:col-span-2  mt-3">
-                <label htmlFor="">Availability for Visit Time</label>
-                <input
-                  type="time"
-                  className="text-black personal-info rounded w-full"
-                  placeholder="Availability for Visit Time"
-                  name="availabilityForVisitTime"
-                  style={{
-                    height: "45px",
-                    padding: "0px 10px",
-                  }}
-                  required
-                />
-              </div>
-            </div>
-
-            <div className="flex justify-center mt-12 ">
-              <button
-                type="submit"
-                className="bg-[#00BBB4] text-white px-12 py-3 rounded cursor-pointer"
-              >
-                Register Now
-              </button>
-            </div>
-          </form>
-        </div>
-      )}
     </div>
   );
 };
