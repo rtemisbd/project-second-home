@@ -1,13 +1,13 @@
 import express from "express";
 import {
-  CreateLeaseProperty,
   getLeaseProperty,
   getMyLeaseProperty,
+  leasePropertyControllers,
 } from "../controllers/leaseProperty.js";
 
 const router = express.Router();
 
-router.post("/", CreateLeaseProperty);
+router.post("/", leasePropertyControllers.createLeaseProperty);
 router.get("/", getLeaseProperty);
 router.route("/:user").get(getMyLeaseProperty);
 export default router;

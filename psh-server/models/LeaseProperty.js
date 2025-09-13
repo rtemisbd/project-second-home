@@ -12,11 +12,11 @@ const LeaseProperty = new mongoose.Schema(
     //   type: String,
     //   required: true,
     // },
-    fullname: {
+    name: {
       type: String,
       required: true,
     },
-    phoneNumber: {
+    mobile: {
       type: String,
       required: true,
     },
@@ -36,14 +36,14 @@ const LeaseProperty = new mongoose.Schema(
       required: true,
     },
 
-    availabilityForVisit: {
-      type: Date,
-      required: true,
-    },
-    availabilityForVisitTime: {
-      type: String,
-      required: true,
-    },
+    // availabilityForVisit: {
+    //   type: Date,
+    //   required: true,
+    // },
+    // availabilityForVisitTime: {
+    //   type: String,
+    //   required: true,
+    // },
     status: {
       type: String,
       enum: ["pending", "process", "success"],

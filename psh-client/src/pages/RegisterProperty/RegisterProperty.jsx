@@ -4,6 +4,9 @@ import Villa from "../../assets/img/register/Villa.png";
 import Hotel from "../../assets/img/register/Hotel.png";
 import Building from "../../assets/img/register/Building.png";
 import { useRef, useState } from "react";
+import axios from "axios";
+import { serverBaseUrl } from "../../serverApi/baseUrl";
+import toast, { Toaster } from "react-hot-toast";
 
 const RegisterProperty = () => {
   const formRef = useRef(null);
@@ -80,14 +83,37 @@ const RegisterProperty = () => {
   };
 
   const handleRegisterProperty = async (e) => {
-    console.log(7);
+    try {
+      e.preventDefault();
+      const form = e.target;
+
+      const leaseData = {
+        name: form.name.value,
+        mobile: form.mobile.value,
+        email: form.email.value,
+        propertyType: form.propertyType.value,
+        address: form.address.value,
+      };
+
+      const { data } = await axios.post(
+        `${serverBaseUrl}/leaseProperty`,
+        leaseData
+      );
+
+      if (data?.success === true) {
+        toast.success(data.message);
+      }
+    } catch (error) {
+      // console.log(error);
+      toast.error(error?.response?.data?.message || "Something Went Wrong!");
+    }
   };
 
   return (
     <div className={``}>
       <div>
         {/* banner */}
-        <div className=" w-full h-[40vh] md:h-[60vh]">
+        <div className="relative  w-full h-[40vh] md:h-[60vh]">
           {/* Responsive Image */}
           <img
             src={banner}
@@ -203,8 +229,7 @@ const RegisterProperty = () => {
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <input
                       type="text"
-                      id="fullname"
-                      name="fullname"
+                      name="name"
                       required
                       placeholder=" "
                       className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
@@ -221,14 +246,13 @@ const RegisterProperty = () => {
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <input
                       type="text"
-                      id="phoneNumber"
-                      name="phoneNumber"
+                      name="mobile"
                       required
                       placeholder=" "
                       className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
                     />
                     <label
-                      htmlFor="phoneNumber"
+                      htmlFor="mobile"
                       className="absolute left-2.5 -top-2.5 bg-white px-1 text-sm text-gray-500 transition-all peer-placeholder-shown:top-3 peer-placeholder-shown:text-gray-400 peer-placeholder-shown:text-base peer-focus:-top-2.5 peer-focus:text-sm peer-focus:text-[#35B0A7]"
                     >
                       Mobile
@@ -240,7 +264,6 @@ const RegisterProperty = () => {
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <input
                       type="email"
-                      id="email"
                       name="email"
                       required
                       placeholder=" "
@@ -257,7 +280,6 @@ const RegisterProperty = () => {
                   {/* Property Type */}
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <select
-                      id="propertyType"
                       name="propertyType"
                       required
                       defaultValue=""
@@ -286,7 +308,6 @@ const RegisterProperty = () => {
                 <div className="relative ">
                   <input
                     type="text"
-                    id="address"
                     name="address"
                     required
                     placeholder=" "
@@ -342,6 +363,10 @@ const RegisterProperty = () => {
           </div>
         </div>
       </div>
+      <Toaster
+        containerStyle={{ top: 200 }}
+        toastOptions={{ position: "top-center" }}
+      ></Toaster>
     </div>
   );
 };
