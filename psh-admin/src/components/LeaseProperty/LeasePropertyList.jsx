@@ -1,214 +1,111 @@
-import React, { useEffect, useState } from "react";
-import img from "../../img/college/Icon material-delete.png";
-import img3 from "../../img/college/Icon feather-edit.png";
-import axios from "axios";
-import withReactContent from "sweetalert2-react-content";
-import Swal from "sweetalert2";
-import ToolkitProvider from "react-bootstrap-table2-toolkit/dist/react-bootstrap-table2-toolkit.min";
-import paginationFactory from "react-bootstrap-table2-paginator";
-import BootstrapTable from "react-bootstrap-table-next";
+import { useEffect, useState } from "react";
 
-import { AiOutlineDelete, AiOutlineEye } from "react-icons/ai";
-import SeeLeasePropropery from "./SeeLeasePropropery";
 import { baseUrl } from "../../utils/getBaseURL";
+import { useDispatch, useSelector } from "react-redux";
+import Pagination from "../Pagination/Pagination";
+import { Spinner, Table } from "react-bootstrap";
+import LoadingState from "../../pages/LoadingState/LoadingState";
+import { placeLoadingShow } from "../../redux/reducers/loadingStateSlice";
+import { formatDate } from "../../utils/dateConvert";
+import axios from "axios";
 
 const LeasePropertyList = () => {
-  const MySwal = withReactContent(Swal);
-
-  //sub stream
+  const dispatch = useDispatch();
+  const { page, size } = useSelector((state) => state.pagination);
   const [data, setData] = useState([]);
+  const [totalDataCount, setTotalDataCount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
+  const [findingStatement, setFindingStatement] = useState(true);
+  const handleClose = () => dispatch(placeLoadingShow(false));
 
-  const columns = [
-    {
-      text: "No",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>{index + 1}</p>
-          </>
-        );
-      },
-    },
-
-    {
-      dataField: `fullname`,
-      text: "User Name",
-    },
-
-    // {
-    //   dataField: "email",
-    //   text: "Email",
-    // },
-    {
-      dataField: "phoneNumber",
-      text: "Number",
-    },
-
-    {
-      text: "Property Size",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>{row?.propertySize} Sq.ft</p>
-          </>
-        );
-      },
-    },
-    {
-      dataField: "propertyType",
-      text: "Property Type",
-    },
-    {
-      text: "Address",
-      formatter: (cellContent, row, index) => {
-        return (
-          <>
-            {" "}
-            <p>
-              {row?.stateRegion}, {row?.address},{row?.city}
-            </p>
-          </>
-        );
-      },
-    },
-    // {
-    //   dataField: "status",
-    //   text: "Status",
-    // },
-
-    {
-      text: "Action",
-      formatter: (cellContent, row) => {
-        return (
-          <>
-            {" "}
-            <div className="d-flex justify-content-center">
-              <div>
-                <button
-                  type="button"
-                  className="bg-white"
-                  data-bs-toggle="modal"
-                  data-bs-target={`#details${row._id}`}
-                >
-                  <span>
-                    <AiOutlineEye style={{ width: "30px", height: "30px" }} />
-                  </span>
-                </button>
-
-                {/* Modal Order Details */}
-                <SeeLeasePropropery data={row} />
-              </div>
-
-              <AiOutlineDelete
-                onClick={() => handleDelete(row._id)}
-                style={{ width: "30px", height: "30px", marginTop: "10px" }}
-              />
-            </div>
-          </>
-        );
-      },
-    },
-  ];
-  const pagination = paginationFactory({
-    page: 1,
-    sizePerPage: 10,
-    style: { width: 60 },
-    lastPageText: "Last",
-    firstPageText: "First",
-    nextPageText: "Next",
-    prePageText: "Previous",
-    showTotal: true,
-    alwaysShowAllBtns: true,
-    onPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-    onSizePerPageChange: function (page, sizePerPage) {
-      console.log("page", page);
-      console.log("sizePerPage", sizePerPage);
-    },
-  });
   useEffect(() => {
     const getData = async () => {
+      setIsLoading(true);
       try {
-        const { data } = await axios.get(`${baseUrl}/api/leaseproperty`, {
-          mode: "cors",
+        const queryParams = new URLSearchParams({
+          page,
+          size,
         });
-        setData(data);
+        const { data } = await axios.get(
+          `${baseUrl}/api/leaseProperty?${queryParams.toString()}`
+        );
+
+        setData(data?.data?.data);
+
+        setTotalDataCount(data?.data?.totalCount);
       } catch (error) {
         console.log(error);
+      } finally {
+        setIsLoading(false);
       }
     };
     getData();
-  }, []);
-  //delete
-  const [products, setProducts] = useState(data);
-  const handleDelete = async (id) => {
-    const confirmation = window.confirm("Are you Sure?");
-    if (confirmation) {
-      const url = `${baseUrl}/api/leaseProperty/${id}`;
-      fetch(url, {
-        method: "DELETE",
-      })
-        .then((res) => res.json())
-        .then((data) => {
-          console.log(data);
-          MySwal.fire("Good job!", "successfully deleted", "success");
-          if (data.deletedCount === 1) {
-            const remainItem = products.filter((item) => item._id !== id);
-            setProducts(remainItem);
-          }
-        });
-    }
-  };
+  }, [page, size]);
+
   return (
     <div className="wrapper">
-      <div className="content-wrapper" style={{ background: "unset" }}>
-        <section className="content customize_list">
-          <div className="container-fluid">
-            <div className="row">
-              <div className="col-md-7">
-                <h6 className="college_h6">Lease Property List</h6>
-              </div>
-            </div>
-            <hr style={{ height: "1px", background: "rgb(191 173 173)" }} />
+      <LoadingState handleClose={handleClose} />
+      <div className="wrapper">
+        <div className="content-wrapper h-0 " style={{ background: "unset" }}>
+          <h4 className="customize mx-lg-5 mb-3">Lease Property</h4>
+        </div>
+      </div>
+      <div className="content-wrapper mt-3 " style={{ background: "unset" }}>
+        <section className="content customize_list ">
+          {/* /.row (main row) */}
+          {isLoading ? (
+            <p
+              style={{ margin: "150px 0" }}
+              className="text-center text-danger fw-bold"
+            >
+              Please Wait... <Spinner size="sm" animation="grow" />
+            </p>
+          ) : data?.length > 0 ? (
             <div className="card">
               <div className="card-body card_body_sm">
-                <>
-                  <ToolkitProvider
-                    bootstrap4
-                    keyField="id"
-                    columns={columns}
-                    data={data}
-                    pagination={pagination}
-                  >
-                    {(props) => (
-                      <React.Fragment>
-                        <BootstrapTable
-                          bootstrap4
-                          keyField="id"
-                          columns={columns}
-                          data={data}
-                          pagination={pagination}
-                          {...props.baseProps}
-                        />
-                      </React.Fragment>
+                <Table striped bordered>
+                  <thead>
+                    <tr>
+                      <th>No.</th>
+                      <th>Date</th>
+                      <th>Owner Name</th>
+                      <th>Phone</th>
+                      <th>Email</th>
+                      <th>Property Type</th>
+                      <th>Address</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {data?.length ? (
+                      data.map((lease, ind) => (
+                        <tr style={{ fontSize: "15px", border: "none" }}>
+                          <td>{ind + 1}</td>
+                          <td>{formatDate(lease?.createdAt)}</td>
+                          <td>{lease?.name}</td>
+                          <td>{lease?.mobile}</td>
+                          <td>{lease?.email}</td>
+                          <td>{lease?.propertyType}</td>
+                          <td>{lease?.address}</td>
+                        </tr>
+                      ))
+                    ) : (
+                      <p></p>
                     )}
-                  </ToolkitProvider>
-                </>
+                  </tbody>
+                </Table>
               </div>
             </div>
-            {/* /.row (main row) */}
-          </div>
-          {/* /.container-fluid */}
+          ) : findingStatement ? (
+            <p className="text-center text-danger fw-bold">
+              Finding Transactions... <Spinner size="sm" animation="grow" />
+            </p>
+          ) : (
+            <p className="text-center text-danger fw-bold">No Data Found</p>
+          )}
         </section>
-        {/* /.content */}
+        {/* pagination */}
+        <Pagination totalDataCount={totalDataCount} />
       </div>
-      {/* /.content-wrapper */}
-
-      {/* Control Sidebar */}
     </div>
   );
 };

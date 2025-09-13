@@ -184,12 +184,12 @@ const RegisterProperty = () => {
         </div>
         {/* Who Can List? */}
         <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col-reverse lg:flex-row justify-between">
-          <div className="lg:w-[55%]">
+          <div className="lg:w-[40%]">
             <h2 className="text-[#35B0A7] text-2xl font-medium mt-6 lg:mt-0 mb-3">
               Who Can List?
             </h2>
 
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid  gap-4">
               {listArray.map((list) => (
                 <div className="flex  items-center   ">
                   <div className="bg-[#35B0A7] p-2 w-[48px] h-[48px] ">
@@ -204,7 +204,7 @@ const RegisterProperty = () => {
               high-performing rental asset.
             </p>
           </div>
-          <div className="lg:w-[40%]">
+          <div className="lg:w-[55%]">
             <img src={banner} className="w-full h-full md:rounded-lg" />
           </div>
         </div>

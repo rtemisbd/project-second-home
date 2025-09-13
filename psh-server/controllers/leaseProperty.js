@@ -14,6 +14,17 @@ const createLeaseProperty = catchAsync(async (req, res, next) => {
     message: "Your registration has been created!",
   });
 });
+const getAllLeaseProperties = catchAsync(async (req, res, next) => {
+  const result = await leasePropertyServices.getAllLeasePropertyFromDB(
+    req.query
+  );
+  responseSend(res, {
+    statusCode: 200,
+    success: true,
+    data: result,
+    message: "All lease properties retrieved successfully!",
+  });
+});
 
 export const getLeaseProperty = async (req, res, next) => {
   try {
@@ -35,4 +46,5 @@ export const getMyLeaseProperty = async (req, res, next) => {
 
 export const leasePropertyControllers = {
   createLeaseProperty,
+  getAllLeaseProperties,
 };

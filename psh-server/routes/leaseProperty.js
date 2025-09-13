@@ -8,6 +8,6 @@ import {
 const router = express.Router();
 
 router.post("/", leasePropertyControllers.createLeaseProperty);
-router.get("/", getLeaseProperty);
+router.get("/", leasePropertyControllers.getAllLeaseProperties);
 router.route("/:user").get(getMyLeaseProperty);
 export default router;
