@@ -270,12 +270,12 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
               <p>
                 {" "}
                 {data?.customerRent?.daysDifference >= 0
-                  ? `${data?.customerRent?.daysDifference} days`
+                  ? `${data?.customerRent?.daysDifference} night`
                   : "" ||
                     (data?.customerRent?.months &&
                       data?.customerRent?.days >= 0 &&
                       !data?.customerRent?.years)
-                  ? `${data?.customerRent?.months} months, ${data?.customerRent?.days} days`
+                  ? `${data?.customerRent?.months} months, ${data?.customerRent?.days} night`
                   : "" ||
                     (data?.customerRent?.years &&
                       data?.customerRent?.months >= 0 &&

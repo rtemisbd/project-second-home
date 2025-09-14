@@ -46,7 +46,7 @@ const RegisterProperty = () => {
 
   const workMethods = [
     {
-      heading: "Register Your Property",
+      heading: "List Your Property",
       description:
         "Complete our quick and simple form with property details and photos.",
     },
@@ -139,7 +139,7 @@ const RegisterProperty = () => {
                 onClick={handleScrollToForm}
                 className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded md:rounded-lg"
               >
-                Register Your Property Today
+                List Your Property Today
               </button>
             </div>
           </div>
@@ -326,7 +326,7 @@ const RegisterProperty = () => {
                   type="submit"
                   className="w-full py-3 mt-6 rounded-md bg-[#35B0A7] hover:bg-[#2dc3c0] text-white font-medium transition"
                 >
-                  Register Your Property
+                  List Your Property
                 </button>
               </form>
             </div>
@@ -357,7 +357,7 @@ const RegisterProperty = () => {
                 income stream. */}
               </p>
               {/* <button className="bg-[#35B0A7] hover:bg-[#2dc3c0] text-white px-3 md:px-8  py-2 rounded  my-4">
-                Register Your Property Today
+                List Your Property Today
               </button> */}
             </div>
           </div>

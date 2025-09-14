@@ -51,7 +51,7 @@ const LeasePropertyList = () => {
         </div>
       </div>
       <div className="content-wrapper mt-3 " style={{ background: "unset" }}>
-        <section className="content customize_list ">
+        <section className="content customize_list "> 
           {/* /.row (main row) */}
           {isLoading ? (
             <p

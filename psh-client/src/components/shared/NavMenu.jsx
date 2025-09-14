@@ -190,10 +190,10 @@ export default function Navmenu() {
               className="mr-2"
             />
           </div>
-          <span className="hover:text-[#00bbb4]">Register a Property</span>
+          <span className="hover:text-[#00bbb4]">List Your Property</span>
         </Link>
       </Typography>
-      <Typography
+      {/* <Typography
         as="li"
         className="p-1 font-normal "
         onClick={() => setNaValue("/corporate-housing")}
@@ -213,7 +213,7 @@ export default function Navmenu() {
           </div>
           <span className="hover:text-[#00bbb4]">Corporate Housing</span>
         </Link>
-      </Typography>
+      </Typography> */}
 
       {/* <Typography
         as="li"

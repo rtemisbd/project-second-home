@@ -274,14 +274,14 @@ const FindAccommodation = () => {
                       <span>
                         {`${
                           customerRent?.daysDifference >= 0
-                            ? `${customerRent?.daysDifference} days`
+                            ? `${customerRent?.daysDifference} Night`
                             : ""
                         }`}
                         {`${
                           customerRent?.months &&
                           customerRent?.days >= 0 &&
                           !customerRent?.years
-                            ? `${customerRent?.months} month, ${customerRent?.days} days`
+                            ? `${customerRent?.months} month, ${customerRent?.days} Night`
                             : ""
                         }`}
                         {`${

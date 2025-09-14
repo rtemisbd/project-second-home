@@ -123,18 +123,18 @@ const Footer = () => {
                           to={"/register-property"}
                           className="hover:text-[#00bbb4]"
                         >
-                          Register a Property
+                          List Your Property
                         </Link>
                       </li>
 
-                      <li className="mb-4 duration-200 hover:text-gray-800 dark:hover:text-white">
+                      {/* <li className="mb-4 duration-200 hover:text-gray-800 dark:hover:text-white">
                         <Link
                           to={"/partner-registration"}
                           className="hover:text-[#00bbb4]"
                         >
                           Partner Registration
                         </Link>
-                      </li>
+                      </li> */}
                     </ul>
                   </div>
                 </li>
@@ -147,14 +147,14 @@ const Footer = () => {
                       PSH FOR Business
                     </h2>
                     <ul className="footer_li">
-                      <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
+                      {/* <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
                         <Link
                           to={"/corporate-housing"}
                           className="hover:text-[#00bbb4]"
                         >
                           Corporate Housing{" "}
                         </Link>
-                      </li>
+                      </li> */}
 
                       <li className="mb-4 duration-200 dark:hover:text-white">
                         {/* <Link
