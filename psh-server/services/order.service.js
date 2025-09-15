@@ -467,44 +467,44 @@ const getOrderFromDB = async (queries) => {
   const orders = aggregatedResult?.[0]?.paginatedResults || [];
 
   // 🔁 Update paymentStatus based on payableAmount vs receivedTk
-  // for (const order of orders) {
-  //   const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
-  //   const adjustmentAmount =
-  //     order?.adjustments?.[0]?.totatAdjustmentAmount || 0; // could be positive (extra charge) or negative (discount)
-  //   const existingDiscount = order?.discount || 0;
-  //   const baseAmount = order?.totalAmount || 0;
+  for (const order of orders) {
+    const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
+    // const adjustmentAmount =
+    //   order?.adjustments?.[0]?.totatAdjustmentAmount || 0; // could be positive (extra charge) or negative (discount)
+    // const existingDiscount = order?.discount || 0;
+    // const baseAmount = order?.totalAmount || 0;
 
-  //   // Effective discount is only existingDiscount
-  //   const totalDiscount = existingDiscount + adjustmentAmount;
+    // // Effective discount is only existingDiscount
+    // const totalDiscount = existingDiscount + adjustmentAmount;
 
-  //   // Adjusted amount = baseAmount - discount + adjustment
-  //   const payableAmount = baseAmount - totalDiscount;
+    // Adjusted amount = baseAmount - discount + adjustment
+    const payableAmount = order?.payableAmount;
 
-  //   // Due = payable - received
-  //   const dueAmount = Math.max(payableAmount - receivedTk, 0);
+    // Due = payable - received
+    const dueAmount = Math.max(payableAmount - receivedTk, 0);
 
-  //   // Payment Status
-  //   const newPaymentStatus = dueAmount === 0 ? "Paid" : "Unpaid";
+    // Payment Status
+    const newPaymentStatus = dueAmount === 0 ? "Paid" : "Unpaid";
 
-  //   // Update in DB (only if needed)
-  //   await OrderModel.updateOne(
-  //     { _id: order._id },
-  //     {
-  //       $set: {
-  //         discount: totalDiscount,
-  //         payableAmount,
-  //         dueAmount,
-  //         paymentStatus: newPaymentStatus,
-  //       },
-  //     }
-  //   );
+    // Update in DB (only if needed)
+    await OrderModel.updateOne(
+      { _id: order._id },
+      {
+        $set: {
+          // discount: totalDiscount,
+          // payableAmount,
+          dueAmount,
+          paymentStatus: newPaymentStatus,
+        },
+      }
+    );
 
-  //   // Attach to response too
-  //   order.discount = totalDiscount;
-  //   order.payableAmount = payableAmount;
-  //   order.dueAmount = dueAmount;
-  //   order.paymentStatus = newPaymentStatus;
-  // }
+    // Attach to response too
+    // order.discount = totalDiscount;
+    // order.payableAmount = payableAmount;
+    order.dueAmount = dueAmount;
+    order.paymentStatus = newPaymentStatus;
+  }
 
   return { result: aggregatedResult, totalCount };
 };
