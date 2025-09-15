@@ -180,8 +180,8 @@ export const router = createBrowserRouter([
       },
       {
         path: "/register-property",
-        element: <Partner />,
-        // element: <RegisterProperty />,
+        // element: <Partner />,
+        element: <RegisterProperty />,
       },
       {
         path: "/collaberation",

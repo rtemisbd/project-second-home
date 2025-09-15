@@ -469,16 +469,12 @@ const getOrderFromDB = async (queries) => {
   // 🔁 Update paymentStatus based on payableAmount vs receivedTk
   for (const order of orders) {
     const receivedTk = order?.transactions?.[0]?.totalReceiveTk || 0;
-    // const adjustmentAmount =
-    //   order?.adjustments?.[0]?.totatAdjustmentAmount || 0; // could be positive (extra charge) or negative (discount)
-    // const existingDiscount = order?.discount || 0;
-    // const baseAmount = order?.totalAmount || 0;
-
+    const adjustmentAmount =
+      order?.adjustments?.[0]?.totatAdjustmentAmount || 0;
     // // Effective discount is only existingDiscount
-    // const totalDiscount = existingDiscount + adjustmentAmount;
+    const totalDiscount = adjustmentAmount;
 
-    // Adjusted amount = baseAmount - discount + adjustment
-    const payableAmount = order?.payableAmount;
+    const payableAmount = order?.totalAmount - totalDiscount;
 
     // Due = payable - received
     const dueAmount = Math.max(payableAmount - receivedTk, 0);
@@ -491,8 +487,8 @@ const getOrderFromDB = async (queries) => {
       { _id: order._id },
       {
         $set: {
-          // discount: totalDiscount,
-          // payableAmount,
+          discount: totalDiscount,
+          payableAmount,
           dueAmount,
           paymentStatus: newPaymentStatus,
         },
@@ -500,8 +496,8 @@ const getOrderFromDB = async (queries) => {
     );
 
     // Attach to response too
-    // order.discount = totalDiscount;
-    // order.payableAmount = payableAmount;
+    order.discount = totalDiscount;
+    order.payableAmount = payableAmount;
     order.dueAmount = dueAmount;
     order.paymentStatus = newPaymentStatus;
   }

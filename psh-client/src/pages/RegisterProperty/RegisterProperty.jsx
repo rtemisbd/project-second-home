@@ -7,6 +7,7 @@ import { useRef, useState } from "react";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast, { Toaster } from "react-hot-toast";
+import Pricing from "../../components/pricing/Pricing";
 
 const RegisterProperty = () => {
   const formRef = useRef(null);
@@ -207,6 +208,11 @@ const RegisterProperty = () => {
           <div className="lg:w-[55%]">
             <img src={banner} className="w-full h-full md:rounded-lg" />
           </div>
+        </div>
+
+        {/* pricing plan */}
+        <div className="pb-6 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto ">
+          <Pricing />
         </div>
 
         {/* benefits */}
