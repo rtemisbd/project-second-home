@@ -297,14 +297,14 @@ const SearchBoxWithNav = () => {
                           <span>
                             {`${
                               customerRent?.daysDifference >= 0
-                                ? `${customerRent?.daysDifference} days`
+                                ? `${customerRent?.daysDifference} Night`
                                 : ""
                             }`}
                             {`${
                               customerRent?.months &&
                               customerRent?.days >= 0 &&
                               !customerRent?.years
-                                ? `${customerRent?.months} m, ${customerRent?.days} days`
+                                ? `${customerRent?.months} m, ${customerRent?.days} Night`
                                 : ""
                             }`}
                             {`${
