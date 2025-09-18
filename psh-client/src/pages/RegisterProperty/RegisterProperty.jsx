@@ -3,41 +3,49 @@ import Apartment from "../../assets/img/register/Apartment.png";
 import Villa from "../../assets/img/register/Villa.png";
 import Hotel from "../../assets/img/register/Hotel.png";
 import Building from "../../assets/img/register/Building.png";
+import partnerImg2 from "../../assets/img/offerImg.png";
+import forPayment from "../../assets/img/for-about-monthly-payment.jpeg";
+import forComprehensive from "../../assets/img/for-about-comprhensive.jpeg";
+import partnerImg from "../../assets/img/partner-img1.jpeg";
+import forMobile from "../../assets/img/for-about-mobile.jpeg";
+import internetImg from "../../assets/img/internetImg.png";
+import footerImg from "../../assets/img/footer-img.webp";
 import { useRef, useState } from "react";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import toast, { Toaster } from "react-hot-toast";
+import Pricing from "../../components/pricing/Pricing";
 
 const RegisterProperty = () => {
   const formRef = useRef(null);
 
   const choiceArray = [
     {
-      itemImg: banner,
+      itemImg: partnerImg2,
       heading: "Full-Service Property Management",
       description:
         "We take care of bookings, guest communication, check-ins, cleaning, and maintenance. You just collect the income.",
     },
     {
-      itemImg: banner,
+      itemImg: forMobile,
       heading: "Maximum Exposure, Maximum Bookings",
       description:
         "Your property gets listed on PSH and top travel platforms, ensuring more guests and higher occupancy.",
     },
     {
-      itemImg: banner,
+      itemImg: internetImg,
       heading: "Optimized Pricing for Maximum Profit",
       description:
         "Dynamic pricing adjusts automatically to market demand, seasonality, and location, so you never miss out on revenue.",
     },
     {
-      itemImg: banner,
+      itemImg: forComprehensive,
       heading: "Guest Satisfaction Guaranteed",
       description:
         "Professional cleaning and amenities mean happy guests, glowing reviews, and repeat bookings.",
     },
     {
-      itemImg: banner,
+      itemImg: forPayment,
       heading: "Transparent Earnings & Insights",
       description:
         "Track bookings, income, and performance in real-time via our easy-to-use dashboard.",
@@ -116,21 +124,22 @@ const RegisterProperty = () => {
         <div className="relative  w-full h-[40vh] md:h-[60vh]">
           {/* Responsive Image */}
           <img
-            src={banner}
+            src={footerImg}
             alt="Register Property Banner"
             className="w-full h-full object-cover"
           />
 
           {/* Gradient Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-r from-[#F8F8F8] to-transparent"></div>
+          <div className="absolute inset-0 bg-gradient-to-r from-[#181818] to-transparent"></div>
 
           {/* Content */}
           <div className="absolute inset-0 flex items-center w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
             <div className="">
-              <h2 className="text-xl md:text-4xl font-bold text-[#35B0A7]">
-                Earn More from Your Property—Stress-Free!
+              <h2 className="text-xl md:text-4xl font-bold text-white ">
+                Earn More from Your Property, <br />
+                <p className="mt-1"> 100% Stress Free !</p>
               </h2>
-              <p className="my-2 md:my-4 text-[#267373] md:text-xl">
+              <p className="my-2 md:my-4 text-white md:text-xl">
                 Your apartment, villa, or guesthouse can earn more while we
                 handle everything. <br /> Join hundreds of property owners
                 already boosting their income with PSH.
@@ -146,7 +155,7 @@ const RegisterProperty = () => {
         </div>
         {/* Why PSH Is the Smart Choice */}
         <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
-          <h2 className="text-[#35B0A7] text-2xl font-medium">
+          <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium">
             Why PSH Is the Smart Choice
           </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 mt-5">
@@ -155,7 +164,7 @@ const RegisterProperty = () => {
                 <img
                   src={item?.itemImg}
                   alt="img"
-                  className="h-[160px] md:h-[200px] rounded-lg"
+                  className="h-[160px] md:h-[200px] rounded-lg w-full"
                 />
                 <h3 className="my-2 md:my-3 font-bold">{item.heading}</h3>
                 <p className="text-[#646464] text-sm">{item.description}</p>
@@ -165,11 +174,13 @@ const RegisterProperty = () => {
         </div>
         {/* How it Works */}
         <div className=" lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
-          <h2 className="text-[#35B0A7] text-2xl font-medium">How it Works</h2>
+          <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium">
+            How it Works
+          </h2>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8 my-5">
             {workMethods.map((item, ind) => (
               <div className="flex gap-2">
-                <div className="bg-gradient-to-b from-[#27B3B1] to-[#E9F5F400] px-2 pt-3 text-white">
+                <div className="bg-gradient-to-b from-[#27B3B1] to-[#E9F5F4] px-2 pt-3 text-white">
                   {ind + 1}
                 </div>
                 <div className="bg-[#D3ECEA] w-full">
@@ -185,7 +196,7 @@ const RegisterProperty = () => {
         {/* Who Can List? */}
         <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col-reverse lg:flex-row justify-between">
           <div className="lg:w-[40%]">
-            <h2 className="text-[#35B0A7] text-2xl font-medium mt-6 lg:mt-0 mb-3">
+            <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium mt-6 lg:mt-0 mb-3">
               Who Can List?
             </h2>
 
@@ -204,9 +215,17 @@ const RegisterProperty = () => {
               high-performing rental asset.
             </p>
           </div>
-          <div className="lg:w-[55%]">
-            <img src={banner} className="w-full h-full md:rounded-lg" />
+          <div className="lg:w-[55%] h-[240px] md:h-[320px]">
+            <img
+              src={partnerImg}
+              className=" md:rounded-lg h-full w-full object-cover"
+            />
           </div>
+        </div>
+
+        {/* pricing plan */}
+        <div className="pb-6 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto ">
+          <Pricing />
         </div>
 
         {/* benefits */}

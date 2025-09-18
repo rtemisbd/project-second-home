@@ -86,7 +86,7 @@ const BookingData = ({
   //   setPayableAmount(newPayableAmount > 0 ? newPayableAmount : 0); // Ensure no negative value
   // }, [booking?.adjustments, booking?.totalAmount, booking?.discount]);
 
-  return (
+  return ( 
     <>
       <tr className="bookings_data">
         <td>{(page - 1) * size + index + 1}</td>
