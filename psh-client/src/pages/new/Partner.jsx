@@ -14,6 +14,7 @@ import renewableImg from "../../assets/img/renewal 2.png";
 import PartnerModal from "./PartnerModal";
 import OtherOpportunities from "./OtherOpportunities";
 
+
 import "./partner.css";
 import toast, { Toaster } from "react-hot-toast";
 
