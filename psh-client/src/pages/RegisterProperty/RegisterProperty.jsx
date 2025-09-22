@@ -1,4 +1,5 @@
-import banner from "../../assets/img/register/banner.png";
+import process from "../../assets/img/register/process.jpg";
+import processSm from "../../assets/img/register/process-sm.jpg";
 import Apartment from "../../assets/img/register/Apartment.png";
 import Villa from "../../assets/img/register/Villa.png";
 import Hotel from "../../assets/img/register/Hotel.png";
@@ -173,7 +174,7 @@ const RegisterProperty = () => {
           </div>
         </div>
         {/* How it Works */}
-        <div className=" lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
+        {/* <div className=" lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
           <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium">
             How it Works
           </h2>
@@ -192,9 +193,9 @@ const RegisterProperty = () => {
               </div>
             ))}
           </div>
-        </div>
+        </div> */}
         {/* Who Can List? */}
-        <div className="py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col-reverse lg:flex-row justify-between">
+        <div className="pb-10 md:pb-0 md:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto flex flex-col-reverse lg:flex-row justify-between">
           <div className="lg:w-[40%]">
             <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium mt-6 lg:mt-0 mb-3">
               Who Can List?
@@ -215,10 +216,14 @@ const RegisterProperty = () => {
               high-performing rental asset.
             </p>
           </div>
-          <div className="lg:w-[55%] h-[240px] md:h-[320px]">
+          <div className="lg:w-[58%] h-[540px] md:h-[390px]">
             <img
-              src={partnerImg}
-              className=" md:rounded-lg h-full w-full object-cover"
+              src={process}
+              className="hidden md:block md:rounded-lg h-full w-full object-fit"
+            />
+            <img
+              src={processSm}
+              className=" rounded-lg h-full w-full object-cover md:hidden"
             />
           </div>
         </div>
