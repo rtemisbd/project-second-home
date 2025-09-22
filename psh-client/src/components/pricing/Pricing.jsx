@@ -58,8 +58,8 @@ const Pricing = () => {
 
         <SwipeableViews index={index} onChangeIndex={(i) => setIndex(i)}>
           {/* Basic */}
-          <div className="p-6 bg-[#E9F5F4]   ">
-            <h3 className="font-bold text-lg text-teal-600">Basic</h3>
+          <div className="p-6 bg-[#E9F5F4]  h-[320px] ">
+            <h3 className="font-bold text-lg text-teal-600 ">Basic</h3>
             <p>Free (10% commission per booking)</p>
             <ul className="list-disc ml-5 mt-2 text-sm">
               <li>1 Property</li>
@@ -72,7 +72,7 @@ const Pricing = () => {
           </div>
 
           {/* Pro */}
-          <div className="p-6 bg-blue-100  ">
+          <div className="p-6 bg-blue-100  h-[320px] ">
             <h3 className="font-bold text-lg text-blue-600">
               Pro (Best Value)
             </h3>
@@ -89,7 +89,7 @@ const Pricing = () => {
           </div>
 
           {/* Premium */}
-          <div className="p-6 bg-green-100  ">
+          <div className="p-6 bg-green-100   h-[320px] ">
             <h3 className="font-bold text-lg text-green-700">Premium</h3>
             <p>BDT. 2500/month + 5% commission</p>
             <ul className="list-disc ml-5 mt-2 text-sm">
