@@ -10,7 +10,7 @@ const Pricing = () => {
       <div className="block md:hidden ">
         <h2 className="text-[#35B0A7] text-xl font-medium mb-3 ">
           Pricing Plan
-        </h2>
+        </h2> 
         <Tabs value={index}>
           <TabsHeader
             className=" p-0  "
