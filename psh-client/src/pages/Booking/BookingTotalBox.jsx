@@ -135,7 +135,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       setVatTax(parseInt(getvatTax));
     }
     // minimum Payment
-    if (data?.category?.name === "Home Stay") {
+    if (data?.category?.name === "Homestay") {
       setMinimumPayment(5000);
       setShowMinimumPayment(true);
     } else {
@@ -500,7 +500,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
               }}
             >
               {data?.category?.name}{" "}
-              {data?.category?.name !== "Home Stay" && "(Female)"}
+              {data?.category?.name !== "Homestay" && "(Female)"}
             </p>
           </div>
         </div>
@@ -1170,7 +1170,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
             ""
           )}
 
-          {data?.category?.name === "Home Stay" ||
+          {data?.category?.name === "Homestay" ||
           data?.branch?.foodAmount === 0 ? (
             ""
           ) : (

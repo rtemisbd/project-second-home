@@ -33,6 +33,8 @@ function List() {
   const [withSharedRoom, setWithSharedRoom] = useState(true);
   const [startDate, setStartDate] = useState(location?.state?.startDate || "");
   const [endDate, setEndDate] = useState(location?.state?.endDate || "");
+  const [minPrice, setMinPrice] = useState(location?.state?.minPrice || null);
+  const [maxPrice, setMaxPrice] = useState(location?.state?.maxPrice || null);
 
   const [facilityFilters, setFacilityFilters] = useState([]);
   const [commonFacilityFilters, setCommonFacilityFilters] = useState([]);
@@ -80,6 +82,8 @@ function List() {
           commonfacilities,
           itemsPerPage,
           fromClient: true,
+          minPrice,
+          maxPrice,
           page,
           sort,
         });
@@ -145,7 +149,6 @@ function List() {
     setMin(minPrice);
     setMax(maxPrice);
   };
-
 
   const handleFacilityFilterChange = (facility) => {
     setFacilityFilters((prevFilters) => {

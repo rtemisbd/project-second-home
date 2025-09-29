@@ -16,7 +16,7 @@ import { SyncLoader } from "react-spinners";
 import FindVilla from "./FindVilla";
 import { Range } from "react-range";
 
-const FindAccommodation = () => {
+const FindAccommodation = ({ highestPrice }) => {
   const reduxDispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
 
@@ -44,7 +44,7 @@ const FindAccommodation = () => {
   const [adultCount, setAdultCount] = useState(2);
   const [kidCount, setKidCount] = useState(0);
 
-  const [priceRange, setPriceRange] = useState([0, 20000]); // default min/max
+  const [priceRange, setPriceRange] = useState([0, highestPrice]); // default min/max
 
   const [inputActive, setInputActive] = useState(false);
 
@@ -54,6 +54,19 @@ const FindAccommodation = () => {
     setDestination(item?.name);
     setInputActive(false);
   };
+
+  useEffect(() => {
+    setPriceRange((prev) => {
+      let min = Math.max(0, prev[0]); // clamp min >= 0
+      let max = Math.min(highestPrice, prev[1]); // clamp max <= highestPrice
+
+      // If somehow min > max, reset to full range
+      if (min > max) {
+        return [0, highestPrice];
+      }
+      return [min, max];
+    });
+  }, [highestPrice]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -149,6 +162,8 @@ const FindAccommodation = () => {
       category: categoryQuery,
       startDate: new Date(startDate).toISOString().split("T")[0],
       endDate: new Date(endDate).toISOString().split("T")[0],
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
@@ -299,7 +314,7 @@ const FindAccommodation = () => {
                     </div>
                   </div>
                 </div>
-                {categoryQuery !== "Home Stay" && (
+                {categoryQuery !== "Homestay" && (
                   <div className="mt-1 border rounded-lg w-1/2">
                     <ul className="flex   rounded-lg w-full  ">
                       <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
@@ -330,7 +345,7 @@ const FindAccommodation = () => {
                     </ul>
                   </div>
                 )}
-                {categoryQuery === "Home Stay" && (
+                {categoryQuery === "Homestay" && (
                   <div className="mt-1 border rounded-lg w-1/2 flex">
                     <div className="w-1/2 rounded-l-lg border-r  flex justify-start items-center  h-full">
                       <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
@@ -366,7 +381,7 @@ const FindAccommodation = () => {
                 )}
               </div>
               {/* bed */}
-              {categoryQuery !== "Home Stay" && (
+              {categoryQuery !== "Homestay" && (
                 <div className="flex items-center pt-2 w-full">
                   <div>
                     <FaBed
@@ -415,7 +430,7 @@ const FindAccommodation = () => {
                 </div>
               )}
               {/* Price Range Filter */}
-              {categoryQuery === "Home Stay" && (
+              {categoryQuery === "Homestay" && (
                 <div className="flex items-center pt-2 w-full">
                   <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
                     {/* Left icon box */}
@@ -432,7 +447,7 @@ const FindAccommodation = () => {
                       <Range
                         step={100}
                         min={0}
-                        max={100000}
+                        max={highestPrice}
                         values={priceRange}
                         onChange={(values) => setPriceRange(values)}
                         renderTrack={({ props, children }) => {
@@ -443,12 +458,20 @@ const FindAccommodation = () => {
                               className="h-2 rounded"
                               style={{
                                 background: `linear-gradient(to right, 
-                    #d1d5db 0%, 
-                    #d1d5db ${(priceRange[0] / 100000) * 100}%, 
-                    #00bbb4 ${(priceRange[0] / 100000) * 100}%, 
-                    #00bbb4 ${(priceRange[1] / 100000) * 100}%, 
-                    #d1d5db ${(priceRange[1] / 100000) * 100}%, 
-                    #d1d5db 100%)`,
+                                #d1d5db 0%, 
+                                #d1d5db ${
+                                  (priceRange[0] / highestPrice) * 100
+                                }%, 
+                                #00bbb4 ${
+                                  (priceRange[0] / highestPrice) * 100
+                                }%, 
+                                #00bbb4 ${
+                                  (priceRange[1] / highestPrice) * 100
+                                }%, 
+                                #d1d5db ${
+                                  (priceRange[1] / highestPrice) * 100
+                                }%, 
+                                #d1d5db 100%)`,
                               }}
                             >
                               {children}

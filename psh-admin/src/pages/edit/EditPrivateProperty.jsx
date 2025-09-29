@@ -207,7 +207,7 @@ const EditPrivateProperty = () => {
       if (property?.photos?.length < 5) {
         return toast("Sorry ! Minimum 5 Photo Required.", "warning");
       }
-      if (data?.category?.name === "Home Stay") {
+      if (data?.category?.name === "Homestay") {
         property.highlights = highlights.map((highlight) => highlight.trim());
       }
 
@@ -595,9 +595,9 @@ const EditPrivateProperty = () => {
                 </div>
               </div>
 
-              {/* highlights for home stay */}
+              {/* highlights for Homestay */}
 
-              {data?.category?.name === "Home Stay" && (
+              {data?.category?.name === "Homestay" && (
                 <div className="row">
                   <h2 className="profile_label3 profile_bg">
                     Highlights Features

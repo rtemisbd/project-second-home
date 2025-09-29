@@ -24,6 +24,7 @@ const Home = () => {
   const [randomIndex, setRandomIndex] = useState([]);
   const [withSharedRoom, setWithSharedRoom] = useState(true);
   const [showVilla, setShowVilla] = useState(false);
+  const [highestPrice, setHighestPrice] = useState(20000);
 
   const seats = useSeat();
   const villas = useVilla();
@@ -38,11 +39,14 @@ const Home = () => {
         fromClient: true,
         withSharedRoom,
       });
-      const response = await axios.get(
+      const { data } = await axios.get(
         `${serverBaseUrl}/property?${queryParams.toString()}`
       );
-      setData(response?.data?.properties);
-      setRandomIndex(response?.data?.properties); // immediate set
+      // console.log(data);
+
+      setData(data?.properties);
+      setHighestPrice(data?.highestHomeStayPrice);
+      setRandomIndex(data?.properties); // immediate set
     } catch (error) {
       console.error(error);
       throw error;
@@ -117,7 +121,7 @@ const Home = () => {
   return (
     <>
       <div className="banner_custom_container">
-        <NewBanner />
+        <NewBanner highestPrice={highestPrice} />
       </div>
 
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3">

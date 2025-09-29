@@ -16,6 +16,8 @@ const getPropertiesFromDB = async (queries) => {
     roomNumber,
     seatNumber,
     fromClient,
+    minPrice,
+    maxPrice,
   } = queries;
 
   const page = parseInt(queries?.page);
@@ -118,11 +120,35 @@ const getPropertiesFromDB = async (queries) => {
 
   let allProperties = properties[0]?.paginatedResults || [];
   let totalCount = properties[0]?.totalCount || 0;
+
+  // --- Extra query: get highest Homestay price always
+  const homeStayHighest = await Property.aggregate([
+    {
+      $lookup: {
+        from: "categories",
+        localField: "category",
+        foreignField: "_id",
+        as: "categoryDetails",
+      },
+    },
+    { $unwind: "$categoryDetails" },
+    { $match: { "categoryDetails.name": "Homestay" } },
+    {
+      $group: {
+        _id: null,
+        highestPrice: { $max: "$dAmountForDay" },
+      },
+    },
+  ]);
+
+  const highestHomeStayPrice =
+    homeStayHighest.length > 0 ? homeStayHighest[0].highestPrice : null;
+
   if (
     withSharedRoom &&
     category !== "Villa" &&
     category !== "Private Room" &&
-    category !== "Home Stay" &&
+    category !== "Homestay" &&
     !roomNumber
   ) {
     const extractedSeats = await seatServices.getAllSeatsFromDB({
@@ -147,6 +173,7 @@ const getPropertiesFromDB = async (queries) => {
     totalCount: totalCount,
     currentPage: page,
     pageSize: size,
+    highestHomeStayPrice,
   };
 };
 

@@ -466,8 +466,8 @@ const RoomDetails = () => {
                                       : "md:text-xl sm:text-[1rem]"
                                   }`}
                                 >
-                                  {data?.category?.name === "Home Stay"
-                                    ? "Home Stay"
+                                  {data?.category?.name === "Homestay"
+                                    ? "Homestay"
                                     : "Room Number"}{" "}
                                   : {data?.roomNumber}
                                 </p>
@@ -556,7 +556,7 @@ const RoomDetails = () => {
                           <p className="font-bold">Type</p>
                           <p>{data?.category?.name}</p>
                         </div>
-                        {data?.category?.name !== "Home Stay" ? (
+                        {data?.category?.name !== "Homestay" ? (
                           <div className="flex flex-col items-start col-span-12 md:space-y-3 sm:space-y-1 sm:col-span-2 lg:col-span-1 md:col-span-3">
                             <p className="font-bold">People</p>
                             <p>
@@ -656,7 +656,7 @@ const RoomDetails = () => {
                       )}
                     </div>
                     <Facilities allFacilities={allFacilities} />
-                    {data?.category?.name === "Home Stay" && (
+                    {data?.category?.name === "Homestay" && (
                       <div className="w-full">
                         <h2
                           id="apartmentDetails"

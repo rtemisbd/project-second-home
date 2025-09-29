@@ -83,7 +83,7 @@ const RegisterProperty = () => {
   const listArray = [
     { icon: Apartment, title: "Apartments & flats" },
     { icon: Villa, title: "Villas & vacation homes" },
-    { icon: Hotel, title: "Guesthouses & Home stays" },
+    { icon: Hotel, title: "Guesthouses & Homestays" },
     { icon: Building, title: "Commercial rental properties" },
   ];
 

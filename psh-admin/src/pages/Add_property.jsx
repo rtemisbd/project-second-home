@@ -443,7 +443,7 @@ const Add_property = () => {
                   />
                 </div>
               )}
-              {categoryName !== "Home Stay" && (
+              {categoryName !== "Homestay" && (
                 <div className="col-md-3 form_sub_stream mb-5">
                   <label htmlFor="inputState" className="profile_label3">
                     Gender Type
@@ -738,8 +738,8 @@ const Add_property = () => {
                   </div>
                 </div>
               </div>
-              {/* highlights of Home Stay */}
-              {categoryName === "Home Stay" && (
+              {/* highlights of Homestay */}
+              {categoryName === "Homestay" && (
                 <div className="row">
                   <h2 className="profile_label3 profile_bg mt-4">
                     Highlight Features
