@@ -66,9 +66,9 @@ const PromoDetails = () => {
         <div className=" mb-10">
           <div className="">
             <h2 className="text-2xl font-bold mt-5">{data?.promoName}</h2>
-            <div className="flex justify-between">
+            <div className="flex justify-between ">
               <Card className="mt-3 w-full">
-                <CardBody className="md:flex justify-between">
+                <CardBody className="md:flex justify-between ">
                   <div>
                     <div className="mb-2 flex items-center gap-x-2">
                       <p className="font-bold text-xl">
@@ -90,16 +90,16 @@ const PromoDetails = () => {
                   </div>
                 </CardBody>
                 {data?.promoDetails ? (
-                  <>
+                  <div className="">
                     <p className="ps-5 mb-2 text-xl font-bold">
                       Offer Details :
                     </p>
                     {promoDetailsSplit?.filter(Boolean).map((line, index) => (
-                      <p key={index} className="ps-5">
+                      <p key={index} className="pl-5">
                         {line}
                       </p>
                     ))}
-                  </>
+                  </div>
                 ) : (
                   ""
                 )}
