@@ -85,7 +85,7 @@ const PromoDetails = () => {
                       <li>Discount: {data?.promoDiscount} %off</li>
                     )}
 
-                    <li> Minimum Booking: {data?.minimumDays} Days</li>
+                    <li> Minimum Booking: {data?.minimumDays} Night</li>
                     <li> Expiration Date: {data?.promoEnd}</li>
                   </div>
                 </CardBody>

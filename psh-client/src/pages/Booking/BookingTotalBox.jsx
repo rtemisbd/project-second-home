@@ -258,6 +258,12 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     ) {
       return toast.error("Sorry ! this offer only for Shared Room");
     }
+    if (
+      userPromo?.promoDiscount === 50 &&
+      data?.category?.name !== "Homestay"
+    ) {
+      return toast.error("Sorry ! this offer only for Homestay");
+    }
 
     // Already Used Promo Checking
     const findLastTimeUsedPromo = singleUser?.usedPromo
@@ -299,7 +305,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
     // Promo Code Validation Checking
 
     if (promoCode !== userPromo?.promoCode)
-      return toast.error("Sorry! You have Gived the wrong promo code ");
+      return toast.error("Sorry! You give the wrong promo code ");
     //  for Special Discount
 
     if (userPromo?.promoDiscount === 100) {
