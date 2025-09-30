@@ -53,7 +53,7 @@ const AllBranch = () => {
               Our available Branches for your stay
             </span>
             <div className="all_branch slider_margin  pl-12 md:pl-0 relative">
-              {/* Splide Slider */}
+
               <Splide
                 ref={splideRef}
                 options={branchSlider(data)} // Options from utils
