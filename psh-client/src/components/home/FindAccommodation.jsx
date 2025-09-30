@@ -14,8 +14,9 @@ import UseFetch from "../../hooks/useFetch";
 import "./styles/SearchBox.css";
 import { SyncLoader } from "react-spinners";
 import FindVilla from "./FindVilla";
+import { Range } from "react-range";
 
-const FindAccommodation = () => {
+const FindAccommodation = ({ highestPrice }) => {
   const reduxDispatch = useDispatch();
   const startDate = useSelector((state) => state.dateCount.startDate);
 
@@ -40,6 +41,11 @@ const FindAccommodation = () => {
   const [bedValue, setBedValue] = useState(0);
   const [showVillaForm, setShowVillaForm] = useState(false);
 
+  const [adultCount, setAdultCount] = useState(2);
+  const [kidCount, setKidCount] = useState(0);
+
+  const [priceRange, setPriceRange] = useState([0, highestPrice]); 
+
   const [inputActive, setInputActive] = useState(false);
 
   // Corrected handleItemClick
@@ -48,6 +54,19 @@ const FindAccommodation = () => {
     setDestination(item?.name);
     setInputActive(false);
   };
+
+  useEffect(() => {
+    setPriceRange((prev) => {
+      let min = Math.max(0, prev[0]); // clamp min >= 0
+      let max = Math.min(highestPrice, prev[1]); // clamp max <= highestPrice
+
+      // If somehow min > max, reset to full range
+      if (min > max) {
+        return [0, highestPrice];
+      }
+      return [min, max];
+    });
+  }, [highestPrice]);
 
   useEffect(() => {
     const handleOutsideClick = (event) => {
@@ -94,7 +113,6 @@ const FindAccommodation = () => {
   const handleGenderSelection = (index) => {
     setGenderValue(index);
     const selectedGender = gender[index];
-    // Map gender values to query values
     if (selectedGender === "Female") {
       setGenderQuery("female");
     } else if (selectedGender === "Male") {
@@ -111,7 +129,6 @@ const FindAccommodation = () => {
       setCategoryQuery(selectedCategory);
     }
 
-    // Handle bed selection based on category
     if (selectedCategory === "Private Room") {
       setShowVillaForm(false);
     } else if (selectedCategory === "Shared Room") {
@@ -120,7 +137,7 @@ const FindAccommodation = () => {
       setShowVillaForm(true);
     } else {
       setShowVillaForm(false);
-      setBedValue(0); // Reset bed selection to "All" for other categories
+      setBedValue(0);
       setBedrooms([]);
     }
   };
@@ -145,6 +162,8 @@ const FindAccommodation = () => {
       category: categoryQuery,
       startDate: new Date(startDate).toISOString().split("T")[0],
       endDate: new Date(endDate).toISOString().split("T")[0],
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
     };
 
     dispatch({ type: "NEW_SEARCH", payload });
@@ -295,81 +314,185 @@ const FindAccommodation = () => {
                     </div>
                   </div>
                 </div>
-                <div className="mt-1 border rounded-lg w-1/2">
-                  <ul className="flex   rounded-lg w-full  ">
-                    <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                      <BiBody
-                        className=""
-                        style={{
-                          color: "#339999",
-                          height: "24px",
-                          width: "100%",
-                        }}
-                      />
-                    </li>
-                    {gender.map((gender, index) => (
-                      <li key={index} className="search_md_bed w-[35%] ">
-                        <button
-                          onClick={() => handleGenderSelection(index)}
-                          disabled={gender === "Male"}
-                          className={`${
-                            genderValue === index ? "bedActive" : "bedNonActive"
-                          } py-[7px] w-full  disabled:cursor-not-allowed`}
-                        >
-                          {gender}
-                        </button>
+                {categoryQuery !== "Homestay" && (
+                  <div className="mt-1 border rounded-lg w-1/2">
+                    <ul className="flex   rounded-lg w-full  ">
+                      <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                        <BiBody
+                          className=""
+                          style={{
+                            color: "#339999",
+                            height: "24px",
+                            width: "100%",
+                          }}
+                        />
                       </li>
-                    ))}
-                  </ul>
-                </div>
+                      {gender.map((gender, index) => (
+                        <li key={index} className="search_md_bed w-[35%] ">
+                          <button
+                            onClick={() => handleGenderSelection(index)}
+                            disabled={gender === "Male"}
+                            className={`${
+                              genderValue === index
+                                ? "bedActive"
+                                : "bedNonActive"
+                            } py-[7px] w-full  disabled:cursor-not-allowed`}
+                          >
+                            {gender}
+                          </button>
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {categoryQuery === "Homestay" && (
+                  <div className="mt-1 border rounded-lg w-1/2 flex">
+                    <div className="w-1/2 rounded-l-lg border-r  flex justify-start items-center  h-full">
+                      <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
+                        Adult
+                      </p>
+                      <div className="w-1/3">
+                        <input
+                          type="number"
+                          min={1}
+                          value={adultCount}
+                          onChange={(e) =>
+                            setAdultCount(Number(e.target.value))
+                          }
+                          className="w-full outline-none pl-2"
+                        />
+                      </div>
+                    </div>
+                    <div className="w-1/2 rounded-l-lg   flex justify-start items-center  h-full">
+                      <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
+                        Child
+                      </p>
+                      <div className="w-1/3">
+                        <input
+                          type="number"
+                          min={0}
+                          value={kidCount}
+                          onChange={(e) => setKidCount(Number(e.target.value))}
+                          className="w-full outline-none pl-2"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
               {/* bed */}
-              <div className="flex items-center pt-2 w-full">
-                <div>
-                  <FaBed
-                    style={{
-                      color: "#339999",
-                      height: "24px",
-                      width: "24px",
-                      marginTop: "20px",
-                      marginRight: "12px",
-                    }}
-                  />
+              {categoryQuery !== "Homestay" && (
+                <div className="flex items-center pt-2 w-full">
+                  <div>
+                    <FaBed
+                      style={{
+                        color: "#339999",
+                        height: "24px",
+                        width: "24px",
+                        marginTop: "20px",
+                        marginRight: "12px",
+                      }}
+                    />
+                  </div>
+
+                  <ul
+                    className={`flex  gap-2  w-full mt-3  ${
+                      categoryValue === 2 ? "hide-search-options" : ""
+                    }`}
+                  >
+                    {beds.map((bed, index) => {
+                      if (
+                        (categoryValue === 1 &&
+                          bed !== "Single Bed" &&
+                          bed !== "Single Bed" &&
+                          bed !== "King Size Bed") ||
+                        (categoryValue === 2 &&
+                          bed !== "Bunk Bed" &&
+                          bed !== "Single Bed")
+                      ) {
+                        return null; // Skip rendering
+                      }
+
+                      return (
+                        <li key={index} className="font-semibold">
+                          <span
+                            onClick={() => handleBedSelection(index)}
+                            className={`px-[10px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
+                              bedValue === index ? "bedActive" : "bedNonActive"
+                            }`}
+                          >
+                            {bed}
+                          </span>
+                        </li>
+                      );
+                    })}
+                  </ul>
                 </div>
+              )}
+              {/* Price Range Filter */}
+              {categoryQuery === "Homestay" && (
+                <div className="flex items-center pt-2 w-full">
+                  <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
+                    {/* Left icon box */}
+                    <div className="w-[15%] py-2 rounded-l-lg bg-[#eafffd] flex justify-center items-center text-[#00bbb4] font-bold">
+                      BDT
+                    </div>
 
-                <ul
-                  className={`flex  gap-2  w-full mt-3  ${
-                    categoryValue === 2 ? "hide-search-options" : ""
-                  }`}
-                >
-                  {beds.map((bed, index) => {
-                    if (
-                      (categoryValue === 1 &&
-                        bed !== "Single Bed" &&
-                        bed !== "Single Bed" &&
-                        bed !== "King Size Bed") ||
-                      (categoryValue === 2 &&
-                        bed !== "Bunk Bed" &&
-                        bed !== "Single Bed")
-                    ) {
-                      return null; // Skip rendering
-                    }
+                    {/* Slider box */}
+                    <div className="flex flex-col justify-center w-[85%] px-3 py-2 bg-white">
+                      <p className="text-sm text-gray-700 mb-1">
+                        Price Range: {priceRange[0]} - {priceRange[1]}
+                      </p>
 
-                    return (
-                      <li key={index} className="font-semibold">
-                        <span
-                          onClick={() => handleBedSelection(index)}
-                          className={`px-[10px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
-                            bedValue === index ? "bedActive" : "bedNonActive"
-                          }`}
-                        >
-                          {bed}
-                        </span>
-                      </li>
-                    );
-                  })}
-                </ul>
-              </div>
+                      <Range
+                        step={100}
+                        min={0}
+                        max={highestPrice}
+                        values={priceRange}
+                        onChange={(values) => setPriceRange(values)}
+                        renderTrack={({ props, children }) => {
+                          const { key, ...restProps } = props;
+                          return (
+                            <div
+                              {...restProps}
+                              className="h-2 rounded"
+                              style={{
+                                background: `linear-gradient(to right, 
+                                #d1d5db 0%, 
+                                #d1d5db ${
+                                  (priceRange[0] / highestPrice) * 100
+                                }%, 
+                                #00bbb4 ${
+                                  (priceRange[0] / highestPrice) * 100
+                                }%, 
+                                #00bbb4 ${
+                                  (priceRange[1] / highestPrice) * 100
+                                }%, 
+                                #d1d5db ${
+                                  (priceRange[1] / highestPrice) * 100
+                                }%, 
+                                #d1d5db 100%)`,
+                              }}
+                            >
+                              {children}
+                            </div>
+                          );
+                        }}
+                        renderThumb={({ props }) => (
+                          <div
+                            {...props}
+                            className="w-4 h-4 bg-white border border-[#00bbb4] rounded-full shadow"
+                          />
+                        )}
+                      />
+                      {/* <div className="flex justify-between text-xs text-gray-600 mt-1">
+                        <span>0</span>
+                        <span>100000</span>
+                      </div> */}
+                    </div>
+                  </div>
+                </div>
+              )}
 
               <div className="py-2">
                 <input

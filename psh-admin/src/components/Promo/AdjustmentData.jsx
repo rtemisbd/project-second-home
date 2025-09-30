@@ -14,8 +14,6 @@ const AdjustmentData = ({
   handleAccept,
   handleDelete,
 }) => {
-  console.log(adjustment);
-
   return (
     <>
       <tr>

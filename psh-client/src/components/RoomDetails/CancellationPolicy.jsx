@@ -19,10 +19,10 @@ const CancellationPolicy = ({ category }) => {
           <table className="w-full border border-gray-200 rounded-lg shadow-sm">
             <thead className="bg-gray-100 w-full ">
               <tr>
-                {category !== "Home Stay" && <th></th>}
+                {category !== "Homestay" && <th></th>}
                 <th
                   className={`px-4 py-3 text-left font-bold ${
-                    category === "Home Stay" ? "w-1/2" : "w-1/3"
+                    category === "Homestay" ? "w-1/2" : "w-1/3"
                   }`}
                 >
                   Cancellation Timing
@@ -30,7 +30,7 @@ const CancellationPolicy = ({ category }) => {
                 <th className="px-4 py-3 text-left font-bold">Refund</th>
               </tr>
             </thead>
-            {category === "Home Stay" ? (
+            {category === "Homestay" ? (
               <tbody className="divide-y divide-gray-200">
                 <tr className="hover:bg-gray-50">
                   <td className="px-4 py-3">7+ days before check-in</td>

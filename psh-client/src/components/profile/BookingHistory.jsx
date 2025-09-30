@@ -155,7 +155,7 @@ const BookingHistory = () => {
               className=" mr-1"
               onChange={(e) => setBookingCategory(e.target.value)}
             />
-            <span className="mr-2">Home Stay / Private / Shared Room</span>
+            <span className="mr-2">Homestay / Private / Shared Room</span>
             <input
               type="radio"
               id="villa"

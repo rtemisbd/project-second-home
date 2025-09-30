@@ -89,7 +89,7 @@ const GeneralRules = ({ category }) => {
               <ul className="ms-6 list-disc list-inside">
                 <li>Clean up immediately after use.</li>
                 <li>Label and store your food properly.</li>
-                {category !== "Home Stay" && (
+                {category !== "Homestay" && (
                   <li>Do not use others’ food without permission.</li>
                 )}
               </ul>
@@ -100,7 +100,7 @@ const GeneralRules = ({ category }) => {
           <div>
             <h2 className="font-bold my-2">Bathroom Etiquette</h2>
             <ul className="ms-3 leading-6 text-sm list-inside list-disc">
-              {category !== "Home Stay" && (
+              {category !== "Homestay" && (
                 <>
                   <li>Share bathroom respectfully if not private.</li>
                   <li>

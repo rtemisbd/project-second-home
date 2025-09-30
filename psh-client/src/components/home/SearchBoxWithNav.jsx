@@ -17,8 +17,9 @@ import { SyncLoader } from "react-spinners";
 import { BiBody } from "react-icons/bi";
 import { FaBed } from "react-icons/fa";
 import FindVilla from "./FindVilla";
+import { Range } from "react-range";
 
-const SearchBoxWithNav = () => {
+const SearchBoxWithNav = ({ highestPrice }) => {
   const isSearchBoxShow = useSelector(
     (state) => state?.profileMenu?.isSearchBoxShow
   );
@@ -45,6 +46,11 @@ const SearchBoxWithNav = () => {
 
   const beds = ["All", "Bunk Bed", "Single Bed", "King Size Bed"];
   const [bedValue, setBedValue] = useState(0);
+
+  const [adultCount, setAdultCount] = useState(2);
+  const [kidCount, setKidCount] = useState(0);
+
+  const [priceRange, setPriceRange] = useState([0, highestPrice]);
 
   const [inputActive, setInputActive] = useState(false);
   const filteredData = branch.filter((item) =>
@@ -142,6 +148,8 @@ const SearchBoxWithNav = () => {
       bedrooms,
       gender: genderQuery,
       category: categoryQuery,
+      minPrice: priceRange[0],
+      maxPrice: priceRange[1],
     };
     console.log(payload);
 
@@ -149,6 +157,19 @@ const SearchBoxWithNav = () => {
     reduxDispatch(placeSearchBoxShow(false));
     navigate(`/branch/${destination}`, { state: payload });
   };
+
+  useEffect(() => {
+    setPriceRange((prev) => {
+      let min = Math.max(0, prev[0]); // clamp min >= 0
+      let max = Math.min(highestPrice, prev[1]); // clamp max <= highestPrice
+
+      // If somehow min > max, reset to full range
+      if (min > max) {
+        return [0, highestPrice];
+      }
+      return [min, max];
+    });
+  }, [highestPrice]);
 
   return (
     <>
@@ -318,86 +339,186 @@ const SearchBoxWithNav = () => {
                         </div>
                       </div>
                     </div>
-                    <div className="mt-1 border rounded-lg w-1/2">
-                      <ul className="flex   rounded-lg w-full  ">
-                        <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
-                          <BiBody
-                            className=""
-                            style={{
-                              color: "#339999",
-                              height: "24px",
-                              width: "100%",
-                            }}
-                          />
-                        </li>
-                        {gender.map((gender, index) => (
-                          <li key={index} className="search_md_bed w-[35%] ">
-                            <button
-                              onClick={() => handleGenderSelection(index)}
-                              disabled={gender === "Male"}
-                              className={`${
-                                genderValue === index
-                                  ? "bedActive"
-                                  : "bedNonActive"
-                              } py-[7px] w-full  disabled:cursor-not-allowed`}
-                            >
-                              {gender}
-                            </button>
+                    {categoryQuery !== "Homestay" ? (
+                      <div className="mt-1 border rounded-lg w-1/2">
+                        <ul className="flex   rounded-lg w-full  ">
+                          <li className="w-[30%] rounded-l-lg bg-[#eafffd] flex justify-center items-center">
+                            <BiBody
+                              className=""
+                              style={{
+                                color: "#339999",
+                                height: "24px",
+                                width: "100%",
+                              }}
+                            />
                           </li>
-                        ))}
+                          {gender.map((gender, index) => (
+                            <li key={index} className="search_md_bed w-[35%] ">
+                              <button
+                                onClick={() => handleGenderSelection(index)}
+                                disabled={gender === "Male"}
+                                className={`${
+                                  genderValue === index
+                                    ? "bedActive"
+                                    : "bedNonActive"
+                                } py-[7px] w-full  disabled:cursor-not-allowed`}
+                              >
+                                {gender}
+                              </button>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    ) : (
+                      <div className="mt-1 border rounded-lg w-1/2 flex">
+                        <div className="w-1/2 rounded-l-lg border-r  flex justify-start items-center  h-full">
+                          <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
+                            Adult
+                          </p>
+                          <div className="w-1/3">
+                            <input
+                              type="number"
+                              min={1}
+                              value={adultCount}
+                              onChange={(e) =>
+                                setAdultCount(Number(e.target.value))
+                              }
+                              className="w-full outline-none pl-2"
+                            />
+                          </div>
+                        </div>
+                        <div className="w-1/2 rounded-l-lg   flex justify-start items-center  h-full">
+                          <p className="bg-[#eafffd] w-2/3 h-full text-center px-2 md:px-3 pt-2">
+                            Child
+                          </p>
+                          <div className="w-1/3">
+                            <input
+                              type="number"
+                              min={0}
+                              value={kidCount}
+                              onChange={(e) =>
+                                setKidCount(Number(e.target.value))
+                              }
+                              className="w-full outline-none pl-2"
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                  {categoryQuery !== "Homestay" && (
+                    <div className="flex items-center pt-2 w-full ">
+                      <div>
+                        <FaBed
+                          style={{
+                            color: "#339999",
+                            height: "24px",
+                            width: "24px",
+                            marginTop: "20px",
+                            marginRight: "12px",
+                          }}
+                        />
+                      </div>
+
+                      <ul
+                        className={`flex justify-start gap-2  w-full mt-3  ${
+                          categoryValue === 2 ? "hide-search-options" : ""
+                        }`}
+                      >
+                        {beds.map((bed, index) => {
+                          if (
+                            (categoryValue === 1 &&
+                              bed !== "Single Bed" &&
+                              bed !== "Single Bed" &&
+                              bed !== "King Size Bed") ||
+                            (categoryValue === 2 &&
+                              bed !== "Bunk Bed" &&
+                              bed !== "Single Bed")
+                          ) {
+                            return null; // Skip rendering
+                          }
+
+                          return (
+                            <li
+                              key={index}
+                              className="text-[14px] font-semibold"
+                            >
+                              <span
+                                onClick={() => handleBedSelection(index)}
+                                className={`px-[6px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
+                                  bedValue === index
+                                    ? "bedActive"
+                                    : "bedNonActive"
+                                }`}
+                              >
+                                {bed}
+                              </span>
+                            </li>
+                          );
+                        })}
                       </ul>
                     </div>
-                  </div>
+                  )}
+                  {/* Price Range Filter */}
+                  {categoryQuery === "Homestay" && (
+                    <div className="flex items-center pt-2 w-full">
+                      <div className="flex border rounded-l-lg rounded-r-lg mt-1 w-full">
+                        {/* Left icon box */}
+                        <div className="w-[15%] py-2 rounded-l-lg bg-[#eafffd] flex justify-center items-center text-[#00bbb4] font-bold">
+                          BDT
+                        </div>
 
-                  <div className="flex items-center pt-2 w-full ">
-                    <div>
-                      <FaBed
-                        style={{
-                          color: "#339999",
-                          height: "24px",
-                          width: "24px",
-                          marginTop: "20px",
-                          marginRight: "12px",
-                        }}
-                      />
+                        {/* Slider box */}
+                        <div className="flex flex-col justify-center w-[85%] px-3 py-2 bg-white">
+                          <p className="text-sm text-gray-700 mb-1">
+                            Price Range: {priceRange[0]} - {priceRange[1]}
+                          </p>
+
+                          <Range
+                            step={100}
+                            min={0}
+                            max={highestPrice}
+                            values={priceRange}
+                            onChange={(values) => setPriceRange(values)}
+                            renderTrack={({ props, children }) => {
+                              const { key, ...restProps } = props;
+                              return (
+                                <div
+                                  {...restProps}
+                                  className="h-2 rounded"
+                                  style={{
+                                    background: `linear-gradient(to right, 
+                                #d1d5db 0%, 
+                                #d1d5db ${
+                                  (priceRange[0] / highestPrice) * 100
+                                }%, 
+                                #00bbb4 ${
+                                  (priceRange[0] / highestPrice) * 100
+                                }%, 
+                                #00bbb4 ${
+                                  (priceRange[1] / highestPrice) * 100
+                                }%, 
+                                #d1d5db ${
+                                  (priceRange[1] / highestPrice) * 100
+                                }%, 
+                                #d1d5db 100%)`,
+                                  }}
+                                >
+                                  {children}
+                                </div>
+                              );
+                            }}
+                            renderThumb={({ props }) => (
+                              <div
+                                {...props}
+                                className="w-4 h-4 bg-white border border-[#00bbb4] rounded-full shadow"
+                              />
+                            )}
+                          />
+                        </div>
+                      </div>
                     </div>
-
-                    <ul
-                      className={`flex justify-start gap-2  w-full mt-3  ${
-                        categoryValue === 2 ? "hide-search-options" : ""
-                      }`}
-                    >
-                      {beds.map((bed, index) => {
-                        if (
-                          (categoryValue === 1 &&
-                            bed !== "Single Bed" &&
-                            bed !== "Single Bed" &&
-                            bed !== "King Size Bed") ||
-                          (categoryValue === 2 &&
-                            bed !== "Bunk Bed" &&
-                            bed !== "Single Bed")
-                        ) {
-                          return null; // Skip rendering
-                        }
-
-                        return (
-                          <li key={index} className="text-[14px] font-semibold">
-                            <span
-                              onClick={() => handleBedSelection(index)}
-                              className={`px-[6px]  py-[8px] rounded-md cursor-pointer hover:opacity-70  ${
-                                bedValue === index
-                                  ? "bedActive"
-                                  : "bedNonActive"
-                              }`}
-                            >
-                              {bed}
-                            </span>
-                          </li>
-                        );
-                      })}
-                    </ul>
-                  </div>
-
+                  )}
                   <div className="mt-7 w-full">
                     <div className="w-full flex justify-center">
                       <input

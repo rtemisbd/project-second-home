@@ -10,7 +10,7 @@ const WishlistSchema = new mongoose.Schema(
     },
     roomType: {
       type: String,
-      enum: ["Private Room", "Shared Room", "Home Stay", "Villa"],
+      enum: ["Private Room", "Shared Room", "Homestay", "Villa"],
       required: true,
     },
     property: {

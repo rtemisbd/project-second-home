@@ -7,10 +7,8 @@ const Pricing = () => {
 
   return (
     <div>
-      <div className="block md:hidden ">
-        <h2 className="text-[#35B0A7] text-xl font-medium mb-3 ">
-          Pricing Plan
-        </h2>
+      <div className="block md:hidden mt-6">
+        
         <Tabs value={index}>
           <TabsHeader
             className=" p-0  "

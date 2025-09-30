@@ -83,7 +83,7 @@ const RegisterProperty = () => {
   const listArray = [
     { icon: Apartment, title: "Apartments & flats" },
     { icon: Villa, title: "Villas & vacation homes" },
-    { icon: Hotel, title: "Guesthouses & Home stays" },
+    { icon: Hotel, title: "Guesthouses & Homestays" },
     { icon: Building, title: "Commercial rental properties" },
   ];
 
@@ -229,7 +229,10 @@ const RegisterProperty = () => {
         </div>
 
         {/* pricing plan */}
-        <div className="pb-6 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto ">
+        <div className="pb-6 lg:py-10 w-[90%] md:w-[85%] xl:w-[68%] mx-auto">
+          <h2 className="text-[#35B0A7] text-xl md:text-2xl font-medium md:my-6 ">
+            Our Pricing Plan
+          </h2>
           <Pricing />
         </div>
 
@@ -252,6 +255,7 @@ const RegisterProperty = () => {
                   {/* Full Name */}
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <input
+                      id="fullname"
                       type="text"
                       name="name"
                       required
@@ -269,6 +273,7 @@ const RegisterProperty = () => {
                   {/* Phone */}
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <input
+                      id="mobile"
                       type="text"
                       name="mobile"
                       required
@@ -283,10 +288,12 @@ const RegisterProperty = () => {
                     </label>
                   </div>
                 </div>
+
                 <div className="md:flex gap-4">
                   {/* Email */}
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <input
+                      id="email"
                       type="email"
                       name="email"
                       required
@@ -304,15 +311,14 @@ const RegisterProperty = () => {
                   {/* Property Type */}
                   <div className="relative md:w-1/2 mb-3 md:mb-0">
                     <select
+                      id="propertyType"
                       name="propertyType"
                       required
                       defaultValue=""
                       className="peer block w-full rounded-md border border-gray-400 bg-transparent px-3 py-3 text-black focus:border-[#35B0A7] focus:ring-1 focus:ring-[#35B0A7] outline-none"
                     >
                       <option value="" disabled hidden>
-                        <span className="!text-gray-200">
-                          Choose Your Property Type
-                        </span>
+                        Choose Your Property Type
                       </option>
                       <option value="building">Building</option>
                       <option value="apartment">Apartment</option>
@@ -331,6 +337,7 @@ const RegisterProperty = () => {
                 {/* Location */}
                 <div className="relative ">
                   <input
+                    id="address"
                     type="text"
                     name="address"
                     required

@@ -334,7 +334,7 @@ const BookingOverview = () => {
                   {data.map((room, index) => (
                     <tr key={index}>
                       <td>
-                        {room?.categoryDetails?.name === "Home Stay"
+                        {room?.categoryDetails?.name === "Homestay"
                           ? `${room.name}: ${room.roomNumber}`
                           : room?.categoryDetails?.name !== "Shared Room"
                           ? `Room: ${room.roomNumber}`

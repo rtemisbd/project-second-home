@@ -119,7 +119,7 @@ export const getRentRooms = async (req, res, next) => {
       .populate([
         {
           path: "category",
-          match: { name: { $in: ["Private Room", "Home Stay"] } },
+          match: { name: { $in: ["Private Room", "Homestay"] } },
           select: {
             name: 1,
             _id: 0,
