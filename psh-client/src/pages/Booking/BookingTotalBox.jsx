@@ -45,6 +45,7 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
   const [userPromo, setUserPromo] = useState({});
   const [discountTk, setDisCountTk] = useState(0);
   const [promoCode, setPromoCode] = useState(null);
+  const [fullPayment, setFullPayment] = useState(false);
 
   const [promoCodeCheck, setPromoCodeCheck] = useState(false);
   const [showMiniumPayment, setShowMinimumPayment] = useState(false);
@@ -265,6 +266,12 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       return toast.error("Sorry ! this offer only for Homestay");
     }
 
+    if (
+      data?.category?.name === "Homestay" &&
+      userPromo?.promoDiscount === 50
+    ) {
+      setFullPayment(true);
+    }
     // Already Used Promo Checking
     const findLastTimeUsedPromo = singleUser?.usedPromo
       ?.slice()
@@ -459,6 +466,21 @@ const BookingTotalBox = ({ data, bookedDates, seat }) => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
+
+  useEffect(() => {
+    if (
+      data?.category?.name === "Homestay" &&
+      userPromo?.promoDiscount === 50 &&
+      fullPayment
+    ) {
+      setMinimumPayment(payableAmount);
+    }
+  }, [
+    data?.category?.name,
+    userPromo?.promoDiscount,
+    payableAmount,
+    fullPayment,
+  ]);
 
   return (
     <>
