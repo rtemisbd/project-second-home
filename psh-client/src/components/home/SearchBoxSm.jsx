@@ -2,7 +2,7 @@ import { useDispatch } from "react-redux";
 import SearchBoxWithNav from "./SearchBoxWithNav";
 import { placeSearchBoxShow } from "../../redux/reducers/smProfileMenuSlice";
 
-const SearchBoxSm = () => {
+const SearchBoxSm = ({highestPrice}) => {
   const reduxDispatch = useDispatch();
 
   return (
@@ -21,7 +21,7 @@ const SearchBoxSm = () => {
           <i className="fa fa-search mt-2" />
         </div>
       </div>
-      <SearchBoxWithNav />
+      <SearchBoxWithNav highestPrice={highestPrice} />
     </div>
   );
 };

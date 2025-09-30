@@ -125,7 +125,7 @@ const Home = () => {
       </div>
 
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3">
-        <SearchBoxSm />
+        <SearchBoxSm highestPrice={highestPrice} />
       </div>
 
       <div className="custom-container sm:px-2 sm:pt-2 md:px-0 md:pt-0 space-y-3 lg:space-y-7">

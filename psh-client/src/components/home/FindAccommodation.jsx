@@ -44,7 +44,7 @@ const FindAccommodation = ({ highestPrice }) => {
   const [adultCount, setAdultCount] = useState(2);
   const [kidCount, setKidCount] = useState(0);
 
-  const [priceRange, setPriceRange] = useState([0, highestPrice]); // default min/max
+  const [priceRange, setPriceRange] = useState([0, highestPrice]); 
 
   const [inputActive, setInputActive] = useState(false);
 
