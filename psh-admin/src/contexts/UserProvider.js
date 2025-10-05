@@ -11,10 +11,10 @@ export const UserProvider = ({ children }) => {
   const [user, setUser] = useState(
     JSON.parse(localStorage.getItem("user")) || null
   );
-  const [resort, setResort] = useState(localStorage.getItem("resort") ||null);
+  const [resort, setResort] = useState(localStorage.getItem("resort") || null);
 
   // const [token, setToken] = useState( JSON.parse(localStorage.getItem("token")) || null);
-  const [token, setToken] = useState( localStorage.getItem("token") || null);
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -24,23 +24,22 @@ export const UserProvider = ({ children }) => {
     localStorage.setItem("resort", JSON.stringify(resort));
   }, [user, token, resort]);
 
-  useEffect(()=>{
-    const fetchResort = async()=>{
-       try {
+  useEffect(() => {
+    const fetchResort = async () => {
+      try {
         const { data } = await axios.get(
           `${baseUrl}/api/resort/name/${user?.firstName}`
         );
         setResort(data?.data);
       } catch (error) {
         console.error("Failed to fetch resort by name:", error);
-         setResort(null);
+        setResort(null);
       }
     };
-     if (user?.firstName) {
-    fetchResort();
-  }
- 
-  }, [user?.firstName])
+    if (user?.firstName) {
+      fetchResort();
+    }
+  }, [user?.firstName]);
 
   const loginUser = async (email, password) => {
     try {
@@ -52,7 +51,7 @@ export const UserProvider = ({ children }) => {
 
       if (response.status === 200) {
         const { data } = response;
-        
+
         setUser(data.user);
         setToken(data.token);
         setLoading(false);
@@ -107,15 +106,15 @@ export const UserProvider = ({ children }) => {
       // console.error(error);
     }
   };
-  
-const logoutUser = () => {
-  setUser(null);
-  setToken(null);
-  setResort(null); // clear resort
-  localStorage.removeItem("user");
-  localStorage.removeItem("token");
-  localStorage.removeItem("resort");
-};
+
+  const logoutUser = () => {
+    setUser(null);
+    setToken(null);
+    setResort(null); // clear resort
+    localStorage.removeItem("user");
+    localStorage.removeItem("token");
+    localStorage.removeItem("resort");
+  };
 
   // const isAuthenticated = () => {
   //   return token !== null && user !== null;
@@ -123,7 +122,15 @@ const logoutUser = () => {
   // Provide the user and token to the components
   return (
     <AuthContext.Provider
-      value={{ user, token, loginUser, logoutUser, loading, registerUser, resort }}
+      value={{
+        user,
+        token,
+        loginUser,
+        logoutUser,
+        loading,
+        registerUser,
+        resort,
+      }}
     >
       {children}
     </AuthContext.Provider>
