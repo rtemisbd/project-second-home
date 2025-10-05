@@ -48,7 +48,6 @@ export const UserProvider = ({ children }) => {
         email,
         password,
       });
-      console.log(response);
 
       if (response.status === 200) {
         const { data } = response;
@@ -58,16 +57,12 @@ export const UserProvider = ({ children }) => {
         setLoading(false);
       } else {
         throw new Error("Login failed");
-    
-        
       }
     } catch (error) {
       if (error.response && error.response.status === 401) {
         const errorMessage = error.response.data.message;
 
         toast.error(errorMessage);
-        console.log(error);
-        
       } else if (error.response && error.response.status === 404) {
         const errorMessage = error.response.data.message;
 
