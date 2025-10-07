@@ -44,7 +44,7 @@ const FindAccommodation = ({ highestPrice }) => {
   const [adultCount, setAdultCount] = useState(2);
   const [kidCount, setKidCount] = useState(0);
 
-  const [priceRange, setPriceRange] = useState([0, highestPrice]); 
+  const [priceRange, setPriceRange] = useState([0, highestPrice]);
 
   const [inputActive, setInputActive] = useState(false);
 
@@ -171,7 +171,7 @@ const FindAccommodation = ({ highestPrice }) => {
   };
   return (
     <>
-      <h2 className="text-base font-bold">Where Do You Want To Stay..? </h2>
+      <h2 className="text-base font-bold">Where Do You Want To Stay ...? </h2>
       <form className="" onSubmit={handleSearch}>
         <div className="pt-2 space-y-1 ">
           {/* room category */}

@@ -99,8 +99,11 @@ const getAllVillaOrdersFromDB = async (queries) => {
   const formattedDate = today.toISOString().split("T")[0];
 
   let matchStage = {};
-  if (resort && resort !== "undefined" && resort !== "null" && resort !== "") {
-    matchStage.resort = new mongoose.Types.ObjectId(resort);
+  // if (resort && resort !== "undefined" && resort !== "null" && resort !== "") {
+  //   matchStage.resort = new mongoose.Types.ObjectId(resort);
+  // }
+  if (user && user !== "undefined" && user !== "null" && user !== "") {
+    matchStage.user = new mongoose.Types.ObjectId(user);
   }
 
   if (fromDate && toDate) {
@@ -182,6 +185,24 @@ const getAllVillaOrdersFromDB = async (queries) => {
             },
           },
           { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
+          {
+            $lookup: {
+              from: "resorts",
+              let: { resortId: "$resort" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$resortId"] },
+                  },
+                },
+                {
+                  $project: { name: 1 },
+                },
+              ],
+              as: "resort",
+            },
+          },
+          { $unwind: { path: "$resort", preserveNullAndEmptyArrays: true } },
 
           {
             $lookup: {
@@ -379,7 +400,6 @@ const getVillaOrderByIdFromDB = async (id) => {
 const updateVillaOrderById = async (id, payload) => {
   // step 1 : check the order exist          ence
   const order = await getVillaOrderByIdFromDB(id);
-
 
   if (!order) {
     return { error: "Order not found!" };

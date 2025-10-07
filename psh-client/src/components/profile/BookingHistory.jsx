@@ -98,12 +98,11 @@ const BookingHistory = () => {
           size,
           bookingStatus,
           paymentStatus,
+          user: user?._id,
         });
 
         const response = await fetch(
-          `${serverBaseUrl}/villa-order/user/${
-            user?.phone
-          }?${queryParams.toString()}`,
+          `${serverBaseUrl}/villa-order?${queryParams.toString()}`,
           {
             method: "GET",
             headers,
@@ -115,8 +114,10 @@ const BookingHistory = () => {
         }
         const { data } = await response.json();
 
+        console.log(data);
+
         setVillaOrders(data?.orders);
-        // setTotalCount(data?.totalCount);
+        setTotalCount(data?.totalCount);
       } catch (error) {
         console.error("Error fetching data:", error);
       }

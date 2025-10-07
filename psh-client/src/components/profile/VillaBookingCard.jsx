@@ -1,5 +1,5 @@
 const VillaBookingCard = ({ order }) => {
-  console.log(order);
+  // console.log(order);
 
   return (
     <div
@@ -36,11 +36,9 @@ const VillaBookingCard = ({ order }) => {
                 ?.split(",")[0]
             }
           </p>
+
           <h2 className="font-bold text-sm">
-            Room Category : {order?.roomType}
-          </h2>
-          <h2 className="font-bold text-sm">
-            Branch : {order?.branchDetails?.name}
+            Villa : {order?.villa?.title} - {order?.resort?.name}
           </h2>
         </div>
         <hr />
@@ -48,11 +46,13 @@ const VillaBookingCard = ({ order }) => {
           <div>
             <p>
               Total Amount :{" "}
-              <span className="font-bold ">BDT {order?.totalAmount}</span>
+              <span className="font-bold ">
+                BDT {order?.pricing?.totalAmount}
+              </span>
             </p>
             <p>
               Discount :{" "}
-              <span className="font-bold ">BDT {order?.discount}</span>
+              <span className="font-bold ">BDT {order?.pricing?.discount}</span>
             </p>
 
             <p>
@@ -70,15 +70,17 @@ const VillaBookingCard = ({ order }) => {
           <div>
             <p>
               Payable Amount :{" "}
-              <span className="font-bold ">BDT {order?.payableAmount}</span>
+              <span className="font-bold ">
+                BDT {order?.pricing?.payableAmount}
+              </span>
             </p>
             <p className="mb-2">
               Total Paid :{" "}
               <span className="font-bold ">
                 BDT{" "}
-                {/* {order?.transactions[0]?.totalReceiveTk
+                {order?.transactions[0]?.totalReceiveTk
                   ? order?.transactions[0]?.totalReceiveTk
-                  : 0} */}
+                  : 0}
               </span>
             </p>
             <hr />
@@ -91,7 +93,9 @@ const VillaBookingCard = ({ order }) => {
                   color: order?.dueAmount !== 0 ? "red" : "green",
                 }}
               >
-                BDT {order?.dueAmount}
+                BDT{" "}
+                {order?.pricing?.payableAmount -
+                  (order?.transactions[0]?.totalReceiveTk || 0)}
               </span>
             </p>
           </div>
@@ -105,7 +109,7 @@ const VillaBookingCard = ({ order }) => {
             >
               Details
             </button>
-            <button
+            {/* <button
               onClick={() => handleMakePaymentShow(order)}
               className={` text-white px-1 py-1 md:px-2 rounded ${
                 order?.status === "Canceled" ? "bg-red-200" : "bg-[#FCA22A]"
@@ -113,7 +117,7 @@ const VillaBookingCard = ({ order }) => {
               disabled={order?.status === "Canceled" ? true : false}
             >
               Make Payment
-            </button>
+            </button> */}
             <button
               onClick={() => handleCancelShow(order)}
               className={` text-white px-1 py-1 md:px-2 rounded ${
