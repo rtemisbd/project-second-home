@@ -2,7 +2,6 @@
   "name": "admin_panel_education",
   "version": "0.1.0",
   "private": true,
-  "proxy": "https://api.psh.com.bd",
   "dependencies": {
     "@bangladeshi/bangladesh-address": "^1.0.5",
     "@emotion/react": "^11.10.5",
