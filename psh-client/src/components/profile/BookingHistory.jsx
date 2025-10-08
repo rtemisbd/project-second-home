@@ -211,10 +211,9 @@ const BookingHistory = () => {
             <VillaBookingCard
               key={order?._id}
               order={order}
-              // handleMakePaymentShow={handleMakePaymentShow}
-              // handleCancelShow={handleCancelShow}
-              // handleDetailsShow={handleDetailsShow}
-              // setOrder
+              handleCancelShow={handleCancelShow}
+              handleDetailsShow={handleDetailsShow}
+              setOrder
             />
           ))}
         </div>

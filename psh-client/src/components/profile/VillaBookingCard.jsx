@@ -1,5 +1,16 @@
-const VillaBookingCard = ({ order }) => {
+const VillaBookingCard = ({ order, handleCancelShow, handleDetailsShow }) => {
   // console.log(order);
+
+  const formatDateOfRent = (dateString) => {
+    const [day, month, year] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // month is 0-based
+
+    const formattedDay = String(date.getDate()).padStart(2, "0");
+    const formattedMonth = date.toLocaleString("default", { month: "long" });
+    const formattedYear = String(date.getFullYear()).slice(-2);
+
+    return `${formattedDay} ${formattedMonth} ${formattedYear}`;
+  };
 
   return (
     <div
@@ -25,15 +36,17 @@ const VillaBookingCard = ({ order }) => {
           <p className="font-bold text-sm">
             Booking Date :{" "}
             {
-              new Date(order?.rentDate?.bookStartDate)
-                ?.toLocaleString()
-                ?.split(",")[0]
+              // new Date(order?.rentDate?.bookStartDate)
+              //   ?.toLocaleString()
+              //   ?.split(",")[0]
+              formatDateOfRent(order?.rentDate?.bookStartDate)
             }{" "}
             -{" "}
             {
-              new Date(order?.rentDate?.bookEndDate)
-                ?.toLocaleString()
-                ?.split(",")[0]
+              // new Date(order?.rentDate?.bookEndDate)
+              //   ?.toLocaleString()
+              //   ?.split(",")[0]
+              formatDateOfRent(order?.rentDate?.bookEndDate)
             }
           </p>
 
