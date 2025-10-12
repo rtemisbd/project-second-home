@@ -22,7 +22,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
 
     return `${formattedDay} ${formattedMonth} ${formattedYear}`;
   };
-
+  console.log(data);
 
   return (
     <Modal
@@ -114,7 +114,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
               <div style={{ width: "30%" }}>
                 {" "}
                 <label htmlFor="" className="fw-medium">
-                  Booking Date 
+                  Booking Date & Time
                 </label>
                 <p>
                   {formatDate(data?.createdAt)}

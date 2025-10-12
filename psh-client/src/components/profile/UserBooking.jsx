@@ -25,7 +25,6 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
   const [rating, setRating] = useState(0);
   const [selectedCategory, setSelectedCategory] = useState("");
 
-
   const handleRatingChange = (newRating) => {
     setRating(newRating);
   };
@@ -72,9 +71,6 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
     };
     fetchCategory();
   }, [order?.roomType]);
-
-
- 
 
   return (
     <>
@@ -361,7 +357,7 @@ export function UserBooking({ handleDetailsShow, detailsShow, order }) {
           </span>
         </div>
         <Toaster
-          containerStyle={{ top: 300 }} 
+          containerStyle={{ top: 300 }}
           toastOptions={{ position: "top-center" }}
         ></Toaster>
       </Dialog>

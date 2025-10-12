@@ -179,8 +179,8 @@ function App() {
         <Route path="booking-overview" element={<BookingOverview />} />
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />
         {/* resort related */}
-        <Route path="add-resort" element={<AddResort2 />} />
-        <Route path="resort-list" element={<ResortList />} />
+        {/* <Route path="add-resort" element={<AddResort2 />} />
+        <Route path="resort-list" element={<ResortList />} /> */}
 
         <Route path="resort/booking-list" element={<BookingList />} />
         <Route path="resort/transaction" element={<ResortTransaction />} />
