@@ -118,7 +118,7 @@ const VillaBookingDetail = ({ data, showDetail, setShowDetail }) => {
                 </label>
                 <p>
                   {formatDate(data?.createdAt)}
-                  {formattedTime}
+                  {/* {formattedTime} */}
                 </p>
               </div>
               <div style={{ width: "30%" }}>

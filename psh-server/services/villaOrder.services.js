@@ -44,7 +44,7 @@ const createVillaOrderIntoDB = async (payload) => {
   const order = await VillaOrders.create(payload);
   // Phone SMS for booking
   const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${payload?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${order?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
-
+  
   await bookingSms(bookingMessage);
 
   // step 4 : create transaction
@@ -99,8 +99,11 @@ const getAllVillaOrdersFromDB = async (queries) => {
   const formattedDate = today.toISOString().split("T")[0];
 
   let matchStage = {};
-  if (resort && resort !== "undefined" && resort !== "null" && resort !== "") {
-    matchStage.resort = new mongoose.Types.ObjectId(resort);
+  // if (resort && resort !== "undefined" && resort !== "null" && resort !== "") {
+  //   matchStage.resort = new mongoose.Types.ObjectId(resort);
+  // }
+  if (user && user !== "undefined" && user !== "null" && user !== "") {
+    matchStage.user = new mongoose.Types.ObjectId(user);
   }
 
   if (fromDate && toDate) {
@@ -182,6 +185,24 @@ const getAllVillaOrdersFromDB = async (queries) => {
             },
           },
           { $unwind: { path: "$villa", preserveNullAndEmptyArrays: true } },
+          {
+            $lookup: {
+              from: "resorts",
+              let: { resortId: "$resort" },
+              pipeline: [
+                {
+                  $match: {
+                    $expr: { $eq: ["$_id", "$$resortId"] },
+                  },
+                },
+                {
+                  $project: { name: 1 },
+                },
+              ],
+              as: "resort",
+            },
+          },
+          { $unwind: { path: "$resort", preserveNullAndEmptyArrays: true } },
 
           {
             $lookup: {
@@ -379,7 +400,6 @@ const getVillaOrderByIdFromDB = async (id) => {
 const updateVillaOrderById = async (id, payload) => {
   // step 1 : check the order exist          ence
   const order = await getVillaOrderByIdFromDB(id);
-
 
   if (!order) {
     return { error: "Order not found!" };

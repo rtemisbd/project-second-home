@@ -125,27 +125,6 @@ const ResortSidebar = () => {
           </Link>
         </li>
 
-        {/* adjusment */}
-        <li className="main_nav-link" onClick={() => setActive(false)}>
-          <Link
-            to={"/adjustment"}
-            className=" nav-link text-black  d-flex align-items-center"
-          >
-            <CiDiscount1
-              style={{
-                width: "24px",
-                height: "24px",
-                color: "white",
-                marginRight: "10px",
-              }}
-            />
-            <span className="span_text">Adjustment</span>
-            <span className="span_text_mobile" data-widget="pushmenu">
-              Adjustment
-            </span>
-          </Link>
-        </li>
-
         {/* booking overview */}
         <li className="main_nav-link" onClick={() => setActive(false)}>
           <Link

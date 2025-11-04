@@ -8,7 +8,7 @@ const villaOrderRoute = Router();
 villaOrderRoute.post("/", villaOrdersControllers.createVilaOrderIntoDB);
 villaOrderRoute.get(
   "/",
-  auth(ENUM_USER_ROLE.RESORT_ADMIN),
+  auth(ENUM_USER_ROLE.RESORT_ADMIN, ENUM_USER_ROLE.USER),
   villaOrdersControllers.getAllVillaOrders
 );
 villaOrderRoute.get("/user/:user", villaOrdersControllers.getUserVillaOrders);

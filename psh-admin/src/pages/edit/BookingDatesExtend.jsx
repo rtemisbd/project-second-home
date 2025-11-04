@@ -15,6 +15,8 @@ const BookingDatesExtend = ({
   showDurationModal,
   setShowDurationModal,
 }) => {
+
+
   const [startDate, setStartDate] = useState(data?.rentDate?.bookStartDate);
   const [endDate, setEndDate] = useState(data?.rentDate?.bookEndDate);
   const [customerRent, setCustomerRent] = useState({});

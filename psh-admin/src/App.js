@@ -64,18 +64,15 @@ import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
 import StudySpace from "./components/StudySpace/StudySpace";
-import RoomOverview from "./pages/roomOverview/RoomOverview";
 import CreateUser from "./pages/CreateUser/CreateUser";
 import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
 import EditProperty from "./pages/edit/EditProperty";
 import EditPrivateProperty from "./pages/edit/EditPrivateProperty";
 import EditSeat from "./pages/edit/EditSeat";
-import ResortList from "./pages/Resorts/ResortList";
 import AddVilla from "./pages/resort-admin/Villa/AddVilla";
 import VillaList from "./pages/resort-admin/Villa/VillaList";
 import EditVilla from "./pages/resort-admin/Villa/EditVilla";
 
-import AddResort2 from "./pages/Resorts/AddResort2";
 import AddResort from "./pages/resort-admin/resort/AddResort";
 import ResortOverview from "./pages/resort-admin/resort/ResortOverview";
 import EditResort from "./pages/resort-admin/resort/EditResort";
@@ -179,8 +176,8 @@ function App() {
         <Route path="booking-overview" element={<BookingOverview />} />
         <Route path="create-order/:category/:roomId" element={<CreateUser />} />
         {/* resort related */}
-        <Route path="add-resort" element={<AddResort2 />} />
-        <Route path="resort-list" element={<ResortList />} />
+        {/* <Route path="add-resort" element={<AddResort2 />} />
+        <Route path="resort-list" element={<ResortList />} /> */}
 
         <Route path="resort/booking-list" element={<BookingList />} />
         <Route path="resort/transaction" element={<ResortTransaction />} />

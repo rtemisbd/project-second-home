@@ -1,5 +1,16 @@
-const VillaBookingCard = ({ order }) => {
-  console.log(order);
+const VillaBookingCard = ({ order, handleCancelShow, handleDetailsShow }) => {
+  // console.log(order);
+
+  const formatDateOfRent = (dateString) => {
+    const [day, month, year] = dateString.split("-").map(Number);
+    const date = new Date(year, month - 1, day); // month is 0-based
+
+    const formattedDay = String(date.getDate()).padStart(2, "0");
+    const formattedMonth = date.toLocaleString("default", { month: "long" });
+    const formattedYear = String(date.getFullYear()).slice(-2);
+
+    return `${formattedDay} ${formattedMonth} ${formattedYear}`;
+  };
 
   return (
     <div
@@ -25,22 +36,22 @@ const VillaBookingCard = ({ order }) => {
           <p className="font-bold text-sm">
             Booking Date :{" "}
             {
-              new Date(order?.rentDate?.bookStartDate)
-                ?.toLocaleString()
-                ?.split(",")[0]
+              // new Date(order?.rentDate?.bookStartDate)
+              //   ?.toLocaleString()
+              //   ?.split(",")[0]
+              formatDateOfRent(order?.rentDate?.bookStartDate)
             }{" "}
             -{" "}
             {
-              new Date(order?.rentDate?.bookEndDate)
-                ?.toLocaleString()
-                ?.split(",")[0]
+              // new Date(order?.rentDate?.bookEndDate)
+              //   ?.toLocaleString()
+              //   ?.split(",")[0]
+              formatDateOfRent(order?.rentDate?.bookEndDate)
             }
           </p>
+
           <h2 className="font-bold text-sm">
-            Room Category : {order?.roomType}
-          </h2>
-          <h2 className="font-bold text-sm">
-            Branch : {order?.branchDetails?.name}
+            Villa : {order?.villa?.title} - {order?.resort?.name}
           </h2>
         </div>
         <hr />
@@ -48,11 +59,13 @@ const VillaBookingCard = ({ order }) => {
           <div>
             <p>
               Total Amount :{" "}
-              <span className="font-bold ">BDT {order?.totalAmount}</span>
+              <span className="font-bold ">
+                BDT {order?.pricing?.totalAmount}
+              </span>
             </p>
             <p>
               Discount :{" "}
-              <span className="font-bold ">BDT {order?.discount}</span>
+              <span className="font-bold ">BDT {order?.pricing?.discount}</span>
             </p>
 
             <p>
@@ -70,15 +83,17 @@ const VillaBookingCard = ({ order }) => {
           <div>
             <p>
               Payable Amount :{" "}
-              <span className="font-bold ">BDT {order?.payableAmount}</span>
+              <span className="font-bold ">
+                BDT {order?.pricing?.payableAmount}
+              </span>
             </p>
             <p className="mb-2">
               Total Paid :{" "}
               <span className="font-bold ">
                 BDT{" "}
-                {/* {order?.transactions[0]?.totalReceiveTk
+                {order?.transactions[0]?.totalReceiveTk
                   ? order?.transactions[0]?.totalReceiveTk
-                  : 0} */}
+                  : 0}
               </span>
             </p>
             <hr />
@@ -91,7 +106,9 @@ const VillaBookingCard = ({ order }) => {
                   color: order?.dueAmount !== 0 ? "red" : "green",
                 }}
               >
-                BDT {order?.dueAmount}
+                BDT{" "}
+                {order?.pricing?.payableAmount -
+                  (order?.transactions[0]?.totalReceiveTk || 0)}
               </span>
             </p>
           </div>
@@ -105,7 +122,7 @@ const VillaBookingCard = ({ order }) => {
             >
               Details
             </button>
-            <button
+            {/* <button
               onClick={() => handleMakePaymentShow(order)}
               className={` text-white px-1 py-1 md:px-2 rounded ${
                 order?.status === "Canceled" ? "bg-red-200" : "bg-[#FCA22A]"
@@ -113,7 +130,7 @@ const VillaBookingCard = ({ order }) => {
               disabled={order?.status === "Canceled" ? true : false}
             >
               Make Payment
-            </button>
+            </button> */}
             <button
               onClick={() => handleCancelShow(order)}
               className={` text-white px-1 py-1 md:px-2 rounded ${

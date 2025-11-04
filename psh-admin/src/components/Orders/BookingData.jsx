@@ -86,7 +86,7 @@ const BookingData = ({
   //   setPayableAmount(newPayableAmount > 0 ? newPayableAmount : 0); // Ensure no negative value
   // }, [booking?.adjustments, booking?.totalAmount, booking?.discount]);
 
-  return ( 
+  return (
     <>
       <tr className="bookings_data">
         <td>{(page - 1) * size + index + 1}</td>
@@ -272,7 +272,7 @@ const BookingData = ({
               }`}
               disabled={booking?.status === "Approved" ? true : false}
               onClick={() => {
-                booking?.bookingInfo?.roomType === "Shared Room"
+                booking?.roomType === "Shared Room"
                   ? handleSeatShow(booking)
                   : handleDurationShow(booking);
               }}
@@ -281,8 +281,7 @@ const BookingData = ({
             </button>
           </div>
           {/* Modal order Date Update */}
-          {booking?.bookingInfo?.roomType === "Shared Room" &&
-          durationUpdateDataSeat ? (
+          {booking?.roomType === "Shared Room" && durationUpdateDataSeat ? (
             <div>
               <BookingSeatDateExtend
                 data={booking}

@@ -34,8 +34,6 @@ const SeeOrderDetails = ({ data, showDetails, setShowDetails }) => {
     ?.toLocaleString()
     ?.split(",")[1];
 
-  console.log(data);
-
   return (
     <Modal
       show={showDetails}
