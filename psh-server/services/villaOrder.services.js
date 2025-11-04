@@ -44,7 +44,7 @@ const createVillaOrderIntoDB = async (payload) => {
   const order = await VillaOrders.create(payload);
   // Phone SMS for booking
   const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${payload?.phone}&senderid=${config.sms_sender_id}&message=Thank%20you%20for%20choosing%20us!%20Your%20booking%20ID%3A%23${order?.bookingId}%20is%20received.%20Our%20team%20will%20verify%20your%20information%20before%20confirming%20your%20booking.%20Call%20us:%2001647647404.%20-%20PSH`;
-
+  
   await bookingSms(bookingMessage);
 
   // step 4 : create transaction

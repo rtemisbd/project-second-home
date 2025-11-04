@@ -40,7 +40,7 @@ const BookingSeatDateExtend = ({
   //fetch already booked dates for this specific room
   const { bookingInfo } = data;
   const [promos] = usePromo();
-  const { room } = UseFetch(`seats/${data?.seatBooking?._id}`);
+  const { room } = UseFetch(`seats/${data?.seatId}`);
 
   // set rent room collection
   useEffect(() => {
@@ -271,27 +271,28 @@ const BookingSeatDateExtend = ({
       ...data,
       dueAmount: payableAmount - data?.transactions[0]?.totalReceiveTk,
       discount: discount || 0,
-      payableAmount,
       totalAmount,
-      bookingInfo: {
-        ...bookingInfo,
-        addMissionFee,
-        customerRent,
-        discount,
-        foodAmount,
-        fullPayment: payableAmount,
-        isIncludeFood,
-        minimumPayment,
-        payableAmount,
-        rentDate: {
-          bookStartDate: formatDate(startDate),
-          bookEndDate: formatDate(endDate),
-        },
-        securityFee,
-        subTotal,
-        totalAmount,
-        vatTax,
+      // bookingInfo: {
+      //   ...bookingInfo,
+      //   addMissionFee,
+      //   fullPayment: payableAmount,
+      //   minimumPayment,
+      //   payableAmount,
+
+      //   securityFee,
+      //   vatTax,
+      // },
+      subTotal,
+      isIncludeFood,
+      foodAmount,
+      // discount,
+      // totalAmount,
+      payableAmount,
+      rentDate: {
+        bookStartDate: formatDate(startDate),
+        bookEndDate: formatDate(endDate),
       },
+      customerRent,
     };
 
     try {
@@ -347,7 +348,7 @@ const BookingSeatDateExtend = ({
                 }}
               >
                 <h4 className="text-left " style={{ color: "#212A42" }}>
-                  {data?.roomName} - {data?.roomNumber}
+                  {data?.room?.name} - {data?.room?.roomNumber}
                 </h4>
 
                 <p

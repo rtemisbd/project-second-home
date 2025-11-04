@@ -311,22 +311,6 @@ const Navbar = () => {
                               </span>
                             </li>
                           </Link>
-                          <Link to={"/dashboard/resort-list"}>
-                            <li className="main_nav-link">
-                              <span className="nav-link">
-                                {/* <img style={{ width: 16 }} src={img6} alt="" /> */}
-                                <div className="menu_flex">
-                                  <span className="span_text">Resort</span>
-                                  <span
-                                    className="span_text_mobile"
-                                    data-widget="pushmenu"
-                                  >
-                                    Resort
-                                  </span>
-                                </div>
-                              </span>
-                            </li>
-                          </Link>
                         </ul>
                       </li>
                       <li
@@ -413,7 +397,7 @@ const Navbar = () => {
                   ) : (
                     ""
                   )}
-                 
+
                   <li
                     className="nav-item"
                     style={{
