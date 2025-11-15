@@ -15,9 +15,10 @@ const RentVisitModal = ({ property, handleOpen2 }) => {
   const formRef = useRef(null);
   const { user } = useContext(AuthContext);
   const { data } = UseFetch(`leaseproperty`);
+  console.log(data);
 
   const email = user?.email;
-  const main = data.filter((pd) => pd?.email === email);
+  const main = data?.data?.data?.filter((pd) => pd?.email === email);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -50,7 +51,7 @@ const RentVisitModal = ({ property, handleOpen2 }) => {
   return (
     <div className="md:mb-5 ">
       <div>
-        {main.length <= 0 ? (
+        {main?.length <= 0 ? (
           <>
             <div className="px-5">
               <form

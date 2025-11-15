@@ -1510,27 +1510,7 @@ const Navbar = () => {
                       ) : (
                         ""
                       )}
-                      {(user && user?.role === "SuperAdmin") ||
-                      user?.role === "admin" ||
-                      user?.role === "subAdmin1" ? (
-                        <Link to={"/dashboard/study-space"}>
-                          <li className="main_nav-link">
-                            <span className="nav-link">
-                              <div className="menu_flex">
-                                <span className="span_text">Study Space</span>
-                                <span
-                                  className="span_text_mobile"
-                                  data-widget="pushmenu"
-                                >
-                                  Study Space
-                                </span>
-                              </div>
-                            </span>
-                          </li>
-                        </Link>
-                      ) : (
-                        ""
-                      )}
+                     
                     </ul>
                   </li>
 

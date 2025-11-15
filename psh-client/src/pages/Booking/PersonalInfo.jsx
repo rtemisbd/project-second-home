@@ -44,10 +44,7 @@ const PersonalInfo = () => {
   const [paymentNumber, setPaymentNumber] = useState(null);
   const [receivedTk, setReceivedTk] = useState(null);
 
-  const [dataForBooking, setDataForBooking] = useState({
-    // arrivalTime: "",
-    // bookingExtend: false,
-  });
+  const [dataForBooking, setDataForBooking] = useState({});
 
   const [extraCharge] = useExtraCharge(bookingItem);
   const { pathname } = useLocation();
@@ -72,15 +69,14 @@ const PersonalInfo = () => {
           userId: singleUser?._id || "",
           fullName: singleUser?.firstName || "",
           phone: singleUser?.phone || "",
-          address: singleUser?.userAddress || "",
-          validityType: singleUser?.validityType || "",
-          emergencyContactName: singleUser?.emergencyContact?.contactName || "",
-          emergencyRelationC: singleUser?.emergencyContact?.relation || "",
-          emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
+          // address: singleUser?.userAddress || "",
+          // validityType: singleUser?.validityType || "",
+          // emergencyContactName: singleUser?.emergencyContact?.contactName || "",
+          // emergencyRelationC: singleUser?.emergencyContact?.relation || "",
+          // emergencyContact: singleUser?.emergencyContact?.contactNumber || "",
         },
         userId: singleUser?._id || "",
         phone: singleUser?.phone,
-        arrivalTime: "09 AM To 10 AM",
         // bookingInfo: bookingItem,
         // addMissionFee: bookingItem?.addMissionFee,
         branch: bookingItem?.branch?._id,
@@ -295,7 +291,7 @@ const PersonalInfo = () => {
                   />
                 </div>
 
-                <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
+                {/* <div className="lg:col-span-1 md:col-span-2 sm:col-span-2">
                   <label htmlFor="Address">Address</label>
                   <input
                     type="text"
@@ -352,14 +348,12 @@ const PersonalInfo = () => {
                       Birth Certificate
                     </option>
                   </select>
-                </div>
+                </div> */}
               </div>
             </div>
 
-            <div>
-              {/* Uplaod singleUser Id card */}
-
-              {/* Emargency Details */}
+            {/* Emargency Details */}
+            {/* <div>
               <p className="text-black flex justify-left mt-5 font-bold">
                 Guardian Information <span className="text-red-500">*</span>
               </p>
@@ -377,7 +371,6 @@ const PersonalInfo = () => {
                       height: "45px",
                       padding: "0px 10px",
                     }}
-                    // onChange={(e) => setEmergencyContactName(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -393,7 +386,6 @@ const PersonalInfo = () => {
                       padding: "0px 10px",
                     }}
                     defaultValue={singleUser?.emergencyContact?.relation}
-                    // onChange={(e) => setEmergencyRelationC(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
@@ -410,14 +402,13 @@ const PersonalInfo = () => {
                       height: "45px",
                       padding: "0px 10px",
                     }}
-                    // onChange={(e) => setEmergencyContact(e.target.value)}
                     onChange={handleInputChange}
                   />
                 </div>
               </div>
-            </div>
+            </div> */}
 
-            <div>
+            {/* <div>
               <p className="text-black flex justify-left mt-5 font-bold">
                 Arrival information
               </p>
@@ -455,7 +446,7 @@ const PersonalInfo = () => {
                 Special requests cannot be guaranteed but we will do our best to
                 meet your needs
               </p>
-            </div>
+            </div> */}
             {/* <div className="flex items-start mt-20">
               <div>
                 <img loading="lazy" src={cashImg} alt="" />
