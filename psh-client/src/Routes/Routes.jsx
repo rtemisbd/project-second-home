@@ -1,11 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
-import SignUp from "../pages/SignUp/SignUp";
 import Success from "../pages/Success/Success";
 import Profile from "../pages/Profile/Profile";
 import Contact from "../pages/Contact/Contact";
 import About from "../pages/About/About";
-import SignIn from "../pages/SignUp/SignIn";
 
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
@@ -21,14 +19,12 @@ import AllRecomonded from "../components/home/AllRecomonded";
 import FaqQuestions from "../pages/Faq/FaqQuestion";
 import Business from "../pages/new/Business";
 
-import Partner from "../pages/new/Partner";
 import Collaberation from "../pages/new/Collaberation";
 import PshPartner from "../pages/PshPartner/PshPartner";
 import LeaseProperty from "../pages/LeaseProperty/LeaseProperty";
 import ExtraForm from "../pages/ExtraForm/ExtraForm";
 import PromoDetails from "../pages/Promo/PromoDetails";
-import Community from "../pages/Community/Community";
-import Stories from "../pages/Stories/Stories";
+import Community from "../pages/Community/Community"; 
 import NotFound from "../pages/NotFound/NotFound";
 import EventDetails from "../pages/Details/EventDetails";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
@@ -108,15 +104,6 @@ export const router = createBrowserRouter([
         element: <PromoDetails></PromoDetails>,
       },
 
-      // {
-      //   path: "/signin",
-      //   element: <SignIn></SignIn>,
-      // },
-      // {
-      //   path: "/signup",
-      //   element: <SignUp></SignUp>,
-      // },
-
       {
         path: "/profile",
         element: <Profile></Profile>,
@@ -160,10 +147,6 @@ export const router = createBrowserRouter([
       {
         path: "/community",
         element: <Community />,
-      },
-      {
-        path: "/stories",
-        element: <Stories />,
       },
 
       {

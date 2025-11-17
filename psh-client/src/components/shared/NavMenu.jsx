@@ -11,17 +11,14 @@ import {
   Collapse,
 } from "@material-tailwind/react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
-import { Link, NavLink, useLocation, useNavigate } from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { useDispatch, useSelector } from "react-redux";
+import { Link, NavLink, useLocation } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import { BsTelephonePlus } from "react-icons/bs";
-import { FaHandsHelping } from "react-icons/fa";
 import { MdOutlineMapsHomeWork } from "react-icons/md";
 import { AiOutlineFileUnknown, AiOutlineHome } from "react-icons/ai";
 
 import { AuthContext } from "../../contexts/UserProvider";
 import {
-  placeModalShow,
   placeProfileMenu,
   placeSearchBoxShow,
 } from "../../redux/reducers/smProfileMenuSlice";
@@ -106,36 +103,11 @@ function ProfileMenu() {
 
 export default function Navmenu() {
   const [openNav, setOpenNav] = React.useState(false);
-  const { user, logoutUser } = useContext(AuthContext);
-  const [size, setSize] = React.useState(null);
+  const { user } = useContext(AuthContext);
+
   const dispatch = useDispatch();
-  const [showSignIn, setShowSignIn] = useState(true);
-  const [showSignUp, setShowSignUp] = useState(false);
-  // const handleOpen = (value) => setSize(value);
-  const [open, setOpen] = useState(false);
 
-  const handleOpen = () => setOpen(true);
-  const handleClose = () => setOpen(false);
 
-  const handleLogOut = () => {
-    logoutUser();
-  };
-  const {
-    register,
-    formState: { errors },
-    handleSubmit,
-  } = useForm();
-
-  const [loginError, setLoginError] = useState("");
-  const { loginUser, registerUser } = useContext(AuthContext);
-  const isProfileMenu = useSelector(
-    (state) => state?.profileMenu?.isProfileMenu
-  );
-
-  const [showPassword, setShowPassword] = useState(false);
-  const [password, setPassword] = useState("");
-
-  // const [showModal, setShowModal] = useState(false);
 
   useEffect(() => {
     window.addEventListener(
@@ -193,49 +165,6 @@ export default function Navmenu() {
           <span className="hover:text-[#00bbb4]">List Your Property</span>
         </Link>
       </Typography>
-      {/* <Typography
-        as="li"
-        className="p-1 font-normal "
-        onClick={() => setNaValue("/corporate-housing")}
-      >
-        <Link
-          to={"/corporate-housing"}
-          className=" flex items-center text-black hover:text-[#00bbb4] md:ml-0 sm:ml-5 "
-          style={{
-            color: navVlaue === "/corporate-housing" ? "#00bbb4" : "black",
-          }}
-        >
-          <div className="md:hidden sm:block">
-            <MdOutlineMapsHomeWork
-              style={{ width: "24px", height: "24px" }}
-              className="mr-2"
-            />
-          </div>
-          <span className="hover:text-[#00bbb4]">Corporate Housing</span>
-        </Link>
-      </Typography> */}
-
-      {/* <Typography
-        as="li"
-        className="p-1 font-normal"
-        onClick={() => setNaValue("/study-space")}
-      >
-        <Link
-          to={"/study-space"}
-          className="flex items-center hover:text-[#00bbb4] md:ml-0 sm:ml-5"
-          style={{
-            color: navVlaue === "/study-space" ? "#00bbb4" : "black",
-          }}
-        >
-          <div className="md:hidden sm:block">
-            <FaHandsHelping
-              style={{ width: "24px", height: "24px" }}
-              className="mr-2"
-            />
-          </div>
-          <span className="hover:text-[#00bbb4]">Study Space</span>
-        </Link>
-      </Typography> */}
 
       <Typography
         as="li"
@@ -350,8 +279,7 @@ export default function Navmenu() {
                       <div>{user && <ProfileMenu />}</div>
                     </div>
                   </div>
-                  {/* <div className="sm:block md:hidden">
-                {user && <ProfileMenu />} */}
+
                   <IconButton
                     variant="text"
                     className={
@@ -399,12 +327,6 @@ export default function Navmenu() {
                     ) : (
                       <>
                         <div className="md:block">
-                          {/* <button
-                            className="sign_btn sm:text-[14px] md:text-[16px]"
-                            onClick={() => dispatch(placeModalShow(true))}
-                          >
-                            Sign Up/Login
-                          </button> */}
                           <Link
                             to="/authentication"
                             className="sign_btn sm:text-[14px] md:text-[16px]"
@@ -412,9 +334,7 @@ export default function Navmenu() {
                             Sign Up/Login
                           </Link>
                         </div>
-                        <>
-                          {/* <LoginModal handleOpen={handleOpen} open={open} /> */}
-                        </>
+                        <></>
                       </>
                     )}
                   </div>
@@ -430,12 +350,6 @@ export default function Navmenu() {
                         ""
                       ) : (
                         <div className="md:block">
-                          {/* <button
-                            className="sign_btn uppercase"
-                            onClick={() => dispatch(placeModalShow(true))}
-                          >
-                            Sign Up/Login
-                          </button> */}
                           <Link
                             to="/authentication"
                             className="sign_btn sm:text-[14px] md:text-[16px]"
@@ -482,8 +396,7 @@ export default function Navmenu() {
                       <div>{user && <ProfileMenu />}</div>
                     </div>
                   </div>
-                  {/* <div className="sm:block md:hidden">
-                {user && <ProfileMenu />} */}
+
                   <IconButton
                     variant="text"
                     className={
@@ -531,12 +444,6 @@ export default function Navmenu() {
                     ) : (
                       <>
                         <div className="md:block">
-                          {/* <button
-                            className="sign_btn sm:text-[14px] md:text-[16px]"
-                            onClick={() => dispatch(placeModalShow(true))}
-                          >
-                            Sign Up/Login
-                          </button> */}
                           <Link
                             to="/authentication"
                             className="sign_btn sm:text-[14px] md:text-[16px]"
@@ -544,9 +451,7 @@ export default function Navmenu() {
                             Sign Up/Login
                           </Link>
                         </div>
-                        <>
-                          {/* <LoginModal handleOpen={handleOpen} open={open} /> */}
-                        </>
+                        <></>
                       </>
                     )}
                   </div>
@@ -569,17 +474,6 @@ export default function Navmenu() {
                             Sign Up/Login
                           </Link>
                         </div>
-                        // <div
-                        //   className="md:block"
-                        //   onClick={() => {
-                        //     setOpenNav(!openNav);
-                        //     dispatch(placeModalShow(true));
-                        //   }}
-                        // >
-                        //   <button className="sign_btn uppercase">
-                        //     Sign Up/Login
-                        //   </button>
-                        // </div>
                       )}
                     </div>
                   </div>
@@ -616,8 +510,7 @@ export default function Navmenu() {
                     <div>{user && <ProfileMenu />}</div>
                   </div>
                 </div>
-                {/* <div className="sm:block md:hidden">
-                {user && <ProfileMenu />} */}
+
                 <IconButton
                   variant="text"
                   className={
@@ -665,12 +558,6 @@ export default function Navmenu() {
                   ) : (
                     <>
                       <div className="md:block">
-                        {/* <button
-                          className="sign_btn sm:text-[14px] md:text-[16px]"
-                          onClick={() => dispatch(placeModalShow(true))}
-                        >
-                          Sign Up/Login
-                        </button> */}
                         <Link
                           to="/authentication"
                           className="sign_btn sm:text-[14px] md:text-[16px]"
@@ -678,9 +565,7 @@ export default function Navmenu() {
                           Sign Up/Login
                         </Link>
                       </div>
-                      <>
-                        {/* <LoginModal handleOpen={handleOpen} open={open} /> */}
-                      </>
+                      <></>
                     </>
                   )}
                 </div>
@@ -717,12 +602,7 @@ export default function Navmenu() {
           </Navbar>
         </div>
       </div>
-      {/* <LoginModal
-        handleOpen={handleOpen}
-        open={open}
-        setOpen={setOpen}
-        handleClose={handleClose}
-      /> */}
+
       <SearchBoxWithNav />
     </>
   );

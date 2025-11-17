@@ -198,11 +198,9 @@ const Footer = () => {
                           Career
                         </li>
                       </a>
-                      {/* <Link to={"/stories"}> */}
                       <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
                         <a>Notice</a>
                       </li>
-                      {/* </Link> */}
                     </ul>
                   </div>
                 </li>
