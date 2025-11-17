@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import { useContext, useState, useEffect } from "react";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -7,10 +7,9 @@ import { FaArrowLeft } from "react-icons/fa";
 import toast, { Toaster } from "react-hot-toast";
 import { useLocation } from "react-router-dom";
 
-import cashImg from "../../assets/img/Cash-1.png";
 import brachLocationIcon from "../../assets/img/branchLocationIcon.png";
 import useExtraCharge from "../../hooks/useExtraCharge";
-import "../Payment/PaymentToggle.css";
+
 import "./PersonalInfo.css";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
@@ -19,9 +18,7 @@ import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import { IoCloseCircleOutline } from "react-icons/io5";
-import MobileBanking from "../Payment/MobileBanking";
 import useUser from "../../hooks/userUser";
-import { SiPinboard } from "react-icons/si";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);

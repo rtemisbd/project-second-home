@@ -1,7 +1,7 @@
 import toast, { Toaster } from "react-hot-toast";
 import axios from "axios";
 import { Link } from "react-router-dom";
-import React, { useRef, useContext } from "react";
+import { useRef, useContext } from "react";
 
 import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
