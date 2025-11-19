@@ -19,8 +19,6 @@ import AllRecomonded from "../components/home/AllRecomonded";
 import FaqQuestions from "../pages/Faq/FaqQuestion";
 import Business from "../pages/new/Business";
 
-import Collaberation from "../pages/new/Collaberation";
-import PshPartner from "../pages/PshPartner/PshPartner";
 import LeaseProperty from "../pages/LeaseProperty/LeaseProperty";
 import ExtraForm from "../pages/ExtraForm/ExtraForm";
 import PromoDetails from "../pages/Promo/PromoDetails";
@@ -153,23 +151,16 @@ export const router = createBrowserRouter([
         path: "/faq-question",
         element: <FaqQuestions />,
       },
-      {
-        path: "/partner-registration",
-        element: <PshPartner />,
-      },
+     
       {
         path: "/study-space",
         element: <StudySpace />,
       },
       {
         path: "/register-property",
-        // element: <Partner />,
         element: <RegisterProperty />,
       },
-      {
-        path: "/collaberation",
-        element: <Collaberation />,
-      },
+      
       {
         path: "/extra-form",
         element: <ExtraForm />,

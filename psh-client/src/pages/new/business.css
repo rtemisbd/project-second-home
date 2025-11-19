@@ -5,7 +5,6 @@
   font-style: normal;
   font-weight: 500;
   line-height: 30px;
-  /* 150% */
 }
 
 .requestModal label {
@@ -36,7 +35,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  /* 142.857% */
 }
 
 .second_part {
@@ -51,7 +49,6 @@
   font-style: normal;
   font-weight: 500;
   line-height: 26px;
-  /* 144.444% */
 }
 
 .content2 {
@@ -61,7 +58,6 @@
   font-style: normal;
   font-weight: 400;
   line-height: 20px;
-  /* 142.857% */
 }
 
 .header3 {
@@ -71,7 +67,6 @@
   font-style: normal;
   font-weight: 500;
   line-height: 44px;
-  /* 137.5% */
 }
 
 .banner-left {
@@ -85,7 +80,6 @@
   font-weight: 500;
   line-height: 50px;
 
-  /* 125% */
 }
 
 .banner_p {
@@ -95,5 +89,4 @@
   font-weight: 400;
   line-height: 26px;
 
-  /* 144.444% */
 }
