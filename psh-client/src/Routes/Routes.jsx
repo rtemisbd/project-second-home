@@ -17,17 +17,15 @@ import Terms from "../pages/Terms/Terms";
 
 import AllRecomonded from "../components/home/AllRecomonded";
 import FaqQuestions from "../pages/Faq/FaqQuestion";
-import Business from "../pages/new/Business";
 
 import LeaseProperty from "../pages/LeaseProperty/LeaseProperty";
 import ExtraForm from "../pages/ExtraForm/ExtraForm";
 import PromoDetails from "../pages/Promo/PromoDetails";
-import Community from "../pages/Community/Community"; 
+import Community from "../pages/Community/Community";
 import NotFound from "../pages/NotFound/NotFound";
 import EventDetails from "../pages/Details/EventDetails";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
-import StudySpace from "../pages/StudySpace/StudySpace";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
 import RoomDetails from "../pages/Details/RoomDetails";
 import Home from "../pages/Home/Home";
@@ -53,6 +51,7 @@ export const router = createBrowserRouter([
         path: "/payment",
         element: <PaymentPage></PaymentPage>,
       },
+
       {
         path: "/contact-us",
         element: <Contact></Contact>,
@@ -138,10 +137,7 @@ export const router = createBrowserRouter([
         path: "/terms",
         element: <Terms />,
       },
-      {
-        path: "/corporate-housing",
-        element: <Business />,
-      },
+
       {
         path: "/community",
         element: <Community />,
@@ -151,16 +147,12 @@ export const router = createBrowserRouter([
         path: "/faq-question",
         element: <FaqQuestions />,
       },
-     
-      {
-        path: "/study-space",
-        element: <StudySpace />,
-      },
+
       {
         path: "/register-property",
         element: <RegisterProperty />,
       },
-      
+
       {
         path: "/extra-form",
         element: <ExtraForm />,
