@@ -17,13 +17,8 @@ import Terms from "../pages/Terms/Terms";
 
 import AllRecomonded from "../components/home/AllRecomonded";
 import FaqQuestions from "../pages/Faq/FaqQuestion";
-
-import LeaseProperty from "../pages/LeaseProperty/LeaseProperty";
-import ExtraForm from "../pages/ExtraForm/ExtraForm";
 import PromoDetails from "../pages/Promo/PromoDetails";
-import Community from "../pages/Community/Community";
 import NotFound from "../pages/NotFound/NotFound";
-import EventDetails from "../pages/Details/EventDetails";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
@@ -64,10 +59,7 @@ export const router = createBrowserRouter([
         path: `/branch/:name`,
         element: <List></List>,
       },
-      {
-        path: "/lease-property",
-        element: <LeaseProperty />,
-      },
+
       {
         path: "/:category/:room/:id",
         element: <RoomDetails />,
@@ -84,10 +76,7 @@ export const router = createBrowserRouter([
         path: "/resort/:id",
         element: <ResortDetail />,
       },
-      {
-        path: "/event/:id",
-        element: <EventDetails></EventDetails>,
-      },
+
       {
         path: "/promo",
         element: <PromoList></PromoList>,
@@ -139,11 +128,6 @@ export const router = createBrowserRouter([
       },
 
       {
-        path: "/community",
-        element: <Community />,
-      },
-
-      {
         path: "/faq-question",
         element: <FaqQuestions />,
       },
@@ -151,11 +135,6 @@ export const router = createBrowserRouter([
       {
         path: "/register-property",
         element: <RegisterProperty />,
-      },
-
-      {
-        path: "/extra-form",
-        element: <ExtraForm />,
       },
     ],
   },

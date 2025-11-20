@@ -14,3 +14,7 @@
   z-index: 999 !important;
   position: relative;
 }
+.banner-left{
+  background: #35b0a7;
+  color: white;
+}

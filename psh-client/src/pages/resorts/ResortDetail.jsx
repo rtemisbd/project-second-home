@@ -8,9 +8,9 @@ import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import { AiFillHeart, AiOutlineShareAlt } from "react-icons/ai";
 import { IoCallOutline } from "react-icons/io5";
 import { HiOutlineMail } from "react-icons/hi";
-import Map from "../Details/Map";
 import { TbMoodKid, TbUsers } from "react-icons/tb";
 import { LuView } from "react-icons/lu";
+import Map from "../../components/RoomDetails/Map";
 
 const ResortDetail = () => {
   const { id } = useParams();

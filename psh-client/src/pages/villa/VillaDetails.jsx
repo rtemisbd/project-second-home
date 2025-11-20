@@ -6,7 +6,7 @@ import VillaMedia from "../../components/Villa/VillaMedia";
 import ExpandableText from "../../helpers/utils/ExpandableText";
 import { MdKeyboardArrowLeft, MdKeyboardArrowRight } from "react-icons/md";
 import { AiFillHeart, AiOutlineShareAlt } from "react-icons/ai";
-import Map from "../Details/Map";
+
 import "../../pages/Details/Room.css";
 import { IoCallOutline } from "react-icons/io5";
 import { convertHtml } from "../../helpers/utils/convertHtml";
@@ -21,6 +21,7 @@ import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import VillaRecommended from "../../components/Villa/VillaRecommended";
 import { AuthContext } from "../../contexts/UserProvider";
 import toast from "react-hot-toast";
+import Map from "../../components/RoomDetails/Map";
 
 const VillaDetails = () => {
   const { id } = useParams();
