@@ -7,8 +7,8 @@ import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
-import LoadingState from "../LoadingState/LoadingState";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import LoadingState from "../../components/LoadingState/LoadingState";
 
 const RentVisitModal = ({ property, handleOpen2 }) => {
   const dispatch = useDispatch();

@@ -600,7 +600,6 @@ const UserAuthentication = () => {
         containerStyle={{ top: 200, zIndex: "100000" }}
         toastOptions={{ position: "top-center" }}
       ></Toaster>
-      {/* <LoadingState /> */}
     </div>
   );
 };

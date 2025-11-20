@@ -13,12 +13,13 @@ import useExtraCharge from "../../hooks/useExtraCharge";
 import "./PersonalInfo.css";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
-import LoadingState from "../LoadingState/LoadingState";
+
 import { AuthContext } from "../../contexts/UserProvider";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import { anchorClickHandler } from "../../utilities/anchorClickHandler";
 import { IoCloseCircleOutline } from "react-icons/io5";
 import useUser from "../../hooks/userUser";
+import LoadingState from "../../components/LoadingState/LoadingState";
 
 const PersonalInfo = () => {
   const { user } = useContext(AuthContext);

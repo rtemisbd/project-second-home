@@ -5,8 +5,8 @@ import { useLocation } from "react-router-dom";
 import "./ExtraForm.css";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
-import LoadingState from "../LoadingState/LoadingState";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import LoadingState from "../../components/LoadingState/LoadingState";
 
 const ExtraForm = ({ handleOpenFranchiseForm }) => {
   const [image, setImage] = useState([]);
