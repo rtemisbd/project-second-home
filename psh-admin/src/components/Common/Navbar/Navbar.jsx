@@ -7,7 +7,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 import img3 from "../../../img/home/profile.png";
-// import pshLogo from "../../../img/home/psh-logo.png";
 import { AuthContext } from "../../../contexts/UserProvider";
 import "./Navbar.css";
 import { MdDashboard } from "react-icons/md";
