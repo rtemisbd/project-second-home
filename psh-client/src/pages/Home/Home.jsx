@@ -4,9 +4,7 @@ import AllBranch from "../../components/home/AllBranch";
 import Review from "../../components/home/Review";
 import Facility from "../../components/home/Facility";
 import SearchBoxSm from "../../components/home/SearchBoxSm";
-import BusinessPlatform from "../new/BusinessPlatform";
 import HomePage from "../../components/home/HomePage";
-import useRentRoom from "../../hooks/useRentRoom";
 import NewBanner from "../../components/home/NewBanner";
 import Franchise from "../../components/home/Franchise";
 import { useEffect, useState } from "react";
@@ -15,6 +13,7 @@ import useVilla from "../../hooks/useVilla";
 import { useQuery } from "react-query";
 import axios from "axios";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import BusinessPlatform from "../../components/home/BusinessPlatform";
 
 const Home = () => {
   const [data, setData] = useState([]);

@@ -12,22 +12,6 @@ const Main = () => {
         <Footer></Footer>
       </>
     </div>
-
-    // <div
-    //   style={{
-    //     // display: "flex",
-    //     // flexDirection: "column",
-    //     minHeight: "100vh",
-    //   }}
-    // >
-    //   {/* <h2 style={{ zIndex: "20" }}>xyzaiiuiuooooouuuuuuuuuuuuuuu</h2> */}
-    //   <Navbar />
-    //   <div style={{ minHeight: "100vh" }}>
-    //     <Outlet />
-    //   </div>
-
-    //   <Footer />
-    // </div>
   );
 };
 

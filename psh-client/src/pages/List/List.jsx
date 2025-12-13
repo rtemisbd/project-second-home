@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import  { useState, useEffect } from "react";
 import { Link, useLocation, useParams } from "react-router-dom";
 import SingleCard from "../../components/home/SingleCard";
-import "./List.css";
 import { PropagateLoader } from "react-spinners";
-import { useQuery } from "react-query";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
 import axios from "axios";
 
@@ -260,79 +258,8 @@ function List() {
           </select>
         </p>
       </div>
-      {/* <Header type="list" /> */}
       <div className="mt-5">
-        {/* <div className="listFilterSm">
-          <div
-            className="flex justify-center mb-4 fixed bottom-0 filterZindex"
-            style={{ zIndex: 9999, width: "95%" }}
-          >
-            <div className="filter py-2" onClick={() => handleOpen("xxl")}>
-              <i className="fa-solid fa-filter mt-2"></i>
-              <h6 className="ms-3"> Filter</h6>
-            </div>
-          </div>
 
-          <Dialog
-            open={size === "xxl"}
-            size={size || "md"}
-            handler={handleOpen}
-          >
-            <div>
-              <Button
-                variant="text"
-                onClick={() => handleOpen(null)}
-                className="mr-1"
-              >
-                <i
-                  className="fa-solid fa-arrow-left text-3xl"
-                  style={{ color: "#00bbb4" }}
-                ></i>
-              </Button>
-            </div>
-            <DialogHeader>
-              {" "}
-              <div className="input-filed-area">
-                <div className="location-icon">
-                  <img
-                    src={location}
-                    style={{
-                      color: "#00bbb4",
-                      width: "20px",
-                      height: "20px",
-                      marginTop: "14px",
-                    }}
-                    alt=""
-                  />
-                </div>
-              </div>
-            </DialogHeader>
-            <DialogBody divider>
-              <div
-                className="flex flex-col items-start col-span-12  sm:col-span-12 right-side lg:col-span-4"
-                style={{
-                  backgroundColor: "white",
-                }}
-              >
-                <div className="filter_card w-full text-start p-5 filter_card_sm_height">
-                  <ListFilter
-                    handleFacilityFilterChange={handleFacilityFilterChange}
-                    handleCommonFacilityFilterChange={
-                      handleCommonFacilityFilterChange
-                    }
-                    handleSortChange={handleSortChange}
-                    handlePriceFilterChange={handlePriceFilterChange}
-                    commonFacilityFilters={commonFacilityFilters}
-                    facilityFilters={facilityFilters}
-                    sort={sort}
-                    min={min}
-                    max={max}
-                  />
-                </div>
-              </div>
-            </DialogBody>
-          </Dialog>
-        </div> */}
         <div className="grid grid-cols-12">
           <div className="flex flex-col col-span-12 sm:col-span-12 lg:col-span-12">
             {loading ? (
@@ -386,23 +313,7 @@ function List() {
               </>
             )}
           </div>
-          {/* <div className="flex flex-col items-start col-span-12  sm:col-span-12 right-side lg:col-span-4">
-            <div className="filter_card w-full text-start px-5 mt-2 listFilterLg">
-              <ListFilter
-                handleFacilityFilterChange={handleFacilityFilterChange}
-                handleCommonFacilityFilterChange={
-                  handleCommonFacilityFilterChange
-                }
-                handleSortChange={handleSortChange}
-                handlePriceFilterChange={handlePriceFilterChange}
-                commonFacilityFilters={commonFacilityFilters}
-                facilityFilters={facilityFilters}
-                sort={sort}
-                min={min}
-                max={max}
-              />
-            </div>
-          </div> */}
+          
         </div>
       </div>
       <div className="mt-10 flex justify-center items-center mb-10">

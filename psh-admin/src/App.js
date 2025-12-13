@@ -63,7 +63,6 @@ import SubcriptionList from "./pages/Subscription/SubcriptionList";
 import SubscriptionOrder from "./pages/Subscription/SubscriptionOrder";
 import RequireAuth from "./RequireAuth/RequireAuth";
 import NotFound from "./pages/NotFound/NotFound";
-import StudySpace from "./components/StudySpace/StudySpace";
 import CreateUser from "./pages/CreateUser/CreateUser";
 import AdminPropertyList2 from "./components/Property/AdminPropertyList2";
 import EditProperty from "./pages/edit/EditProperty";
@@ -151,7 +150,6 @@ function App() {
         <Route path="transaction-m" element={<TransactionManager />} />
         <Route path="finance" element={<Finance />} />
         <Route path="corporate-housing" element={<RoomRent />} />
-        <Route path="study-space" element={<StudySpace />} />
         <Route path="visitingRequest-a" element={<RoomVisitAdmin />} />
         <Route path="visitingRequest" element={<RoomVisit />} />
         <Route path="user-manage" element={<UserManage />} />

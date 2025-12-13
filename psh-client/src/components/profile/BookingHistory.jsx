@@ -114,8 +114,6 @@ const BookingHistory = () => {
         }
         const { data } = await response.json();
 
-        console.log(data);
-
         setVillaOrders(data?.orders);
         setTotalCount(data?.totalCount);
       } catch (error) {
@@ -131,7 +129,6 @@ const BookingHistory = () => {
     refetch();
     refetchVillaOrder();
   }, [page, size, bookingStatus, paymentStatus]);
-  console.log(villaOrders);
 
   useEffect(() => {
     if (villaOrders?.length > 0) {

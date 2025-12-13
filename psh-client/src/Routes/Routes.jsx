@@ -1,11 +1,9 @@
 import { createBrowserRouter } from "react-router-dom";
 import Main from "../Layout/Main";
-import SignUp from "../pages/SignUp/SignUp";
 import Success from "../pages/Success/Success";
 import Profile from "../pages/Profile/Profile";
 import Contact from "../pages/Contact/Contact";
 import About from "../pages/About/About";
-import SignIn from "../pages/SignUp/SignIn";
 
 import List from "../pages/List/List";
 import PrivateRoute from "./PrivateRoute";
@@ -19,21 +17,10 @@ import Terms from "../pages/Terms/Terms";
 
 import AllRecomonded from "../components/home/AllRecomonded";
 import FaqQuestions from "../pages/Faq/FaqQuestion";
-import Business from "../pages/new/Business";
-
-import Partner from "../pages/new/Partner";
-import Collaberation from "../pages/new/Collaberation";
-import PshPartner from "../pages/PshPartner/PshPartner";
-import LeaseProperty from "../pages/LeaseProperty/LeaseProperty";
-import ExtraForm from "../pages/ExtraForm/ExtraForm";
 import PromoDetails from "../pages/Promo/PromoDetails";
-import Community from "../pages/Community/Community";
-import Stories from "../pages/Stories/Stories";
 import NotFound from "../pages/NotFound/NotFound";
-import EventDetails from "../pages/Details/EventDetails";
 import ForgotPasswordForm from "../pages/ForgotPasswordForm";
 import ResetPasswordForm from "../pages/ResetPasswordForm";
-import StudySpace from "../pages/StudySpace/StudySpace";
 import UserAuthentication from "../pages/SignUp/UserAuthentication";
 import RoomDetails from "../pages/Details/RoomDetails";
 import Home from "../pages/Home/Home";
@@ -59,6 +46,7 @@ export const router = createBrowserRouter([
         path: "/payment",
         element: <PaymentPage></PaymentPage>,
       },
+
       {
         path: "/contact-us",
         element: <Contact></Contact>,
@@ -71,10 +59,7 @@ export const router = createBrowserRouter([
         path: `/branch/:name`,
         element: <List></List>,
       },
-      {
-        path: "/lease-property",
-        element: <LeaseProperty />,
-      },
+
       {
         path: "/:category/:room/:id",
         element: <RoomDetails />,
@@ -91,10 +76,7 @@ export const router = createBrowserRouter([
         path: "/resort/:id",
         element: <ResortDetail />,
       },
-      {
-        path: "/event/:id",
-        element: <EventDetails></EventDetails>,
-      },
+
       {
         path: "/promo",
         element: <PromoList></PromoList>,
@@ -107,15 +89,6 @@ export const router = createBrowserRouter([
         path: "/promo/:id",
         element: <PromoDetails></PromoDetails>,
       },
-
-      // {
-      //   path: "/signin",
-      //   element: <SignIn></SignIn>,
-      // },
-      // {
-      //   path: "/signup",
-      //   element: <SignUp></SignUp>,
-      // },
 
       {
         path: "/profile",
@@ -153,43 +126,15 @@ export const router = createBrowserRouter([
         path: "/terms",
         element: <Terms />,
       },
-      {
-        path: "/corporate-housing",
-        element: <Business />,
-      },
-      {
-        path: "/community",
-        element: <Community />,
-      },
-      {
-        path: "/stories",
-        element: <Stories />,
-      },
 
       {
         path: "/faq-question",
         element: <FaqQuestions />,
       },
-      {
-        path: "/partner-registration",
-        element: <PshPartner />,
-      },
-      {
-        path: "/study-space",
-        element: <StudySpace />,
-      },
+
       {
         path: "/register-property",
-        // element: <Partner />,
         element: <RegisterProperty />,
-      },
-      {
-        path: "/collaberation",
-        element: <Collaberation />,
-      },
-      {
-        path: "/extra-form",
-        element: <ExtraForm />,
       },
     ],
   },

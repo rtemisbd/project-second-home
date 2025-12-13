@@ -1,4 +1,4 @@
-import React, { useContext, useState } from "react";
+import  { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/UserProvider";
@@ -600,7 +600,6 @@ const UserAuthentication = () => {
         containerStyle={{ top: 200, zIndex: "100000" }}
         toastOptions={{ position: "top-center" }}
       ></Toaster>
-      {/* <LoadingState /> */}
     </div>
   );
 };

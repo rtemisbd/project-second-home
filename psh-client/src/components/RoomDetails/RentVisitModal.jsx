@@ -7,17 +7,18 @@ import UseFetch from "../../hooks/useFetch";
 import { AuthContext } from "../../contexts/UserProvider";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
 import { useDispatch } from "react-redux";
-import LoadingState from "../LoadingState/LoadingState";
 import { serverBaseUrl } from "../../serverApi/baseUrl";
+import LoadingState from "../../components/LoadingState/LoadingState";
 
 const RentVisitModal = ({ property, handleOpen2 }) => {
   const dispatch = useDispatch();
   const formRef = useRef(null);
   const { user } = useContext(AuthContext);
   const { data } = UseFetch(`leaseproperty`);
+  console.log(data);
 
   const email = user?.email;
-  const main = data.filter((pd) => pd?.email === email);
+  const main = data?.data?.data?.filter((pd) => pd?.email === email);
   const handleSubmit = async (event) => {
     event.preventDefault();
     const formData = new FormData(event.target);
@@ -50,7 +51,7 @@ const RentVisitModal = ({ property, handleOpen2 }) => {
   return (
     <div className="md:mb-5 ">
       <div>
-        {main.length <= 0 ? (
+        {main?.length <= 0 ? (
           <>
             <div className="px-5">
               <form

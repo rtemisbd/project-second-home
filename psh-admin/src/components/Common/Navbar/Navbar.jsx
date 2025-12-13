@@ -7,7 +7,6 @@ import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 
 import img3 from "../../../img/home/profile.png";
-// import pshLogo from "../../../img/home/psh-logo.png";
 import { AuthContext } from "../../../contexts/UserProvider";
 import "./Navbar.css";
 import { MdDashboard } from "react-icons/md";
@@ -1510,27 +1509,7 @@ const Navbar = () => {
                       ) : (
                         ""
                       )}
-                      {(user && user?.role === "SuperAdmin") ||
-                      user?.role === "admin" ||
-                      user?.role === "subAdmin1" ? (
-                        <Link to={"/dashboard/study-space"}>
-                          <li className="main_nav-link">
-                            <span className="nav-link">
-                              <div className="menu_flex">
-                                <span className="span_text">Study Space</span>
-                                <span
-                                  className="span_text_mobile"
-                                  data-widget="pushmenu"
-                                >
-                                  Study Space
-                                </span>
-                              </div>
-                            </span>
-                          </li>
-                        </Link>
-                      ) : (
-                        ""
-                      )}
+                     
                     </ul>
                   </li>
 

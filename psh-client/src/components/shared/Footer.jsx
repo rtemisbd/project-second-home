@@ -127,14 +127,7 @@ const Footer = () => {
                         </Link>
                       </li>
 
-                      {/* <li className="mb-4 duration-200 hover:text-gray-800 dark:hover:text-white">
-                        <Link
-                          to={"/partner-registration"}
-                          className="hover:text-[#00bbb4]"
-                        >
-                          Partner Registration
-                        </Link>
-                      </li> */}
+                    
                     </ul>
                   </div>
                 </li>
@@ -154,13 +147,11 @@ const Footer = () => {
                         >
                           Corporate Housing{" "}
                         </Link>
-                      </li> */}
+                        
+                         </li> */}
 
                       <li className="mb-4 duration-200 dark:hover:text-white">
-                        {/* <Link
-                          to={"/collaberation"}
-                          className="hover:text-[#00bbb4]"
-                        > */}
+                    
                         Brand Collaboration {/* </Link> */}
                       </li>
 
@@ -198,11 +189,9 @@ const Footer = () => {
                           Career
                         </li>
                       </a>
-                      {/* <Link to={"/stories"}> */}
                       <li className="mb-4  duration-200 hover:text-gray-800 dark:hover:text-white">
                         <a>Notice</a>
                       </li>
-                      {/* </Link> */}
                     </ul>
                   </div>
                 </li>

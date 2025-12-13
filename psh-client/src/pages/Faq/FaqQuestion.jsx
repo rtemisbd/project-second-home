@@ -186,7 +186,7 @@ export default function FaqQuestions() {
   return (
     <>
       <div className="mx-auto max-w-7xl px-4 sm:px-6 md:px-28 faq-part ">
-        <div className="mx-auto max-w-2xl lg:py-5 md:py-5 sm:py-0 lg:max-w-none lg:py-12 ">
+        <div className="mx-auto max-w-2xl  md:py-5 sm:py-0 lg:max-w-none lg:py-12 ">
           <div className=" ">
             <h3 className="px-1 mt-2 md:mb-10 sm:mb:2 font-bold md:text-2xl sm:text-sm md:text-left sm:text-center">
               FAQs

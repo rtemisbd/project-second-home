@@ -1,5 +1,4 @@
 import toast, { Toaster } from "react-hot-toast";
-import LoadingState from "../LoadingState/LoadingState";
 import { useEffect, useState } from "react";
 import { FaArrowLeft } from "react-icons/fa";
 import useUser from "../../hooks/userUser";
@@ -14,6 +13,7 @@ import { IoCloseCircleOutline } from "react-icons/io5";
 import { uploadImageToImgBB } from "../../utilities/singleImageUploader";
 import { useDispatch } from "react-redux";
 import { placeLoadingShow } from "../../redux/reducers/smProfileMenuSlice";
+import LoadingState from "../../components/LoadingState/LoadingState";
 
 const VillaBookingForm = () => {
   const [singleUser] = useUser();
@@ -184,7 +184,7 @@ const VillaBookingForm = () => {
 
   return (
     <div>
-      <LoadingState />
+      <LoadingState/>
       <form
         // onSubmit={bookingOrder}
         className={`custom-container user_info_page ${
