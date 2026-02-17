@@ -31,7 +31,7 @@ const payment_create = async (req, res) => {
       },
       {
         headers: await bkash_headers(),
-      }
+      },
     );
     return res.status(200).json({ bkashURL: data.bkashURL });
   } catch (error) {
@@ -64,7 +64,7 @@ const call_back = async (req, res) => {
 
       if (!response.ok) {
         throw new Error(
-          `Error executing payment: ${response.status} ${response.statusText}`
+          `Error executing payment: ${response.status} ${response.statusText}`,
         );
       }
 
@@ -73,7 +73,7 @@ const call_back = async (req, res) => {
       if (data && data.statusCode === "0000") {
         // Step 5: Create order
         const dataForBooking = await JSON.parse(
-          decodeURIComponent(callbackData)
+          decodeURIComponent(callbackData),
         );
 
         dataForBooking.paymentType = "bkash";
@@ -103,7 +103,7 @@ const call_back = async (req, res) => {
               acceptableStatus: "Accepted",
             },
           ],
-          { session }
+          { session },
         );
 
         // Step 7: Create rent collection
@@ -123,11 +123,11 @@ const call_back = async (req, res) => {
               userId: dataForBooking?.userId,
             },
           ],
-          { session }
+          { session },
         );
 
         // Phone SMS for booking
-        const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${dataForBooking?.bookingId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+        const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking?.phone}&senderid=8809648906324&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${dataForBooking?.bookingId}.%20Check-in%3A%${dataForBooking?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${dataForBooking?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
         await bookingSms(bookingMessage);
 
@@ -142,8 +142,8 @@ const call_back = async (req, res) => {
       console.error("Error during payment execution:", error);
       return await res.redirect(
         `${config.client_url}/error?message=${encodeURIComponent(
-          error.message
-        )}`
+          error.message,
+        )}`,
       );
     } finally {
       await session.endSession();
@@ -173,7 +173,7 @@ const refund = async (req, res) => {
       },
       {
         headers: await bkash_headers(), // Passing the headers including the token
-      }
+      },
     );
 
     if (data && data.statusCode === "0000") {

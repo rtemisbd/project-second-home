@@ -1,6 +1,6 @@
 import OrderModel from "../models/Order.js";
 import Property from "../models/Property.js";
-import User from "../models/User.js"; 
+import User from "../models/User.js";
 import Transaction from "../models/Transaction.js";
 import Adjustment from "../models/Adjustment.js";
 import RentRoom from "../models/RentRoom.js";
@@ -10,7 +10,6 @@ import sendResponse from "../shared/sendResponse.js";
 import { orderServices } from "../services/order.service.js";
 import catchAsync from "../utils/catchAsync.js";
 import responseSend from "../utils/responseSend.js";
-
 
 export const createOrder = catchAsync2(async (req, res, next) => {
   // Booking Save to Database
@@ -67,12 +66,12 @@ const updateOrderPaymentStatus = async () => {
       OrderModel.updateMany(
         { $expr: { $eq: ["$payableAmount", "$totalReceiveTk"] } },
         { $set: { paymentStatus: "Paid" } },
-        { new: true }
+        { new: true },
       ),
       OrderModel.updateMany(
         { $expr: { $ne: ["$payableAmount", "$totalReceiveTk"] } },
         { $set: { paymentStatus: "Unpaid" } },
-        { new: true }
+        { new: true },
       ),
     ]);
   } catch (error) {
@@ -81,8 +80,6 @@ const updateOrderPaymentStatus = async () => {
 };
 
 export const orderCorrection = async (req, res) => {
-
-
   try {
     /*
 case 1 : discount == adjustment --> discount = 0
@@ -145,7 +142,7 @@ case 3 : discount = 0 && adjustment > 0 ---> discount = 0,
 
       return OrderModel.updateOne(
         { _id: order._id },
-        { $set: { discount: updatedDiscount } }
+        { $set: { discount: updatedDiscount } },
       );
     });
 
@@ -171,16 +168,14 @@ export const getSingleOrder = async (req, res, next) => {
 export const getUserOrders = catchAsync(async (req, res, next) => {
   const { user: phone } = req.params;
 
-  const { result, totalCount } =await orderServices.getUserOrderFromDB(
+  const { result, totalCount } = await orderServices.getUserOrderFromDB(
     req.query,
-    phone
+    phone,
   );
 
   const orders = result[0]?.paginatedResults || [];
 
-  
-// const encryptedOrders = encrypt(orders);
-
+  // const encryptedOrders = encrypt(orders);
 
   responseSend(res, {
     statusCode: 200,
@@ -292,7 +287,7 @@ export const updateBooking = async (req, res, next) => {
       await OrderModel.findByIdAndUpdate(
         req.params.id,
         { $set: { status: req.body.status } },
-        { new: true }
+        { new: true },
       );
 
       if (findSingleOrder?.bookingInfo?.roomType === "Shared Room") {
@@ -307,7 +302,7 @@ export const updateBooking = async (req, res, next) => {
             },
             {
               arrayFilters: [{ "outer._id": bookingInfoForShareSeatId }],
-            }
+            },
             // { new: true }
           );
 
@@ -336,12 +331,12 @@ export const updateBooking = async (req, res, next) => {
                 usedPromo: findSingleOrder?.bookingInfo?.usedPromo,
               },
             },
-            { new: true }
+            { new: true },
           );
 
           // Phone Sms for Confirmation
 
-          const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+          const bookingMessage = `/api/smsapi?api_key=fVWL0DIf5mXkxO3A1SVo&type=text&number=88${findSingleOrder?.phone}&senderid=8809648906324&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
           bookingSms(bookingMessage)
             .then((response) => {
@@ -369,7 +364,7 @@ export const updateBooking = async (req, res, next) => {
             },
             {
               arrayFilters: [{ "outer._id": bookingInfoForShareSeatId }],
-            }
+            },
             // { new: true }
           );
 
@@ -393,14 +388,14 @@ export const updateBooking = async (req, res, next) => {
                   promo: findSingleOrder?.bookingInfo?.usedPromo?.promo,
                 },
               },
-            }
+            },
             // { new: true }
           );
 
           if (req.body?.status === "Canceled") {
             // Phone Sms for cancel
 
-            const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
+            const bookingMessage = `/api/smsapi?api_key=fVWL0DIf5mXkxO3A1SVo&type=text&number=88${findSingleOrder?.phone}&senderid=8809648906324&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
 
             bookingSms(bookingMessage)
               .then((response) => {
@@ -423,7 +418,7 @@ export const updateBooking = async (req, res, next) => {
                 rentDate: findSingleOrder?.bookingInfo?.rentDate,
               },
             },
-            { new: true }
+            { new: true },
           );
 
           // create a RentDate Collection
@@ -449,12 +444,12 @@ export const updateBooking = async (req, res, next) => {
                 usedPromo: findSingleOrder?.bookingInfo?.usedPromo,
               },
             },
-            { new: true }
+            { new: true },
           );
 
           // Phone Sms for Confirmation
 
-          const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+          const bookingMessage = `/api/smsapi?api_key=fVWL0DIf5mXkxO3A1SVo&type=text&number=88${findSingleOrder?.phone}&senderid=8809648906324&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${slicedObjectId}.%20Check-in%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookStartDate}%2C%20Check-out%3A%${findSingleOrder?.bookingInfo?.rentDate?.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
           bookingSms(bookingMessage)
             .then((response) => {
@@ -476,7 +471,7 @@ export const updateBooking = async (req, res, next) => {
                 },
               },
             },
-            { new: true }
+            { new: true },
           );
 
           // if Store a rent Details into database then Delelet
@@ -498,7 +493,7 @@ export const updateBooking = async (req, res, next) => {
                   promo: findSingleOrder?.bookingInfo?.usedPromo?.promo,
                 },
               },
-            }
+            },
             // { new: true }
           );
 
@@ -506,7 +501,7 @@ export const updateBooking = async (req, res, next) => {
 
           if (req.body?.status === "Canceled") {
             // Phone Sms for Cancel
-            const bookingMessage = `/api/smsapi?api_key=za0YHQ7fvYCpcWGGZgce&type=text&number=88${findSingleOrder?.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
+            const bookingMessage = `/api/smsapi?api_key=fVWL0DIf5mXkxO3A1SVo&type=text&number=88${findSingleOrder?.phone}&senderid=8809648906324&message=Your%20booking%20with%20Project%20Second%20Home%20%28Booking%20ID%3A%20%23${slicedObjectId}%29%20has%20been%20canceled.%20Contact%20us%20at%2001647647404%20for%20assistance.%20Thank%20you.%20-%20PSH`;
 
             bookingSms(bookingMessage)
               .then((response) => {
@@ -545,7 +540,7 @@ export const updateBooking = async (req, res, next) => {
               whichOfMonthPayment: req.body?.whichOfMonthPayment,
             },
           },
-          { new: true }
+          { new: true },
         );
       }
 
@@ -592,7 +587,7 @@ export const updateBooking = async (req, res, next) => {
             isAdjustmentRQ: "Yes",
           },
         },
-        { new: true }
+        { new: true },
       );
     } else if (req?.body?.cancelReason) {
       await OrderModel.findByIdAndUpdate(
@@ -603,7 +598,7 @@ export const updateBooking = async (req, res, next) => {
             isCancel: "Yes",
           },
         },
-        { new: true }
+        { new: true },
       );
     } else {
       await OrderModel.findByIdAndUpdate(
@@ -620,7 +615,7 @@ export const updateBooking = async (req, res, next) => {
             adjustmentAmount: req.body?.adjustmentAmount,
           },
         },
-        { new: true }
+        { new: true },
       );
       // res.status(200).json(updateDate);
 
@@ -639,7 +634,7 @@ export const updateBooking = async (req, res, next) => {
           },
           {
             arrayFilters: [{ "outer._id": bookingInfoForShareSeatId }],
-          }
+          },
           // { new: true }
         );
         // Push Current Booking Date in match property
@@ -654,7 +649,7 @@ export const updateBooking = async (req, res, next) => {
           },
           {
             arrayFilters: [{ "outer._id": bookingInfoForShareSeatId }],
-          }
+          },
           // { new: true }
         );
       } else {
@@ -670,7 +665,7 @@ export const updateBooking = async (req, res, next) => {
               },
             },
           },
-          { new: true }
+          { new: true },
         );
         // Push Current Booking Date in match property
         await Property.updateOne(
@@ -682,7 +677,7 @@ export const updateBooking = async (req, res, next) => {
               rentDate: req.body?.rentDate,
             },
           },
-          { new: true }
+          { new: true },
         );
       }
     }

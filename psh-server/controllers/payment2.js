@@ -60,7 +60,7 @@ const paymentCreate = async (req, res) => {
         await User.updateOne(
           { phone: userInfo?.phone },
           { $set: userUpdate },
-          { runValidators: true, session }
+          { runValidators: true, session },
         );
 
         // Step 4: Generate booking ID
@@ -72,7 +72,7 @@ const paymentCreate = async (req, res) => {
         if (selectMethod === "manual") {
           const result = await orderServices.createOrderByManualBkash(
             bookingData,
-            session
+            session,
           );
           sendResponse(res, {
             statusCode: 200,
@@ -84,7 +84,7 @@ const paymentCreate = async (req, res) => {
         } else if (selectMethod === "cash") {
           const result = await orderServices.createOrderByCash(
             bookingData,
-            session
+            session,
           );
           sendResponse(res, {
             statusCode: 200,
@@ -107,7 +107,7 @@ const paymentCreate = async (req, res) => {
               intent: "sale",
               merchantInvoiceNumber: "Inv" + uuidv4().substring(0, 5),
             },
-            { headers: await bkashHeaders() }
+            { headers: await bkashHeaders() },
           );
 
           return res.status(200).json({ bkashURL: data.bkashURL });
@@ -117,7 +117,7 @@ const paymentCreate = async (req, res) => {
         // optional: retry writes enabled
         readConcern: { level: "local" },
         writeConcern: { w: "majority" },
-      }
+      },
     );
   } catch (error) {
     if (error.hasErrorLabel?.("TransientTransactionError")) {
@@ -147,12 +147,12 @@ const callBack = async (req, res) => {
       const { data } = await axios.post(
         config.bkash_execute_payment_url,
         { paymentID },
-        { headers: await bkashHeaders() }
+        { headers: await bkashHeaders() },
       );
 
       if (!data || data.statusCode !== "0000") {
         throw new Error(
-          data?.statusMessage || "Bkash payment execution failed"
+          data?.statusMessage || "Bkash payment execution failed",
         );
       }
 
@@ -205,7 +205,7 @@ const callBack = async (req, res) => {
       });
 
       // ⚠️ Only after commit send SMS
-      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking.phone}&senderid=8809617617196&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${orderResult._id}.%20Check-in%3A%${dataForBooking.rentDate.bookStartDate}%2C%20Check-out%3A%${dataForBooking.rentDate.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
+      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${dataForBooking.phone}&senderid=8809648906324&message=Your%20booking%20with%20Project%20Second%20Home%20is%20Confirmed!%20Booking%20ID%3A%23${orderResult._id}.%20Check-in%3A%${dataForBooking.rentDate.bookStartDate}%2C%20Check-out%3A%${dataForBooking.rentDate.bookEndDate}.%20Call%20Us%3A%2001647647404.%20Enjoy%20your%20stay!%20-%20PSH`;
 
       await bookingSms(bookingMessage);
 
@@ -213,7 +213,7 @@ const callBack = async (req, res) => {
     }
   } catch (error) {
     return res.redirect(
-      `${config.client_url}/error?message=${encodeURIComponent(error.message)}`
+      `${config.client_url}/error?message=${encodeURIComponent(error.message)}`,
     );
   } finally {
     session.endSession();
@@ -236,7 +236,7 @@ const callbackForUser = async (req, res) => {
         { paymentID },
         {
           headers: await bkashHeaders(),
-        }
+        },
       );
 
       if (data && data.statusCode === "0000") {
@@ -262,12 +262,12 @@ const callbackForUser = async (req, res) => {
         return res.redirect(`${config.client_url}/success`);
       } else {
         return res.redirect(
-          `${config.client_url}/error?message=${data.statusMessage}`
+          `${config.client_url}/error?message=${data.statusMessage}`,
         );
       }
     } catch (error) {
       return res.redirect(
-        `${config.client_url}/error?message=${error.message}`
+        `${config.client_url}/error?message=${error.message}`,
       );
     }
   }
