@@ -1,4 +1,4 @@
-import  { useContext, useState } from "react";
+import { useContext, useState } from "react";
 import { useDispatch } from "react-redux";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import { AuthContext } from "../../contexts/UserProvider";
@@ -166,7 +166,7 @@ const UserAuthentication = () => {
       dispatch(placeLoadingShow(false));
       toast.success("Please Check Your Phone Number");
       setUserMessage(
-        "Enter the OTP (One Time Password) that has been sent to your registered Phone Number"
+        "Enter the OTP (One Time Password) that has been sent to your registered Phone Number",
       );
       setShowSignIn(false);
       setShowSignUp(false);
@@ -201,7 +201,7 @@ const UserAuthentication = () => {
       }, 60000);
       dispatch(placeLoadingShow(false));
       setUserMessage(
-        "Enter the OTP (One Time Password) that has been sent to your registered Phone Number"
+        "Enter the OTP (One Time Password) that has been sent to your registered Phone Number",
       );
     } catch (error) {
       dispatch(placeLoadingShow(false));
