@@ -91,6 +91,8 @@ export const createUser = catchAsync(async (req, res, next) => {
 
 export const sendOtp = async (req, res, next) => {
   try {
+    // console.log(req.body);
+
     const { customerOtp, phone } = req.body;
 
     // Find the user by email and populate the branch field
@@ -103,7 +105,7 @@ export const sendOtp = async (req, res, next) => {
       });
     } else {
       // Account Verification Mail and sms to user
-      const bookingMessage = `/api/smsapi?api_key=${config.sms_api_key}&type=text&number=88${phone}&senderid=${config.sms_sender_id}&message=For%20Project%20Second%20Home(PSH)%20your%20OTP%20for%20account%20verification%20is%3A%20${customerOtp}.%20Enter%20this%20code%20to%20complete%20your%20Signup%20process.%20Thank%20you`;
+      const bookingMessage = `/api/smsapi?api_key=fVWL0DIf5mXkxO3A1SVo&type=text&number=88${phone}&senderid=8809648906324&message=For%20Project%20Second%20Home(PSH)%20your%20OTP%20for%20account%20verification%20is%3A%20${customerOtp}.%20Enter%20this%20code%20to%20complete%20your%20Signup%20process.%20Thank%20you`;
 
       bookingSms(bookingMessage)
         .then((response) => {
@@ -111,7 +113,7 @@ export const sendOtp = async (req, res, next) => {
           // Handle response data as needed
         })
         .catch((error) => {
-          console.error("Error while sending SMS:", error);
+          // console.error("Error while sending SMS:", error);
           // Handle error
         });
 
@@ -163,7 +165,7 @@ export const loginUser = async (req, res) => {
     // Generate a JWT token
     const token = jwt.sign(
       { userId: user._id, role: user?.role },
-      config.jwt.secret
+      config.jwt.secret,
     );
 
     // Return the token and user information
@@ -221,7 +223,7 @@ export const loginAdminUser = async (req, res) => {
     // Generate a JWT token
     const token = jwt.sign(
       { userId: user._id, role: user?.role },
-      config.jwt.secret
+      config.jwt.secret,
     );
 
     // Return the token and user information
@@ -245,7 +247,7 @@ export const updateUser = async (req, res) => {
             userStatus: req?.body?.userStatus,
           },
         },
-        { runValidators: true }
+        { runValidators: true },
       );
       res.status(200).json({
         status: "success",
@@ -298,7 +300,7 @@ export const updateUser = async (req, res) => {
         { _id: id },
         { $set: payload },
         // { $set: userUpdate },
-        { runValidators: true }
+        { runValidators: true },
       );
       res.status(200).json({
         status: "success",
@@ -343,7 +345,7 @@ export const updatePassword = async (req, res) => {
     if (currentPassword) {
       const passwordMatch = await bcrypt.compare(
         currentPassword,
-        user.password
+        user.password,
       );
       if (!passwordMatch) {
         res.status(401).json({ message: "Current password is incorrect" });
@@ -438,12 +440,12 @@ export const resetPassword = async (req, res) => {
     const { newPassword } = req.body;
     const hashedPassword = await bcrypt.hash(
       newPassword,
-      Number(config.bcrypt_salt_rounds)
+      Number(config.bcrypt_salt_rounds),
     );
 
     await User.findByIdAndUpdate(
       { _id: id },
-      { password: hashedPassword, otp: null, otpExpiration: null }
+      { password: hashedPassword, otp: null, otpExpiration: null },
     );
     res.status(200).json({ message: "Password reset successful" });
   } catch (error) {
@@ -523,7 +525,7 @@ export const updateUserAdmin = async (req, res, next) => {
     const updatedUser = await User.findByIdAndUpdate(
       req.params.id,
       { $set: req.body },
-      { new: true }
+      { new: true },
     );
     res.status(200).json(updatedUser);
   } catch (err) {
