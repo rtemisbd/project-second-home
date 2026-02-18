@@ -65,7 +65,7 @@ const createUserIntoDB = async (payload) => {
 
   const token = jwt.sign(
     {
-      name: user.firstName + " " + user.lastName,
+      name: user.firstName,
       id: user._id,
     },
     config.jwt.secret,

@@ -30,9 +30,11 @@ const ResetPasswordForm = () => {
   // Handle Password Reset
   const handleResetPassword = async () => {
     try {
-      const response = await axios.post(
+    
+
+      const response = await axios.patch(
         `${serverBaseUrl}/users/reset_password/${id}`,
-        { newPassword }
+        { newPassword },
       );
       if (response.status === 200) {
         toast.success("Password reset successful!");

@@ -40,16 +40,16 @@ router.post("/verify-otp", verifyOtp);
 // router.post("/reset_password/:id/", resetPassword);
 router.patch(
   "/reset_password/:id/",
-  auth(
-    ENUM_USER_ROLE.USER,
-    ENUM_USER_ROLE.SUPER_ADMIN,
-    ENUM_USER_ROLE.SUB_ADMIN_1,
-    ENUM_USER_ROLE.SUB_ADMIN_2,
-    ENUM_USER_ROLE.RESORT_ACCOUNTANT,
-    ENUM_USER_ROLE.RESORT_ADMIN,
-    ENUM_USER_ROLE.RESORT_RECEPTIONIST
-  ),
-  resetPassword
+  // auth(
+  //   ENUM_USER_ROLE.USER,
+  //   ENUM_USER_ROLE.SUPER_ADMIN,
+  //   ENUM_USER_ROLE.SUB_ADMIN_1,
+  //   ENUM_USER_ROLE.SUB_ADMIN_2,
+  //   ENUM_USER_ROLE.RESORT_ACCOUNTANT,
+  //   ENUM_USER_ROLE.RESORT_ADMIN,
+  //   ENUM_USER_ROLE.RESORT_RECEPTIONIST
+  // ),
+  resetPassword,
 );
 router.patch("/:id", updateUser);
 router.patch("/admin/:id", updateUserAdmin);
@@ -68,9 +68,9 @@ router.get(
     ENUM_USER_ROLE.SUB_ADMIN_2,
     ENUM_USER_ROLE.RESORT_ACCOUNTANT,
     ENUM_USER_ROLE.RESORT_ADMIN,
-    ENUM_USER_ROLE.RESORT_RECEPTIONIST
+    ENUM_USER_ROLE.RESORT_RECEPTIONIST,
   ),
-  getUser
+  getUser,
 );
 router.get("/jwt", getJWT);
 router.get("/admin/:email", getAdmin);
