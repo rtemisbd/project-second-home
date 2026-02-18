@@ -436,6 +436,8 @@ export const verifyOtp = async (req, res) => {
 
 export const resetPassword = async (req, res) => {
   try {
+    console.log(id);
+
     const { id } = req.params;
     const { newPassword } = req.body;
     const hashedPassword = await bcrypt.hash(
