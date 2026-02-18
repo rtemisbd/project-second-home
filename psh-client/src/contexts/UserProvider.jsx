@@ -10,7 +10,7 @@ export const UserProvider = ({ children }) => {
   const dispatch = useDispatch();
 
   const [user, setUser] = useState(
-    JSON.parse(localStorage?.getItem("user")) || null
+    JSON.parse(localStorage?.getItem("user")) || null,
   );
   const [token, setToken] = useState(localStorage.getItem("token") || null);
   const [loading, setLoading] = useState(false);
@@ -28,7 +28,6 @@ export const UserProvider = ({ children }) => {
         password,
       });
 
-
       setUser(data?.data?.user);
       setToken(data?.data?.token);
       setLoading(false);
@@ -37,7 +36,7 @@ export const UserProvider = ({ children }) => {
       console.log(error);
       toast.error(
         error?.response?.data?.message ||
-          "Something went wrong. Please try again!"
+          "Something went wrong. Please try again!",
       );
     }
     return user;
@@ -47,12 +46,14 @@ export const UserProvider = ({ children }) => {
     firstName,
     email,
     phone,
-    password
+    password,
     // refferCode,
     // photos,
     // role
   ) => {
     try {
+      console.log(1);
+
       const response = await axios.post(`${serverBaseUrl}/users`, {
         firstName,
         email,
@@ -67,8 +68,8 @@ export const UserProvider = ({ children }) => {
         toast.success("Congratulations! Your account has been created.");
         const { data } = response;
 
-        setUser(data.user);
-        setToken(data.token);
+        setUser(data?.data?.user);
+        setToken(data?.data?.token);
 
         setLoading(false);
         setTimeout(() => {
@@ -92,6 +93,10 @@ export const UserProvider = ({ children }) => {
     }
     return { user, errorMessage };
   };
+
+  useEffect(() => {
+    console.log({ user, token });
+  }, [user, token]);
 
   const logoutUser = () => {
     setUser(null);
